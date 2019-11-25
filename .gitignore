@@ -1,0 +1,16 @@
+# Build artifacts
+target/
+*.zip
+*.jar
+
+# Eclipse project files
+.classpath
+.project
+.settings
+
+# IntelliJ project files
+.idea
+*.iml
+
+# Finder files (Mac)
+.DS_Store
