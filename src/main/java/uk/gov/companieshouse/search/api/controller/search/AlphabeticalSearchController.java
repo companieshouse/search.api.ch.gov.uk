@@ -28,7 +28,5 @@ public class AlphabeticalSearchController {
         ResponseObject responseObject = searchIndexService.search(corporateName);
 
         return apiToResponseMapper.map(responseObject);
-
     }
-
 }
