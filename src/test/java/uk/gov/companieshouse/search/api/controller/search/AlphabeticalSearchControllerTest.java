@@ -7,13 +7,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.Company.Items;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
-import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.SearchIndexService;
 
 import java.util.ArrayList;
@@ -23,6 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.FOUND;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_NOT_FOUND;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -37,22 +39,23 @@ public class AlphabeticalSearchControllerTest {
     @InjectMocks
     private AlphabeticalSearchController alphabeticalSearchController;
 
+
     @Test
     @DisplayName("Test search not found")
     public void testSearchNotFound() {
 
         ResponseObject responseObject =
-            new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
+            new ResponseObject(SEARCH_NOT_FOUND, null);
 
         when(mockSearchIndexService.search(anyString())).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
-            .thenReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+            .thenReturn(ResponseEntity.status(NOT_FOUND).build());
 
         ResponseEntity responseEntity =
             alphabeticalSearchController.searchByCorporateName(anyString());
 
         assertNotNull(responseEntity);
-        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals(NOT_FOUND, responseEntity.getStatusCode());
     }
 
     @Test
@@ -60,17 +63,17 @@ public class AlphabeticalSearchControllerTest {
     public void testSearchFound() {
 
         ResponseObject responseObject =
-            new ResponseObject(ResponseStatus.SEARCH_FOUND, createSearchResults());
+            new ResponseObject(SEARCH_FOUND, createSearchResults());
 
         when(mockSearchIndexService.search(anyString())).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
-            .thenReturn(ResponseEntity.status(HttpStatus.FOUND).body(responseObject.getData()));
+            .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity responseEntity =
             alphabeticalSearchController.searchByCorporateName(anyString());
 
         assertNotNull(responseEntity);
-        assertEquals(HttpStatus.FOUND, responseEntity.getStatusCode());
+        assertEquals(FOUND, responseEntity.getStatusCode());
     }
 
     private SearchResults createSearchResults() {

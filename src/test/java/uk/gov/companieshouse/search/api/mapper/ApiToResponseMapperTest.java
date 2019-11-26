@@ -6,15 +6,19 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
-import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.springframework.http.HttpStatus.FOUND;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_ERROR;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_NOT_FOUND;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -28,13 +32,13 @@ public class ApiToResponseMapperTest {
     public void testFoundReturned() {
 
         ResponseObject responseObject =
-            new ResponseObject(ResponseStatus.SEARCH_FOUND, new SearchResults());
+            new ResponseObject(SEARCH_FOUND, new SearchResults());
 
         ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
 
         assertNotNull(responseEntity);
         assertNotNull(responseEntity.getBody());
-        assertEquals(HttpStatus.FOUND, responseEntity.getStatusCode());
+        assertEquals(FOUND, responseEntity.getStatusCode());
     }
 
     @Test
@@ -42,13 +46,13 @@ public class ApiToResponseMapperTest {
     public void testNotFoundReturned() {
 
         ResponseObject responseObject =
-            new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND);
+            new ResponseObject(SEARCH_NOT_FOUND);
 
         ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
 
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
-        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals(NOT_FOUND, responseEntity.getStatusCode());
     }
 
     @Test
@@ -56,13 +60,13 @@ public class ApiToResponseMapperTest {
     public void testInternalServerErrorReturned() {
 
         ResponseObject responseObject =
-            new ResponseObject(ResponseStatus.SEARCH_ERROR);
+            new ResponseObject(SEARCH_ERROR);
 
         ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
 
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+        assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     }
 
 }
