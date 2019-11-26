@@ -13,7 +13,7 @@
 
     <groupId>uk.gov.companieshouse</groupId>
     <artifactId>search.api.ch.gov.uk</artifactId>
-    <version>b5c2fef</version>
+    <version>unversioned</version>
     <name>search-api</name>
     <description>Search API to handle requests to Elastic Search data</description>
 
