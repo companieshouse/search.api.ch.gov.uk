@@ -1,7 +1,5 @@
 artifact_name       := search.api.ch.gov.uk
-commit              := $(shell git rev-parse --short HEAD)
-tag                 := $(shell git tag -l 'v*-rc*' --points-at HEAD)
-version             := $(shell if [[ -n "$(tag)" ]]; then echo $(tag) | sed 's/^v//'; else echo $(commit); fi)
+version             := "unversioned"
 
 .PHONY: all
 all: build
@@ -14,18 +12,18 @@ clean:
 	rm -rf ./build-*
 	rm -f ./build.log
 
-.PHONY: test
-test: test-unit
-
-.PHONY: test-unit
-test-unit:
-	mvn test
-
 .PHONY: build
 build:
 	mvn versions:set -DnewVersion=$(version) -DgenerateBackupPoms=false
 	mvn package -DskipTests=true
 	cp ./target/$(artifact_name)-$(version).jar ./$(artifact_name).jar
+
+.PHONY: test
+test: test-unit
+
+.PHONY: test-unit
+test-unit: clean
+	mvn test
 
 .PHONY: package
 package:
@@ -47,3 +45,7 @@ dist: clean build package
 .PHONY: sonar
 sonar:
 	mvn sonar:sonar
+
+.PHONY: sonar-pr-analysis
+sonar-pr-analysis:
+	mvn sonar:sonar -P sonar-pr-analysis
