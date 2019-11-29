@@ -12,17 +12,24 @@ public class Items {
 
     @JsonProperty("company_number")
     private String companyNumber;
+
     @JsonProperty("company_status")
     private String companyStatus;
-    @JsonProperty("corporateName")
+
+    @JsonProperty("corporate_name")
     private String corporateName;
+
+    @JsonProperty("record_type")
+    private String recordType;
 
     public Items() {}
 
-    public Items(String companyNumber, String companyStatus, String corporateName) {
+    public Items(String companyNumber, String companyStatus, String corporateName,
+        String recordType) {
         this.companyNumber = companyNumber;
         this.companyStatus = companyStatus;
         this.corporateName = corporateName;
+        this.recordType = recordType;
     }
 
     public String getCompanyNumber() {
@@ -47,6 +54,14 @@ public class Items {
 
     public void setCorporateName(String corporateName) {
         this.corporateName = corporateName;
+    }
+
+    public String getRecordType() {
+        return recordType;
+    }
+
+    public void setRecordType(String recordType) {
+        this.recordType = recordType;
     }
 
     @Override
