@@ -9,8 +9,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
-import uk.gov.companieshouse.search.api.model.Company.Items;
 import uk.gov.companieshouse.search.api.model.SearchResults;
+import uk.gov.companieshouse.search.api.model.company.Items;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.SearchIndexService;
 
