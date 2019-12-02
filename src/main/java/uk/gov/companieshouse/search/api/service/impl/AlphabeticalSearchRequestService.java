@@ -16,37 +16,50 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
     private static final String ALPHA_SEARCH = "alpha_search";
 
-    private static final int NUMBER_OF_RESULTS_TO_RETURN = 10;
+    private static final int RESULTS_SIZE = 0;
+    private static final int AGGS_TOP_HITS_ALPHABETICAL_SIZE = 100;
+    private static final int AGGS_HIGHEST_MATCH_SIZE = 1;
+
+    private static final String HIGHEST_MATCH = "highest_match";
+    private static final String TOP_HITS_ALPHABETICAL = "top_hits_alphabetical";
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public SearchRequest createSearchRequest(String corporateName, int searchIndexFrom) {
+    public SearchRequest createSearchRequest(String corporateName) {
 
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.indices(ALPHA_SEARCH);
-        searchRequest.source(createSource(corporateName, searchIndexFrom));
+        searchRequest.source(createSource(corporateName));
 
         return searchRequest;
     }
 
-    private SearchSourceBuilder createSource(String corporateName, int searchIndexFrom) {
+    private SearchSourceBuilder createSource(String corporateName) {
 
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-        sourceBuilder.from(searchIndexFrom);
-        sourceBuilder.size(NUMBER_OF_RESULTS_TO_RETURN);
-        sourceBuilder.sort(new FieldSortBuilder("items.corporate_name_start.sort")
-            .order(SortOrder.ASC));
+        sourceBuilder.size(RESULTS_SIZE);
         sourceBuilder.query(createAlphabeticalSearchQuery(corporateName));
-        sourceBuilder.aggregation(createAggregation());
+        sourceBuilder.aggregation(createHighestMatchAggregation());
+        sourceBuilder.aggregation(createTopHitsAlphabetically());
 
         return sourceBuilder;
     }
 
-    private AggregationBuilder createAggregation() {
+    private AggregationBuilder createHighestMatchAggregation() {
+        return AggregationBuilders
+            .topHits(HIGHEST_MATCH)
+            .size(AGGS_HIGHEST_MATCH_SIZE);
+    }
 
-        return AggregationBuilders.topHits("closest_match").size(1);
+    private AggregationBuilder createTopHitsAlphabetically() {
+
+        return AggregationBuilders
+            .topHits(TOP_HITS_ALPHABETICAL)
+            .size(AGGS_TOP_HITS_ALPHABETICAL_SIZE)
+            .sort(new FieldSortBuilder("items.corporate_name_start.sort")
+                .order(SortOrder.ASC));
     }
 
     private QueryBuilder createAlphabeticalSearchQuery(String corporateName) {

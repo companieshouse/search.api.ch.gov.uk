@@ -22,8 +22,7 @@ public class AlphabeticalSearchController {
 
 
     @GetMapping("/corporateName")
-    public ResponseEntity searchByCorporateName(
-        @RequestParam(name = "corporateName") String corporateName) {
+    public ResponseEntity searchByCorporateName(@Valid @RequestBody) {
 
         ResponseObject responseObject = searchIndexService.search(corporateName);
 

@@ -33,6 +33,9 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
     @Autowired
     private SearchRequestService searchRequestService;
 
+    private static final String HIGHEST_MATCH = "highest_match";
+    private static final String TOP_HITS_ALPHABETICAL = "top_hits_alphabetical";
+
     /**
      * {@inheritDoc}
      */
@@ -44,77 +47,139 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         try {
             searchResults = performAlphabeticalSearch(corporateName);
         } catch (IOException ex) {
-            return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
+            return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
 
-        return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+        if(searchResults.getSearchResults() != null) {
+            return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+        }
+
+        return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 
     private SearchResults performAlphabeticalSearch(String corporateName) throws IOException {
 
-        int indexFrom = 0;
+        SearchResponse searchResponse = searchRestClient(corporateName);
 
-        // initial search for companies
-        SearchResponse searchResponse = searchRestClient(corporateName, indexFrom);
-
-        // obtain the highest matched name from aggregations
-        String topHitName = getTopHitAggregation(searchResponse.getAggregations().asList());
-
-        return searchIndex(indexFrom, topHitName, searchResponse.getHits(), corporateName);
+        return getAggregatedSearchResults(searchResponse.getAggregations().asList());
     }
 
-    private String getTopHitAggregation(List<Aggregation> aggregations) throws IOException {
+    private SearchResponse searchRestClient(String corporateName) throws IOException {
+        return client.search(
+            searchRequestService.createSearchRequest(corporateName), DEFAULT);
+    }
 
-        // get top hits
-        TopHits topHits = (TopHits) aggregations.get(0);
+    private SearchResults getAggregatedSearchResults(List<Aggregation> aggregations) throws IOException {
 
-        //get search hits from top hits
-        SearchHits searchTopHits = topHits.getHits();
 
-        // extract the top hit from position 0 as we know there is only one
+        String highestMatchName = "";
+        List<Items> companies = new ArrayList<>();
+
+        // loop the aggregations to obtain the highest match and top hits
+        for (Aggregation aggregation : aggregations) {
+
+            if (aggregation.getName().equals(HIGHEST_MATCH)) {
+                highestMatchName = getHighestMatchedCompanyName(aggregation);
+            } else if(aggregation.getName().equals(TOP_HITS_ALPHABETICAL)) {
+                companies = getCompaniesFromSearchHits(aggregation);
+            }
+        }
+
+        return getSearchResults(highestMatchName, companies);
+    }
+
+    private SearchResults getSearchResults(String highestMatchName, List<Items> companies) {
+        SearchResults<Items> searchResults = new SearchResults();
+
+        int highestMatchIndexPos = 0;
+
+        // find the pos in list that highest match is
+        for(Items company : companies) {
+            if (company.getCorporateName().equals(highestMatchName)) {
+                searchResults = getAlphabeticalSearchResults(companies,
+                    highestMatchIndexPos);
+            }
+            highestMatchIndexPos++;
+        }
+
+        return searchResults;
+    }
+
+    private SearchResults<Items> getAlphabeticalSearchResults(List<Items> companies, int highestMatchIndexPos) {
+
+        List<Items> searchCompanyResults = new ArrayList<>();
+        SearchResults<Items> searchResults = new SearchResults<>();
+
+        int totalResults = companies.size();
+
+        int indexAbove = getIndexForAbove(totalResults);
+        int indexBelow = getIndexForBelow(totalResults, highestMatchIndexPos);
+
+        // get 20 hits with potential 9 above and 10 below highest match
+        for(int i = indexAbove; i < indexBelow; i++) {
+            searchCompanyResults.add(companies.get(i));
+        }
+
+        searchResults.setSearchType("alphabetical search");
+        searchResults.setSearchResults(searchCompanyResults);
+
+        return searchResults;
+    }
+
+    private int getIndexForBelow(int totalResults, int highestMatchIndexPos) {
+
+        int endIndexPosCalc = highestMatchIndexPos + 10;
+        int differenceIndexPos = endIndexPosCalc - totalResults;
+
+        if (differenceIndexPos < 0) {
+            return endIndexPosCalc;
+        } else {
+            return endIndexPosCalc - differenceIndexPos;
+        }
+    }
+
+    private int getIndexForAbove(int highestMatchIndexPos) {
+
+        int topIndexPosCalc = highestMatchIndexPos - 9;
+
+        if (topIndexPosCalc >= 0) {
+            return topIndexPosCalc;
+        } else {
+            return 0;
+        }
+    }
+
+    private String getHighestMatchedCompanyName(Aggregation aggregation) throws IOException {
+
+        SearchHits searchHitsHighestMatched = transformToSearchHits(aggregation);
+
+        // extract the highest matched company name from position 0 as we know there is only one
         Optional<Company> companyTopHit =
             Optional.of(new ObjectMapper()
-                .readValue(searchTopHits
+                .readValue(searchHitsHighestMatched
                     .getAt(0)
                     .getSourceAsString(), Company.class));
 
+        // return the corporate name of highest match
         return companyTopHit.map(Company::getItems)
             .map(Items::getCorporateName)
             .orElse("");
     }
 
-    private SearchResults searchIndex(int indexFrom, String topHitName, SearchHits searchHits,
-        String corporateName) throws IOException {
+    private SearchHits transformToSearchHits(Aggregation aggregation) {
 
-        List<Items> companies = getCompaniesFromSearchHits(searchHits);
-
-        Items matchedCompany = companies
-            .stream()
-            .filter(company -> topHitName.equals(company.getCorporateName()))
-            .findFirst()
-            .orElse(null);
-
-        if (matchedCompany != null && matchedCompany.getCorporateName().equals(topHitName)) {
-            return new SearchResults("alphabetical company search", companies);
-        }
-
-        int newIndexFrom = indexFrom + 10;
-
-        SearchResponse searchResponse = searchRestClient(corporateName, newIndexFrom);
-
-        return searchIndex(newIndexFrom, topHitName, searchResponse.getHits(), corporateName);
+        TopHits topHits = (TopHits) aggregation;
+        return topHits.getHits();
     }
 
-    private SearchResponse searchRestClient(String corporateName, int searchIndexFrom) throws IOException {
-        return client.search(
-            searchRequestService.createSearchRequest(corporateName, searchIndexFrom), DEFAULT);
-    }
 
-    private List<Items> getCompaniesFromSearchHits(SearchHits searchHits) throws IOException {
+    private List<Items> getCompaniesFromSearchHits(Aggregation aggregation) throws IOException {
 
         List<Items> companies = new ArrayList<>();
+        SearchHits searchHitsCompanyList = transformToSearchHits(aggregation);
 
-        for(SearchHit searchHit : searchHits.getHits()) {
+        // loop and map companies from search hits
+        for(SearchHit searchHit : searchHitsCompanyList.getHits()) {
 
             Company company =
                 new ObjectMapper().readValue(searchHit.getSourceAsString(), Company.class);
@@ -125,3 +190,4 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         return companies;
     }
 }
+
