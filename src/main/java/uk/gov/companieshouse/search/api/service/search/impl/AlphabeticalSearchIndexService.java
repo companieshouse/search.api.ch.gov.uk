@@ -9,6 +9,7 @@ import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.metrics.TopHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.comparator.ComparableComparator;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.search.api.exception.ObjectMapperException;
@@ -23,6 +24,7 @@ import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -115,18 +117,18 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         return null;
     }
 
-    private SearchResults getSearchResults(String highestMatchName, SearchHits searchHits,
+    private SearchResults<Company> getSearchResults(String highestMatchName, SearchHits searchHits,
         String corporateName)
         throws ObjectMapperException {
 
-        SearchResults<Items> searchResults = new SearchResults();
+        SearchResults<Company> searchResults = new SearchResults();
 
         int highestMatchIndexPos = 0;
-        List<Items> companies = getCompaniesFromSearchHits(searchHits, corporateName);
+        List<Company> companies = getCompaniesFromSearchHits(searchHits, corporateName);
 
         // find the pos in list that highest match is
-        for(Items company : companies) {
-            if (company.getCorporateName().equals(highestMatchName)) {
+        for(Company company : companies) {
+            if (company.getItems().getCorporateName().equals(highestMatchName)) {
                 searchResults = getAlphabeticalSearchResults(companies,
                     highestMatchIndexPos);
             }
@@ -136,10 +138,11 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         return searchResults;
     }
 
-    private SearchResults<Items> getAlphabeticalSearchResults(List<Items> companies, int highestMatchIndexPos) {
+    private SearchResults<Company> getAlphabeticalSearchResults(List<Company> companies,
+        int highestMatchIndexPos) {
 
-        List<Items> searchCompanyResults = new ArrayList<>();
-        SearchResults<Items> searchResults = new SearchResults<>();
+        List<Company> searchCompanyResults = new ArrayList<>();
+        SearchResults<Company> searchResults = new SearchResults<>();
 
         int totalResults = companies.size();
 
@@ -213,10 +216,10 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
     }
 
 
-    private List<Items> getCompaniesFromSearchHits(SearchHits searchHits,
+    private List<Company> getCompaniesFromSearchHits(SearchHits searchHits,
         String corporateName) throws ObjectMapperException {
 
-        List<Items> companies = new ArrayList<>();
+        List<Company> companies = new ArrayList<>();
 
         // loop and map companies from search hits
         for(SearchHit searchHit : searchHits.getHits()) {
@@ -232,11 +235,11 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
                     "searchHits", e);
             }
 
-            companies.add(company.getItems());
+            companies.add(company);
         }
 
         return  companies.stream()
-            .sorted(Comparator.comparing(Items::getCorporateName, String.CASE_INSENSITIVE_ORDER))
+            .sorted(Comparator.naturalOrder())
             .collect(Collectors.toList());
     }
 }

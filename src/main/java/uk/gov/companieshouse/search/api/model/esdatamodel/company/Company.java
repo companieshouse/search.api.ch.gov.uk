@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Company {
+public class Company implements Comparable<Company> {
 
     @JsonProperty("ID")
     private String id;
@@ -68,5 +68,10 @@ public class Company {
     @Override
     public String toString() {
         return new Gson().toJson(this);
+    }
+
+    @Override
+    public int compareTo(Company argCompany) {
+        return items.getCorporateName().compareTo(argCompany.getItems().getCorporateName());
     }
 }
