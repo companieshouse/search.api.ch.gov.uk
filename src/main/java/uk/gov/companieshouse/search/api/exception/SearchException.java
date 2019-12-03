@@ -18,7 +18,6 @@ public class SearchException extends IOException {
         super(message);
     }
 
-
     /**
      * Constructs a new SearchException with a custom message and the specified
      * cause.

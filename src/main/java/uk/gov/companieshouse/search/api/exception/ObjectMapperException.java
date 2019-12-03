@@ -18,7 +18,6 @@ public class ObjectMapperException extends IOException {
         super(message);
     }
 
-
     /**
      * Constructs a new ObjectMapperException with a custom message and the specified
      * cause.

@@ -105,7 +105,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
     private String getAggregatedSearchResults(List<Aggregation> aggregations, String corporateName)
         throws ObjectMapperException {
 
-        // loop the aggregations to obtain the highest match and top hits
+        // loop the aggregations to obtain the highest match.
         for (Aggregation aggregation : aggregations) {
 
             if (aggregation.getName().equals(HIGHEST_MATCH)) {
@@ -124,7 +124,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         int highestMatchIndexPos = 0;
         List<Company> companies = getCompaniesFromSearchHits(searchHits, corporateName);
 
-        // find the pos in list that highest match is
+        // find the pos in the list of companies where the highest match is.
         for(Company company : companies) {
             if (company.getItems().getCorporateName().equals(highestMatchName)) {
                 searchResults = getAlphabeticalSearchResults(companies,
@@ -147,7 +147,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         int startIndex = getIndexStart(highestMatchIndexPos);
         int endIndex = getIndexEnd(totalResults, highestMatchIndexPos);
 
-        // get 20 hits with potential 9 above and 10 below highest match
+        // loop to get 20 hits with 9 records above and 10 below the highest match.
         for(int i = startIndex; i < endIndex; i++) {
             searchCompanyResults.add(companies.get(i));
         }
@@ -189,7 +189,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         Optional<Company> companyTopHit;
 
         try {
-            // extract the highest matched company name from position 0 as we know there is only one
+            // extract the highest matched name from position 0 as we know there is only one.
             companyTopHit = Optional.of(new ObjectMapper()
                 .readValue(searchHitsHighestMatched
                     .getAt(0)
@@ -201,7 +201,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
                 "searchHits", e);
         }
 
-        // return the corporate name of highest match
+        // return the name of highest match.
         return companyTopHit.map(Company::getItems)
             .map(Items::getCorporateName)
             .orElse("");
@@ -219,7 +219,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
 
         List<Company> companies = new ArrayList<>();
 
-        // loop and map companies from search hits
+        // loop and map companies from search hits to Company model
         for(SearchHit searchHit : searchHits.getHits()) {
 
             Company company;
@@ -236,6 +236,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
             companies.add(company);
         }
 
+        // order the list in a natural order
         return  companies.stream()
             .sorted(Comparator.naturalOrder())
             .collect(Collectors.toList());
