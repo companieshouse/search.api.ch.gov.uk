@@ -13,6 +13,6 @@ public class ElasticSearchConfig {
     public RestHighLevelClient client() {
         return new RestHighLevelClient(
             RestClient.builder(
-                new HttpHost("es7-search-server1-shaun.aws.chdev.org", 9200, "http")));
+                new HttpHost("es7-search-server1-cai.aws.chdev.org", 9200, "http")));
     }
 }
