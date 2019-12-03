@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.model.company;
+package uk.gov.companieshouse.search.api.model.esdatamodel.company;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

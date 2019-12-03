@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.request.AlphabeticalSearchRequest;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
-import uk.gov.companieshouse.search.api.service.SearchIndexService;
+import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
 
 import javax.validation.Valid;
 

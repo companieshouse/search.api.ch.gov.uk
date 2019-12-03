@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.service.impl;
+package uk.gov.companieshouse.search.api.service.search.impl;
 
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -7,7 +7,7 @@ import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Service;
-import uk.gov.companieshouse.search.api.service.SearchRequestService;
+import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
 
 @Service
 public class AlphabeticalSearchRequestService implements SearchRequestService {
