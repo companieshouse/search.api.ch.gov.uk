@@ -18,6 +18,7 @@ import uk.gov.companieshouse.search.api.service.SearchIndexService;
 import uk.gov.companieshouse.search.api.service.SearchRequestService;
 
 import java.io.IOException;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -193,7 +194,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         }
 
         return  companies.stream()
-            .sorted(Comparator.comparing(Items::getCorporateName))
+            .sorted(Comparator.comparing(Items::getCorporateName, String.CASE_INSENSITIVE_ORDER))
             .collect(Collectors.toList());
     }
 }
