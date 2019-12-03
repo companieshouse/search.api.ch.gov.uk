@@ -6,8 +6,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.FieldSortBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.search.api.service.SearchRequestService;
 
@@ -16,12 +14,10 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
     private static final String ALPHA_SEARCH = "alpha_search";
 
-    private static final int RESULTS_SIZE = 0;
-    private static final int AGGS_TOP_HITS_ALPHABETICAL_SIZE = 100;
+    private static final int RESULTS_SIZE = 1000;
     private static final int AGGS_HIGHEST_MATCH_SIZE = 1;
-
     private static final String HIGHEST_MATCH = "highest_match";
-    private static final String TOP_HITS_ALPHABETICAL = "top_hits_alphabetical";
+
 
     /**
      * {@inheritDoc}
@@ -41,33 +37,25 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.size(RESULTS_SIZE);
         sourceBuilder.query(createAlphabeticalSearchQuery(corporateName));
-        sourceBuilder.aggregation(createHighestMatchAggregation());
-        sourceBuilder.aggregation(createTopHitsAlphabetically());
+        sourceBuilder.aggregation(createAggregation(HIGHEST_MATCH, AGGS_HIGHEST_MATCH_SIZE));
 
         return sourceBuilder;
     }
 
-    private AggregationBuilder createHighestMatchAggregation() {
+    private AggregationBuilder createAggregation(String aggregationName, int size) {
         return AggregationBuilders
-            .topHits(HIGHEST_MATCH)
-            .size(AGGS_HIGHEST_MATCH_SIZE);
-    }
-
-    private AggregationBuilder createTopHitsAlphabetically() {
-
-        return AggregationBuilders
-            .topHits(TOP_HITS_ALPHABETICAL)
-            .size(AGGS_TOP_HITS_ALPHABETICAL_SIZE)
-            .sort(new FieldSortBuilder("items.corporate_name_start.sort")
-                .order(SortOrder.ASC));
+            .topHits(aggregationName)
+            .size(size);
     }
 
     private QueryBuilder createAlphabeticalSearchQuery(String corporateName) {
 
         return QueryBuilders.boolQuery()
             .should(QueryBuilders
-                .matchQuery("items.corporate_name_start", corporateName))
+                .matchQuery("items.corporate_name_start.edge_ngram", corporateName).fuzziness(2))
             .should(QueryBuilders
-                .matchQuery("items.corporate_name_start.edge_ngram", corporateName));
+                .matchQuery("items.corporate_name_start", corporateName).boost(5))
+            .should(QueryBuilders
+                .matchPhraseQuery("items.corporate_name_start", corporateName));
     }
 }
