@@ -12,7 +12,6 @@ import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/upsert-company")
@@ -27,12 +26,7 @@ public class UpsertCompanyController {
     @PostMapping
     public ResponseEntity upsertCompany(@Valid @RequestBody Company company) {
 
-        ResponseObject responseObject = null;
-        try {
-            responseObject = upsertCompanyService.upsert(company);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ResponseObject responseObject = upsertCompanyService.upsert(company);
 
         return apiToResponseMapper.map(responseObject);
     }
