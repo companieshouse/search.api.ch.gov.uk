@@ -46,6 +46,8 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
 
     private static final String ALPHABETICAL_SEARCH = "Alphabetical Search: ";
 
+    private static final String SEARCH_TYPE = "alphabetical_search";
+
     /**
      * {@inheritDoc}
      */
@@ -132,6 +134,8 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
             highestMatchIndexPos++;
         }
 
+        searchResults.setTopHit(highestMatchName);
+
         return searchResults;
     }
 
@@ -151,7 +155,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
             searchCompanyResults.add(companies.get(i));
         }
 
-        searchResults.setSearchType("alphabetical_search");
+        searchResults.setSearchType(SEARCH_TYPE);
         searchResults.setSearchResults(searchCompanyResults);
 
         return searchResults;
