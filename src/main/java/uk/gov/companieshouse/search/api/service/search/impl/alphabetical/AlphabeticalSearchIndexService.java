@@ -1,8 +1,7 @@
-package uk.gov.companieshouse.search.api.service.search.impl;
+package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregation;
@@ -19,7 +18,7 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
-import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
+import uk.gov.companieshouse.search.api.service.search.SearchRestClientService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,17 +27,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.elasticsearch.client.RequestOptions.DEFAULT;
 import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
 
 @Service
 public class AlphabeticalSearchIndexService implements SearchIndexService {
 
     @Autowired
-    private RestHighLevelClient client;
-
-    @Autowired
-    private SearchRequestService searchRequestService;
+    private SearchRestClientService searchRestClient;
 
     private static final String HIGHEST_MATCH = "highest_match";
 
@@ -76,10 +71,12 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
     private SearchResults performAlphabeticalSearch(String corporateName)
         throws SearchException, ObjectMapperException {
 
-        SearchResponse searchResponse = searchRestClient(corporateName);
+        SearchResponse searchResponse = searchRestClient.searchRestClient(corporateName);
 
-        String highestMatchName =
-            getAggregatedSearchResults(searchResponse.getAggregations().asList(), corporateName);
+        String highestMatchName = null;
+        if(searchResponse != null && searchResponse.getAggregations() != null) {
+            highestMatchName = getAggregatedSearchResults(searchResponse.getAggregations().asList(), corporateName);
+        }
 
         if(highestMatchName != null) {
             return getSearchResults(highestMatchName, searchResponse.getHits(), corporateName);
@@ -88,18 +85,6 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
                 "aggregation for: " + corporateName);
             throw new SearchException("highest match was not located in the search, unable to " +
                 "process search request");
-        }
-    }
-
-    private SearchResponse searchRestClient(String corporateName) throws SearchException {
-
-        try {
-            return client.search(
-                searchRequestService.createSearchRequest(corporateName), DEFAULT);
-        } catch (IOException e) {
-            LOG.error(ALPHABETICAL_SEARCH + "Failed to get a search response from elastic search " +
-                "for: " + corporateName, e);
-            throw new SearchException("Error occurred while searching index", e);
         }
     }
 
