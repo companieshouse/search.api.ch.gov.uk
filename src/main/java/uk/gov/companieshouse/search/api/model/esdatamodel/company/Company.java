@@ -72,6 +72,14 @@ public class Company implements Comparable<Company> {
 
     @Override
     public int compareTo(Company argCompany) {
-        return items.getCorporateName().compareTo(argCompany.getItems().getCorporateName());
+
+        // compare corporate names removing whitespace and punctuation
+        String regexPattern = "[^A-Za-z]+";
+        String replacement = "";
+
+        String a = items.getCorporateName().replace(regexPattern, replacement);
+        String b = argCompany.getItems().getCorporateName().replace(regexPattern, replacement);
+
+        return a.compareTo(b);
     }
 }

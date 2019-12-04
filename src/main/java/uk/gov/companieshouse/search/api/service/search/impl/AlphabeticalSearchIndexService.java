@@ -58,8 +58,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
             LOG.info(ALPHABETICAL_SEARCH + "started for: " + corporateName);
             searchResults = performAlphabeticalSearch(corporateName);
         } catch (SearchException | ObjectMapperException e) {
-            LOG.error("An error occurred in alphabetical search whilst searching: " + corporateName,
-                e);
+            LOG.error("An error occurred in alphabetical search whilst searching: " + corporateName, e);
             return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
 
@@ -236,7 +235,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
             companies.add(company);
         }
 
-        // order the list in a natural order
+        // order the list in a natural order using Company compareTo
         return  companies.stream()
             .sorted(Comparator.naturalOrder())
             .collect(Collectors.toList());
