@@ -2,11 +2,12 @@ package uk.gov.companieshouse.search.api.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
-import org.springframework.lang.NonNull;
+
+import javax.validation.constraints.NotNull;
 
 public class AlphabeticalSearchRequest {
 
-    @NonNull
+    @NotNull
     @JsonProperty("company_name")
     private String companyName;
 

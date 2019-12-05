@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.service.search.impl;
+package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.index.query.QueryBuilder;
