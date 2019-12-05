@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.search.api.service.search;
 
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,11 +31,16 @@ public class AlphabeticalSearchIndexServiceTest {
     @Mock
     private SearchRestClientService mockSearchRestClientService;
 
+    @Mock
+    private SearchRequestService mockSearchRequestService;
+
     @Test
     @DisplayName("Test search Error returned when no highest match found returned")
     public void testSearchFound() throws IOException {
 
-        when(mockSearchRestClientService.searchRestClient(anyString())).thenReturn(any(SearchResponse.class));
+        when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
+
+        when(mockSearchRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(any(SearchResponse.class));
 
         ResponseObject responseObject = searchIndexService.search("test param");
 
