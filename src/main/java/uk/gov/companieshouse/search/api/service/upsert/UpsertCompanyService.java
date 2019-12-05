@@ -37,7 +37,6 @@ public class UpsertCompanyService {
     private static final String LINKS = "links";
     private static final String SELF = "self";
 
-
     /**
      * Upserts a new document to elastic search. If a document does not exist it is added.
      * If the document does exist it is updated.
@@ -54,22 +53,31 @@ public class UpsertCompanyService {
             indexRequest = createIndexRequest(company);
             updateRequest = createUpdateRequest(company, indexRequest);
         } catch (IndexException | UpsertException e) {
-            return new ResponseObject(ResponseStatus.SEARCH_FOUND);
+            LOG.error("An error occured attempting upsert the document");
+            return new ResponseObject(ResponseStatus.UPSERT_ERROR);
         }
 
         try {
             client.update(updateRequest, RequestOptions.DEFAULT);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("An error occured attempting to make an update request: " + updateRequest);
+            return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
         }
 
-        return new ResponseObject(ResponseStatus.SEARCH_FOUND);
+        return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
     }
 
+    /**
+     * Create an index request for document if it does not currently exist
+     * @param company - Company sent over in REST call to be added/updated
+     * @return {@link IndexRequest}
+     * @throws IndexException
+     */
     private IndexRequest createIndexRequest(Company company) throws IndexException {
 
         IndexRequest indexRequest;
         try {
+            LOG.info("Preparing index request for "  + company.getId());
             indexRequest = new IndexRequest("alpha_search")
                 .source(jsonBuilder()
                 .startObject()
@@ -92,27 +100,35 @@ public class UpsertCompanyService {
         }
     }
 
+    /**
+     * If document already exists attempt to upsert the document
+     * @param company - Company sent over in REST call to be added/updated
+     * @param indexRequest
+     * @return {@link UpdateRequest}
+     * @throws UpsertException
+     */
     private UpdateRequest createUpdateRequest(Company company, IndexRequest indexRequest)
         throws UpsertException {
 
         UpdateRequest updateRequest;
         try {
-        updateRequest = new UpdateRequest("alpha_search", company.getId())
-            .doc(jsonBuilder()
-            .startObject()
-                .field(ID, company.getId())
-                .field(COMPANY_TYPE, company.getCompanyType())
-                .startObject(ITEMS)
-                    .field(COMPANY_NUMBER, company.getItems().getCompanyNumber())
-                    .field(COMPANY_STATUS, company.getItems().getCompanyStatus())
-                    .field(CORPORATE_NAME, company.getItems().getCorporateName())
-                    .field(RECORD_TYPE, company.getItems().getRecordType())
-                .endObject()
-                .startObject(LINKS)
-                    .field(SELF, company.getLinks().getSelf())
-                .endObject()
-            .endObject())
-            .upsert(indexRequest);
+            LOG.info("Attempt to upsert document if it does not exist for "  + company.getId());
+            updateRequest = new UpdateRequest("alpha_search", company.getId())
+                .doc(jsonBuilder()
+                .startObject()
+                    .field(ID, company.getId())
+                    .field(COMPANY_TYPE, company.getCompanyType())
+                    .startObject(ITEMS)
+                        .field(COMPANY_NUMBER, company.getItems().getCompanyNumber())
+                        .field(COMPANY_STATUS, company.getItems().getCompanyStatus())
+                        .field(CORPORATE_NAME, company.getItems().getCorporateName())
+                        .field(RECORD_TYPE, company.getItems().getRecordType())
+                    .endObject()
+                    .startObject(LINKS)
+                        .field(SELF, company.getLinks().getSelf())
+                    .endObject()
+                .endObject())
+                .upsert(indexRequest);
 
         return updateRequest;
         } catch (IOException e) {

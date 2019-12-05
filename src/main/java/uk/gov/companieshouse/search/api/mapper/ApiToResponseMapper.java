@@ -7,6 +7,7 @@ import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 
 @Component
 public class ApiToResponseMapper {
@@ -18,6 +19,8 @@ public class ApiToResponseMapper {
                 return ResponseEntity.status(FOUND).body(responseObject.getData());
             case SEARCH_NOT_FOUND:
                 return ResponseEntity.status(NOT_FOUND).build();
+            case DOCUMENT_UPSERTED:
+                return ResponseEntity.status(OK).build();
             default:
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
         }
