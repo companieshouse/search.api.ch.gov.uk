@@ -1,0 +1,2252 @@
+{
+  "took":6,
+  "timed_out":false,
+  "_shards":{
+    "total":5,
+    "successful":5,
+    "skipped":0,
+    "failed":0
+  },
+  "hits":{
+    "total":{
+      "value":308,
+      "relation":"eq"
+    },
+    "max_score":79.11253,
+    "hits":[
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09770087",
+        "_score":79.11253,
+        "_source":{
+          "ID":"09770087",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09770087",
+            "company_status":"active",
+            "corporate_name":"AAAA COMMUNICATIONS LIMITED",
+            "corporate_name_start":"AAAA COMMUNICATIONS",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09770087"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09597546",
+        "_score":70.95946,
+        "_source":{
+          "ID":"09597546",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09597546",
+            "company_status":"active",
+            "corporate_name":"AAAA SERVICES (UK) LTD",
+            "corporate_name_start":"AAAA SERVICES (UK)",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09597546"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09684706",
+        "_score":21.302704,
+        "_source":{
+          "ID":"09684706",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09684706",
+            "company_status":"active",
+            "corporate_name":"AAA SALADS LIMITED",
+            "corporate_name_start":"AAA SALADS",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09684706"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09768858",
+        "_score":17.321768,
+        "_source":{
+          "ID":"09768858",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09768858",
+            "company_status":"active",
+            "corporate_name":"AAA ARCH'L. DESIGN SOLUTIONS LTD",
+            "corporate_name_start":"AAA ARCH'L. DESIGN SOLUTIONS",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09768858"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09768708",
+        "_score":16.895248,
+        "_source":{
+          "ID":"09768708",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09768708",
+            "company_status":"active",
+            "corporate_name":"AAA & CO 7 LTD.",
+            "corporate_name_start":"AAA & CO 7",
+            "corporate_name_ending":" LTD.",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09768708"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09681463",
+        "_score":16.101738,
+        "_source":{
+          "ID":"09681463",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09681463",
+            "company_status":"active",
+            "corporate_name":"AAA CARS (SOUTHERN) LTD",
+            "corporate_name_start":"AAA CARS (SOUTHERN)",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09681463"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09752065",
+        "_score":15.967038,
+        "_source":{
+          "ID":"09752065",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09752065",
+            "company_status":"active",
+            "corporate_name":"AAA CARING CARETAKER LIMITED",
+            "corporate_name_start":"AAA CARING CARETAKER",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09752065"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09706929",
+        "_score":15.789293,
+        "_source":{
+          "ID":"09706929",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09706929",
+            "company_status":"active",
+            "corporate_name":"AAA FINANCE LIMITED",
+            "corporate_name_start":"AAA FINANCE",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09706929"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09749891",
+        "_score":15.107708,
+        "_source":{
+          "ID":"09749891",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09749891",
+            "company_status":"active",
+            "corporate_name":"AAA7 LIMITED",
+            "corporate_name_start":"AAA7",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09749891"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09706452",
+        "_score":13.774339,
+        "_source":{
+          "ID":"09706452",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09706452",
+            "company_status":"active",
+            "corporate_name":"ABAAL LTD",
+            "corporate_name_start":"ABAAL",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09706452"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09700985",
+        "_score":13.228989,
+        "_source":{
+          "ID":"09700985",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09700985",
+            "company_status":"active",
+            "corporate_name":"AARAM LIMITED",
+            "corporate_name_start":"AARAM",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09700985"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09645271",
+        "_score":12.988843,
+        "_source":{
+          "ID":"09645271",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09645271",
+            "company_status":"liquidation",
+            "corporate_name":"AAA ELECTRICAL (NE) LTD",
+            "corporate_name_start":"AAA ELECTRICAL (NE)",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09645271"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09757058",
+        "_score":12.450021,
+        "_source":{
+          "ID":"09757058",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09757058",
+            "company_status":"active",
+            "corporate_name":"AAA INVESTMENT HOUSE LTD",
+            "corporate_name_start":"AAA INVESTMENT HOUSE",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09757058"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09757721",
+        "_score":12.288725,
+        "_source":{
+          "ID":"09757721",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09757721",
+            "company_status":"active",
+            "corporate_name":"AAYA FRC LIMITED",
+            "corporate_name_start":"AAYA FRC",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09757721"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09683987",
+        "_score":12.2158,
+        "_source":{
+          "ID":"09683987",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09683987",
+            "company_status":"active",
+            "corporate_name":"AAA RECRUITMENTS SOLUTION LTD",
+            "corporate_name_start":"AAA RECRUITMENTS SOLUTION",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09683987"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09663470",
+        "_score":10.766972,
+        "_source":{
+          "ID":"09663470",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09663470",
+            "company_status":"active",
+            "corporate_name":"A.AKA LIMITED",
+            "corporate_name_start":"A.AKA",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09663470"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09726241",
+        "_score":10.297365,
+        "_source":{
+          "ID":"09726241",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09726241",
+            "company_status":"active",
+            "corporate_name":"AKAA UNITED LTD",
+            "corporate_name_start":"AKAA UNITED",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09726241"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09767973",
+        "_score":9.973203,
+        "_source":{
+          "ID":"09767973",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09767973",
+            "company_status":"active",
+            "corporate_name":"AKAASH IQBAL LTD",
+            "corporate_name_start":"AKAASH IQBAL",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09767973"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09696548",
+        "_score":9.468989,
+        "_source":{
+          "ID":"09696548",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09696548",
+            "company_status":"active",
+            "corporate_name":"ABACALC LIMITED",
+            "corporate_name_start":"ABACALC",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09696548"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09696865",
+        "_score":9.382479,
+        "_source":{
+          "ID":"09696865",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09696865",
+            "company_status":"active",
+            "corporate_name":"AARAN SERVICES LTD",
+            "corporate_name_start":"AARAN SERVICES",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09696865"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09743578",
+        "_score":8.873896,
+        "_source":{
+          "ID":"09743578",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09743578",
+            "company_status":"active",
+            "corporate_name":"AADYA CORP. LTD",
+            "corporate_name_start":"AADYA CORP.",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09743578"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09462621",
+        "_score":8.529871,
+        "_source":{
+          "ID":"09462621",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09462621",
+            "company_status":"active",
+            "corporate_name":"A AHAD & CO LTD",
+            "corporate_name_start":"A AHAD & CO",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09462621"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09692690",
+        "_score":8.389621,
+        "_source":{
+          "ID":"09692690",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09692690",
+            "company_status":"active",
+            "corporate_name":"AARYA FOODS LIMITED",
+            "corporate_name_start":"AARYA FOODS",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09692690"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09709049",
+        "_score":8.237892,
+        "_source":{
+          "ID":"09709049",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09709049",
+            "company_status":"active",
+            "corporate_name":"AA-WARGAMES LIMITED",
+            "corporate_name_start":"AA-WARGAMES",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09709049"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"SC514100",
+        "_score":8.126351,
+        "_source":{
+          "ID":"SC514100",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"SC514100",
+            "company_status":"active",
+            "corporate_name":"ADARA DESIGN LIMITED",
+            "corporate_name_start":"ADARA DESIGN",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/SC514100"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09756224",
+        "_score":7.998199,
+        "_source":{
+          "ID":"09756224",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09756224",
+            "company_status":"active",
+            "corporate_name":"RAAA LTD",
+            "corporate_name_start":"RAAA",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09756224"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09749770",
+        "_score":7.8791027,
+        "_source":{
+          "ID":"09749770",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09749770",
+            "company_status":"active",
+            "corporate_name":"AARYAN TRENDS LTD",
+            "corporate_name_start":"AARYAN TRENDS",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09749770"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09759058",
+        "_score":7.6729436,
+        "_source":{
+          "ID":"09759058",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09759058",
+            "company_status":"active",
+            "corporate_name":"AAVYAN SERVICES LIMITED",
+            "corporate_name_start":"AAVYAN SERVICES",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09759058"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09692488",
+        "_score":7.255927,
+        "_source":{
+          "ID":"09692488",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09692488",
+            "company_status":"active",
+            "corporate_name":"AARNA CONSULTANCY LIMITED",
+            "corporate_name_start":"AARNA CONSULTANCY",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09692488"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09750983",
+        "_score":7.220078,
+        "_source":{
+          "ID":"09750983",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09750983",
+            "company_status":"active",
+            "corporate_name":"AA2 ARCHITECTURE LTD",
+            "corporate_name_start":"AA2 ARCHITECTURE",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09750983"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"LP016090",
+        "_score":6.7089868,
+        "_source":{
+          "ID":"LP016090",
+          "company_type":"limited-partnership",
+          "items":{
+            "company_number":"LP016090",
+            "company_status":"active",
+            "corporate_name":"ABRAAJ NORTH AFRICA II (S), L.P.",
+            "corporate_name_start":"ABRAAJ NORTH AFRICA II (S),",
+            "corporate_name_ending":" L.P.",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/LP016090"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09701013",
+        "_score":6.611184,
+        "_source":{
+          "ID":"09701013",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09701013",
+            "company_status":"active",
+            "corporate_name":"AYAAN RICE LIMITED",
+            "corporate_name_start":"AYAAN RICE",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09701013"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09680250",
+        "_score":6.6070504,
+        "_source":{
+          "ID":"09680250",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09680250",
+            "company_status":"active",
+            "corporate_name":"A.ADAMS DRIVING SERVICES LIMITED",
+            "corporate_name_start":"A.ADAMS DRIVING SERVICES",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09680250"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09604434",
+        "_score":6.1784196,
+        "_source":{
+          "ID":"09604434",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09604434",
+            "company_status":"active",
+            "corporate_name":"SAAAKS & CO LIMITED",
+            "corporate_name_start":"SAAAKS & CO",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09604434"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09645339",
+        "_score":5.7410865,
+        "_source":{
+          "ID":"09645339",
+          "company_type":"private-limited-guarant-nsc-limited-exemption",
+          "items":{
+            "company_number":"09645339",
+            "company_status":"active",
+            "corporate_name":"AFAK",
+            "corporate_name_start":"AFAK",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09645339"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09759772",
+        "_score":5.60969,
+        "_source":{
+          "ID":"09759772",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09759772",
+            "company_status":"active",
+            "corporate_name":"AGUA LIMITED",
+            "corporate_name_start":"AGUA",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09759772"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09716393",
+        "_score":5.570754,
+        "_source":{
+          "ID":"09716393",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09716393",
+            "company_status":"active",
+            "corporate_name":"ANAAB CONSULTANTS LIMITED",
+            "corporate_name_start":"ANAAB CONSULTANTS",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09716393"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09703253",
+        "_score":5.509735,
+        "_source":{
+          "ID":"09703253",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09703253",
+            "company_status":"active",
+            "corporate_name":"ABAID LIMITED",
+            "corporate_name_start":"ABAID",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09703253"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09717526",
+        "_score":5.509735,
+        "_source":{
+          "ID":"09717526",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09717526",
+            "company_status":"active",
+            "corporate_name":"ABRAN LIMITED",
+            "corporate_name_start":"ABRAN",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09717526"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09617263",
+        "_score":5.42511,
+        "_source":{
+          "ID":"09617263",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09617263",
+            "company_status":"active",
+            "corporate_name":"AASD LTD",
+            "corporate_name_start":"AASD",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09617263"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09599873",
+        "_score":5.383486,
+        "_source":{
+          "ID":"09599873",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09599873",
+            "company_status":"active",
+            "corporate_name":"ADAMI LIMITED",
+            "corporate_name_start":"ADAMI",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09599873"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09700201",
+        "_score":5.2963076,
+        "_source":{
+          "ID":"09700201",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09700201",
+            "company_status":"active",
+            "corporate_name":"ADKALE LIMITED",
+            "corporate_name_start":"ADKALE",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09700201"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09742902",
+        "_score":5.2963076,
+        "_source":{
+          "ID":"09742902",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09742902",
+            "company_status":"active",
+            "corporate_name":"ADARGA LIMITED",
+            "corporate_name_start":"ADARGA",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09742902"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"SC539489",
+        "_score":5.2963076,
+        "_source":{
+          "ID":"SC539489",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"SC539489",
+            "company_status":"active",
+            "corporate_name":"ADAZEL LTD",
+            "corporate_name_start":"ADAZEL",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/SC539489"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09776102",
+        "_score":5.2915955,
+        "_source":{
+          "ID":"09776102",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09776102",
+            "company_status":"active",
+            "corporate_name":"AARIZ LIMITED",
+            "corporate_name_start":"AARIZ",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09776102"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"SC511775",
+        "_score":5.2915955,
+        "_source":{
+          "ID":"SC511775",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"SC511775",
+            "company_status":"active",
+            "corporate_name":"AAVIZ LTD",
+            "corporate_name_start":"AAVIZ",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/SC511775"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09776740",
+        "_score":5.2915955,
+        "_source":{
+          "ID":"09776740",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09776740",
+            "company_status":"active",
+            "corporate_name":"AARUU LIMITED",
+            "corporate_name_start":"AARUU",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09776740"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09750364",
+        "_score":5.206945,
+        "_source":{
+          "ID":"09750364",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09750364",
+            "company_status":"active",
+            "corporate_name":"ADACE LIMITED",
+            "corporate_name_start":"ADACE",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09750364"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09766043",
+        "_score":5.151011,
+        "_source":{
+          "ID":"09766043",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09766043",
+            "company_status":"active",
+            "corporate_name":"AWAAN GROUP OF COMPANIES LTD",
+            "corporate_name_start":"AWAAN GROUP OF COMPANIES",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09766043"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09605948",
+        "_score":5.0987973,
+        "_source":{
+          "ID":"09605948",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09605948",
+            "company_status":"active",
+            "corporate_name":"AAF ONE LTD",
+            "corporate_name_start":"AAF ONE",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09605948"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09712245",
+        "_score":5.0874853,
+        "_source":{
+          "ID":"09712245",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09712245",
+            "company_status":"active",
+            "corporate_name":"ADACOM LIMITED",
+            "corporate_name_start":"ADACOM",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09712245"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09704472",
+        "_score":5.0874853,
+        "_source":{
+          "ID":"09704472",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09704472",
+            "company_status":"active",
+            "corporate_name":"ABBADI LIMITED",
+            "corporate_name_start":"ABBADI",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09704472"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09777832",
+        "_score":5.005649,
+        "_source":{
+          "ID":"09777832",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09777832",
+            "company_status":"active",
+            "corporate_name":"ACABOT LIMITED",
+            "corporate_name_start":"ACABOT",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09777832"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09776825",
+        "_score":5.005649,
+        "_source":{
+          "ID":"09776825",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09776825",
+            "company_status":"active",
+            "corporate_name":"ACHARI LTD",
+            "corporate_name_start":"ACHARI",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09776825"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09743651",
+        "_score":4.981721,
+        "_source":{
+          "ID":"09743651",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09743651",
+            "company_status":"active",
+            "corporate_name":"AGANJAY LTD",
+            "corporate_name_start":"AGANJAY",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09743651"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09625319",
+        "_score":4.981721,
+        "_source":{
+          "ID":"09625319",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09625319",
+            "company_status":"active",
+            "corporate_name":"AA ORTH LIMITED",
+            "corporate_name_start":"AA ORTH",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09625319"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09660007",
+        "_score":4.981721,
+        "_source":{
+          "ID":"09660007",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09660007",
+            "company_status":"active",
+            "corporate_name":"AKAY BR LIMITED",
+            "corporate_name_start":"AKAY BR",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09660007"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"03036802",
+        "_score":4.918244,
+        "_source":{
+          "ID":"03036802",
+          "company_type":"private-limited-guarant-nsc-limited-exemption",
+          "items":{
+            "company_number":"03036802",
+            "company_status":"active",
+            "corporate_name":"AFASIC",
+            "corporate_name_start":"AFASIC",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/03036802"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09717404",
+        "_score":4.918244,
+        "_source":{
+          "ID":"09717404",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09717404",
+            "company_status":"active",
+            "corporate_name":"ADALIA LIMITED",
+            "corporate_name_start":"ADALIA",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09717404"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09703401",
+        "_score":4.918244,
+        "_source":{
+          "ID":"09703401",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09703401",
+            "company_status":"active",
+            "corporate_name":"AKSANA LTD",
+            "corporate_name_start":"AKSANA",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09703401"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09721295",
+        "_score":4.918244,
+        "_source":{
+          "ID":"09721295",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09721295",
+            "company_status":"active",
+            "corporate_name":"A AZRA LIMITED",
+            "corporate_name_start":"A AZRA",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09721295"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09678798",
+        "_score":4.918244,
+        "_source":{
+          "ID":"09678798",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09678798",
+            "company_status":"active",
+            "corporate_name":"AKAZIA LTD",
+            "corporate_name_start":"AKAZIA",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09678798"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09754391",
+        "_score":4.8985353,
+        "_source":{
+          "ID":"09754391",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09754391",
+            "company_status":"active",
+            "corporate_name":"A.TARIQ LTD",
+            "corporate_name_start":"A.TARIQ",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09754391"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09654286",
+        "_score":4.8985353,
+        "_source":{
+          "ID":"09654286",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09654286",
+            "company_status":"active",
+            "corporate_name":"ADALLEX LTD",
+            "corporate_name_start":"ADALLEX",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09654286"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09686337",
+        "_score":4.819338,
+        "_source":{
+          "ID":"09686337",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09686337",
+            "company_status":"active",
+            "corporate_name":"ADVANTO LTD",
+            "corporate_name_start":"ADVANTO",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09686337"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09751032",
+        "_score":4.744904,
+        "_source":{
+          "ID":"09751032",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09751032",
+            "company_status":"active",
+            "corporate_name":"A FARMERY LIMITED",
+            "corporate_name_start":"A FARMERY",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09751032"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09705057",
+        "_score":4.744904,
+        "_source":{
+          "ID":"09705057",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09705057",
+            "company_status":"active",
+            "corporate_name":"ADA PD UK LIMITED",
+            "corporate_name_start":"ADA PD UK",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09705057"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09676242",
+        "_score":4.744904,
+        "_source":{
+          "ID":"09676242",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09676242",
+            "company_status":"active",
+            "corporate_name":"ABBAZABBA LIMITED",
+            "corporate_name_start":"ABBAZABBA",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09676242"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09694608",
+        "_score":4.744904,
+        "_source":{
+          "ID":"09694608",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09694608",
+            "company_status":"active",
+            "corporate_name":"A MATMARI LTD",
+            "corporate_name_start":"A MATMARI",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09694608"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09752004",
+        "_score":4.7344947,
+        "_source":{
+          "ID":"09752004",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09752004",
+            "company_status":"active",
+            "corporate_name":"AERALIS LTD",
+            "corporate_name_start":"AERALIS",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09752004"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09705514",
+        "_score":4.7231183,
+        "_source":{
+          "ID":"09705514",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09705514",
+            "company_status":"active",
+            "corporate_name":"AARYROAM LTD",
+            "corporate_name_start":"AARYROAM",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09705514"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09680246",
+        "_score":4.635759,
+        "_source":{
+          "ID":"09680246",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09680246",
+            "company_status":"active",
+            "corporate_name":"AA TIMBER LTD",
+            "corporate_name_start":"AA TIMBER",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09680246"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09675269",
+        "_score":4.635759,
+        "_source":{
+          "ID":"09675269",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09675269",
+            "company_status":"active",
+            "corporate_name":"A BARRETT LIMITED",
+            "corporate_name_start":"A BARRETT",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09675269"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"SL022157",
+        "_score":4.635759,
+        "_source":{
+          "ID":"SL022157",
+          "company_type":"limited-partnership",
+          "items":{
+            "company_number":"SL022157",
+            "company_status":"active",
+            "corporate_name":"AAG WORLD LP",
+            "corporate_name_start":"AAG WORLD",
+            "corporate_name_ending":" LP",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/SL022157"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09762092",
+        "_score":4.635759,
+        "_source":{
+          "ID":"09762092",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09762092",
+            "company_status":"liquidation",
+            "corporate_name":"AHMAD MED LTD",
+            "corporate_name_start":"AHMAD MED",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09762092"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09468260",
+        "_score":4.635759,
+        "_source":{
+          "ID":"09468260",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09468260",
+            "company_status":"active",
+            "corporate_name":"A TARRIER LIMITED",
+            "corporate_name_start":"A TARRIER",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09468260"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09759277",
+        "_score":4.5857615,
+        "_source":{
+          "ID":"09759277",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09759277",
+            "company_status":"active",
+            "corporate_name":"AFUAFIANKO LIMITED",
+            "corporate_name_start":"AFUAFIANKO",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09759277"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09758166",
+        "_score":4.5639806,
+        "_source":{
+          "ID":"09758166",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09758166",
+            "company_status":"active",
+            "corporate_name":"AGANYILA LIMITED",
+            "corporate_name_start":"AGANYILA",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09758166"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09699683",
+        "_score":4.5639806,
+        "_source":{
+          "ID":"09699683",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09699683",
+            "company_status":"active",
+            "corporate_name":"AAN PROF LIMITED",
+            "corporate_name_start":"AAN PROF",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09699683"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09777726",
+        "_score":4.5598307,
+        "_source":{
+          "ID":"09777726",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09777726",
+            "company_status":"active",
+            "corporate_name":"ADAMSTORM LTD",
+            "corporate_name_start":"ADAMSTORM",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09777726"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09687746",
+        "_score":4.5598307,
+        "_source":{
+          "ID":"09687746",
+          "company_type":"private-limited-guarant-nsc",
+          "items":{
+            "company_number":"09687746",
+            "company_status":"active",
+            "corporate_name":"ADAMSTOWN LIMITED",
+            "corporate_name_start":"ADAMSTOWN",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09687746"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"05683316",
+        "_score":4.4854393,
+        "_source":{
+          "ID":"05683316",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"05683316",
+            "company_status":"active",
+            "corporate_name":"ABACUS 70 LIMITED",
+            "corporate_name_start":"ABACUS 70",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/05683316"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09688777",
+        "_score":4.4854393,
+        "_source":{
+          "ID":"09688777",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09688777",
+            "company_status":"active",
+            "corporate_name":"ADAGNITIO LTD",
+            "corporate_name_start":"ADAGNITIO",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09688777"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"01673484",
+        "_score":4.480192,
+        "_source":{
+          "ID":"01673484",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"01673484",
+            "company_status":"active",
+            "corporate_name":"ADAM COURT LIMITED",
+            "corporate_name_start":"ADAM COURT",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/01673484"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09700928",
+        "_score":4.436948,
+        "_source":{
+          "ID":"09700928",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09700928",
+            "company_status":"active",
+            "corporate_name":"ADA EDWARDS LIMITED",
+            "corporate_name_start":"ADA EDWARDS",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09700928"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09685864",
+        "_score":4.436948,
+        "_source":{
+          "ID":"09685864",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09685864",
+            "company_status":"active",
+            "corporate_name":"AG AGENCIES LTD",
+            "corporate_name_start":"AG AGENCIES",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09685864"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"OC400625",
+        "_score":4.436948,
+        "_source":{
+          "ID":"OC400625",
+          "company_type":"llp",
+          "items":{
+            "company_number":"OC400625",
+            "company_status":"active",
+            "corporate_name":"AHAB STUDIO LLP",
+            "corporate_name_start":"AHAB STUDIO",
+            "corporate_name_ending":" LLP",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/OC400625"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09662968",
+        "_score":4.436948,
+        "_source":{
+          "ID":"09662968",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09662968",
+            "company_status":"active",
+            "corporate_name":"ADVANSHIELD LIMITED",
+            "corporate_name_start":"ADVANSHIELD",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09662968"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09766351",
+        "_score":4.436948,
+        "_source":{
+          "ID":"09766351",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09766351",
+            "company_status":"active",
+            "corporate_name":"ADDAPPTABLE LIMITED",
+            "corporate_name_start":"ADDAPPTABLE",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09766351"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09761812",
+        "_score":4.407456,
+        "_source":{
+          "ID":"09761812",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09761812",
+            "company_status":"active",
+            "corporate_name":"A A BAILEY LTD",
+            "corporate_name_start":"A A BAILEY",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09761812"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09693137",
+        "_score":4.4053216,
+        "_source":{
+          "ID":"09693137",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09693137",
+            "company_status":"active",
+            "corporate_name":"AGAPÉ4ALL LIMITED",
+            "corporate_name_start":"AGAPÉ4ALL",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09693137"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09693433",
+        "_score":4.4053216,
+        "_source":{
+          "ID":"09693433",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09693433",
+            "company_status":"active",
+            "corporate_name":"A A TAMAS LTD",
+            "corporate_name_start":"A A TAMAS",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09693433"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"OC315400",
+        "_score":4.334728,
+        "_source":{
+          "ID":"OC315400",
+          "company_type":"llp",
+          "items":{
+            "company_number":"OC315400",
+            "company_status":"active",
+            "corporate_name":"AGA CONSULT LLP",
+            "corporate_name_start":"AGA CONSULT",
+            "corporate_name_ending":" LLP",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/OC315400"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09749992",
+        "_score":4.334728,
+        "_source":{
+          "ID":"09749992",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09749992",
+            "company_status":"active",
+            "corporate_name":"ACADEMY ICT LIMITED",
+            "corporate_name_start":"ACADEMY ICT",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09749992"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09098412",
+        "_score":4.2974887,
+        "_source":{
+          "ID":"09098412",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09098412",
+            "company_status":"active",
+            "corporate_name":"A4 AUTOPARTS LTD",
+            "corporate_name_start":"A4 AUTOPARTS",
+            "corporate_name_ending":" LTD",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09098412"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09630324",
+        "_score":4.2974887,
+        "_source":{
+          "ID":"09630324",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09630324",
+            "company_status":"active",
+            "corporate_name":"ABEAT EVENTS LIMITED",
+            "corporate_name_start":"ABEAT EVENTS",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09630324"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09648289",
+        "_score":4.2974887,
+        "_source":{
+          "ID":"09648289",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09648289",
+            "company_status":"active",
+            "corporate_name":"AA ELECTRICS LIMITED",
+            "corporate_name_start":"AA ELECTRICS",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09648289"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09704251",
+        "_score":4.2649355,
+        "_source":{
+          "ID":"09704251",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09704251",
+            "company_status":"active",
+            "corporate_name":"ADAMSCREATE LIMITED",
+            "corporate_name_start":"ADAMSCREATE",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09704251"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"00562971",
+        "_score":4.2649355,
+        "_source":{
+          "ID":"00562971",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"00562971",
+            "company_status":"active",
+            "corporate_name":"A.A.BRAMALL LIMITED",
+            "corporate_name_start":"A.A.BRAMALL",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/00562971"
+          }
+        }
+      },
+      {
+        "_index":"alpha_search",
+        "_type":"_doc",
+        "_id":"09747702",
+        "_score":4.2649355,
+        "_source":{
+          "ID":"09747702",
+          "company_type":"ltd",
+          "items":{
+            "company_number":"09747702",
+            "company_status":"active",
+            "corporate_name":"AARDVARK JL LIMITED",
+            "corporate_name_start":"AARDVARK JL",
+            "corporate_name_ending":" LIMITED",
+            "record_type":"companies"
+          },
+          "kind":"searchresults#company",
+          "links":{
+            "self":"/company/09747702"
+          }
+        }
+      }
+    ]
+  },
+  "aggregations":{
+    "top_hits#highest_match":{
+      "hits":{
+        "total":{
+          "value":308,
+          "relation":"eq"
+        },
+        "max_score":79.11253,
+        "hits":[
+          {
+            "_index":"alpha_search",
+            "_type":"_doc",
+            "_id":"09770087",
+            "_score":79.11253,
+            "_source":{
+              "ID":"09770087",
+              "company_type":"ltd",
+              "items":{
+                "company_number":"09770087",
+                "company_status":"active",
+                "corporate_name":"AAAA COMMUNICATIONS LIMITED",
+                "corporate_name_start":"AAAA COMMUNICATIONS",
+                "corporate_name_ending":" LIMITED",
+                "record_type":"companies"
+              },
+              "kind":"searchresults#company",
+              "links":{
+                "self":"/company/09770087"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -18,7 +18,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
     private static final String ALPHA_SEARCH = "alpha_search";
 
-    private static final int RESULTS_SIZE = 1000;
+    private static final int RESULTS_SIZE = 250;
     private static final int AGGS_HIGHEST_MATCH_SIZE = 1;
     private static final String HIGHEST_MATCH = "highest_match";
 
