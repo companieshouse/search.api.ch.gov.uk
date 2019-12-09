@@ -1,0 +1,6 @@
+app_name: search.api.ch.gov.uk
+group: api
+weight: 902
+routes:
+  1: ^/alphabetical-search/corporate-name
+  2: ^/upsert-company
