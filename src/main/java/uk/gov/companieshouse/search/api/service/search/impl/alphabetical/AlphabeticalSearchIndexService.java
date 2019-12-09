@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -151,7 +150,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         int endIndex = getIndexEnd(totalResults, highestMatchIndexPos);
 
         // loop to get 20 hits with 9 records above and 10 below the highest match.
-        for(int i = startIndex; i < endIndex; i++) {
+        for(int i = startIndex; i < endIndex + 1; i++) {
             searchCompanyResults.add(companies.get(i));
         }
 
