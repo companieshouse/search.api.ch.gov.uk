@@ -26,7 +26,6 @@ import static org.mockito.Mockito.when;
 public class UpsertRequestServiceTest {
 
     @Spy
-    @InjectMocks
     private UpsertRequestService upsertRequestService;
 
     private static final String ALPHA_SEARCH = "alpha_search";
