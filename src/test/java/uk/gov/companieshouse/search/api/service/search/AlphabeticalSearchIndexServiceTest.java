@@ -21,6 +21,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ResourceUtils;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
@@ -63,7 +67,7 @@ public class AlphabeticalSearchIndexServiceTest {
     @DisplayName("Test Service Exception thrown when highest match not located")
     public void testServiceExceptionThrownWhenHighestMatchNotLocated() throws IOException {
 
-        SearchResponse searchResponse = getSearchResponse("classpath:json/searchFailedNoAggregations.json");
+        SearchResponse searchResponse = getSearchResponse("json/searchFailedNoAggregations.json");
 
         when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
         when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
@@ -93,7 +97,7 @@ public class AlphabeticalSearchIndexServiceTest {
     @DisplayName("Test successful search found")
     public void testSuccessfulSearchFound() throws IOException {
 
-        SearchResponse searchResponse = getSearchResponse("classpath:json/searchSuccessful.json");
+        SearchResponse searchResponse = getSearchResponse("json/searchSuccessful.json");
 
         when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
         when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
@@ -112,7 +116,8 @@ public class AlphabeticalSearchIndexServiceTest {
 
     private SearchResponse getSearchResponse(String jsonFileLocation) throws IOException {
 
-        File file = ResourceUtils.getFile(jsonFileLocation);
+        Resource resource = new ClassPathResource(jsonFileLocation);
+        File file = resource.getFile();
         String jsonResponse = new String(Files.readAllBytes(file.toPath()));
         return getSearchResponseFromJson(jsonResponse);
     }
