@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -20,7 +19,7 @@ import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
-import uk.gov.companieshouse.search.api.service.search.SearchRestClientService;
+import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_
 public class AlphabeticalSearchIndexService implements SearchIndexService {
 
     @Autowired
-    private SearchRestClientService searchRestClient;
+    private RestClientService searchRestClient;
 
     @Autowired
     private SearchRequestService searchRequestService;

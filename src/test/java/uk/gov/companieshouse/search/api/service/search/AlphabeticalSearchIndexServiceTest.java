@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
+import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
 
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class AlphabeticalSearchIndexServiceTest {
     private SearchIndexService searchIndexService = new AlphabeticalSearchIndexService();
 
     @Mock
-    private SearchRestClientService mockSearchRestClientService;
+    private RestClientService mockRestClientService;
 
     @Mock
     private SearchRequestService mockSearchRequestService;
@@ -40,7 +41,7 @@ public class AlphabeticalSearchIndexServiceTest {
 
         when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
 
-        when(mockSearchRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(any(SearchResponse.class));
+        when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(any(SearchResponse.class));
 
         ResponseObject responseObject = searchIndexService.search("test param");
 
