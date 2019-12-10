@@ -87,7 +87,7 @@ public class AlphabeticalSearchControllerTest {
         company.setCompanyStatus("test status");
         companies.add(company);
 
-        searchResults.setSearchResults(companies);
+        searchResults.setResults(companies);
         searchResults.setSearchType("test search type");
 
         return searchResults;

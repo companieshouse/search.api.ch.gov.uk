@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 
+import java.util.Objects;
+
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Company implements Comparable<Company> {
@@ -68,6 +70,22 @@ public class Company implements Comparable<Company> {
     @Override
     public String toString() {
         return new Gson().toJson(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Company)) return false;
+        Company company = (Company) o;
+        return Objects.equals(getId(), company.getId()) &&
+            Objects.equals(getCompanyType(), company.getCompanyType()) &&
+            Objects.equals(getItems(), company.getItems()) &&
+            Objects.equals(getLinks(), company.getLinks());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getCompanyType(), getItems(), getLinks());
     }
 
     @Override
