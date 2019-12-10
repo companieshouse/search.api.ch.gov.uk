@@ -6,15 +6,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.companieshouse.search.api.exception.IndexException;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Company;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Links;
-import uk.gov.companieshouse.search.api.service.upsert.UpsertRequestService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -51,9 +48,9 @@ public class UpsertRequestServiceTest {
 
         Company company = createCompany();
 
-        when(upsertRequestService.createIndexRequest(company)).thenThrow(IndexException.class);
+        when(upsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
 
-        assertThrows(IndexException.class,
+        assertThrows(UpsertException.class,
             () -> upsertRequestService.createIndexRequest(company));
     }
 

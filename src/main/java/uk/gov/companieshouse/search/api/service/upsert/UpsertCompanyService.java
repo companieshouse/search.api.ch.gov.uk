@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
-import uk.gov.companieshouse.search.api.exception.IndexException;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
@@ -43,7 +42,7 @@ public class UpsertCompanyService {
         try {
             indexRequest = upsertRequestService.createIndexRequest(company);
             updateRequest = upsertRequestService.createUpdateRequest(company, indexRequest);
-        } catch (IndexException | UpsertException e) {
+        } catch (UpsertException e) {
             LOG.error("An error occured attempting upsert the document");
             return new ResponseObject(ResponseStatus.UPSERT_ERROR);
         }

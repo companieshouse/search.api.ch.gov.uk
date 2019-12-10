@@ -2,10 +2,10 @@ package uk.gov.companieshouse.search.api.service.upsert;
 
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
-import uk.gov.companieshouse.search.api.exception.IndexException;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Company;
 
@@ -33,32 +33,19 @@ public class UpsertRequestService {
      * Create an index request for document if it does not currently exist
      * @param company - Company sent over in REST call to be added/updated
      * @return {@link IndexRequest}
-     * @throws IndexException
+     * @throws UpsertException
      */
-    public IndexRequest createIndexRequest(Company company) throws IndexException {
+    public IndexRequest createIndexRequest(Company company) throws UpsertException {
 
         IndexRequest indexRequest;
         try {
             LOG.info("Preparing index request for "  + company.getId());
             indexRequest = new IndexRequest("alpha_search")
-                .source(jsonBuilder()
-                    .startObject()
-                    .field(ID, company.getId())
-                    .field(COMPANY_TYPE, company.getCompanyType())
-                    .startObject(ITEMS)
-                    .field(COMPANY_NUMBER, company.getItems().getCompanyNumber())
-                    .field(COMPANY_STATUS, company.getItems().getCompanyStatus())
-                    .field(CORPORATE_NAME, company.getItems().getCorporateName())
-                    .field(RECORD_TYPE, company.getItems().getRecordType())
-                    .endObject()
-                    .startObject(LINKS)
-                    .field(SELF, company.getLinks().getSelf())
-                    .endObject()
-                    .endObject());
+                .source(buildRequest(company));
             return indexRequest;
         } catch (IOException e) {
             LOG.error("Failed to index a document");
-            throw new IndexException("Unable to index a document");
+            throw new UpsertException("Unable create index request");
         }
     }
 
@@ -76,27 +63,30 @@ public class UpsertRequestService {
         try {
             LOG.info("Attempt to upsert document if it does not exist for "  + company.getId());
             updateRequest = new UpdateRequest("alpha_search", company.getId())
-                .doc(jsonBuilder()
-                    .startObject()
-                    .field(ID, company.getId())
-                    .field(COMPANY_TYPE, company.getCompanyType())
-                    .startObject(ITEMS)
-                    .field(COMPANY_NUMBER, company.getItems().getCompanyNumber())
-                    .field(COMPANY_STATUS, company.getItems().getCompanyStatus())
-                    .field(CORPORATE_NAME, company.getItems().getCorporateName())
-                    .field(RECORD_TYPE, company.getItems().getRecordType())
-                    .endObject()
-                    .startObject(LINKS)
-                    .field(SELF, company.getLinks().getSelf())
-                    .endObject()
-                    .endObject())
+                .doc(buildRequest(company))
                 .upsert(indexRequest);
 
             return updateRequest;
         } catch (IOException e) {
             LOG.error("Failed to upsert document");
-            throw new UpsertException("Unable to upsert document");
+            throw new UpsertException("Unable to create update request");
         }
     }
 
+    private XContentBuilder buildRequest(Company company) throws IOException {
+        return jsonBuilder()
+            .startObject()
+            .field(ID, company.getId())
+            .field(COMPANY_TYPE, company.getCompanyType())
+            .startObject(ITEMS)
+            .field(COMPANY_NUMBER, company.getItems().getCompanyNumber())
+            .field(COMPANY_STATUS, company.getItems().getCompanyStatus())
+            .field(CORPORATE_NAME, company.getItems().getCorporateName())
+            .field(RECORD_TYPE, company.getItems().getRecordType())
+            .endObject()
+            .startObject(LINKS)
+            .field(SELF, company.getLinks().getSelf())
+            .endObject()
+            .endObject();
+    }
 }

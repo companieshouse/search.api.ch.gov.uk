@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.companieshouse.search.api.exception.IndexException;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Company;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
@@ -64,7 +63,7 @@ public class UpsertCompanyServiceTest {
         Company company = createCompany();
         IndexRequest indexRequest = new IndexRequest("alpha_search");
 
-        when(mockUpsertRequestService.createIndexRequest(company)).thenThrow(IndexException.class);
+        when(mockUpsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
 
         ResponseObject responseObject = upsertCompanyService.upsert(company);
 
