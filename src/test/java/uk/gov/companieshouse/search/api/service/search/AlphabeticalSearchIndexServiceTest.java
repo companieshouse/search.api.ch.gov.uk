@@ -21,11 +21,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.util.ResourceUtils;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
@@ -45,6 +42,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_NOT_FOUND;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -63,10 +61,27 @@ public class AlphabeticalSearchIndexServiceTest {
     private static final String ANY_SEARCH_TEXT = "any text";
 
     @Test
-    @DisplayName("Test Service Exception thrown when highest match not located")
-    public void testServiceExceptionThrownWhenHighestMatchNotLocated() throws IOException {
+    @DisplayName("Test Service Exception thrown no aggregation present")
+    public void testServiceExceptionThrownWhenHNoAggregationPresent() throws IOException {
 
         SearchResponse searchResponse = getSearchResponse("json/searchFailedNoAggregations.json");
+
+        when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
+        when(mockSearchRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
+
+        ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT);
+
+        assertNotNull(responseObject);
+        assertEquals(SEARCH_ERROR, responseObject.getStatus());
+    }
+
+
+    @Test
+    @DisplayName("Test Service Exception thrown aggregation present and highest match not found ")
+    public void testServiceExceptionThrownAggregationPresent() throws IOException {
+
+        SearchResponse searchResponse = getSearchResponse("json/searchFailedAggregationNoMatch" +
+            ".json");
 
         when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
         when(mockSearchRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
@@ -89,7 +104,21 @@ public class AlphabeticalSearchIndexServiceTest {
 
         assertNotNull(responseObject);
         assertEquals(SEARCH_ERROR, responseObject.getStatus());
+    }
 
+    @Test
+    @DisplayName("Test search not found returned when searchResults empty")
+    public void testSearchNotFoundReturned() throws IOException {
+
+        SearchResponse searchResponse = getSearchResponse("json/searchEmptyResults.json");
+
+        when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
+        when(mockSearchRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
+
+        ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT);
+
+        assertNotNull(responseObject);
+        assertEquals(SEARCH_NOT_FOUND, responseObject.getStatus());
     }
 
     @Test
@@ -111,6 +140,11 @@ public class AlphabeticalSearchIndexServiceTest {
         assertEquals(SEARCH_FOUND, responseObject.getStatus());
         assertEquals(TOP_HIT, searchResults.getTopHit());
         assertEquals(20, searchResults.getSearchResults().size());
+    }
+
+    @Test
+    @DisplayName("Test ObjectMapperException thrown")
+    public void testObjectMapperExceptionThrown() {
 
     }
 
