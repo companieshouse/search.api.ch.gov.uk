@@ -22,16 +22,6 @@ public class Items {
     @JsonProperty("record_type")
     private String recordType;
 
-    public Items() {}
-
-    public Items(String companyNumber, String companyStatus, String corporateName,
-        String recordType) {
-        this.companyNumber = companyNumber;
-        this.companyStatus = companyStatus;
-        this.corporateName = corporateName;
-        this.recordType = recordType;
-    }
-
     public String getCompanyNumber() {
         return companyNumber;
     }

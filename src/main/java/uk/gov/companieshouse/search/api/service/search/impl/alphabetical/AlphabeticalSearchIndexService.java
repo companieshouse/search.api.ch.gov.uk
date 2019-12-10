@@ -128,18 +128,16 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         for(Company company : companies) {
             if (company.getItems().getCorporateName().equals(highestMatchName)) {
                 searchResults = getAlphabeticalSearchResults(companies,
-                    highestMatchIndexPos);
+                    highestMatchIndexPos, highestMatchName);
             }
             highestMatchIndexPos++;
         }
-
-        searchResults.setTopHit(highestMatchName);
 
         return searchResults;
     }
 
     private SearchResults<Company> getAlphabeticalSearchResults(List<Company> companies,
-        int highestMatchIndexPos) {
+        int highestMatchIndexPos, String highestMatchName) {
 
         List<Company> searchCompanyResults = new ArrayList<>();
         SearchResults<Company> searchResults = new SearchResults<>();
@@ -154,10 +152,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
             searchCompanyResults.add(companies.get(i));
         }
 
-        searchResults.setSearchType(SEARCH_TYPE);
-        searchResults.setResults(searchCompanyResults);
-
-        return searchResults;
+        return new SearchResults<>(SEARCH_TYPE, highestMatchName, searchCompanyResults);
     }
 
     private int getIndexEnd(int totalResults, int highestMatchIndexPos) {
