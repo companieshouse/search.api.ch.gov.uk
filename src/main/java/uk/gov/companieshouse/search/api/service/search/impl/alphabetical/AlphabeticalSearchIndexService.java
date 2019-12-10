@@ -140,7 +140,6 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         int highestMatchIndexPos, String highestMatchName) {
 
         List<Company> searchCompanyResults = new ArrayList<>();
-        SearchResults<Company> searchResults = new SearchResults<>();
 
         int totalResults = companies.size();
 
