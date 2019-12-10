@@ -13,6 +13,7 @@ public class ElasticSearchConfig {
     public RestHighLevelClient client() {
         return new RestHighLevelClient(
             RestClient.builder(
+                // TODO update to use Environment reader and place host name in chs-configs PCI-415
                 new HttpHost("es7-search-server1-shaun.aws.chdev.org", 9200, "http")));
     }
 }
