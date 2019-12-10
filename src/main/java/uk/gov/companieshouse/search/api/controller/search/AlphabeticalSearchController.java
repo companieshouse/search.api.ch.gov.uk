@@ -16,7 +16,7 @@ import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/alphabeticalSearch", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/alphabetical-search", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AlphabeticalSearchController {
 
     @Autowired
@@ -26,7 +26,7 @@ public class AlphabeticalSearchController {
     private ApiToResponseMapper apiToResponseMapper;
 
 
-    @PostMapping("/corporateName")
+    @PostMapping("/corporate-name")
     @ResponseBody
     public ResponseEntity searchByCorporateName(@Valid @RequestBody
         AlphabeticalSearchRequest alphabeticalSearchRequest) {

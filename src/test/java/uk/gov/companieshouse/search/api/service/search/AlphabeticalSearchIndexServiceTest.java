@@ -75,7 +75,6 @@ public class AlphabeticalSearchIndexServiceTest {
         assertEquals(SEARCH_ERROR, responseObject.getStatus());
     }
 
-
     @Test
     @DisplayName("Test Service Exception thrown aggregation present and highest match not found ")
     public void testServiceExceptionThrownAggregationPresent() throws IOException {
@@ -140,12 +139,6 @@ public class AlphabeticalSearchIndexServiceTest {
         assertEquals(SEARCH_FOUND, responseObject.getStatus());
         assertEquals(TOP_HIT, searchResults.getTopHit());
         assertEquals(20, searchResults.getResults().size());
-    }
-
-    @Test
-    @DisplayName("Test ObjectMapperException thrown")
-    public void testObjectMapperExceptionThrown() {
-
     }
 
     private SearchResponse getSearchResponse(String jsonFileLocation) throws IOException {
