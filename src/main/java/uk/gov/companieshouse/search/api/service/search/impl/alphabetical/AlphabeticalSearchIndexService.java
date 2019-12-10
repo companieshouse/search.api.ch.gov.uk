@@ -63,7 +63,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
             return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
 
-        if(searchResults.getSearchResults() != null) {
+        if(searchResults.getResults() != null) {
             LOG.info(ALPHABETICAL_SEARCH + "successful for: " + corporateName);
             return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
         }
@@ -155,7 +155,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         }
 
         searchResults.setSearchType(SEARCH_TYPE);
-        searchResults.setSearchResults(searchCompanyResults);
+        searchResults.setResults(searchCompanyResults);
 
         return searchResults;
     }

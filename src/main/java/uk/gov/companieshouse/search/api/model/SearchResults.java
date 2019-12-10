@@ -10,15 +10,15 @@ public class SearchResults<T> {
 
     private String topHit;
 
-    private List<T> searchResults;
+    private List<T> results;
 
     public SearchResults() {
     }
 
-    public SearchResults(String searchType, String topHit, List<T> searchResults) {
+    public SearchResults(String searchType, String topHit, List<T> results) {
         this.searchType = searchType;
         this.topHit = topHit;
-        this.searchResults = searchResults;
+        this.results = results;
     }
 
     public String getSearchType() {
@@ -37,12 +37,12 @@ public class SearchResults<T> {
         this.topHit = topHit;
     }
 
-    public List<T> getSearchResults() {
-        return searchResults;
+    public List<T> getResults() {
+        return results;
     }
 
-    public void setSearchResults(List<T> searchResults) {
-        this.searchResults = searchResults;
+    public void setResults(List<T> results) {
+        this.results = results;
     }
 
     @Override

@@ -139,7 +139,7 @@ public class AlphabeticalSearchIndexServiceTest {
 
         assertEquals(SEARCH_FOUND, responseObject.getStatus());
         assertEquals(TOP_HIT, searchResults.getTopHit());
-        assertEquals(20, searchResults.getSearchResults().size());
+        assertEquals(20, searchResults.getResults().size());
     }
 
     @Test
