@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.controller.upsert;
+package uk.gov.companieshouse.search.api.service.upsert;
 
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
