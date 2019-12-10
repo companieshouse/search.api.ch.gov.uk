@@ -76,7 +76,6 @@ public class AlphabeticalSearchIndexServiceTest {
         assertEquals(SEARCH_ERROR, responseObject.getStatus());
     }
 
-
     @Test
     @DisplayName("Test Service Exception thrown aggregation present and highest match not found ")
     public void testServiceExceptionThrownAggregationPresent() throws IOException {
