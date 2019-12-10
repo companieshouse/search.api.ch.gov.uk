@@ -40,6 +40,12 @@
         <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
         <junit-platform-surefire-provider.version>1.2.0</junit-platform-surefire-provider.version>
 
+        <!-- Sonar -->
+        <sonar-maven-plugin.version>3.4.0.905</sonar-maven-plugin.version>
+        <sonar.host.url>${CODE_ANALYSIS_HOST_URL}</sonar.host.url>
+        <sonar.login>${CODE_ANALYSIS_LOGIN}</sonar.login>
+        <sonar.password>${CODE_ANALYSIS_PASSWORD}</sonar.password>
+
         <!-- Repositories -->
         <artifactoryResolveSnapshotRepo>libs-snapshot-local</artifactoryResolveSnapshotRepo>
         <artifactoryResolveReleaseRepo>virtual-release</artifactoryResolveReleaseRepo>
