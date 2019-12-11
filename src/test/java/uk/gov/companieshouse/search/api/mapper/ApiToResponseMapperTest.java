@@ -13,6 +13,7 @@ import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -21,6 +22,8 @@ import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOC
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_NOT_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPDATE_REQUEST_ERROR;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPSERT_ERROR;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -69,6 +72,35 @@ public class ApiToResponseMapperTest {
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
         assertEquals(OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test if Bad Request returned on update request error")
+    public void testBadRequestOnUpdateReturned() {
+
+        ResponseObject responseObject =
+            new ResponseObject(UPDATE_REQUEST_ERROR);
+
+        ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
+
+        assertNotNull(responseEntity);
+        assertNull(responseEntity.getBody());
+        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+
+    @Test
+    @DisplayName("Test if Bad Request returned on upsert error")
+    public void testBadRequestOnUpsertReturned() {
+
+        ResponseObject responseObject =
+            new ResponseObject(UPSERT_ERROR);
+
+        ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
+
+        assertNotNull(responseEntity);
+        assertNull(responseEntity.getBody());
+        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test

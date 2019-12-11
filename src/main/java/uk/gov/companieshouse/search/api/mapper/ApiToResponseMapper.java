@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -21,6 +22,10 @@ public class ApiToResponseMapper {
                 return ResponseEntity.status(NOT_FOUND).build();
             case DOCUMENT_UPSERTED:
                 return ResponseEntity.status(OK).build();
+            case UPDATE_REQUEST_ERROR:
+                return ResponseEntity.status(BAD_REQUEST).build();
+            case UPSERT_ERROR:
+                return ResponseEntity.status(BAD_REQUEST).build();
             default:
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
         }

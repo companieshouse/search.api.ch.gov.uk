@@ -44,7 +44,7 @@ public class UpsertRequestService {
                 .source(buildRequest(company));
             return indexRequest;
         } catch (IOException e) {
-            LOG.error("Failed to index a document");
+            LOG.error("Failed to index a document for company number: " + company.getId());
             throw new UpsertException("Unable create index request");
         }
     }
@@ -68,7 +68,7 @@ public class UpsertRequestService {
 
             return updateRequest;
         } catch (IOException e) {
-            LOG.error("Failed to upsert document");
+            LOG.error("Failed to update a document for company: " + company.getId());
             throw new UpsertException("Unable to create update request");
         }
     }
