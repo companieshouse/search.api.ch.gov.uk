@@ -23,7 +23,6 @@ public class ApiToResponseMapper {
             case DOCUMENT_UPSERTED:
                 return ResponseEntity.status(OK).build();
             case UPDATE_REQUEST_ERROR:
-                return ResponseEntity.status(BAD_REQUEST).build();
             case UPSERT_ERROR:
                 return ResponseEntity.status(BAD_REQUEST).build();
             default:
