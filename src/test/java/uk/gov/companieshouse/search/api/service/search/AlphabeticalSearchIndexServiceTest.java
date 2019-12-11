@@ -95,8 +95,7 @@ public class AlphabeticalSearchIndexServiceTest {
     @Test
     @DisplayName("Test error thrown when searchRestClientService fails")
     public void testErrorThrownWhenSearchRestClientFails() throws IOException {
-
-
+        
         when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
         when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenThrow(new IOException());
 

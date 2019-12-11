@@ -32,7 +32,6 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     @Override
     public SearchRequest createSearchRequest(String corporateName) {
 
-
         LOG.info(ALPHABETICAL_SEARCH + "Creating search request for: " + corporateName);
 
         SearchRequest searchRequest = new SearchRequest();

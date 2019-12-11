@@ -13,13 +13,6 @@ public class Links {
     @JsonProperty("self")
     private String self;
 
-    public Links() {
-    }
-
-    public Links(String self) {
-        this.self = self;
-    }
-
     public String getSelf() {
         return self;
     }

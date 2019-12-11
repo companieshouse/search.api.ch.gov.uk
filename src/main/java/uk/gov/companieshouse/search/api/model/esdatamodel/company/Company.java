@@ -24,17 +24,6 @@ public class Company implements Comparable<Company> {
     @JsonProperty("links")
     private Links links;
 
-    public Company() {
-    }
-
-    public Company(String id, String companyType,
-        Items items, Links links) {
-        this.id = id;
-        this.companyType = companyType;
-        this.items = items;
-        this.links = links;
-    }
-
     public String getId() {
         return id;
     }
