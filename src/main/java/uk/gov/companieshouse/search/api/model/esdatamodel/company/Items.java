@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.model.company;
+package uk.gov.companieshouse.search.api.model.esdatamodel.company;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,18 +12,15 @@ public class Items {
 
     @JsonProperty("company_number")
     private String companyNumber;
+
     @JsonProperty("company_status")
     private String companyStatus;
-    @JsonProperty("corporateName")
+
+    @JsonProperty("corporate_name")
     private String corporateName;
 
-    public Items() {}
-
-    public Items(String companyNumber, String companyStatus, String corporateName) {
-        this.companyNumber = companyNumber;
-        this.companyStatus = companyStatus;
-        this.corporateName = corporateName;
-    }
+    @JsonProperty("record_type")
+    private String recordType;
 
     public String getCompanyNumber() {
         return companyNumber;
@@ -47,6 +44,14 @@ public class Items {
 
     public void setCorporateName(String corporateName) {
         this.corporateName = corporateName;
+    }
+
+    public String getRecordType() {
+        return recordType;
+    }
+
+    public void setRecordType(String recordType) {
+        this.recordType = recordType;
     }
 
     @Override

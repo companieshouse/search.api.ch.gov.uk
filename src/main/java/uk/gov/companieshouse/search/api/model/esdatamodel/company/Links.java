@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.model.company;
+package uk.gov.companieshouse.search.api.model.esdatamodel.company;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -8,23 +8,17 @@ import com.google.gson.Gson;
 
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Company {
+public class Links {
 
-    @JsonProperty("items")
-    private Items items;
+    @JsonProperty("self")
+    private String self;
 
-    public Company() { }
-
-    public Company(Items items) {
-        this.items = items;
+    public String getSelf() {
+        return self;
     }
 
-    public Items getItems() {
-        return items;
-    }
-
-    public void setItems(Items items) {
-        this.items = items;
+    public void setSelf(String self) {
+        this.self = self;
     }
 
     @Override

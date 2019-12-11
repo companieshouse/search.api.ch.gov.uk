@@ -8,14 +8,17 @@ public class SearchResults<T> {
 
     private String searchType;
 
-    private List<T> searchResults;
+    private String topHit;
+
+    private List<T> results;
 
     public SearchResults() {
     }
 
-    public SearchResults(String searchType, List<T> searchResults) {
+    public SearchResults(String searchType, String topHit, List<T> results) {
         this.searchType = searchType;
-        this.searchResults = searchResults;
+        this.topHit = topHit;
+        this.results = results;
     }
 
     public String getSearchType() {
@@ -26,12 +29,20 @@ public class SearchResults<T> {
         this.searchType = searchType;
     }
 
-    public List<T> getSearchResults() {
-        return searchResults;
+    public String getTopHit() {
+        return topHit;
     }
 
-    public void setSearchResults(List<T> searchResults) {
-        this.searchResults = searchResults;
+    public void setTopHit(String topHit) {
+        this.topHit = topHit;
+    }
+
+    public List<T> getResults() {
+        return results;
+    }
+
+    public void setResults(List<T> results) {
+        this.results = results;
     }
 
     @Override

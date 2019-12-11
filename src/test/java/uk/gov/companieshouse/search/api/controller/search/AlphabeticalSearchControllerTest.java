@@ -10,9 +10,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.SearchResults;
-import uk.gov.companieshouse.search.api.model.company.Items;
+import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
+import uk.gov.companieshouse.search.api.model.request.AlphabeticalSearchRequest;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
-import uk.gov.companieshouse.search.api.service.SearchIndexService;
+import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class AlphabeticalSearchControllerTest {
             .thenReturn(ResponseEntity.status(NOT_FOUND).build());
 
         ResponseEntity responseEntity =
-            alphabeticalSearchController.searchByCorporateName(anyString());
+            alphabeticalSearchController.searchByCorporateName(createRequest());
 
         assertNotNull(responseEntity);
         assertEquals(NOT_FOUND, responseEntity.getStatusCode());
@@ -70,7 +71,7 @@ public class AlphabeticalSearchControllerTest {
             .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity responseEntity =
-            alphabeticalSearchController.searchByCorporateName(anyString());
+            alphabeticalSearchController.searchByCorporateName(createRequest());
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
@@ -86,9 +87,16 @@ public class AlphabeticalSearchControllerTest {
         company.setCompanyStatus("test status");
         companies.add(company);
 
-        searchResults.setSearchResults(companies);
+        searchResults.setResults(companies);
         searchResults.setSearchType("test search type");
 
         return searchResults;
+    }
+
+    private AlphabeticalSearchRequest createRequest() {
+
+        AlphabeticalSearchRequest alphabeticalSearchRequest = new AlphabeticalSearchRequest();
+        alphabeticalSearchRequest.setCompanyName("test name");
+        return alphabeticalSearchRequest;
     }
 }

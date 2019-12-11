@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.service;
+package uk.gov.companieshouse.search.api.service.search;
 
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 
