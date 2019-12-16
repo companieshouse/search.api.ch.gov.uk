@@ -6,7 +6,9 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
@@ -16,9 +18,12 @@ import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_
 @Service
 public class AlphabeticalSearchRequestService implements SearchRequestService {
 
-    private static final String ALPHA_SEARCH = "alpha_search";
+    @Autowired
+    private EnvironmentReader environmentReader;
 
-    private static final int RESULTS_SIZE = 250;
+    private static final String INDEX = "ALPHABETICAL_SEARCH_INDEX";
+
+    private static final String RESULTS_SIZE = "ALPHABETICAL_SEARCH_RESULT_MAX";
     private static final int AGGS_HIGHEST_MATCH_SIZE = 1;
     private static final String HIGHEST_MATCH = "highest_match";
 
@@ -35,7 +40,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         LOG.info(ALPHABETICAL_SEARCH + "Creating search request for: " + corporateName);
 
         SearchRequest searchRequest = new SearchRequest();
-        searchRequest.indices(ALPHA_SEARCH);
+        searchRequest.indices(environmentReader.getMandatoryString(INDEX));
         searchRequest.source(createSource(corporateName));
 
         return searchRequest;
@@ -44,7 +49,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     private SearchSourceBuilder createSource(String corporateName) {
 
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-        sourceBuilder.size(RESULTS_SIZE);
+        sourceBuilder.size(Integer.parseInt(environmentReader.getMandatoryString(RESULTS_SIZE)));
         sourceBuilder.query(createAlphabeticalSearchQuery(corporateName));
         sourceBuilder.aggregation(createAggregation(HIGHEST_MATCH, AGGS_HIGHEST_MATCH_SIZE, corporateName));
 
