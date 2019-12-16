@@ -3,17 +3,25 @@ package uk.gov.companieshouse.search.api.config;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import uk.gov.companieshouse.environment.EnvironmentReader;
 
 @Configuration
 public class ElasticSearchConfig {
+
+    @Autowired
+    private EnvironmentReader environmentReader;
+
+    private static final int PORT = 9200;
+    private static final String SCHEME = "http";
+    private static final String HOST_NAME = "SEARCH_API_HOST";
 
     @Bean(destroyMethod = "close")
     public RestHighLevelClient client() {
         return new RestHighLevelClient(
             RestClient.builder(
-                // TODO update to use Environment reader and place host name in chs-configs PCI-415
-                new HttpHost("es7-search-server1-shaun.aws.chdev.org", 9200, "http")));
+                new HttpHost(environmentReader.getMandatoryString(HOST_NAME), PORT, SCHEME)));
     }
 }
