@@ -25,7 +25,6 @@ public class AlphabeticalSearchController {
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
 
-
     @PostMapping("/corporate-name")
     @ResponseBody
     public ResponseEntity searchByCorporateName(@Valid @RequestBody

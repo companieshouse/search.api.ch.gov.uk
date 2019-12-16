@@ -25,6 +25,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
+import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
 
 import java.io.File;
@@ -52,7 +53,7 @@ public class AlphabeticalSearchIndexServiceTest {
     private SearchIndexService searchIndexService = new AlphabeticalSearchIndexService();
 
     @Mock
-    private SearchRestClientService mockSearchRestClientService;
+    private RestClientService mockRestClientService;
 
     @Mock
     private SearchRequestService mockSearchRequestService;
@@ -67,7 +68,7 @@ public class AlphabeticalSearchIndexServiceTest {
         SearchResponse searchResponse = getSearchResponse("json/searchFailedNoAggregations.json");
 
         when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
-        when(mockSearchRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
+        when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
 
         ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT);
 
@@ -83,7 +84,7 @@ public class AlphabeticalSearchIndexServiceTest {
             ".json");
 
         when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
-        when(mockSearchRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
+        when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
 
         ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT);
 
@@ -96,7 +97,7 @@ public class AlphabeticalSearchIndexServiceTest {
     public void testErrorThrownWhenSearchRestClientFails() throws IOException {
         
         when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
-        when(mockSearchRestClientService.searchRestClient(any(SearchRequest.class))).thenThrow(new IOException());
+        when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenThrow(new IOException());
 
         ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT);
 
@@ -111,7 +112,7 @@ public class AlphabeticalSearchIndexServiceTest {
         SearchResponse searchResponse = getSearchResponse("json/searchEmptyResults.json");
 
         when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
-        when(mockSearchRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
+        when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
 
         ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT);
 
@@ -126,7 +127,7 @@ public class AlphabeticalSearchIndexServiceTest {
         SearchResponse searchResponse = getSearchResponse("json/searchSuccessful.json");
 
         when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
-        when(mockSearchRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
+        when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
 
         ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT);
 
@@ -138,6 +139,11 @@ public class AlphabeticalSearchIndexServiceTest {
         assertEquals(SEARCH_FOUND, responseObject.getStatus());
         assertEquals(TOP_HIT, searchResults.getTopHit());
         assertEquals(20, searchResults.getResults().size());
+    }
+
+    @Test
+    @DisplayName("Test ObjectMapperException thrown")
+    public void testObjectMapperExceptionThrown() {
     }
 
     private SearchResponse getSearchResponse(String jsonFileLocation) throws IOException {
