@@ -17,11 +17,10 @@ public class ApiToResponseMapper {
 
         switch(responseObject.getStatus()) {
             case SEARCH_FOUND:
-                return ResponseEntity.status(FOUND).body(responseObject.getData());
+            case DOCUMENT_UPSERTED:
+                return ResponseEntity.status(OK).body(responseObject.getData());
             case SEARCH_NOT_FOUND:
                 return ResponseEntity.status(NOT_FOUND).build();
-            case DOCUMENT_UPSERTED:
-                return ResponseEntity.status(OK).build();
             case UPDATE_REQUEST_ERROR:
             case UPSERT_ERROR:
                 return ResponseEntity.status(BAD_REQUEST).build();
