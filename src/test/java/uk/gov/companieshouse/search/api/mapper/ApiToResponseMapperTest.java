@@ -33,7 +33,7 @@ public class ApiToResponseMapperTest {
     private ApiToResponseMapper apiToResponseMapper;
 
     @Test
-    @DisplayName("Test if Found returned")
+    @DisplayName("Test if OK returned")
     public void testFoundReturned() {
 
         ResponseObject responseObject =
@@ -43,7 +43,7 @@ public class ApiToResponseMapperTest {
 
         assertNotNull(responseEntity);
         assertNotNull(responseEntity.getBody());
-        assertEquals(FOUND, responseEntity.getStatusCode());
+        assertEquals(OK, responseEntity.getStatusCode());
     }
 
     @Test
