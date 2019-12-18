@@ -9,7 +9,7 @@ if [[ -z "${MESOS_SLAVE_PID}" ]]; then
     source ~/.chs_env/global_env
     source ~/.chs_env/search.api.ch.gov.uk/env
 
-    PORT="${SEARCH_API_SERVICE_PORT}"
+    PORT="${SEARCH_API_PORT}"
 else
     PORT="$1"
     CONFIG_URL="$2"
