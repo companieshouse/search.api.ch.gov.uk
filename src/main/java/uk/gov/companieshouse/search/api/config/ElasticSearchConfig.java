@@ -18,7 +18,7 @@ public class ElasticSearchConfig {
     @Autowired
     private EnvironmentReader environmentReader;
 
-    private static final String ELASTIC_SEARCH_URL = "END_POINT";
+    private static final String ELASTIC_SEARCH_URL = "ELASTIC_SEARCH_URL";
 
     @Bean(destroyMethod = "close")
     public RestHighLevelClient client() {
