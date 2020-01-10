@@ -14,14 +14,12 @@ public class ElasticSearchConfig {
     @Autowired
     private EnvironmentReader environmentReader;
 
-    private static final int PORT = 9200;
-    private static final String SCHEME = "http";
     private static final String HOST_NAME = "SEARCH_API_HOST";
 
     @Bean(destroyMethod = "close")
     public RestHighLevelClient client() {
         return new RestHighLevelClient(
             RestClient.builder(
-                new HttpHost(environmentReader.getMandatoryString(HOST_NAME), PORT, SCHEME)));
+                new HttpHost(environmentReader.getMandatoryString(HOST_NAME))));
     }
 }
