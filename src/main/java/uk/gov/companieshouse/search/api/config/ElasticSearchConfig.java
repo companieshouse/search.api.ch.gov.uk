@@ -18,16 +18,16 @@ public class ElasticSearchConfig {
     @Autowired
     private EnvironmentReader environmentReader;
 
-    private static final String END_POINT = "END_POINT";
+    private static final String ELASTIC_SEARCH_URL = "END_POINT";
 
     @Bean(destroyMethod = "close")
-    public RestHighLevelClient client() throws EndpointException {
+    public RestHighLevelClient client() {
 
         URL endpoint;
         try {
-            endpoint = new URL(environmentReader.getMandatoryString(END_POINT));
+            endpoint = new URL(environmentReader.getMandatoryString(ELASTIC_SEARCH_URL));
         } catch (MalformedURLException e) {
-            throw new EndpointException("A malformed url has occurred - url may have failed to parse or invalid protocol provided");
+            throw new EndpointException(ELASTIC_SEARCH_URL + " environment variable is malformed; expected format is <protocol>://<host>[:port]");
         }
 
         return new RestHighLevelClient(

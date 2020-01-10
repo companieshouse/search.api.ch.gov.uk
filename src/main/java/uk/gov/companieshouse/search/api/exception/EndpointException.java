@@ -1,13 +1,12 @@
 package uk.gov.companieshouse.search.api.exception;
 
-import java.net.MalformedURLException;
-
 /**
- * EndpointException is a wrapper exception that hides
- * lower level exceptions from the caller and prevents them
- * from being propagated up the call stack.
+ * This class {@code EndpointException} is a form of {@link RuntimeException}
+ * that is thrown if there are errors with the elastic search instance endpoint
+ * the application would not be able to function without the elastic search instance therefore
+ * this exception is fatal
  */
-public class EndpointException extends MalformedURLException {
+public class EndpointException extends RuntimeException {
 
     /**
      * Constructs a new EndpointException with a custom message.
