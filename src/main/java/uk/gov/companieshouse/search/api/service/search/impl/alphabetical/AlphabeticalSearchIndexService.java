@@ -147,7 +147,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         int endIndex = getIndexEnd(totalResults, highestMatchIndexPos);
 
         // loop to get 20 hits with 9 records above and 10 below the highest match.
-        for(int i = startIndex; i < endIndex + 1; i++) {
+        for(int i = startIndex; i < endIndex; i++) {
             searchCompanyResults.add(companies.get(i));
         }
 
@@ -156,10 +156,11 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
 
     private int getIndexEnd(int totalResults, int highestMatchIndexPos) {
 
-        int indexEndPos = highestMatchIndexPos + 10;
+        int sampleSize = totalResults - highestMatchIndexPos;
+        int indexEndPos = highestMatchIndexPos + (sampleSize < 10 ? sampleSize : 10);
         int differenceIndexPos = indexEndPos - totalResults;
 
-        if (differenceIndexPos < 0) {
+        if (differenceIndexPos <= 0) {
             return indexEndPos;
         } else {
             return indexEndPos - differenceIndexPos;

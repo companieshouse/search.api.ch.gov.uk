@@ -68,13 +68,10 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     private QueryBuilder createAlphabeticalSearchQuery(String corporateName) {
 
         LOG.info(ALPHABETICAL_SEARCH + "Adding query for: " + corporateName);
-
         return QueryBuilders.boolQuery()
+                .should(QueryBuilders
+                        .matchPhrasePrefixQuery("items.corporate_name_start", corporateName).boost(5))
             .should(QueryBuilders
-                .matchQuery("items.corporate_name_start.edge_ngram", corporateName).fuzziness(2))
-            .should(QueryBuilders
-                .matchQuery("items.corporate_name_start", corporateName).boost(5))
-            .should(QueryBuilders
-                .matchPhraseQuery("items.corporate_name_start", corporateName));
+                .matchQuery("items.corporate_name_start.edge_ngram", corporateName).fuzziness(2).boost(5));
     }
 }
