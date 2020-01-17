@@ -51,13 +51,13 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
      * {@inheritDoc}
      */
     @Override
-    public ResponseObject search(String corporateName) {
+    public ResponseObject search(String corporateName, String requestId) {
 
         SearchResults searchResults;
 
         try {
             LOG.info(ALPHABETICAL_SEARCH + "started for: " + corporateName);
-            searchResults = performAlphabeticalSearch(corporateName);
+            searchResults = performAlphabeticalSearch(corporateName, requestId);
         } catch (SearchException | ObjectMapperException e) {
             LOG.error("An error occurred in alphabetical search whilst searching: " + corporateName, e);
             return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
@@ -72,14 +72,14 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 
-    private SearchResults performAlphabeticalSearch(String corporateName)
+    private SearchResults performAlphabeticalSearch(String corporateName, String requestId)
         throws SearchException, ObjectMapperException {
 
         SearchResponse searchResponse;
 
         try {
             searchResponse = searchRestClient.searchRestClient(
-                searchRequestService.createSearchRequest(corporateName));
+                searchRequestService.createSearchRequest(corporateName, requestId));
         } catch (IOException e) {
             LOG.error(ALPHABETICAL_SEARCH + "Failed to get a search response from elastic search " +
                 "for: " + corporateName, e);

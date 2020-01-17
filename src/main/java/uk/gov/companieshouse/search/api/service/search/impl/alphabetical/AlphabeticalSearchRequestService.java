@@ -35,12 +35,13 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
      * {@inheritDoc}
      */
     @Override
-    public SearchRequest createSearchRequest(String corporateName) {
+    public SearchRequest createSearchRequest(String corporateName, String requestId) {
 
-        LOG.info(ALPHABETICAL_SEARCH + "Creating search request for: " + corporateName);
+        LOG.info(ALPHABETICAL_SEARCH + "Creating search request for: " + corporateName + " for user with Id: " + requestId);
 
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.indices(environmentReader.getMandatoryString(INDEX));
+        searchRequest.preference(requestId);
         searchRequest.source(createSource(corporateName));
 
         return searchRequest;
@@ -68,6 +69,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     private QueryBuilder createAlphabeticalSearchQuery(String corporateName) {
 
         LOG.info(ALPHABETICAL_SEARCH + "Adding query for: " + corporateName);
+
         return QueryBuilders.boolQuery()
                 .should(QueryBuilders
                         .matchPhrasePrefixQuery("items.corporate_name_start", corporateName).boost(5))

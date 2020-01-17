@@ -10,5 +10,5 @@ public interface SearchIndexService {
      * @param searchParam - Value to search elastc search database with.
      * @return {@link ResponseObject}
      */
-    ResponseObject search(String searchParam);
+    ResponseObject search(String searchParam, String requestId);
 }
