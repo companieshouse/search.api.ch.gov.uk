@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.omg.PortableServer.REQUEST_PROCESSING_POLICY_ID;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchRequestService;
 
@@ -27,13 +28,14 @@ public class AlphabeticalSearchRequestServiceTest {
 
     private static final String ENV_READER_RESULT = "1";
     private static final String SEARCH_PARAM = "search param";
+    private static final String REQUEST_ID = "abcxyz123";
 
     @Test
     @DisplayName("Test alphabetical search request created")
     public void testAlphabeticalSearchRequestCreated() {
 
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT);
-        SearchRequest searchRequest = searchRequestService.createSearchRequest(SEARCH_PARAM);
+        SearchRequest searchRequest = searchRequestService.createSearchRequest(SEARCH_PARAM, REQUEST_ID);
         assertNotNull(searchRequest);
     }
 }

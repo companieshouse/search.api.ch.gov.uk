@@ -183,6 +183,10 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
 
         SearchHits searchHitsHighestMatched = transformToSearchHits(aggregation);
 
+        if (searchHitsHighestMatched.getHits().length == 0){
+            return null;
+        }
+
         Optional<Company> companyTopHit;
 
         try {

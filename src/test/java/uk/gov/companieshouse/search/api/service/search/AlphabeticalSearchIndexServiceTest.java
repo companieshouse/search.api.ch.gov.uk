@@ -60,6 +60,7 @@ public class AlphabeticalSearchIndexServiceTest {
 
     private static final String TOP_HIT = "AAAA COMMUNICATIONS LIMITED";
     private static final String ANY_SEARCH_TEXT = "any text";
+    private String REQUEST_ID = anyString();
 
     @Test
     @DisplayName("Test Service Exception thrown no aggregation present")
@@ -67,10 +68,10 @@ public class AlphabeticalSearchIndexServiceTest {
 
         SearchResponse searchResponse = getSearchResponse("json/searchFailedNoAggregations.json");
 
-        when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
+        when(mockSearchRequestService.createSearchRequest(anyString(), REQUEST_ID)).thenReturn(new SearchRequest());
         when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
 
-        ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT);
+        ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(SEARCH_ERROR, responseObject.getStatus());
@@ -83,10 +84,10 @@ public class AlphabeticalSearchIndexServiceTest {
         SearchResponse searchResponse = getSearchResponse("json/searchFailedAggregationNoMatch" +
             ".json");
 
-        when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
+        when(mockSearchRequestService.createSearchRequest(anyString(), REQUEST_ID)).thenReturn(new SearchRequest());
         when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
 
-        ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT);
+        ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(SEARCH_ERROR, responseObject.getStatus());
@@ -96,10 +97,10 @@ public class AlphabeticalSearchIndexServiceTest {
     @DisplayName("Test error thrown when searchRestClientService fails")
     public void testErrorThrownWhenSearchRestClientFails() throws IOException {
         
-        when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
+        when(mockSearchRequestService.createSearchRequest(anyString(), REQUEST_ID)).thenReturn(new SearchRequest());
         when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenThrow(new IOException());
 
-        ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT);
+        ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(SEARCH_ERROR, responseObject.getStatus());
@@ -111,10 +112,10 @@ public class AlphabeticalSearchIndexServiceTest {
 
         SearchResponse searchResponse = getSearchResponse("json/searchEmptyResults.json");
 
-        when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
+        when(mockSearchRequestService.createSearchRequest(anyString(), REQUEST_ID)).thenReturn(new SearchRequest());
         when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
 
-        ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT);
+        ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(SEARCH_NOT_FOUND, responseObject.getStatus());
@@ -126,10 +127,10 @@ public class AlphabeticalSearchIndexServiceTest {
 
         SearchResponse searchResponse = getSearchResponse("json/searchSuccessful.json");
 
-        when(mockSearchRequestService.createSearchRequest(anyString())).thenReturn(new SearchRequest());
+        when(mockSearchRequestService.createSearchRequest(anyString(), REQUEST_ID)).thenReturn(new SearchRequest());
         when(mockRestClientService.searchRestClient(any(SearchRequest.class))).thenReturn(searchResponse);
 
-        ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT);
+        ResponseObject responseObject = searchIndexService.search(ANY_SEARCH_TEXT, REQUEST_ID);
 
         SearchResults searchResults = responseObject.getData();
 

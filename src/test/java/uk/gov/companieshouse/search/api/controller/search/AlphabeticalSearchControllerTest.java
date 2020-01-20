@@ -40,6 +40,7 @@ public class AlphabeticalSearchControllerTest {
     @InjectMocks
     private AlphabeticalSearchController alphabeticalSearchController;
 
+    private String REQUEST_ID = anyString();
 
     @Test
     @DisplayName("Test search not found")
@@ -48,12 +49,12 @@ public class AlphabeticalSearchControllerTest {
         ResponseObject responseObject =
             new ResponseObject(SEARCH_NOT_FOUND, null);
 
-        when(mockSearchIndexService.search(anyString())).thenReturn(responseObject);
+        when(mockSearchIndexService.search(anyString(), REQUEST_ID)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(NOT_FOUND).build());
 
         ResponseEntity responseEntity =
-            alphabeticalSearchController.searchByCorporateName(createRequest());
+            alphabeticalSearchController.searchByCorporateName(createRequest(), REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(NOT_FOUND, responseEntity.getStatusCode());
@@ -66,12 +67,12 @@ public class AlphabeticalSearchControllerTest {
         ResponseObject responseObject =
             new ResponseObject(SEARCH_FOUND, createSearchResults());
 
-        when(mockSearchIndexService.search(anyString())).thenReturn(responseObject);
+        when(mockSearchIndexService.search(anyString(), REQUEST_ID)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity responseEntity =
-            alphabeticalSearchController.searchByCorporateName(createRequest());
+            alphabeticalSearchController.searchByCorporateName(createRequest(), REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());

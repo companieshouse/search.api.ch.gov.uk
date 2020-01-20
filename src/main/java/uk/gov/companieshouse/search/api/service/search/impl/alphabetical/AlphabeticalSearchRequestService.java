@@ -1,11 +1,14 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
 import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.environment.EnvironmentReader;
@@ -70,10 +73,27 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
         LOG.info(ALPHABETICAL_SEARCH + "Adding query for: " + corporateName);
 
+        // works strictly on single word searches
+        // poorly on multi-word searches
+        // very well on single letter searches
         return QueryBuilders.boolQuery()
-                .should(QueryBuilders
-                        .matchPhrasePrefixQuery("items.corporate_name_start", corporateName).boost(5))
-            .should(QueryBuilders
-                .matchQuery("items.corporate_name_start.edge_ngram", corporateName).fuzziness(2).boost(5));
+                .should(QueryBuilders.prefixQuery("items.corporate_name_start", corporateName).boost(5))
+                .should(QueryBuilders.queryStringQuery(corporateName).enablePositionIncrements(true)
+                        .allowLeadingWildcard(false).autoGenerateSynonymsPhraseQuery(false));
+
+        // works best on single word searches
+        // okay on multi-word searches
+        // poorly on single letter searches
+//        return QueryBuilders.boolQuery()
+//                .should(QueryBuilders.prefixQuery("items.corporate_name_start", corporateName).boost(5))
+//                .should(QueryBuilders.matchQuery("items.corporate_name_start.edge_ngram", corporateName).fuzziness(2));
+
+        // works best on single word searches
+        // okay on multi-word searches
+        // okay on single letter searches
+//        return QueryBuilders.boolQuery()
+//                .should(
+//                        QueryBuilders.matchPhrasePrefixQuery("items.corporate_name_start", corporateName).boost(5))
+//                .should(QueryBuilders.matchQuery("items.corporate_name_start.edge_ngram", corporateName).fuzziness(2));
     }
 }
