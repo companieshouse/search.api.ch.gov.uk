@@ -40,16 +40,17 @@ public class AlphabeticalSearchControllerTest {
     @InjectMocks
     private AlphabeticalSearchController alphabeticalSearchController;
 
-    private String REQUEST_ID = anyString();
+    private static final String REQUEST_ID = "requestID";
+    private static final String COMPANY_NAME = "test name";
 
     @Test
     @DisplayName("Test search not found")
-    public void testSearchNotFound() {
+    void testSearchNotFound() {
 
         ResponseObject responseObject =
             new ResponseObject(SEARCH_NOT_FOUND, null);
 
-        when(mockSearchIndexService.search(anyString(), REQUEST_ID)).thenReturn(responseObject);
+        when(mockSearchIndexService.search(COMPANY_NAME, REQUEST_ID)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(NOT_FOUND).build());
 
@@ -62,12 +63,12 @@ public class AlphabeticalSearchControllerTest {
 
     @Test
     @DisplayName("Test search found")
-    public void testSearchFound() {
+     void testSearchFound() {
 
         ResponseObject responseObject =
             new ResponseObject(SEARCH_FOUND, createSearchResults());
 
-        when(mockSearchIndexService.search(anyString(), REQUEST_ID)).thenReturn(responseObject);
+        when(mockSearchIndexService.search(COMPANY_NAME, REQUEST_ID)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
