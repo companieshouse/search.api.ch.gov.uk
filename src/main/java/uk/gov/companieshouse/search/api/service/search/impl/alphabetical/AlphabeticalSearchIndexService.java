@@ -156,8 +156,8 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
 
     private int getIndexEnd(int totalResults, int highestMatchIndexPos) {
 
-        int sampleSize = totalResults - highestMatchIndexPos;
-        int indexEndPos = highestMatchIndexPos + (sampleSize < 10 ? sampleSize : 10);
+        int bottomMatchesSize = totalResults - highestMatchIndexPos;
+        int indexEndPos = highestMatchIndexPos + (bottomMatchesSize < 10 ? bottomMatchesSize : 10);
         int differenceIndexPos = indexEndPos - totalResults;
 
         if (differenceIndexPos <= 0) {
