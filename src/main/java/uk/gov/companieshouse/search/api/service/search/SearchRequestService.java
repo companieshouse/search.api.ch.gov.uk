@@ -10,5 +10,5 @@ public interface SearchRequestService {
      * @param searchParam - param to search elastic search database
      * @return {@link SearchRequest}
      */
-    SearchRequest createSearchRequest(String searchParam);
+    SearchRequest createSearchRequest(String searchParam, String requestId);
 }

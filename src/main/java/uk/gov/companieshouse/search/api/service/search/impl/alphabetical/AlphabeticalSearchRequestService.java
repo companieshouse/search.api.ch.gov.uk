@@ -1,11 +1,14 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
 import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.environment.EnvironmentReader;
@@ -35,12 +38,13 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
      * {@inheritDoc}
      */
     @Override
-    public SearchRequest createSearchRequest(String corporateName) {
+    public SearchRequest createSearchRequest(String corporateName, String requestId) {
 
-        LOG.info(ALPHABETICAL_SEARCH + "Creating search request for: " + corporateName);
+        LOG.info(ALPHABETICAL_SEARCH + "Creating search request for: " + corporateName + " for user with Id: " + requestId);
 
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.indices(environmentReader.getMandatoryString(INDEX));
+        searchRequest.preference(requestId);
         searchRequest.source(createSource(corporateName));
 
         return searchRequest;
@@ -69,12 +73,14 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
         LOG.info(ALPHABETICAL_SEARCH + "Adding query for: " + corporateName);
 
+        CharSequence spaceChar = " ";
+        String CorpNameFirstWord = corporateName.contains(spaceChar) ?
+                corporateName.substring(0, corporateName.indexOf(spaceChar.toString())) : corporateName;
+
         return QueryBuilders.boolQuery()
-            .should(QueryBuilders
-                .matchQuery("items.corporate_name_start.edge_ngram", corporateName).fuzziness(2))
-            .should(QueryBuilders
-                .matchQuery("items.corporate_name_start", corporateName).boost(5))
-            .should(QueryBuilders
-                .matchPhraseQuery("items.corporate_name_start", corporateName));
+                .should(QueryBuilders.prefixQuery("items.corporate_name_start", corporateName).boost(5))
+                .should(QueryBuilders.queryStringQuery(corporateName).enablePositionIncrements(true)
+                        .allowLeadingWildcard(false).autoGenerateSynonymsPhraseQuery(false))
+                .should(QueryBuilders.matchQuery("items.corporate_name_start.edge_ngram", CorpNameFirstWord).fuzziness(2));
     }
 }

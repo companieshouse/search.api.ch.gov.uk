@@ -51,13 +51,13 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
      * {@inheritDoc}
      */
     @Override
-    public ResponseObject search(String corporateName) {
+    public ResponseObject search(String corporateName, String requestId) {
 
         SearchResults searchResults;
 
         try {
             LOG.info(ALPHABETICAL_SEARCH + "started for: " + corporateName);
-            searchResults = performAlphabeticalSearch(corporateName);
+            searchResults = performAlphabeticalSearch(corporateName, requestId);
         } catch (SearchException | ObjectMapperException e) {
             LOG.error("An error occurred in alphabetical search whilst searching: " + corporateName, e);
             return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
@@ -72,14 +72,14 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 
-    private SearchResults performAlphabeticalSearch(String corporateName)
+    private SearchResults performAlphabeticalSearch(String corporateName, String requestId)
         throws SearchException, ObjectMapperException {
 
         SearchResponse searchResponse;
 
         try {
             searchResponse = searchRestClient.searchRestClient(
-                searchRequestService.createSearchRequest(corporateName));
+                searchRequestService.createSearchRequest(corporateName, requestId));
         } catch (IOException e) {
             LOG.error(ALPHABETICAL_SEARCH + "Failed to get a search response from elastic search " +
                 "for: " + corporateName, e);
@@ -147,7 +147,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         int endIndex = getIndexEnd(totalResults, highestMatchIndexPos);
 
         // loop to get 20 hits with 9 records above and 10 below the highest match.
-        for(int i = startIndex; i < endIndex + 1; i++) {
+        for(int i = startIndex; i < endIndex; i++) {
             searchCompanyResults.add(companies.get(i));
         }
 
@@ -156,10 +156,11 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
 
     private int getIndexEnd(int totalResults, int highestMatchIndexPos) {
 
-        int indexEndPos = highestMatchIndexPos + 10;
+        int bottomMatchesSize = totalResults - highestMatchIndexPos;
+        int indexEndPos = highestMatchIndexPos + (bottomMatchesSize < 10 ? bottomMatchesSize : 10);
         int differenceIndexPos = indexEndPos - totalResults;
 
-        if (differenceIndexPos < 0) {
+        if (differenceIndexPos <= 0) {
             return indexEndPos;
         } else {
             return indexEndPos - differenceIndexPos;
@@ -181,6 +182,10 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         String corporateName) throws ObjectMapperException {
 
         SearchHits searchHitsHighestMatched = transformToSearchHits(aggregation);
+
+        if (searchHitsHighestMatched.getHits().length == 0){
+            return null;
+        }
 
         Optional<Company> companyTopHit;
 
