@@ -73,27 +73,14 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
         LOG.info(ALPHABETICAL_SEARCH + "Adding query for: " + corporateName);
 
-        // works strictly on single word searches
-        // poorly on multi-word searches
-        // very well on single letter searches
+        CharSequence spaceChar = " ";
+        String CorpNameFirstWord = corporateName.contains(spaceChar) ?
+                corporateName.substring(0, corporateName.indexOf(spaceChar.toString())) : corporateName;
+
         return QueryBuilders.boolQuery()
                 .should(QueryBuilders.prefixQuery("items.corporate_name_start", corporateName).boost(5))
                 .should(QueryBuilders.queryStringQuery(corporateName).enablePositionIncrements(true)
-                        .allowLeadingWildcard(false).autoGenerateSynonymsPhraseQuery(false));
-
-        // works best on single word searches
-        // okay on multi-word searches
-        // poorly on single letter searches
-//        return QueryBuilders.boolQuery()
-//                .should(QueryBuilders.prefixQuery("items.corporate_name_start", corporateName).boost(5))
-//                .should(QueryBuilders.matchQuery("items.corporate_name_start.edge_ngram", corporateName).fuzziness(2));
-
-        // works best on single word searches
-        // okay on multi-word searches
-        // okay on single letter searches
-//        return QueryBuilders.boolQuery()
-//                .should(
-//                        QueryBuilders.matchPhrasePrefixQuery("items.corporate_name_start", corporateName).boost(5))
-//                .should(QueryBuilders.matchQuery("items.corporate_name_start.edge_ngram", corporateName).fuzziness(2));
+                        .allowLeadingWildcard(false).autoGenerateSynonymsPhraseQuery(false))
+                .should(QueryBuilders.matchQuery("items.corporate_name_start.edge_ngram", CorpNameFirstWord).fuzziness(2));
     }
 }
