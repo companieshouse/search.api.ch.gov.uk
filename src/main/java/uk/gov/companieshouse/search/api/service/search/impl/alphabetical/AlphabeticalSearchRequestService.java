@@ -1,14 +1,11 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
 import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.common.unit.Fuzziness;
-import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.environment.EnvironmentReader;
@@ -74,13 +71,13 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         LOG.info(ALPHABETICAL_SEARCH + "Adding query for: " + corporateName);
 
         CharSequence spaceChar = " ";
-        String CorpNameFirstWord = corporateName.contains(spaceChar) ?
+        String corporateNameFirstWord = corporateName.contains(spaceChar) ?
                 corporateName.substring(0, corporateName.indexOf(spaceChar.toString())) : corporateName;
 
         return QueryBuilders.boolQuery()
                 .should(QueryBuilders.prefixQuery("items.corporate_name_start", corporateName).boost(5))
-                .should(QueryBuilders.queryStringQuery(corporateName).enablePositionIncrements(true)
+                .should(QueryBuilders.queryStringQuery(corporateNameFirstWord).enablePositionIncrements(true)
                         .allowLeadingWildcard(false).autoGenerateSynonymsPhraseQuery(false))
-                .should(QueryBuilders.matchQuery("items.corporate_name_start.edge_ngram", CorpNameFirstWord).fuzziness(2));
+                .should(QueryBuilders.matchQuery("items.corporate_name_start.edge_ngram", corporateNameFirstWord).fuzziness(2));
     }
 }
