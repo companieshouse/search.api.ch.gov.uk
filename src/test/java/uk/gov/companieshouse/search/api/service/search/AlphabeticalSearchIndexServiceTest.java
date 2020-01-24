@@ -37,9 +37,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
@@ -139,6 +139,7 @@ public class AlphabeticalSearchIndexServiceTest {
 
         assertEquals(SEARCH_FOUND, responseObject.getStatus());
         assertEquals(TOP_HIT, searchResults.getTopHit());
+        assertTrue(searchResults.getResults().size() > 0);
     }
 
     @Test
