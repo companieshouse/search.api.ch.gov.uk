@@ -4,10 +4,10 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
@@ -34,7 +34,7 @@ public class UpsertCompanyService {
      * @param company - Company sent over in REST call to be added/updated
      * @return {@link ResponseObject}
      */
-    public ResponseObject upsert(Company company) {
+    public ResponseObject upsert(CompanyProfileApi company) {
 
         IndexRequest indexRequest;
         UpdateRequest updateRequest;
@@ -54,7 +54,7 @@ public class UpsertCompanyService {
             return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
         }
 
-        LOG.info("Upsert successful for " + company.getId());
+        LOG.info("Upsert successful for " + company.getCompanyName());
         return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
     }
 }
