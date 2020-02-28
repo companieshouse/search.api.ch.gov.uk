@@ -37,13 +37,10 @@ public class UpsertRequestService {
      * @throws UpsertException
      */
     public IndexRequest createIndexRequest(CompanyProfileApi company) throws UpsertException {
-
-        IndexRequest indexRequest;
         try {
             LOG.info("Preparing index request for "  + company.getCompanyName());
-            indexRequest = new IndexRequest("alpha_search")
+            return new IndexRequest("alpha_search")
                 .source(buildRequest(company));
-            return indexRequest;
         } catch (IOException e) {
             LOG.error("Failed to index a document for company number: " + company.getCompanyName());
             throw new UpsertException("Unable create index request");
@@ -59,15 +56,12 @@ public class UpsertRequestService {
      */
     public UpdateRequest createUpdateRequest(CompanyProfileApi company, IndexRequest indexRequest)
         throws UpsertException {
-
-        UpdateRequest updateRequest;
         try {
             LOG.info("Attempt to upsert document if it does not exist for "  + company.getCompanyName());
-            updateRequest = new UpdateRequest("alpha_search", company.getCompanyNumber())
+
+            return new UpdateRequest("alpha_search", company.getCompanyNumber())
                 .doc(buildRequest(company))
                 .upsert(indexRequest);
-
-            return updateRequest;
         } catch (IOException e) {
             LOG.error("Failed to update a document for company: " + company.getCompanyName());
             throw new UpsertException("Unable to create update request");
