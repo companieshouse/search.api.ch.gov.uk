@@ -8,12 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Company;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Links;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -41,7 +42,7 @@ public class UpsertCompanyControllerTest {
     @DisplayName("Test upsert company is successful")
     void testUpsertSuccessful() {
         ResponseObject responseObject = new ResponseObject(DOCUMENT_UPSERTED);
-        Company company = createCompany();
+        CompanyProfileApi company = createCompany();
 
         when(mockUpsertCompanyService.upsert(company)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
@@ -57,7 +58,7 @@ public class UpsertCompanyControllerTest {
     @DisplayName("Test upsert company failed to index or update document")
     void testUpsertFailedToIndexOrUpdate() {
         ResponseObject responseObject = new ResponseObject(UPSERT_ERROR);
-        Company company = createCompany();
+        CompanyProfileApi company = createCompany();
 
         when(mockUpsertCompanyService.upsert(company)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
@@ -73,7 +74,7 @@ public class UpsertCompanyControllerTest {
     @DisplayName("Test upsert failed during update request")
     void testUpsertFailedUpdateRequest() {
         ResponseObject responseObject = new ResponseObject(UPDATE_REQUEST_ERROR);
-        Company company = createCompany();
+        CompanyProfileApi company = createCompany();
 
         when(mockUpsertCompanyService.upsert(company)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
@@ -85,21 +86,15 @@ public class UpsertCompanyControllerTest {
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     }
 
-    private Company createCompany() {
-        Company company = new Company();
-        company.setId("ID");
-        company.setCompanyType("company type");
+    private CompanyProfileApi createCompany() {
+        CompanyProfileApi company = new CompanyProfileApi();
+        company.setType("company type");
+        company.setCompanyNumber("company number");
+        company.setCompanyStatus("company status");
+        company.setCompanyName("company name");
 
-        Items items = new Items();
-        items.setCompanyNumber("company number");
-        items.setCompanyStatus("company status");
-        items.setCorporateName("corporate name");
-        items.setRecordType("record type");
-        company.setItems(items);
-
-        Links links = new Links();
-        links.setSelf("self");
-
+        Map<String, String> links = new HashMap<>();
+        links.put("self", "company/00000000");
         company.setLinks(links);
 
         return company;

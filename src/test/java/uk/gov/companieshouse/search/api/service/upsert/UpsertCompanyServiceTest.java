@@ -9,14 +9,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Company;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Links;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -43,7 +43,7 @@ public class UpsertCompanyServiceTest {
     @DisplayName("Test upsert is successful")
     void testUpsertIsSuccessful() throws Exception {
 
-        Company company = createCompany();
+        CompanyProfileApi company = createCompany();
         IndexRequest indexRequest = new IndexRequest("alpha_search");
 
         when(mockUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
@@ -60,7 +60,7 @@ public class UpsertCompanyServiceTest {
     @DisplayName("Test exception thrown during index request")
     void testExceptionThrownDuringIndexRequest() throws Exception {
 
-        Company company = createCompany();
+        CompanyProfileApi company = createCompany();
         IndexRequest indexRequest = new IndexRequest("alpha_search");
 
         when(mockUpsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
@@ -75,7 +75,7 @@ public class UpsertCompanyServiceTest {
     @DisplayName("Test exception thrown during update request")
     void testExceptionThrownDuringUpdateRequest() throws Exception {
 
-        Company company = createCompany();
+        CompanyProfileApi company = createCompany();
         IndexRequest indexRequest = new IndexRequest("alpha_search");
 
         when(mockUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
@@ -92,9 +92,9 @@ public class UpsertCompanyServiceTest {
     @DisplayName("Test exception thrown during upsert")
     void testExceptionThrownDuringUpsert() throws Exception {
 
-        Company company = createCompany();
+        CompanyProfileApi company = createCompany();
         IndexRequest indexRequest = new IndexRequest("alpha_search");
-        UpdateRequest updateRequest = new UpdateRequest("alpha_search", company.getId());
+        UpdateRequest updateRequest = new UpdateRequest("alpha_search", company.getCompanyNumber());
 
         when(mockUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
         when(mockUpsertRequestService.createUpdateRequest(
@@ -108,21 +108,15 @@ public class UpsertCompanyServiceTest {
         assertEquals(UPDATE_REQUEST_ERROR, responseObject.getStatus());
     }
 
-    private Company createCompany() {
-        Company company = new Company();
-        company.setId("ID");
-        company.setCompanyType("company type");
+    private CompanyProfileApi createCompany() {
+        CompanyProfileApi company = new CompanyProfileApi();
+        company.setType("company type");
+        company.setCompanyNumber("company number");
+        company.setCompanyStatus("company status");
+        company.setCompanyName("company name");
 
-        Items items = new Items();
-        items.setCompanyNumber("company number");
-        items.setCompanyStatus("company status");
-        items.setCorporateName("corporate name");
-        items.setRecordType("record type");
-        company.setItems(items);
-
-        Links links = new Links();
-        links.setSelf("self");
-
+        Map<String, String> links = new HashMap<>();
+        links.put("self", "company/00000000");
         company.setLinks(links);
 
         return company;

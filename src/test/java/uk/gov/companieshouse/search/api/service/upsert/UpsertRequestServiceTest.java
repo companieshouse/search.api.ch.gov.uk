@@ -8,10 +8,11 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Company;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Links;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -31,22 +32,22 @@ public class UpsertRequestServiceTest {
     @DisplayName("Test create index and update request is successful")
     void testCreateIndexRequestSuccessful() throws Exception {
 
-        Company company = createCompany();
+        CompanyProfileApi company = createCompany();
 
         IndexRequest indexRequest = upsertRequestService.createIndexRequest(company);
         UpdateRequest updateRequest = upsertRequestService.createUpdateRequest(company, indexRequest);
 
         assertNotNull(indexRequest);
         assertNotNull(updateRequest);
-        assertEquals(ALPHA_SEARCH, indexRequest.index().toString());
-        assertEquals(ALPHA_SEARCH, updateRequest.index().toString());
+        assertEquals(ALPHA_SEARCH, indexRequest.index());
+        assertEquals(ALPHA_SEARCH, updateRequest.index());
     }
 
     @Test
     @DisplayName("Test create index request throws exception")
     void testCreateIndexThrowsException() throws Exception {
 
-        Company company = createCompany();
+        CompanyProfileApi company = createCompany();
 
         when(upsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
 
@@ -58,7 +59,7 @@ public class UpsertRequestServiceTest {
     @DisplayName("Test create update request throws exception")
     void testUpdateIndexThrowsException() throws Exception {
 
-        Company company = createCompany();
+        CompanyProfileApi company = createCompany();
         IndexRequest indexRequest = new IndexRequest("alpha_search");
 
         when(upsertRequestService.createUpdateRequest(company, indexRequest))
@@ -68,21 +69,15 @@ public class UpsertRequestServiceTest {
             () -> upsertRequestService.createUpdateRequest(company, indexRequest));
     }
 
-    private Company createCompany() {
-        Company company = new Company();
-        company.setId("ID");
-        company.setCompanyType("company type");
+    private CompanyProfileApi createCompany() {
+        CompanyProfileApi company = new CompanyProfileApi();
+        company.setType("company type");
+        company.setCompanyNumber("company number");
+        company.setCompanyStatus("company status");
+        company.setCompanyName("company name");
 
-        Items items = new Items();
-        items.setCompanyNumber("company number");
-        items.setCompanyStatus("company status");
-        items.setCorporateName("corporate name");
-        items.setRecordType("record type");
-        company.setItems(items);
-
-        Links links = new Links();
-        links.setSelf("self");
-
+        Map<String, String> links = new HashMap<>();
+        links.put("self", "company/00000000");
         company.setLinks(links);
 
         return company;
