@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.search.api.service.search;
 
 import org.elasticsearch.action.search.SearchRequest;
+import uk.gov.companieshouse.search.api.model.SearchResults;
 
 import java.io.IOException;
 
@@ -12,5 +13,5 @@ public interface SearchRequestService {
      * @param searchParam - param to search elastic search database
      * @return {@link SearchRequest}
      */
-    SearchRequest createSearchRequest(String searchParam, String requestId) throws IOException;
+    SearchResults createSearchRequest(String searchParam, String requestId) throws IOException;
 }

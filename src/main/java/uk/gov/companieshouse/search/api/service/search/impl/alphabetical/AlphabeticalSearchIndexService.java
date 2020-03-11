@@ -57,8 +57,8 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
 
         try {
             LOG.info(ALPHABETICAL_SEARCH + "started for: " + corporateName);
-            searchResults = performAlphabeticalSearch(corporateName, requestId);
-        } catch (SearchException | ObjectMapperException e) {
+            searchResults = searchRequestService.createSearchRequest(corporateName, requestId);
+        } catch (IOException e) {
             LOG.error("An error occurred in alphabetical search whilst searching: " + corporateName, e);
             return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
@@ -72,7 +72,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 
-    private SearchResults performAlphabeticalSearch(String corporateName, String requestId)
+    /*private SearchResults performAlphabeticalSearch(String corporateName, String requestId)
         throws SearchException, ObjectMapperException {
 
         SearchResponse searchResponse;
@@ -100,7 +100,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
             throw new SearchException("highest match was not located in the search, unable to " +
                 "process search request");
         }
-    }
+    }*/
 
     private String getAggregatedSearchResults(List<Aggregation> aggregations, String corporateName)
         throws ObjectMapperException {
