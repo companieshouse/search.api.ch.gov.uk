@@ -55,8 +55,18 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
         List<String> results = new ArrayList<>();
 
+        boolean multiwordQuery = false;
+
+        if (corporateName.split("\\w").length > 1) {
+            multiwordQuery = true;
+        }
+
         SearchRequest searchRequestBestMatch = createBaseSearchRequest(requestId);
-        searchRequestBestMatch.source(bestMatchSourceBuilder(createBestMatchSearchQuery(corporateName), SortOrder.ASC));
+
+        SearchSourceBuilder searchSourceBuilder = multiwordQuery ? bestMatchSourceBuilder(createBestMulitwordMatchSearchQuery(corporateName), SortOrder.ASC)
+            : bestMatchSourceBuilder(createBestMatchSearchQuery(corporateName), SortOrder.ASC);
+
+        searchRequestBestMatch.source(searchSourceBuilder);
 
         SearchResponse searchResponse = searchRestClient.searchRestClient(searchRequestBestMatch);
         SearchHits hits = searchResponse.getHits();
@@ -72,9 +82,9 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         }
 
         if (hits.getTotalHits().value > 0) {
-            String corporateStripped = getCorporateNameStripped(hits.getHits()[0]);
+            String corporateWithId = getCorporateWithId(hits.getHits()[0]);
 
-            System.out.println("########## CORPORATE STRIPPED ##########" + corporateStripped);
+            System.out.println("########## CORPORATE STRIPPED ##########" + corporateWithId);
             Optional<Company> companyTopHit;
 
             try {
@@ -88,7 +98,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
                 SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
 
-                searchAlphabetic.source(alphabeticalSourceBuilder(corporateStripped, createAlphabeticalQuery(), SortOrder.DESC));
+                searchAlphabetic.source(alphabeticalSourceBuilder(corporateWithId, createAlphabeticalQuery(), SortOrder.DESC));
                 SearchResponse searchResponseAfterDesc = searchRestClient.searchRestClient(searchAlphabetic);
                 hits = searchResponseAfterDesc.getHits();
 
@@ -96,7 +106,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 results.add(bestMatch);
                 System.out.println("########## BEST MATCH ##########" + bestMatch);
 
-                searchAlphabetic.source(alphabeticalSourceBuilder(corporateStripped, createAlphabeticalQuery(), SortOrder.ASC));
+                searchAlphabetic.source(alphabeticalSourceBuilder(corporateWithId, createAlphabeticalQuery(), SortOrder.ASC));
                 SearchResponse searchResponseAfterAsc = searchRestClient.searchRestClient(searchAlphabetic);
                 hits = searchResponseAfterAsc.getHits();
                 hits.forEach(h -> {System.out.println(getCorporateName(h)); results.add(getCorporateName(h));});
@@ -108,6 +118,11 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         }
 
         return new SearchResults("", bestMatch, results);
+    }
+
+    private String getCorporateWithId(SearchHit hit) {
+        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+        return (String) sourceAsMap.get("corporate_with_type");
     }
 
     private String getCorporateNameStripped(SearchHit hit) {
@@ -145,7 +160,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         sourceBuilder.size(Integer.parseInt(environmentReader.getMandatoryString(RESULTS_SIZE)));
         sourceBuilder.query(queryBuilder);
         sourceBuilder.searchAfter(new Object[]{corporateStripped});
-        sourceBuilder.sort("corporate_stripped", sortOrder);
+        sourceBuilder.sort("corporate_with_type", sortOrder);
 
         return sourceBuilder;
     }
@@ -155,6 +170,13 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         LOG.info(ALPHABETICAL_SEARCH + "Running best match query for: " + corporateName);
 
         return QueryBuilders.matchQuery("items.corporate_name.first_token", corporateName);
+    }
+
+    private QueryBuilder createBestMulitwordMatchSearchQuery(String corporateName) {
+
+        LOG.info(ALPHABETICAL_SEARCH + "Running best match query for: " + corporateName);
+
+        return QueryBuilders.matchPhrasePrefixQuery("items.corporate_name.startsWith", corporateName);
     }
 
     private QueryBuilder createStartsWithQuery(String corporateName) {
