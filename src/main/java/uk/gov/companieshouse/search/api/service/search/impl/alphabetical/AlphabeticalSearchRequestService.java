@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -26,7 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
 
@@ -62,19 +60,19 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
             multiwordQuery = true;
         }
 
-        SearchRequest searchRequestBestMatch = createBaseSearchRequest(requestId);
-
         SearchSourceBuilder searchSourceBuilder = multiwordQuery
                 ? bestMatchSourceBuilder(createBestMulitwordMatchSearchQuery(corporateName), "items.alpha_key.keyword", SortOrder.ASC)
                     : bestMatchSourceBuilder(createBestMatchSearchQuery(corporateName), "items.alpha_key.keyword", SortOrder.ASC);
 
+        SearchRequest searchRequestBestMatch = createBaseSearchRequest(requestId);
         searchRequestBestMatch.source(searchSourceBuilder);
 
         SearchResponse searchResponse = searchRestClient.searchRestClient(searchRequestBestMatch);
         SearchHits hits = searchResponse.getHits();
-        String bestMatch = "";
+        String topHitCompanyName = "";
 
         if (hits.getTotalHits().value == 0) {
+            LOG.info("A hit was not found for: " + corporateName + ", attempting to find the next best result");
             SearchRequest searchRequestStartsWith = createBaseSearchRequest(requestId);
 
             searchRequestStartsWith.source(bestMatchSourceBuilder(createStartsWithQuery(corporateName)
@@ -86,36 +84,31 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         }
 
         if (hits.getTotalHits().value > 0) {
+            LOG.info("One hit or more has been found for: " + corporateName);
 
             SearchHit topHit = hits.getHits()[0];
             String corporateWithId = getCorporateWithId(hits.getHits()[0]);
 
-            System.out.println("########## CORPORATE STRIPPED ##########" + corporateWithId);
-            Optional<Company> companyTopHit;
-
             try {
-                // extract the highest matched name from position 0 as we know there is only one.
-                companyTopHit = Optional.of(new ObjectMapper()
-                    .readValue(hits.getAt(0).getSourceAsString(), Company.class));
-
-                bestMatch = companyTopHit.map(Company::getItems)
-                    .map(Items::getCorporateName)
-                    .orElse("");
-
                 SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
+                Company topHitCompany = getCompany(topHit);
+                topHitCompanyName = topHitCompany.getItems().getCorporateName();
 
+                LOG.info("Retrieving the alphabetically descending results for search query: " + topHitCompanyName);
                 searchAlphabetic.source(alphabeticalSourceBuilder(corporateWithId, createAlphabeticalQuery(), SortOrder.DESC));
                 SearchResponse searchResponseAfterDesc = searchRestClient.searchRestClient(searchAlphabetic);
                 hits = searchResponseAfterDesc.getHits();
+                hits.forEach(h -> results.add(getCompany(h)));
 
-                hits.forEach(h -> {System.out.println(getCorporateName(h)); results.add(getCompany(h));});
-                results.add(getCompany(topHit));
-                System.out.println("########## BEST MATCH ##########" + bestMatch);
+                LOG.info("Retrieving the top hit: " + topHitCompanyName);
+                results.add(topHitCompany);
 
+                LOG.info("Retrieving the alphabetically ascending results from: " + topHitCompanyName);
                 searchAlphabetic.source(alphabeticalSourceBuilder(corporateWithId, createAlphabeticalQuery(), SortOrder.ASC));
                 SearchResponse searchResponseAfterAsc = searchRestClient.searchRestClient(searchAlphabetic);
                 hits = searchResponseAfterAsc.getHits();
-                hits.forEach(h -> {System.out.println(getCorporateName(h)); results.add(getCompany(h));});
+                hits.forEach(h -> results.add(getCompany(h)));
+
             } catch (IOException e) {
                 LOG.error(ALPHABETICAL_SEARCH + "failed to map highest map to company object for: " + corporateName, e);
                 throw new ObjectMapperException("error occurred reading data for highest match from " +
@@ -123,54 +116,12 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
             }
         }
 
-        return new SearchResults("", bestMatch, results);
+        return new SearchResults("", topHitCompanyName, results);
     }
 
     private String getCorporateWithId(SearchHit hit) {
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
         return (String) sourceAsMap.get("corporate_with_type");
-    }
-
-    private String getCorporateNameStripped(SearchHit hit) {
-        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-        return (String) sourceAsMap.get("corporate_stripped");
-    }
-
-    private String getCorporateName(SearchHit hit) {
-        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-        Map<String, Object> items = (Map<String, Object>) sourceAsMap.get("items");
-        return (String) (items.get("corporate_name"));
-    }
-
-    private Company getCompany(SearchHit hit) {
-        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-        Map<String, Object> items = (Map<String, Object>) sourceAsMap.get("items");
-        Map<String, Object> links = (Map<String, Object>) sourceAsMap.get("links");
-
-        Company company = new Company();
-        Items companyItems = new Items();
-        Links companyLinks = new Links();
-
-        companyItems.setCorporateName((String) (items.get("corporate_name")));
-        companyItems.setCompanyNumber((String) (items.get("company_number")));
-        companyItems.setCompanyStatus((String) (items.get("company_status")));
-
-        companyLinks.setSelf((String) (links.get("self")));
-
-        company.setId((String) sourceAsMap.get("ID"));
-        company.setCompanyType((String) sourceAsMap.get("company_type"));
-        company.setItems(companyItems);
-        company.setLinks(companyLinks);
-
-        return company;
-    }
-
-    private SearchRequest createBaseSearchRequest(String requestId) {
-        SearchRequest searchRequest = new SearchRequest();
-        searchRequest.indices(environmentReader.getMandatoryString(INDEX));
-        searchRequest.preference(requestId);
-
-        return searchRequest;
     }
 
     private SearchSourceBuilder bestMatchSourceBuilder(QueryBuilder queryBuilder, String sortField, SortOrder sortOrder) {
@@ -218,5 +169,36 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     private QueryBuilder createAlphabeticalQuery() {
 
         return QueryBuilders.matchAllQuery();
+    }
+
+    private Company getCompany(SearchHit hit) {
+        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+        Map<String, Object> items = (Map<String, Object>) sourceAsMap.get("items");
+        Map<String, Object> links = (Map<String, Object>) sourceAsMap.get("links");
+
+        Company company = new Company();
+        Items companyItems = new Items();
+        Links companyLinks = new Links();
+
+        companyItems.setCorporateName((String) (items.get("corporate_name")));
+        companyItems.setCompanyNumber((String) (items.get("company_number")));
+        companyItems.setCompanyStatus((String) (items.get("company_status")));
+
+        companyLinks.setSelf((String) (links.get("self")));
+
+        company.setId((String) sourceAsMap.get("ID"));
+        company.setCompanyType((String) sourceAsMap.get("company_type"));
+        company.setItems(companyItems);
+        company.setLinks(companyLinks);
+
+        return company;
+    }
+
+    private SearchRequest createBaseSearchRequest(String requestId) {
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.indices(environmentReader.getMandatoryString(INDEX));
+        searchRequest.preference(requestId);
+
+        return searchRequest;
     }
 }
