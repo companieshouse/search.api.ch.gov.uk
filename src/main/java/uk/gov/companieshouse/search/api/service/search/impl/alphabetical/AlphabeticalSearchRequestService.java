@@ -57,14 +57,15 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
         boolean multiwordQuery = false;
 
-        if (corporateName.split("\\w").length > 1) {
+        if (corporateName.split("\\s").length > 1) {
             multiwordQuery = true;
         }
 
         SearchRequest searchRequestBestMatch = createBaseSearchRequest(requestId);
 
-        SearchSourceBuilder searchSourceBuilder = multiwordQuery ? bestMatchSourceBuilder(createBestMulitwordMatchSearchQuery(corporateName), SortOrder.ASC)
-            : bestMatchSourceBuilder(createBestMatchSearchQuery(corporateName), SortOrder.ASC);
+        SearchSourceBuilder searchSourceBuilder = multiwordQuery
+                ? bestMatchSourceBuilder(createBestMulitwordMatchSearchQuery(corporateName), "items.alpha_key.keyword", SortOrder.ASC)
+                    : bestMatchSourceBuilder(createBestMatchSearchQuery(corporateName), "items.alpha_key.keyword", SortOrder.ASC);
 
         searchRequestBestMatch.source(searchSourceBuilder);
 
@@ -75,7 +76,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         if (hits.getTotalHits().value == 0) {
             SearchRequest searchRequestStartsWith = createBaseSearchRequest(requestId);
 
-            searchRequestStartsWith.source(bestMatchSourceBuilder(createStartsWithQuery(corporateName), SortOrder.ASC));
+            searchRequestStartsWith.source(bestMatchSourceBuilder(createStartsWithQuery(corporateName), "items.alpha_key.keyword", SortOrder.ASC));
             SearchResponse searchResponseStartsWith = searchRestClient.searchRestClient(searchRequestStartsWith);
             hits = searchResponseStartsWith.getHits();
 
@@ -144,12 +145,12 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         return searchRequest;
     }
 
-    private SearchSourceBuilder bestMatchSourceBuilder(QueryBuilder queryBuilder, SortOrder sortOrder) {
+    private SearchSourceBuilder bestMatchSourceBuilder(QueryBuilder queryBuilder, String sortField, SortOrder sortOrder) {
 
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.size(Integer.parseInt(environmentReader.getMandatoryString(RESULTS_SIZE)));
         sourceBuilder.query(queryBuilder);
-        sourceBuilder.sort("corporate_stripped", sortOrder);
+        sourceBuilder.sort(sortField, sortOrder);
 
         return sourceBuilder;
     }
