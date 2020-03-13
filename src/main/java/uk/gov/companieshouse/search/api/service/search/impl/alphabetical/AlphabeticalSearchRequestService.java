@@ -25,6 +25,7 @@ import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -123,6 +124,8 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                hits = searchResponseAfterDesc.getHits();
                hits.forEach(h -> results.add(getCompany(h)));
 
+               Collections.reverse(results);
+
                LOG.info("Retrieving the top hit: " + topHitCompanyName);
                results.add(topHitCompany);
 
@@ -130,6 +133,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId, createAlphabeticalQuery(), SortOrder.ASC));
                SearchResponse searchResponseAfterAsc = searchRestClient.searchRestClient(searchAlphabetic);
                hits = searchResponseAfterAsc.getHits();
+
                hits.forEach(h -> results.add(getCompany(h)));
 
            } catch (IOException e) {
