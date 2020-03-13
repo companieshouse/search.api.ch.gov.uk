@@ -18,7 +18,9 @@ import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Company;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Links;
+import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
+import uk.gov.companieshouse.search.api.service.search.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
 
 import java.io.IOException;
@@ -35,6 +37,8 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     private EnvironmentReader environmentReader;
     @Autowired
     private RestClientService searchRestClient;
+    @Autowired
+    private AlphaKeyService alphaKeyService;
 
     private static final String INDEX = "ALPHABETICAL_SEARCH_INDEX";
 
@@ -47,81 +51,104 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
    /**
      * {@inheritDoc}
      */
-    @Override
-    public SearchResults createSearchRequest(String corporateName, String requestId) throws IOException {
+   @Override
+   public SearchResults createSearchRequest(String corporateName, String requestId) throws IOException {
 
-        LOG.info(ALPHABETICAL_SEARCH + "Creating search request for: " + corporateName + " for user with Id: " + requestId);
+       LOG.info(ALPHABETICAL_SEARCH + "Creating search request for: " + corporateName + " for user with Id: " + requestId);
 
-        List<Company> results = new ArrayList<>();
+       String orderedAlphakey = "";
 
-        boolean multiwordQuery = false;
+       AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(corporateName);
+       if (alphaKeyResponse != null) {
+           orderedAlphakey = alphaKeyResponse.getOrderedAlphaKey();
+       }
 
-        if (corporateName.split("\\s").length > 1) {
-            multiwordQuery = true;
-        }
+       System.out.println(orderedAlphakey);
 
-        SearchSourceBuilder searchSourceBuilder = multiwordQuery
-                ? bestMatchSourceBuilder(createBestMulitwordMatchSearchQuery(corporateName), "items.alpha_key.keyword", SortOrder.ASC)
-                    : bestMatchSourceBuilder(createBestMatchSearchQuery(corporateName), "items.alpha_key.keyword", SortOrder.ASC);
+       List<Company> results = new ArrayList<>();
 
-        SearchRequest searchRequestBestMatch = createBaseSearchRequest(requestId);
-        searchRequestBestMatch.source(searchSourceBuilder);
+//        boolean multiwordQuery = false;
+//
+//        if (corporateName.split("\\s").length > 1) {
+//            multiwordQuery = true;
+//        }
 
-        SearchResponse searchResponse = searchRestClient.searchRestClient(searchRequestBestMatch);
-        SearchHits hits = searchResponse.getHits();
-        String topHitCompanyName = "";
+       SearchSourceBuilder searchSourceBuilder = bestMatchSourceBuilder(createOrderedAlphakeySearchQuery(orderedAlphakey), "ordered_alpha_key_with_id", SortOrder.ASC);
 
-        if (hits.getTotalHits().value == 0) {
-            LOG.info("A hit was not found for: " + corporateName + ", attempting to find the next best result");
-            SearchRequest searchRequestStartsWith = createBaseSearchRequest(requestId);
+       SearchRequest searchRequestBestMatch = createBaseSearchRequest(requestId);
+       searchRequestBestMatch.source(searchSourceBuilder);
 
-            searchRequestStartsWith.source(bestMatchSourceBuilder(createStartsWithQuery(corporateName)
-                , "items.alpha_key.keyword", SortOrder.ASC));
+       SearchResponse searchResponse = searchRestClient.searchRestClient(searchRequestBestMatch);
+       SearchHits hits = searchResponse.getHits();
+       String topHitCompanyName = "";
 
-            SearchResponse searchResponseStartsWith = searchRestClient.searchRestClient(searchRequestStartsWith);
-            hits = searchResponseStartsWith.getHits();
+       if (hits.getTotalHits().value == 0) {
+           LOG.info("A hit was not found for: " + orderedAlphakey + ", falling back to prefix on alphakey");
+           SearchRequest searchRequestStartsWith = createBaseSearchRequest(requestId);
 
-        }
+           searchRequestStartsWith.source(bestMatchSourceBuilder(createOrderedAlphakeyKeywordQuery(orderedAlphakey)
+               , "ordered_alpha_key_with_id", SortOrder.ASC));
 
-        if (hits.getTotalHits().value > 0) {
-            LOG.info("One hit or more has been found for: " + corporateName);
+           SearchResponse searchResponseStartsWith = searchRestClient.searchRestClient(searchRequestStartsWith);
+           hits = searchResponseStartsWith.getHits();
 
-            SearchHit topHit = hits.getHits()[0];
-            String corporateWithId = getCorporateWithId(hits.getHits()[0]);
+       }
 
-            try {
-                SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
-                Company topHitCompany = getCompany(topHit);
-                topHitCompanyName = topHitCompany.getItems().getCorporateName();
+       if (hits.getTotalHits().value == 0) {
+           LOG.info("A hit was not found for: " + orderedAlphakey + ", falling back to corporate name");
+           SearchRequest searchRequestCorporateName = createBaseSearchRequest(requestId);
 
-                LOG.info("Retrieving the alphabetically descending results for search query: " + topHitCompanyName);
-                searchAlphabetic.source(alphabeticalSourceBuilder(corporateWithId, createAlphabeticalQuery(), SortOrder.DESC));
-                SearchResponse searchResponseAfterDesc = searchRestClient.searchRestClient(searchAlphabetic);
-                hits = searchResponseAfterDesc.getHits();
-                hits.forEach(h -> results.add(getCompany(h)));
+           // Consider using corporateName instead of orderedAlphakey - for now using same logic as in python app
+           searchRequestCorporateName.source(bestMatchSourceBuilder(createStartsWithQuery(orderedAlphakey)
+               , "ordered_alpha_key_with_id", SortOrder.ASC));
 
-                LOG.info("Retrieving the top hit: " + topHitCompanyName);
-                results.add(topHitCompany);
+           SearchResponse searchResponseCorporateName = searchRestClient.searchRestClient(searchRequestCorporateName);
+           hits = searchResponseCorporateName.getHits();
+       }
 
-                LOG.info("Retrieving the alphabetically ascending results from: " + topHitCompanyName);
-                searchAlphabetic.source(alphabeticalSourceBuilder(corporateWithId, createAlphabeticalQuery(), SortOrder.ASC));
-                SearchResponse searchResponseAfterAsc = searchRestClient.searchRestClient(searchAlphabetic);
-                hits = searchResponseAfterAsc.getHits();
-                hits.forEach(h -> results.add(getCompany(h)));
+       if (hits.getTotalHits().value > 0) {
+           LOG.info("A result has been found");
 
-            } catch (IOException e) {
-                LOG.error(ALPHABETICAL_SEARCH + "failed to map highest map to company object for: " + corporateName, e);
-                throw new ObjectMapperException("error occurred reading data for highest match from " +
-                    "searchHits", e);
-            }
-        }
+           SearchHit topHit = hits.getHits()[0];
+           String orderedAlphakeyWithId = getOrderedAlphakeyWithId(hits.getHits()[0]);
 
-        return new SearchResults("", topHitCompanyName, results);
-    }
+           try {
+               SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
+               Company topHitCompany = getCompany(topHit);
+               topHitCompanyName = topHitCompany.getItems().getCorporateName();
+
+               LOG.info("Retrieving the alphabetically descending results for search query: " + topHitCompanyName);
+               searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId, createAlphabeticalQuery(), SortOrder.DESC));
+               SearchResponse searchResponseAfterDesc = searchRestClient.searchRestClient(searchAlphabetic);
+               hits = searchResponseAfterDesc.getHits();
+               hits.forEach(h -> results.add(getCompany(h)));
+
+               LOG.info("Retrieving the top hit: " + topHitCompanyName);
+               results.add(topHitCompany);
+
+               LOG.info("Retrieving the alphabetically ascending results from: " + topHitCompanyName);
+               searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId, createAlphabeticalQuery(), SortOrder.ASC));
+               SearchResponse searchResponseAfterAsc = searchRestClient.searchRestClient(searchAlphabetic);
+               hits = searchResponseAfterAsc.getHits();
+               hits.forEach(h -> results.add(getCompany(h)));
+
+           } catch (IOException e) {
+               LOG.error(ALPHABETICAL_SEARCH + "failed to map highest map to company object for: " + corporateName, e);
+               throw new ObjectMapperException("error occurred reading data for highest match from " +
+                   "searchHits", e);
+           }
+       }
+       return new SearchResults("", topHitCompanyName, results);
+   }
 
     private String getCorporateWithId(SearchHit hit) {
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
         return (String) sourceAsMap.get("corporate_with_type");
+    }
+
+    private String getOrderedAlphakeyWithId(SearchHit hit) {
+        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+        return (String) sourceAsMap.get("ordered_alpha_key_with_id");
     }
 
     private SearchSourceBuilder bestMatchSourceBuilder(QueryBuilder queryBuilder, String sortField, SortOrder sortOrder) {
@@ -134,13 +161,13 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         return sourceBuilder;
     }
 
-    private SearchSourceBuilder alphabeticalSourceBuilder(String corporateStripped, QueryBuilder queryBuilder, SortOrder sortOrder) {
+    private SearchSourceBuilder alphabeticalSourceBuilder(String orderedAlphakeyWithId, QueryBuilder queryBuilder, SortOrder sortOrder) {
 
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.size(Integer.parseInt(environmentReader.getMandatoryString(RESULTS_SIZE)));
         sourceBuilder.query(queryBuilder);
-        sourceBuilder.searchAfter(new Object[]{corporateStripped});
-        sourceBuilder.sort("corporate_with_type", sortOrder);
+        sourceBuilder.searchAfter(new Object[]{orderedAlphakeyWithId});
+        sourceBuilder.sort("ordered_alpha_key_with_id", sortOrder);
 
         return sourceBuilder;
     }
@@ -157,6 +184,18 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         LOG.info(ALPHABETICAL_SEARCH + "Running best match query for: " + corporateName);
 
         return QueryBuilders.matchPhrasePrefixQuery("items.corporate_name.startsWith", corporateName);
+    }
+
+    private QueryBuilder createOrderedAlphakeySearchQuery(String orderedAlphaKey) {
+
+
+        return QueryBuilders.matchQuery("items.ordered_alpha_key", orderedAlphaKey);
+    }
+
+    private QueryBuilder createOrderedAlphakeyKeywordQuery(String orderedAlphaKey) {
+
+
+        return QueryBuilders.prefixQuery("items.ordered_alpha_key.keyword", orderedAlphaKey);
     }
 
     private QueryBuilder createStartsWithQuery(String corporateName) {
