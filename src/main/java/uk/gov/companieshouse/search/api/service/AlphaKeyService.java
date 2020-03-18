@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.service.search;
+package uk.gov.companieshouse.search.api.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,6 @@ public class AlphaKeyService {
 
     @Autowired
     private RestTemplate restTemplate;
-
 
     private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
 

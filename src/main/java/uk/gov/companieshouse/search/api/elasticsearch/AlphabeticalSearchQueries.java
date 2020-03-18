@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.query;
+package uk.gov.companieshouse.search.api.elasticsearch;
 
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;

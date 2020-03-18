@@ -1,41 +1,100 @@
-//package uk.gov.companieshouse.search.api.service.search;
-//
-//import org.elasticsearch.action.search.SearchRequest;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.api.TestInstance;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.junit.jupiter.MockitoExtension;
-//import org.omg.PortableServer.REQUEST_PROCESSING_POLICY_ID;
-//import uk.gov.companieshouse.environment.EnvironmentReader;
-//import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchRequestService;
-//
-//import static org.junit.jupiter.api.Assertions.assertNotNull;
-//import static org.mockito.ArgumentMatchers.anyString;
-//import static org.mockito.Mockito.when;
-//
-//@ExtendWith(MockitoExtension.class)
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//public class AlphabeticalSearchRequestServiceTest {
-//
-//    @InjectMocks
-//    private SearchRequestService searchRequestService = new AlphabeticalSearchRequestService();
-//
-//    @Mock
-//    private EnvironmentReader mockEnvironmentReader;
-//
-//    private static final String ENV_READER_RESULT = "1";
-//    private static final String SEARCH_PARAM = "search param";
-//    private static final String REQUEST_ID = "abcxyz123";
-//
-//    @Test
-//    @DisplayName("Test alphabetical search request created")
-//    public void testAlphabeticalSearchRequestCreated() {
-//
-//        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT);
-//        SearchRequest searchRequest = searchRequestService.createSearchRequest(SEARCH_PARAM, REQUEST_ID);
-//        assertNotNull(searchRequest);
-//    }
-//}
+package uk.gov.companieshouse.search.api.service.search;
+
+import org.apache.lucene.search.TotalHits;
+import org.elasticsearch.common.bytes.BytesArray;
+import org.elasticsearch.common.bytes.BytesReference;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
+import uk.gov.companieshouse.search.api.model.SearchResults;
+import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
+import uk.gov.companieshouse.search.api.service.AlphaKeyService;
+import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchRequestService;
+
+import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_TO;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class AlphabeticalSearchRequestServiceTest {
+
+    @InjectMocks
+    private SearchRequestService searchRequestService = new AlphabeticalSearchRequestService();
+
+    @Mock
+    private AlphaKeyService mockAlphaKeyService;
+
+    @Mock
+    private AlphabeticalSearchRequests mockAlphabeticalSearchRequests;
+
+    private static final String CORPORATE_NAME = "corporateName";
+    private static final String TOP_HIT = "TEST COMPANY";
+    private static final String ORDERED_ALPHA_KEY = "orderedAlphaKey";
+    private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
+    private static final String REQUEST_ID = "requestId";
+
+    @Test
+    @DisplayName("Test search request returns results successfully with best match")
+    void testBestMatchSuccessful() throws Exception{
+
+        SearchHits bestMatch = createSearchHits();
+
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(CORPORATE_NAME))
+            .thenReturn(createAlphaKeyResponse());
+
+        when(mockAlphabeticalSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+            .thenReturn(bestMatch);
+
+        when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID,
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+            .thenReturn(createSearchHits());
+
+        when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID,
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+            .thenReturn(createSearchHits());
+
+        SearchResults searchResults =
+            searchRequestService.createSearchRequest(CORPORATE_NAME, REQUEST_ID);
+
+        assertNotNull(searchResults);
+        assertEquals(searchResults.getTopHit(), TOP_HIT);
+        assertEquals(searchResults.getResults().size(), 3);
+    }
+
+    private SearchHits createSearchHits() {
+        BytesReference source = new BytesArray(
+            "{" +
+                "\"ID\": \"id\"," +
+                "\"company_type\": \"companyType\"," +
+                "\"ordered_alpha_key_with_id\": \"ordered_alpha_key_with_id\"," +
+                "\"items\" : {" +
+                    "\"company_number\" : \"00000000\"," +
+                    "\"company_status\" : \"active\"," +
+                    "\"corporate_name\" : \"TEST COMPANY\"" +
+                "}," +
+                "\"links\" : {" +
+                    "\"self\" : \"TEST\"" +
+                "}" +
+            "}");
+        SearchHit hit = new SearchHit( 1 );
+        hit.sourceRef( source );
+        TotalHits totalHits = new TotalHits(1, GREATER_THAN_OR_EQUAL_TO);
+        return new SearchHits( new SearchHit[] { hit }, totalHits, 10 );
+    }
+
+    private AlphaKeyResponse createAlphaKeyResponse() {
+        AlphaKeyResponse alphaKeyResponse = new AlphaKeyResponse();
+
+        alphaKeyResponse.setOrderedAlphaKey("orderedAlphaKey");
+        return alphaKeyResponse;
+    }
+}
