@@ -13,14 +13,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
+import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchRequestService;
 
+import java.io.IOException;
+
+import static org.apache.lucene.search.TotalHits.Relation.EQUAL_TO;
 import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_TO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,16 +48,14 @@ public class AlphabeticalSearchRequestServiceTest {
     private static final String REQUEST_ID = "requestId";
 
     @Test
-    @DisplayName("Test search request returns results successfully with best match")
+    @DisplayName("Test search request returns results successfully with best match query")
     void testBestMatchSuccessful() throws Exception{
-
-        SearchHits bestMatch = createSearchHits();
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(CORPORATE_NAME))
             .thenReturn(createAlphaKeyResponse());
 
         when(mockAlphabeticalSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
-            .thenReturn(bestMatch);
+            .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID,
             ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
@@ -68,6 +71,81 @@ public class AlphabeticalSearchRequestServiceTest {
         assertNotNull(searchResults);
         assertEquals(searchResults.getTopHit(), TOP_HIT);
         assertEquals(searchResults.getResults().size(), 3);
+    }
+
+    @Test
+    @DisplayName("Test search request returns results successfully with starts with query")
+    void testStartsWithSuccessful() throws Exception{
+
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(CORPORATE_NAME))
+            .thenReturn(createAlphaKeyResponse());
+
+        when(mockAlphabeticalSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+            .thenReturn(createEmpySearchHits());
+
+        when(mockAlphabeticalSearchRequests.getStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+            .thenReturn(createSearchHits());
+
+        when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID,
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+            .thenReturn(createSearchHits());
+
+        when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID,
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+            .thenReturn(createSearchHits());
+
+        SearchResults searchResults =
+            searchRequestService.createSearchRequest(CORPORATE_NAME, REQUEST_ID);
+
+        assertNotNull(searchResults);
+        assertEquals(searchResults.getTopHit(), TOP_HIT);
+        assertEquals(searchResults.getResults().size(), 3);
+    }
+
+    @Test
+    @DisplayName("Test search request returns results successfully with corporate name starts with query")
+    void testCorporateNameStartsWithSuccessful() throws Exception{
+
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(CORPORATE_NAME))
+            .thenReturn(createAlphaKeyResponse());
+
+        when(mockAlphabeticalSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+            .thenReturn(createEmpySearchHits());
+
+        when(mockAlphabeticalSearchRequests.getStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+            .thenReturn(createEmpySearchHits());
+
+        when(mockAlphabeticalSearchRequests.getCorporateNameStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+            .thenReturn(createSearchHits());
+
+        when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID,
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+            .thenReturn(createSearchHits());
+
+        when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID,
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+            .thenReturn(createSearchHits());
+
+        SearchResults searchResults =
+            searchRequestService.createSearchRequest(CORPORATE_NAME, REQUEST_ID);
+
+        assertNotNull(searchResults);
+        assertEquals(searchResults.getTopHit(), TOP_HIT);
+        assertEquals(searchResults.getResults().size(), 3);
+    }
+
+    @Test
+    @DisplayName("Test search request throws exception")
+    void testThrowException() throws Exception{
+
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(CORPORATE_NAME))
+            .thenReturn(createAlphaKeyResponse());
+
+        when(mockAlphabeticalSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+            .thenThrow(IOException.class);
+
+        assertThrows(SearchException.class, () ->
+            searchRequestService.createSearchRequest(CORPORATE_NAME, REQUEST_ID));
     }
 
     private SearchHits createSearchHits() {
@@ -89,6 +167,11 @@ public class AlphabeticalSearchRequestServiceTest {
         hit.sourceRef( source );
         TotalHits totalHits = new TotalHits(1, GREATER_THAN_OR_EQUAL_TO);
         return new SearchHits( new SearchHit[] { hit }, totalHits, 10 );
+    }
+
+    private SearchHits createEmpySearchHits() {
+        TotalHits totalHits = new TotalHits(0, EQUAL_TO);
+        return new SearchHits( new SearchHit[] {}, totalHits, 0 );
     }
 
     private AlphaKeyResponse createAlphaKeyResponse() {

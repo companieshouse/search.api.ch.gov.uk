@@ -117,7 +117,7 @@ public class AlphabeticalSearchRequestsTest {
 
     private SearchResponse createSearchResponse() {
         BytesReference source = new BytesArray(
-            "{your json response come here}" );
+            "{test}" );
         SearchHit hit = new SearchHit( 1 );
         hit.sourceRef( source );
         TotalHits totalHits = new TotalHits(1, GREATER_THAN_OR_EQUAL_TO);
