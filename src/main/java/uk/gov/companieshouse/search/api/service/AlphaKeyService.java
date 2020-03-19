@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
@@ -17,14 +18,19 @@ public class AlphaKeyService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private EnvironmentReader environmentReader;
+
+    private static final String ALPHAKEY_SERVICE_URL = "ALPHAKEY_SERVICE_URL";
+
     private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
 
     public AlphaKeyResponse getAlphaKeyForCorporateName(String corporateName){
-        String url = "http://internal-kermit-chs-alphakey-860414726.eu-west-1.elb.amazonaws.com/alphakey?name=" + corporateName;
+        String alphaKeyUrl = environmentReader.getMandatoryString(ALPHAKEY_SERVICE_URL) + corporateName;
 
         try {
             ResponseEntity<AlphaKeyResponse> response =
-                restTemplate.getForEntity(url, AlphaKeyResponse.class);
+                restTemplate.getForEntity(alphaKeyUrl, AlphaKeyResponse.class);
 
             return response.getBody();
         } catch (RestClientException e) {
