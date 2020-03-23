@@ -59,8 +59,8 @@ public class AlphaKeyServiceTest {
     }
 
     @Test
-    @DisplayName("Test alpha key response throws exception")
-    void testAlphaKeyResponseThrowsException() {
+    @DisplayName("Test alpha key response not returned due to rest client exception")
+    void testNoResponseReturnedDueToException() {
 
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(URL);
 

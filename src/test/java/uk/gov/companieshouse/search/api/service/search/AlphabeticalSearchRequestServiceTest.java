@@ -66,7 +66,7 @@ public class AlphabeticalSearchRequestServiceTest {
             .thenReturn(createSearchHits());
 
         SearchResults searchResults =
-            searchRequestService.createSearchRequest(CORPORATE_NAME, REQUEST_ID);
+            searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID);
 
         assertNotNull(searchResults);
         assertEquals(searchResults.getTopHit(), TOP_HIT);
@@ -95,7 +95,7 @@ public class AlphabeticalSearchRequestServiceTest {
             .thenReturn(createSearchHits());
 
         SearchResults searchResults =
-            searchRequestService.createSearchRequest(CORPORATE_NAME, REQUEST_ID);
+            searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID);
 
         assertNotNull(searchResults);
         assertEquals(searchResults.getTopHit(), TOP_HIT);
@@ -127,7 +127,7 @@ public class AlphabeticalSearchRequestServiceTest {
             .thenReturn(createSearchHits());
 
         SearchResults searchResults =
-            searchRequestService.createSearchRequest(CORPORATE_NAME, REQUEST_ID);
+            searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID);
 
         assertNotNull(searchResults);
         assertEquals(searchResults.getTopHit(), TOP_HIT);
@@ -145,7 +145,7 @@ public class AlphabeticalSearchRequestServiceTest {
             .thenThrow(IOException.class);
 
         assertThrows(SearchException.class, () ->
-            searchRequestService.createSearchRequest(CORPORATE_NAME, REQUEST_ID));
+            searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID));
     }
 
     private SearchHits createSearchHits() {

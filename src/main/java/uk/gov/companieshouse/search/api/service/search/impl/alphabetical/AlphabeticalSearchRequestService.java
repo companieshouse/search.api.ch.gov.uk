@@ -43,7 +43,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
      * {@inheritDoc}
      */
     @Override
-    public SearchResults createSearchRequest(String corporateName, String requestId) throws SearchException {
+    public SearchResults getAlphabeticalSearchResults(String corporateName, String requestId) throws SearchException {
 
         LOG.info(ALPHABETICAL_SEARCH + "Creating search request for: " + corporateName + " for user with Id: " + requestId);
 
@@ -68,7 +68,6 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
             if (hits.getTotalHits().value == 0) {
 
-
                 hits = alphabeticalSearchRequests
                     .getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
             }
@@ -76,25 +75,12 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
             if (hits.getTotalHits().value > 0) {
                 LOG.info("A result has been found");
 
-                SearchHit topHit = hits.getHits()[0];
                 String orderedAlphakeyWithId = getOrderedAlphaKeyWithId(hits.getHits()[0]);
-
+                SearchHit topHit = hits.getHits()[0];
                 Company topHitCompany = getCompany(topHit);
                 topHitCompanyName = topHitCompany.getItems().getCorporateName();
 
-                hits = alphabeticalSearchRequests.getAboveResultsResponse(requestId, orderedAlphakeyWithId,
-                    topHitCompanyName);
-                hits.forEach(h -> results.add(getCompany(h)));
-
-                Collections.reverse(results);
-
-                LOG.info("Retrieving the top hit: " + topHitCompanyName);
-                results.add(topHitCompany);
-
-                hits = alphabeticalSearchRequests.getDescendingResultsResponse(requestId, orderedAlphakeyWithId,
-                    topHitCompanyName);
-
-                hits.forEach(h -> results.add(getCompany(h)));
+                populateSearchResults(requestId, topHitCompanyName, results, topHitCompany, orderedAlphakeyWithId);
             }
         } catch (IOException e) {
             LOG.error(ALPHABETICAL_SEARCH + "failed to map highest map to company object for: " + corporateName, e);
@@ -102,6 +88,27 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 "searchHits", e);
         }
         return new SearchResults("", topHitCompanyName, results);
+    }
+
+    private void populateSearchResults(String requestId,
+                                       String topHitCompanyName,
+                                       List<Company> results,
+                                       Company topHitCompany,
+                                       String orderedAlphakeyWithId) throws IOException {
+        SearchHits hits;
+        hits = alphabeticalSearchRequests.getAboveResultsResponse(requestId, orderedAlphakeyWithId,
+            topHitCompanyName);
+        hits.forEach(h -> results.add(getCompany(h)));
+
+        Collections.reverse(results);
+
+        LOG.info("Retrieving the top hit: " + topHitCompanyName);
+        results.add(topHitCompany);
+
+        hits = alphabeticalSearchRequests.getDescendingResultsResponse(requestId, orderedAlphakeyWithId,
+            topHitCompanyName);
+
+        hits.forEach(h -> results.add(getCompany(h)));
     }
 
     private String getOrderedAlphaKeyWithId(SearchHit hit) {

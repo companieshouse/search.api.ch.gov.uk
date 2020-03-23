@@ -35,7 +35,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
 
         try {
             LOG.info(ALPHABETICAL_SEARCH + "started for: " + corporateName);
-            searchResults = searchRequestService.createSearchRequest(corporateName, requestId);
+            searchResults = searchRequestService.getAlphabeticalSearchResults(corporateName, requestId);
         } catch (SearchException e) {
             LOG.error("An error occurred in alphabetical search whilst searching: " + corporateName, e);
             return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);

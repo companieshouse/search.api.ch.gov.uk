@@ -35,6 +35,7 @@ public class AlphabeticalSearchRequests {
     private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
 
     public SearchHits getBestMatchResponse(String orderedAlphakey, String requestId) throws IOException {
+        LOG.info("Searching for best company match using: " + orderedAlphakey);
         SearchRequest searchRequestBestMatch = createBaseSearchRequest(requestId);
         searchRequestBestMatch.source(bestMatchSourceBuilder(
             alphabeticalSearchQueries.createOrderedAlphaKeySearchQuery(orderedAlphakey),
@@ -75,7 +76,7 @@ public class AlphabeticalSearchRequests {
     public SearchHits getAboveResultsResponse(String requestId,
         String orderedAlphakeyWithId,
         String topHitCompanyName) throws IOException {
-        LOG.info("Retrieving the alphabetically descending results for search elasticsearch: " + topHitCompanyName);
+        LOG.info("Retrieving the alphabetically descending results from " + topHitCompanyName);
 
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,

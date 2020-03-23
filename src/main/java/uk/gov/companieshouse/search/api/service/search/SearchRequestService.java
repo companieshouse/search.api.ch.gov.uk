@@ -1,18 +1,16 @@
 package uk.gov.companieshouse.search.api.service.search;
 
-import org.elasticsearch.action.search.SearchRequest;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.model.SearchResults;
-
-import java.io.IOException;
 
 public interface SearchRequestService {
 
     /**
-     * Creates search request to use in Elastic search
+     * Returns alphabetical search results for a company
      *
      * @param searchParam - param to search elastic search database
-     * @return {@link SearchRequest}
+     * @param requestId - an identifier for the request
+     * @return {@link SearchResults}
      */
-    SearchResults createSearchRequest(String searchParam, String requestId) throws SearchException;
+    SearchResults getAlphabeticalSearchResults(String searchParam, String requestId) throws SearchException;
 }
