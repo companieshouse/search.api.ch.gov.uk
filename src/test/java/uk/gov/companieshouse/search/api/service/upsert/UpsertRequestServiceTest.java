@@ -2,37 +2,75 @@ package uk.gov.companieshouse.search.api.service.upsert;
 
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Spy;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
+import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
+import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
+import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UpsertRequestServiceTest {
 
-    @Spy
+    @InjectMocks
     private UpsertRequestService upsertRequestService;
 
+    @Mock
+    private AlphaKeyService mockAlphaKeyService;
+
+    @Mock
+    private EnvironmentReader mockEnvironmentReader;
+
+    @Mock
+    private AlphabeticalSearchUpsertRequest mockAlphabeticalSearchUpsertRequest;
+
     private static final String ALPHA_SEARCH = "alpha_search";
+
+    private static final String ID = "ID";
+    private static final String COMPANY_TYPE = "company_type";
+    private static final String ITEMS = "items";
+    private static final String COMPANY_NUMBER = "company_number";
+    private static final String COMPANY_STATUS = "company_status";
+    private static final String CORPORATE_NAME = "corporate_name";
+    private static final String RECORD_TYPE = "record_type";
+    private static final String RECORD_TYPE_VALUE = "companies";
+    private static final String LINKS = "links";
+    private static final String SELF = "self";
+    private static final String ORDERED_ALPHA_KEY = "ordered_alpha_key";
+    private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
 
     @Test
     @DisplayName("Test create index and update request is successful")
     void testCreateIndexRequestSuccessful() throws Exception {
 
         CompanyProfileApi company = createCompany();
+
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
+        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ALPHA_SEARCH);
+        when(mockAlphabeticalSearchUpsertRequest.buildRequest(company, "orderedAlphaKey",
+            "orderedAlphaKey:12345"))
+            .thenReturn(createRequest(company, "orderedAlphaKey",
+                "orderedAlphaKey:12345"));
 
         IndexRequest indexRequest = upsertRequestService.createIndexRequest(company);
         UpdateRequest updateRequest = upsertRequestService.createUpdateRequest(company, indexRequest);
@@ -49,7 +87,10 @@ public class UpsertRequestServiceTest {
 
         CompanyProfileApi company = createCompany();
 
-        when(upsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
+        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ALPHA_SEARCH);
+        when(mockAlphabeticalSearchUpsertRequest.buildRequest(company, "orderedAlphaKey",
+            "orderedAlphaKey:12345")).thenThrow(IOException.class);
 
         assertThrows(UpsertException.class,
             () -> upsertRequestService.createIndexRequest(company));
@@ -62,8 +103,10 @@ public class UpsertRequestServiceTest {
         CompanyProfileApi company = createCompany();
         IndexRequest indexRequest = new IndexRequest("alpha_search");
 
-        when(upsertRequestService.createUpdateRequest(company, indexRequest))
-            .thenThrow(UpsertException.class);
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
+        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ALPHA_SEARCH);
+        when(mockAlphabeticalSearchUpsertRequest.buildRequest(company, "orderedAlphaKey",
+            "orderedAlphaKey:12345")).thenThrow(IOException.class);
 
         assertThrows(UpsertException.class,
             () -> upsertRequestService.createUpdateRequest(company, indexRequest));
@@ -72,7 +115,7 @@ public class UpsertRequestServiceTest {
     private CompanyProfileApi createCompany() {
         CompanyProfileApi company = new CompanyProfileApi();
         company.setType("company type");
-        company.setCompanyNumber("company number");
+        company.setCompanyNumber("12345");
         company.setCompanyStatus("company status");
         company.setCompanyName("company name");
 
@@ -81,5 +124,32 @@ public class UpsertRequestServiceTest {
         company.setLinks(links);
 
         return company;
+    }
+
+    private AlphaKeyResponse createResponse() {
+        AlphaKeyResponse alphaKeyResponse = new AlphaKeyResponse();
+        alphaKeyResponse.setOrderedAlphaKey("orderedAlphaKey");
+
+        return alphaKeyResponse;
+    }
+
+    private XContentBuilder createRequest(CompanyProfileApi company, String orderedAlphaKey,
+                                          String orderedAlphaKeyWithID) throws Exception{
+        return jsonBuilder()
+            .startObject()
+            .field(ID, company.getCompanyNumber())
+            .field(ORDERED_ALPHA_KEY_WITH_ID, orderedAlphaKeyWithID)
+            .field(COMPANY_TYPE, company.getType())
+            .startObject(ITEMS)
+            .field(COMPANY_NUMBER, company.getCompanyNumber())
+            .field(ORDERED_ALPHA_KEY, orderedAlphaKey)
+            .field(COMPANY_STATUS, company.getCompanyStatus())
+            .field(CORPORATE_NAME, company.getCompanyName())
+            .field(RECORD_TYPE, RECORD_TYPE_VALUE)
+            .endObject()
+            .startObject(LINKS)
+            .field(SELF, company.getLinks().get(SELF))
+            .endObject()
+            .endObject();
     }
 }
