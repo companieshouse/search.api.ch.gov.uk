@@ -3,6 +3,7 @@ package uk.gov.companieshouse.search.api.service.upsert;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -49,7 +50,7 @@ public class UpsertRequestServiceTest {
     private static final String ID = "ID";
     private static final String COMPANY_TYPE = "company_type";
     private static final String ITEMS = "items";
-    private static final String COMPANY_NUMBER = "company_number";
+    private static final String COMPANY_NUMBER = "12345";
     private static final String COMPANY_STATUS = "company_status";
     private static final String CORPORATE_NAME = "corporate_name";
     private static final String RECORD_TYPE = "record_type";
@@ -59,18 +60,25 @@ public class UpsertRequestServiceTest {
     private static final String ORDERED_ALPHA_KEY = "ordered_alpha_key";
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
 
+    private static final String ORDERED_ALPHA_KEY_FIELD = "orderedAlphaKey";
+    private static final String ORDERED_ALPHA_KEY_WITH_ID_FIELD = "orderedAlphaKey:12345";
+
+    @BeforeEach
+    void init() {
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
+        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ALPHA_SEARCH);
+    }
+
     @Test
     @DisplayName("Test create index and update request is successful")
     void testCreateIndexRequestSuccessful() throws Exception {
 
         CompanyProfileApi company = createCompany();
 
-        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
-        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ALPHA_SEARCH);
-        when(mockAlphabeticalSearchUpsertRequest.buildRequest(company, "orderedAlphaKey",
-            "orderedAlphaKey:12345"))
-            .thenReturn(createRequest(company, "orderedAlphaKey",
-                "orderedAlphaKey:12345"));
+        when(mockAlphabeticalSearchUpsertRequest.buildRequest(company, ORDERED_ALPHA_KEY_FIELD,
+            ORDERED_ALPHA_KEY_WITH_ID_FIELD))
+            .thenReturn(createRequest(company, ORDERED_ALPHA_KEY_FIELD,
+                ORDERED_ALPHA_KEY_WITH_ID_FIELD));
 
         IndexRequest indexRequest = upsertRequestService.createIndexRequest(company);
         UpdateRequest updateRequest = upsertRequestService.createUpdateRequest(company, indexRequest);
@@ -87,10 +95,8 @@ public class UpsertRequestServiceTest {
 
         CompanyProfileApi company = createCompany();
 
-        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
-        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ALPHA_SEARCH);
-        when(mockAlphabeticalSearchUpsertRequest.buildRequest(company, "orderedAlphaKey",
-            "orderedAlphaKey:12345")).thenThrow(IOException.class);
+        when(mockAlphabeticalSearchUpsertRequest.buildRequest(company, ORDERED_ALPHA_KEY_FIELD,
+            ORDERED_ALPHA_KEY_WITH_ID_FIELD)).thenThrow(IOException.class);
 
         assertThrows(UpsertException.class,
             () -> upsertRequestService.createIndexRequest(company));
@@ -101,12 +107,10 @@ public class UpsertRequestServiceTest {
     void testUpdateIndexThrowsException() throws Exception {
 
         CompanyProfileApi company = createCompany();
-        IndexRequest indexRequest = new IndexRequest("alpha_search");
+        IndexRequest indexRequest = new IndexRequest(ALPHA_SEARCH);
 
-        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
-        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ALPHA_SEARCH);
-        when(mockAlphabeticalSearchUpsertRequest.buildRequest(company, "orderedAlphaKey",
-            "orderedAlphaKey:12345")).thenThrow(IOException.class);
+        when(mockAlphabeticalSearchUpsertRequest.buildRequest(company, ORDERED_ALPHA_KEY_FIELD,
+            ORDERED_ALPHA_KEY_WITH_ID_FIELD)).thenThrow(IOException.class);
 
         assertThrows(UpsertException.class,
             () -> upsertRequestService.createUpdateRequest(company, indexRequest));
@@ -114,10 +118,10 @@ public class UpsertRequestServiceTest {
 
     private CompanyProfileApi createCompany() {
         CompanyProfileApi company = new CompanyProfileApi();
-        company.setType("company type");
-        company.setCompanyNumber("12345");
-        company.setCompanyStatus("company status");
-        company.setCompanyName("company name");
+        company.setType(COMPANY_TYPE);
+        company.setCompanyNumber(COMPANY_NUMBER);
+        company.setCompanyStatus(COMPANY_STATUS);
+        company.setCompanyName(CORPORATE_NAME);
 
         Map<String, String> links = new HashMap<>();
         links.put("self", "company/00000000");
@@ -128,7 +132,7 @@ public class UpsertRequestServiceTest {
 
     private AlphaKeyResponse createResponse() {
         AlphaKeyResponse alphaKeyResponse = new AlphaKeyResponse();
-        alphaKeyResponse.setOrderedAlphaKey("orderedAlphaKey");
+        alphaKeyResponse.setOrderedAlphaKey(ORDERED_ALPHA_KEY_FIELD);
 
         return alphaKeyResponse;
     }
