@@ -69,7 +69,7 @@
         </dependencies>
      </dependencyManagement>
     
-	<dependencies>
+    <dependencies>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
