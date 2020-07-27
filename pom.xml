@@ -36,7 +36,7 @@
 
         <!-- Maven and Surefire plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-		<maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
         <junit-platform-surefire-provider.version>1.2.0</junit-platform-surefire-provider.version>
 
@@ -52,23 +52,24 @@
 
         <environment-reader-library.version>1.2.0-rc1</environment-reader-library.version>
         
-		<spring-boot-dependencies.version>2.1.15.RELEASE</spring-boot-dependencies.version>
-		<spring-boot-maven-plugin.version>2.1.15.RELEASE</spring-boot-maven-plugin.version>
+        <spring-boot-dependencies.version>2.1.15.RELEASE</spring-boot-dependencies.version>
+        <spring-boot-maven-plugin.version>2.1.15.RELEASE</spring-boot-maven-plugin.version>
+		
     </properties>
-    
+   
     <dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>${spring-boot-dependencies.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
-    <dependencies>
+       <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+     </dependencyManagement>
+    
+	<dependencies>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
