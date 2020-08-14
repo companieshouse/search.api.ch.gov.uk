@@ -7,10 +7,9 @@ all: build
 .PHONY: clean
 clean:
 	mvn clean
-	rm -f $(artifact_name)-*.zip
-	rm -f $(artifact_name).jar
+	rm -f ./$(artifact_name).jar
+	rm -f ./$(artifact_name)-*.zip
 	rm -rf ./build-*
-	rm -f ./build.log
 
 .PHONY: build
 build:
@@ -19,11 +18,28 @@ build:
 	cp ./target/$(artifact_name)-$(version).jar ./$(artifact_name).jar
 
 .PHONY: test
-test: test-unit
+test: test-unit test-integration
 
 .PHONY: test-unit
 test-unit: clean
 	mvn test
+
+.PHONY: test-integration
+test-integration: clean
+	mvn -Dtest=*IntegrationTest test
+
+.PHONY: test-contract-provider
+test-contract-provider: clean
+	mvn -Dtest=*ProviderContractTest test
+
+.PHONY: test-contract-consumer
+test-contract-consumer: clean
+	mvn -Dtest=*ConsumerContractTest test
+
+.PHONY: dev
+dev: clean
+	mvn package -DskipTests=true
+	cp target/$(artifact_name)-unversioned.jar $(artifact_name).jar
 
 .PHONY: package
 package:
@@ -49,4 +65,4 @@ sonar:
 
 .PHONY: sonar-pr-analysis
 sonar-pr-analysis:
-	mvn sonar:sonar -P sonar-pr-analysis
+	mvn sonar:sonar	-P sonar-pr-analysis
