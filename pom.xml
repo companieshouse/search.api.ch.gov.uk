@@ -27,6 +27,9 @@
         <elasticsearch.version>7.4.0</elasticsearch.version>
         <spring-data-elasticsearch.version>3.2.0.RELEASE</spring-data-elasticsearch.version>
 
+        <!-- Docker -->
+        <jib-maven-plugin.version>2.7.0</jib-maven-plugin.version>
+
         <!-- JUnit Testing -->
         <junit-jupiter-engine.version>5.2.0</junit-jupiter-engine.version>
         <mockito-junit-jupiter.version>2.18.0</mockito-junit-jupiter.version>
@@ -146,6 +149,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot-maven-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib-maven-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
