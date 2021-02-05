@@ -55,7 +55,7 @@ public class AlphabeticalSearchControllerTest {
             .thenReturn(ResponseEntity.status(NOT_FOUND).build());
 
         ResponseEntity responseEntity =
-            alphabeticalSearchController.searchByCorporateName(createRequest(), REQUEST_ID);
+            alphabeticalSearchController.searchByCorporateName("test name", REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(NOT_FOUND, responseEntity.getStatusCode());
@@ -73,7 +73,7 @@ public class AlphabeticalSearchControllerTest {
             .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity responseEntity =
-            alphabeticalSearchController.searchByCorporateName(createRequest(), REQUEST_ID);
+            alphabeticalSearchController.searchByCorporateName("test name", REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
@@ -93,12 +93,5 @@ public class AlphabeticalSearchControllerTest {
         searchResults.setSearchType("test search type");
 
         return searchResults;
-    }
-
-    private AlphabeticalSearchRequest createRequest() {
-
-        AlphabeticalSearchRequest alphabeticalSearchRequest = new AlphabeticalSearchRequest();
-        alphabeticalSearchRequest.setCompanyName("test name");
-        return alphabeticalSearchRequest;
     }
 }

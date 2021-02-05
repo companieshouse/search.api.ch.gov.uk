@@ -25,14 +25,13 @@ public class AlphabeticalSearchController {
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
 
-    @PostMapping("/corporate-name")
+    @GetMapping("/companies")
     @ResponseBody
-    public ResponseEntity searchByCorporateName(@Valid @RequestBody
-                                                AlphabeticalSearchRequest alphabeticalSearchRequest,
+    public ResponseEntity searchByCorporateName(@RequestParam(name = "q") String companyName,
                                                 @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         ResponseObject responseObject = searchIndexService
-            .search(alphabeticalSearchRequest.getCompanyName(), requestId);
+            .search(companyName, requestId);
 
         return apiToResponseMapper.map(responseObject);
     }
