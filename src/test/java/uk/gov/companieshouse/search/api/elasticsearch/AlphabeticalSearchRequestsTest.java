@@ -48,7 +48,7 @@ public class AlphabeticalSearchRequestsTest {
     void getBestMatchResponse() throws Exception {
 
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT);
-        when(mockSearchRestClient.searchRestClient(any(SearchRequest.class))).thenReturn(createSearchResponse());
+        when(mockSearchRestClient.searchAlphabeticalRestClient(any(SearchRequest.class))).thenReturn(createSearchResponse());
 
         SearchHits searchHits = alphabeticalSearchRequests
             .getBestMatchResponse("orderedAlpha", "requestId");
@@ -62,7 +62,7 @@ public class AlphabeticalSearchRequestsTest {
     void getStartsWithResponse() throws Exception {
 
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT);
-        when(mockSearchRestClient.searchRestClient(any(SearchRequest.class))).thenReturn(createSearchResponse());
+        when(mockSearchRestClient.searchAlphabeticalRestClient(any(SearchRequest.class))).thenReturn(createSearchResponse());
 
         SearchHits searchHits = alphabeticalSearchRequests
             .getStartsWithResponse("orderedAlpha", "requestId");
@@ -76,7 +76,7 @@ public class AlphabeticalSearchRequestsTest {
     void getCorporateNameStartsWithResponse() throws Exception {
 
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT);
-        when(mockSearchRestClient.searchRestClient(any(SearchRequest.class))).thenReturn(createSearchResponse());
+        when(mockSearchRestClient.searchAlphabeticalRestClient(any(SearchRequest.class))).thenReturn(createSearchResponse());
 
         SearchHits searchHits = alphabeticalSearchRequests
             .getCorporateNameStartsWithResponse("orderedAlpha", "requestId");
@@ -90,7 +90,7 @@ public class AlphabeticalSearchRequestsTest {
     void getAboveResultsResponse() throws Exception {
 
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT);
-        when(mockSearchRestClient.searchRestClient(any(SearchRequest.class))).thenReturn(createSearchResponse());
+        when(mockSearchRestClient.searchAlphabeticalRestClient(any(SearchRequest.class))).thenReturn(createSearchResponse());
 
         SearchHits searchHits = alphabeticalSearchRequests
             .getAboveResultsResponse("requestId",
@@ -105,7 +105,7 @@ public class AlphabeticalSearchRequestsTest {
     void getDescendingResultsResponse() throws Exception {
 
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT);
-        when(mockSearchRestClient.searchRestClient(any(SearchRequest.class))).thenReturn(createSearchResponse());
+        when(mockSearchRestClient.searchAlphabeticalRestClient(any(SearchRequest.class))).thenReturn(createSearchResponse());
 
         SearchHits searchHits = alphabeticalSearchRequests
             .getDescendingResultsResponse("requestId",

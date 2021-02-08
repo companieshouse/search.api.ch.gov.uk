@@ -41,7 +41,7 @@ public class AlphabeticalSearchRequests {
             alphabeticalSearchQueries.createOrderedAlphaKeySearchQuery(orderedAlphakey),
             ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC));
 
-        SearchResponse searchResponse = searchRestClient.searchRestClient(searchRequestBestMatch);
+        SearchResponse searchResponse = searchRestClient.searchAlphabeticalRestClient(searchRequestBestMatch);
         return searchResponse.getHits();
     }
 
@@ -53,7 +53,7 @@ public class AlphabeticalSearchRequests {
             alphabeticalSearchQueries.createOrderedAlphaKeyKeywordQuery(orderedAlphakey),
             ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC));
 
-        SearchResponse searchResponse = searchRestClient.searchRestClient(searchRequestStartsWith);
+        SearchResponse searchResponse = searchRestClient.searchAlphabeticalRestClient(searchRequestStartsWith);
         return searchResponse.getHits();
     }
 
@@ -69,7 +69,7 @@ public class AlphabeticalSearchRequests {
             alphabeticalSearchQueries.createStartsWithQuery(orderedAlphakey),
             ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC));
 
-        SearchResponse searchResponse = searchRestClient.searchRestClient(searchRequestCorporateName);
+        SearchResponse searchResponse = searchRestClient.searchAlphabeticalRestClient(searchRequestCorporateName);
         return searchResponse.getHits();
     }
 
@@ -82,7 +82,7 @@ public class AlphabeticalSearchRequests {
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,
             alphabeticalSearchQueries.createAlphabeticalQuery(), SortOrder.DESC));
 
-        SearchResponse searchResponse = searchRestClient.searchRestClient(searchAlphabetic);
+        SearchResponse searchResponse = searchRestClient.searchAlphabeticalRestClient(searchAlphabetic);
         return searchResponse.getHits();
     }
 
@@ -95,7 +95,7 @@ public class AlphabeticalSearchRequests {
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,
             alphabeticalSearchQueries.createAlphabeticalQuery(), SortOrder.ASC));
 
-        SearchResponse searchResponse = searchRestClient.searchRestClient(searchAlphabetic);
+        SearchResponse searchResponse = searchRestClient.searchAlphabeticalRestClient(searchAlphabetic);
         return searchResponse.getHits();
     }
 

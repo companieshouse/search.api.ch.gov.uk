@@ -48,7 +48,7 @@ public class UpsertCompanyService {
         }
 
         try {
-            restClientService.upsert(updateRequest);
+            restClientService.upsertAlphabeticalRestClient(updateRequest);
         } catch (IOException e) {
             LOG.error("An error occured attempting to make an update request: " + updateRequest);
             return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);

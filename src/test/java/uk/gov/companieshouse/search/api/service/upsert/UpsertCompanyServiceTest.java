@@ -100,7 +100,7 @@ public class UpsertCompanyServiceTest {
         when(mockUpsertRequestService.createUpdateRequest(
             company, indexRequest)).thenReturn(updateRequest);
 
-        when(mockRestClientService.upsert(updateRequest)).thenThrow(IOException.class);
+        when(mockRestClientService.upsertAlphabeticalRestClient(updateRequest)).thenThrow(IOException.class);
 
         ResponseObject responseObject = upsertCompanyService.upsert(company);
 
