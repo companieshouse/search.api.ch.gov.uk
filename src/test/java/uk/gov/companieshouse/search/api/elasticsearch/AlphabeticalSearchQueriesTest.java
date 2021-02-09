@@ -41,7 +41,7 @@ public class AlphabeticalSearchQueriesTest {
     @DisplayName("Create Alphabetical Query")
     void createAlphabeticalQuery() {
         QueryBuilder queryBuilder =
-            alphabeticalSearchQueries.createAlphabeticalQuery();
+            alphabeticalSearchQueries.createMatchAllQuery();
 
         assertNotNull(queryBuilder);
     }

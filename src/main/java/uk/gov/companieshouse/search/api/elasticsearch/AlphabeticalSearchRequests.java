@@ -80,7 +80,7 @@ public class AlphabeticalSearchRequests {
 
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,
-            alphabeticalSearchQueries.createAlphabeticalQuery(), SortOrder.DESC));
+            alphabeticalSearchQueries.createMatchAllQuery(), SortOrder.DESC));
 
         SearchResponse searchResponse = searchRestClient.searchRestClient(searchAlphabetic);
         return searchResponse.getHits();
@@ -93,7 +93,7 @@ public class AlphabeticalSearchRequests {
         LOG.info("Retrieving the alphabetically ascending results from: " + topHitCompanyName);
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,
-            alphabeticalSearchQueries.createAlphabeticalQuery(), SortOrder.ASC));
+            alphabeticalSearchQueries.createMatchAllQuery(), SortOrder.ASC));
 
         SearchResponse searchResponse = searchRestClient.searchRestClient(searchAlphabetic);
         return searchResponse.getHits();
