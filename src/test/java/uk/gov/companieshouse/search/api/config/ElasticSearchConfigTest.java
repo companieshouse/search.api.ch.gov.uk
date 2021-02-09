@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ElasticSearchConfigTest {
+class ElasticSearchConfigTest {
 
     @InjectMocks
     private ElasticSearchConfig elasticSearchConfig;
@@ -42,8 +42,8 @@ public class ElasticSearchConfigTest {
         assertNotNull(restHighLevelClient);
 
         List<Node> nodes = restHighLevelClient.getLowLevelClient().getNodes();
-        assertEquals(nodes.get(0).getHost().toString(), ENV_READER_RESULT_ALPHABETICAL);
-        assertEquals(restHighLevelClient.getLowLevelClient().getNodes().size(), 1);
+        assertEquals(ENV_READER_RESULT_ALPHABETICAL, nodes.get(0).getHost().toString());
+        assertEquals(1, restHighLevelClient.getLowLevelClient().getNodes().size());
     }
 
     @Test
@@ -56,8 +56,8 @@ public class ElasticSearchConfigTest {
         assertNotNull(restHighLevelClient);
 
         List<Node> nodes = restHighLevelClient.getLowLevelClient().getNodes();
-        assertEquals(nodes.get(0).getHost().toString(), ENV_READER_RESULT_DISSOLVED);
-        assertEquals(restHighLevelClient.getLowLevelClient().getNodes().size(), 1);
+        assertEquals(ENV_READER_RESULT_DISSOLVED, nodes.get(0).getHost().toString());
+        assertEquals(1, restHighLevelClient.getLowLevelClient().getNodes().size());
     }
 
     @Test
@@ -71,8 +71,8 @@ public class ElasticSearchConfigTest {
         assertNotNull(restHighLevelClient);
 
         List<Node> nodes = restHighLevelClient.getLowLevelClient().getNodes();
-        assertEquals(nodes.get(0).getHost().toString(), ENV_READER_RESULT_ALPHABETICAL);
-        assertEquals(restHighLevelClient.getLowLevelClient().getNodes().size(), 1);
+        assertEquals(ENV_READER_RESULT_ALPHABETICAL, nodes.get(0).getHost().toString());
+        assertEquals(1, restHighLevelClient.getLowLevelClient().getNodes().size());
     }
 
     @Test
@@ -80,6 +80,6 @@ public class ElasticSearchConfigTest {
     void createRestHighLevelClientThrowsEndpointException() throws Exception {
 
         assertThrows(EndpointException.class, () ->
-                elasticSearchConfig.createClient(anyString()));
+                elasticSearchConfig.createClient("test"));
     }
 }
