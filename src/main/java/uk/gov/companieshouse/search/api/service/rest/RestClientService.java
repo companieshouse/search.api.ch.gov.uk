@@ -1,8 +1,4 @@
-package uk.gov.companieshouse.search.api.service.rest.impl;
-
-import static org.elasticsearch.client.RequestOptions.DEFAULT;
-
-import java.io.IOException;
+package uk.gov.companieshouse.search.api.service.rest;
 
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -14,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import uk.gov.companieshouse.search.api.service.rest.RestClientService;
+import java.io.IOException;
+
+import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
 @Service
-public class RestClientServiceImpl implements RestClientService {
+public class RestClientService {
 
     @Autowired
     @Qualifier("alphabeticalClient")
@@ -27,17 +25,32 @@ public class RestClientServiceImpl implements RestClientService {
     @Qualifier("dissolvedClient")
     private RestHighLevelClient dissolvedClient;
 
-    @Override
+    /**
+     * interface for elastic search high level rest client used for alphabetical search
+     *
+     * @param searchRequest - searchRequest containing search parameters
+     * @return SearchResponse - response from elastic search db
+     */
     public SearchResponse searchAlphabeticalRestClient(SearchRequest searchRequest) throws IOException {
         return alphabeticalClient.search(searchRequest, DEFAULT);
     }
 
-    @Override
+    /**
+     * interface for elastic search high level rest client used in upserting documents to alphabetical search
+     *
+     * @param updateRequest - updateRequest containing update parameters
+     * @return UpdateResponse - response from elastic search db
+     */
     public UpdateResponse upsertAlphabeticalRestClient(UpdateRequest updateRequest) throws IOException {
         return alphabeticalClient.update(updateRequest, RequestOptions.DEFAULT);
     }
 
-	@Override
+    /**
+     * interface for elastic search high level rest client used for dissolved search
+     *
+     * @param searchRequest - searchRequest containing search parameters
+     * @return SearchResponse - response from elastic search db
+     */
 	public SearchResponse searchDissolvedRestClient(SearchRequest searchRequest) throws IOException {
 		// TODO Auto-generated method stub
 		return dissolvedClient.search(searchRequest, DEFAULT);
