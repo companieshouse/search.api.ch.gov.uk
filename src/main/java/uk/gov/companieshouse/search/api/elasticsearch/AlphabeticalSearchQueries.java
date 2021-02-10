@@ -5,7 +5,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AlphabeticalSearchQueries {
+public class AlphabeticalSearchQueries extends AbstractSearchQuery {
 
     public QueryBuilder createOrderedAlphaKeySearchQuery(String orderedAlphaKey) {
 
@@ -21,10 +21,5 @@ public class AlphabeticalSearchQueries {
     public QueryBuilder createStartsWithQuery(String corporateName) {
 
         return QueryBuilders.matchPhrasePrefixQuery("items.corporate_name.startswith", corporateName);
-    }
-
-    public QueryBuilder createAlphabeticalQuery() {
-
-        return QueryBuilders.matchAllQuery();
     }
 }

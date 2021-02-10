@@ -15,7 +15,7 @@ public interface RestClientService {
      * @param searchRequest - searchRequest containing search parameters
      * @return SearchResponse - response from elastic search db
      */
-    SearchResponse searchRestClient(SearchRequest searchRequest) throws IOException;
+    SearchResponse search(SearchRequest searchRequest) throws IOException;
 
     /**
      * interface for elastic search high level rest client used in upsert

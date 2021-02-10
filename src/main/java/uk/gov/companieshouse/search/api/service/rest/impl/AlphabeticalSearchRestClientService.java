@@ -7,6 +7,7 @@ import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 
@@ -15,18 +16,19 @@ import java.io.IOException;
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
 @Service
-public class RestClientServiceImpl implements RestClientService {
+public class AlphabeticalSearchRestClientService implements RestClientService {
 
     @Autowired
-    private RestHighLevelClient client;
+    @Qualifier("alphabeticalClient")
+    private RestHighLevelClient alphabeticalClient;
 
     @Override
-    public SearchResponse searchRestClient(SearchRequest searchRequest) throws IOException {
-        return client.search(searchRequest, DEFAULT);
+    public SearchResponse search(SearchRequest searchRequest) throws IOException {
+        return alphabeticalClient.search(searchRequest, DEFAULT);
     }
 
     @Override
     public UpdateResponse upsert(UpdateRequest updateRequest) throws IOException {
-        return client.update(updateRequest, RequestOptions.DEFAULT);
+        return alphabeticalClient.update(updateRequest, RequestOptions.DEFAULT);
     }
 }
