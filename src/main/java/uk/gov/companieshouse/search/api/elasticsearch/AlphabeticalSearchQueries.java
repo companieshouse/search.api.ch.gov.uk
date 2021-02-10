@@ -5,7 +5,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AlphabeticalSearchQueries extends SearchQuery {
+public class AlphabeticalSearchQueries extends AbstractSearchQuery {
 
     public QueryBuilder createOrderedAlphaKeySearchQuery(String orderedAlphaKey) {
 
