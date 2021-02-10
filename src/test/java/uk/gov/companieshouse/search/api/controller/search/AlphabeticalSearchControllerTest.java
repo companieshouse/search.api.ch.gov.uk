@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
-import uk.gov.companieshouse.search.api.model.request.AlphabeticalSearchRequest;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
 
@@ -20,7 +19,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -55,7 +53,7 @@ public class AlphabeticalSearchControllerTest {
             .thenReturn(ResponseEntity.status(NOT_FOUND).build());
 
         ResponseEntity responseEntity =
-            alphabeticalSearchController.searchByCorporateName(createRequest(), REQUEST_ID);
+            alphabeticalSearchController.searchByCorporateName("test name", REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(NOT_FOUND, responseEntity.getStatusCode());
@@ -73,7 +71,7 @@ public class AlphabeticalSearchControllerTest {
             .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity responseEntity =
-            alphabeticalSearchController.searchByCorporateName(createRequest(), REQUEST_ID);
+            alphabeticalSearchController.searchByCorporateName("test name", REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
@@ -93,12 +91,5 @@ public class AlphabeticalSearchControllerTest {
         searchResults.setSearchType("test search type");
 
         return searchResults;
-    }
-
-    private AlphabeticalSearchRequest createRequest() {
-
-        AlphabeticalSearchRequest alphabeticalSearchRequest = new AlphabeticalSearchRequest();
-        alphabeticalSearchRequest.setCompanyName("test name");
-        return alphabeticalSearchRequest;
     }
 }

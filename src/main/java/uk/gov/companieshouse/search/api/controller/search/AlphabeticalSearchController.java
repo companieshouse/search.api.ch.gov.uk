@@ -3,19 +3,22 @@ package uk.gov.companieshouse.search.api.controller.search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
-import uk.gov.companieshouse.search.api.model.request.AlphabeticalSearchRequest;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/alphabetical-search", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AlphabeticalSearchController {
 
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
+    private static final String COMPANY_NAME_QUERY_PARAM = "q";
 
     @Autowired
     private SearchIndexService searchIndexService;
@@ -23,14 +26,13 @@ public class AlphabeticalSearchController {
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
 
-    @PostMapping("/corporate-name")
+    @GetMapping("/companies")
     @ResponseBody
-    public ResponseEntity searchByCorporateName(@Valid @RequestBody
-                                                AlphabeticalSearchRequest alphabeticalSearchRequest,
+    public ResponseEntity searchByCorporateName(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
                                                 @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         ResponseObject responseObject = searchIndexService
-            .search(alphabeticalSearchRequest.getCompanyName(), requestId);
+            .search(companyName, requestId);
 
         return apiToResponseMapper.map(responseObject);
     }
