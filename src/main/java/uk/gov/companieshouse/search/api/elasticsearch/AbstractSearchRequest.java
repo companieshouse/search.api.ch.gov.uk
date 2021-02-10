@@ -18,27 +18,27 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 
 public abstract class AbstractSearchRequest {
-	
-	abstract String getIndex();
-	
-	abstract String getResultsSize();
-	
-	abstract RestClientService getRestClientService();
-	
-	abstract AbstractSearchQuery getSearchQuery();
-	
-	@Autowired
+    
+    abstract String getIndex();
+    
+    abstract String getResultsSize();
+    
+    abstract RestClientService getRestClientService();
+    
+    abstract AbstractSearchQuery getSearchQuery();
+    
+    @Autowired
     private EnvironmentReader environmentReader;
-	
-	private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
-	private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
-	
+    
+    private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
+    private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
+    
 
-	public SearchHits getBestMatchResponse(String orderedAlphakey, String requestId) throws IOException {
+    public SearchHits getBestMatchResponse(String orderedAlphakey, String requestId) throws IOException {
         LOG.info("Searching for best company match using: " + orderedAlphakey);
         SearchRequest searchRequestBestMatch = createBaseSearchRequest(requestId);
         searchRequestBestMatch.source(bestMatchSourceBuilder(
-        		getSearchQuery().createOrderedAlphaKeySearchQuery(orderedAlphakey),
+                getSearchQuery().createOrderedAlphaKeySearchQuery(orderedAlphakey),
             ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC));
 
         SearchResponse searchResponse = getRestClientService().searchRestClient(searchRequestBestMatch);
@@ -50,7 +50,7 @@ public abstract class AbstractSearchRequest {
         SearchRequest searchRequestStartsWith = createBaseSearchRequest(requestId);
 
         searchRequestStartsWith.source(bestMatchSourceBuilder(
-        		getSearchQuery().createOrderedAlphaKeyKeywordQuery(orderedAlphakey),
+                getSearchQuery().createOrderedAlphaKeyKeywordQuery(orderedAlphakey),
             ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC));
 
         SearchResponse searchResponse = getRestClientService().searchRestClient(searchRequestStartsWith);
@@ -66,7 +66,7 @@ public abstract class AbstractSearchRequest {
         // Consider using corporateName instead of orderedAlphakey
         // Currently using same logic as python application
         searchRequestCorporateName.source(bestMatchSourceBuilder(
-        		getSearchQuery().createStartsWithQuery(orderedAlphakey),
+                getSearchQuery().createStartsWithQuery(orderedAlphakey),
             ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC));
 
         SearchResponse searchResponse = getRestClientService().searchRestClient(searchRequestCorporateName);
@@ -80,7 +80,7 @@ public abstract class AbstractSearchRequest {
 
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,
-        		getSearchQuery().createMatchAllQuery(), SortOrder.DESC));
+                getSearchQuery().createMatchAllQuery(), SortOrder.DESC));
 
         SearchResponse searchResponse = getRestClientService().searchRestClient(searchAlphabetic);
         return searchResponse.getHits();
@@ -93,7 +93,7 @@ public abstract class AbstractSearchRequest {
         LOG.info("Retrieving the alphabetically ascending results from: " + topHitCompanyName);
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,
-        		getSearchQuery().createMatchAllQuery(), SortOrder.ASC));
+                getSearchQuery().createMatchAllQuery(), SortOrder.ASC));
 
         SearchResponse searchResponse = getRestClientService().searchRestClient(searchAlphabetic);
         return searchResponse.getHits();

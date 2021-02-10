@@ -16,25 +16,25 @@ public class AlphabeticalSearchRequests extends AbstractSearchRequest {
 
     private static final String INDEX = "ALPHABETICAL_SEARCH_INDEX";
     private static final String RESULTS_SIZE = "ALPHABETICAL_SEARCH_RESULT_MAX";
-	
+    
     @Override
-	String getIndex() {
-		return INDEX;
-	}
-	
-	@Override
-	String getResultsSize() {
-		return RESULTS_SIZE;
-	}
-	
-	@Override
-	RestClientService getRestClientService() {
-		return searchRestClient;
-	}
-	
-	@Override
-	AbstractSearchQuery getSearchQuery() {
-		return alphabeticalSearchQueries;
-	}
+    String getIndex() {
+        return INDEX;
+    }
+    
+    @Override
+    String getResultsSize() {
+        return RESULTS_SIZE;
+    }
+    
+    @Override
+    RestClientService getRestClientService() {
+        return searchRestClient;
+    }
+    
+    @Override
+    AbstractSearchQuery getSearchQuery() {
+        return alphabeticalSearchQueries;
+    }
 
 }
