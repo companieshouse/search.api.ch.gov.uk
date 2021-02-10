@@ -41,7 +41,7 @@ public abstract class AbstractSearchRequest {
                 getSearchQuery().createOrderedAlphaKeySearchQuery(orderedAlphakey),
             ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC));
 
-        SearchResponse searchResponse = getRestClientService().searchRestClient(searchRequestBestMatch);
+        SearchResponse searchResponse = getRestClientService().search(searchRequestBestMatch);
         return searchResponse.getHits();
     }
 
@@ -53,7 +53,7 @@ public abstract class AbstractSearchRequest {
                 getSearchQuery().createOrderedAlphaKeyKeywordQuery(orderedAlphakey),
             ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC));
 
-        SearchResponse searchResponse = getRestClientService().searchRestClient(searchRequestStartsWith);
+        SearchResponse searchResponse = getRestClientService().search(searchRequestStartsWith);
         return searchResponse.getHits();
     }
 
@@ -69,7 +69,7 @@ public abstract class AbstractSearchRequest {
                 getSearchQuery().createStartsWithQuery(orderedAlphakey),
             ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC));
 
-        SearchResponse searchResponse = getRestClientService().searchRestClient(searchRequestCorporateName);
+        SearchResponse searchResponse = getRestClientService().search(searchRequestCorporateName);
         return searchResponse.getHits();
     }
 
@@ -82,7 +82,7 @@ public abstract class AbstractSearchRequest {
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,
                 getSearchQuery().createMatchAllQuery(), SortOrder.DESC));
 
-        SearchResponse searchResponse = getRestClientService().searchRestClient(searchAlphabetic);
+        SearchResponse searchResponse = getRestClientService().search(searchAlphabetic);
         return searchResponse.getHits();
     }
 
@@ -95,7 +95,7 @@ public abstract class AbstractSearchRequest {
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,
                 getSearchQuery().createMatchAllQuery(), SortOrder.ASC));
 
-        SearchResponse searchResponse = getRestClientService().searchRestClient(searchAlphabetic);
+        SearchResponse searchResponse = getRestClientService().search(searchAlphabetic);
         return searchResponse.getHits();
     }
 
