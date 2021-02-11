@@ -27,7 +27,7 @@ import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEA
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class DissolvedSearchControllerTest {
+class DissolvedSearchControllerTest {
 
     @Mock
     private DissolvedSearchIndexService mockSearchIndexService;

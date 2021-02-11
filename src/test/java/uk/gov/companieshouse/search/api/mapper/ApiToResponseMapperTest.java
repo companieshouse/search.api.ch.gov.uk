@@ -134,7 +134,7 @@ class ApiToResponseMapperTest {
 
     @Test
     @DisplayName("Test if Not Found returned for dissolved company")
-    public void testNotFoundReturnedDissolved() {
+    void testNotFoundReturnedDissolved() {
 
         DissolvedResponseObject responseObject =
                 new DissolvedResponseObject(SEARCH_NOT_FOUND);
@@ -148,7 +148,7 @@ class ApiToResponseMapperTest {
 
     @Test
     @DisplayName("Test if Internal Server Error returned for dissolved company")
-    public void testInternalServerErrorReturnedDissolved() {
+    void testInternalServerErrorReturnedDissolved() {
 
         DissolvedResponseObject responseObject =
                 new DissolvedResponseObject(SEARCH_ERROR);
