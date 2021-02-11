@@ -12,7 +12,7 @@ import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
-import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
+import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEA
 public class AlphabeticalSearchControllerTest {
 
     @Mock
-    private SearchIndexService mockSearchIndexService;
+    private AlphabeticalSearchIndexService mockSearchIndexService;
 
     @Mock
     private ApiToResponseMapper mockApiToResponseMapper;

@@ -18,6 +18,12 @@ public class DissolvedSearchResults<T> {
     public DissolvedSearchResults() {
     }
 
+    public DissolvedSearchResults(String etag, TopHit topHit, List<T> items) {
+        this.etag = etag;
+        this.topHit = topHit;
+        this.items = items;
+    }
+
     public String getEtag() {
         return etag;
     }

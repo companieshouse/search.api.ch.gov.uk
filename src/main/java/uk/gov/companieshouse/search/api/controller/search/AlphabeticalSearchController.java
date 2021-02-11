@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
-import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
+import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
 
 @RestController
 @RequestMapping(value = "/alphabetical-search", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -21,7 +21,7 @@ public class AlphabeticalSearchController {
     private static final String COMPANY_NAME_QUERY_PARAM = "q";
 
     @Autowired
-    private SearchIndexService searchIndexService;
+    private AlphabeticalSearchIndexService searchIndexService;
 
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
