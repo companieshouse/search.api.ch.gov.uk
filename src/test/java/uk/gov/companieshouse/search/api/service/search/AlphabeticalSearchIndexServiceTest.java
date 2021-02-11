@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AlphabeticalSearchIndexServiceTest {
+class AlphabeticalSearchIndexServiceTest {
 
     @InjectMocks
     private SearchIndexService searchIndexService = new AlphabeticalSearchIndexService();
@@ -45,7 +45,7 @@ public class AlphabeticalSearchIndexServiceTest {
         ResponseObject responseObject = searchIndexService.search(CORPORATE_NAME, REQUEST_ID);
 
         assertNotNull(responseObject);
-        assertEquals(responseObject.getStatus(), ResponseStatus.SEARCH_FOUND);
+        assertEquals(ResponseStatus.SEARCH_FOUND, responseObject.getStatus());
     }
 
     @Test
@@ -57,7 +57,7 @@ public class AlphabeticalSearchIndexServiceTest {
         ResponseObject responseObject = searchIndexService.search(CORPORATE_NAME, REQUEST_ID);
 
         assertNotNull(responseObject);
-        assertEquals(responseObject.getStatus(), ResponseStatus.SEARCH_ERROR);
+        assertEquals(ResponseStatus.SEARCH_ERROR, responseObject.getStatus());
     }
 
     @Test
@@ -68,7 +68,7 @@ public class AlphabeticalSearchIndexServiceTest {
         ResponseObject responseObject = searchIndexService.search(CORPORATE_NAME, REQUEST_ID);
 
         assertNotNull(responseObject);
-        assertEquals(responseObject.getStatus(), ResponseStatus.SEARCH_NOT_FOUND);
+        assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
     }
 
     private SearchResults createSearchResults(boolean isResultsPopulated) {

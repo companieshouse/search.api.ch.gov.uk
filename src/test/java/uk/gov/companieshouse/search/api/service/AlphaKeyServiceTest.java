@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AlphaKeyServiceTest {
+class AlphaKeyServiceTest {
 
     @InjectMocks
     private AlphaKeyService alphaKeyService;
@@ -53,9 +53,9 @@ public class AlphaKeyServiceTest {
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(CORPORATE_NAME);
 
         assertNotNull(alphaKeyResponse);
-        assertEquals(alphaKeyResponse.getSameAsAlphaKey(), SAME_AS_ALPHA_KEY);
-        assertEquals(alphaKeyResponse.getOrderedAlphaKey(), ORDERED_ALPHA_KEY);
-        assertEquals(alphaKeyResponse.getUpperCaseName(), UPPERCASE_NAME);
+        assertEquals(SAME_AS_ALPHA_KEY, alphaKeyResponse.getSameAsAlphaKey());
+        assertEquals(ORDERED_ALPHA_KEY, alphaKeyResponse.getOrderedAlphaKey());
+        assertEquals(UPPERCASE_NAME, alphaKeyResponse.getUpperCaseName());
     }
 
     @Test
