@@ -17,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.environment.EnvironmentReader;
-import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
 
 import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_TO;
@@ -29,7 +28,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AlphabeticalSearchRequestsTest {
+class AlphabeticalSearchRequestsTest {
 
     @InjectMocks AlphabeticalSearchRequests alphabeticalSearchRequests;
 
@@ -55,7 +54,7 @@ public class AlphabeticalSearchRequestsTest {
             .getBestMatchResponse("orderedAlpha", "requestId");
 
         assertNotNull(searchHits);
-        assertEquals(searchHits.getTotalHits().value, 1);
+        assertEquals(1, searchHits.getTotalHits().value);
     }
 
     @Test
@@ -69,7 +68,7 @@ public class AlphabeticalSearchRequestsTest {
             .getStartsWithResponse("orderedAlpha", "requestId");
 
         assertNotNull(searchHits);
-        assertEquals(searchHits.getTotalHits().value, 1);
+        assertEquals(1, searchHits.getTotalHits().value);
     }
 
     @Test
@@ -83,7 +82,7 @@ public class AlphabeticalSearchRequestsTest {
             .getCorporateNameStartsWithResponse("orderedAlpha", "requestId");
 
         assertNotNull(searchHits);
-        assertEquals(searchHits.getTotalHits().value, 1);
+        assertEquals(1, searchHits.getTotalHits().value);
     }
 
     @Test
@@ -98,7 +97,7 @@ public class AlphabeticalSearchRequestsTest {
                 "orderedAlpha", "topHit");
 
         assertNotNull(searchHits);
-        assertEquals(searchHits.getTotalHits().value, 1);
+        assertEquals(1, searchHits.getTotalHits().value);
     }
 
     @Test
@@ -113,7 +112,7 @@ public class AlphabeticalSearchRequestsTest {
                 "orderedAlpha", "topHit");
 
         assertNotNull(searchHits);
-        assertEquals(searchHits.getTotalHits().value, 1);
+        assertEquals(1, searchHits.getTotalHits().value);
     }
 
     private SearchResponse createSearchResponse() {

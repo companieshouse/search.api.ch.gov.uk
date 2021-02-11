@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class AlphabeticalSearchUpsertRequestTest {
+class AlphabeticalSearchUpsertRequestTest {
 
     private static final String COMPANY_TYPE = "company_type";
     private static final String COMPANY_NUMBER = "12345";
