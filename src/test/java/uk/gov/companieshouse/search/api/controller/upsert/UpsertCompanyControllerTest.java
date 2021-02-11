@@ -27,7 +27,7 @@ import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPS
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class UpsertCompanyControllerTest {
+class UpsertCompanyControllerTest {
 
     @Mock
     private UpsertCompanyService mockUpsertCompanyService;

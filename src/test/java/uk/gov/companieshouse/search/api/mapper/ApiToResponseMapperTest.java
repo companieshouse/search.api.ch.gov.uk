@@ -28,14 +28,14 @@ import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPS
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ApiToResponseMapperTest {
+class ApiToResponseMapperTest {
 
     @InjectMocks
     private ApiToResponseMapper apiToResponseMapper;
 
     @Test
     @DisplayName("Test if OK returned")
-    public void testFoundReturned() {
+    void testFoundReturned() {
 
         ResponseObject responseObject =
             new ResponseObject(SEARCH_FOUND, new SearchResults());
@@ -49,7 +49,7 @@ public class ApiToResponseMapperTest {
 
     @Test
     @DisplayName("Test if Not Found returned")
-    public void testNotFoundReturned() {
+    void testNotFoundReturned() {
 
         ResponseObject responseObject =
             new ResponseObject(SEARCH_NOT_FOUND);
@@ -63,7 +63,7 @@ public class ApiToResponseMapperTest {
 
     @Test
     @DisplayName("Test if OK returned")
-    public void testOKReturned() {
+    void testOKReturned() {
 
         ResponseObject responseObject =
             new ResponseObject(DOCUMENT_UPSERTED);
@@ -77,7 +77,7 @@ public class ApiToResponseMapperTest {
 
     @Test
     @DisplayName("Test if Bad Request returned on update request error")
-    public void testBadRequestOnUpdateReturned() {
+    void testBadRequestOnUpdateReturned() {
 
         ResponseObject responseObject =
             new ResponseObject(UPDATE_REQUEST_ERROR);
@@ -92,7 +92,7 @@ public class ApiToResponseMapperTest {
 
     @Test
     @DisplayName("Test if Bad Request returned on upsert error")
-    public void testBadRequestOnUpsertReturned() {
+    void testBadRequestOnUpsertReturned() {
 
         ResponseObject responseObject =
             new ResponseObject(UPSERT_ERROR);
@@ -106,7 +106,7 @@ public class ApiToResponseMapperTest {
 
     @Test
     @DisplayName("Test if Internal Server Error returned")
-    public void testInternalServerErrorReturned() {
+    void testInternalServerErrorReturned() {
 
         ResponseObject responseObject =
             new ResponseObject(SEARCH_ERROR);

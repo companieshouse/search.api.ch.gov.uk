@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class LoggingInterceptorTest {
+class LoggingInterceptorTest {
 
     @Mock
     private HttpServletRequest httpServletRequestMock;

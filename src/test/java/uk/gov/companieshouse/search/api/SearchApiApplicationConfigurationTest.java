@@ -7,7 +7,7 @@ import uk.gov.companieshouse.environment.EnvironmentReader;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SearchApiApplicationConfigurationTest {
+class SearchApiApplicationConfigurationTest {
 
     @Test
     @DisplayName("Test environment reader return new EnvironmentReaderImpl")

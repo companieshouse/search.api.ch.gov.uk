@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AlphabeticalSearchRequestServiceTest {
+class AlphabeticalSearchRequestServiceTest {
 
     @InjectMocks
     private SearchRequestService searchRequestService = new AlphabeticalSearchRequestService();
@@ -70,8 +70,8 @@ public class AlphabeticalSearchRequestServiceTest {
             searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID);
 
         assertNotNull(searchResults);
-        assertEquals(searchResults.getTopHit(), TOP_HIT);
-        assertEquals(searchResults.getResults().size(), 3);
+        assertEquals( TOP_HIT, searchResults.getTopHit());
+        assertEquals(3, searchResults.getResults().size());
     }
 
     @Test
@@ -99,8 +99,8 @@ public class AlphabeticalSearchRequestServiceTest {
             searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID);
 
         assertNotNull(searchResults);
-        assertEquals(searchResults.getTopHit(), TOP_HIT);
-        assertEquals(searchResults.getResults().size(), 3);
+        assertEquals(TOP_HIT, searchResults.getTopHit());
+        assertEquals(3, searchResults.getResults().size());
     }
 
     @Test
@@ -131,8 +131,8 @@ public class AlphabeticalSearchRequestServiceTest {
             searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID);
 
         assertNotNull(searchResults);
-        assertEquals(searchResults.getTopHit(), TOP_HIT);
-        assertEquals(searchResults.getResults().size(), 3);
+        assertEquals(TOP_HIT, searchResults.getTopHit());
+        assertEquals(3, searchResults.getResults().size());
     }
 
     @Test
