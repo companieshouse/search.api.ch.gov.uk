@@ -10,30 +10,30 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
-import uk.gov.companieshouse.search.api.model.response.ResponseObject;
-import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
+import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
+import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchIndexService;
 
 @RestController
-@RequestMapping(value = "/alphabetical-search", produces = MediaType.APPLICATION_JSON_VALUE)
-public class AlphabeticalSearchController {
-
-    private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
-    private static final String COMPANY_NAME_QUERY_PARAM = "q";
+@RequestMapping(value = "/dissolved-search", produces = MediaType.APPLICATION_JSON_VALUE)
+public class DissolvedSearchController {
 
     @Autowired
-    private AlphabeticalSearchIndexService searchIndexService;
+    private DissolvedSearchIndexService searchIndexService;
 
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
 
+    private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
+    private static final String COMPANY_NAME_QUERY_PARAM = "q";
+
     @GetMapping("/companies")
     @ResponseBody
-    public ResponseEntity searchByCorporateName(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
+    public ResponseEntity<Object> searchCompanies(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
                                                 @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
-        ResponseObject responseObject = searchIndexService
-            .search(companyName, requestId);
+        DissolvedResponseObject responseObject = searchIndexService
+                .search(companyName, requestId);
 
-        return apiToResponseMapper.map(responseObject);
+        return apiToResponseMapper.mapDissolved(responseObject);
     }
 }

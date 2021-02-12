@@ -3,4 +3,5 @@ group: api
 weight: 902
 routes:
   1: ^/alphabetical-search/companies
-  2: ^/upsert-company
+  2: ^/dissolved-search/companies
+  3: ^/upsert-company

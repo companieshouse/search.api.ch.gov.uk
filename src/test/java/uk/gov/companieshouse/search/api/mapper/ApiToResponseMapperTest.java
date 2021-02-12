@@ -7,14 +7,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
 import uk.gov.companieshouse.search.api.model.SearchResults;
+import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
@@ -117,4 +118,45 @@ class ApiToResponseMapperTest {
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     }
 
+    @Test
+    @DisplayName("Test if Search found returned for dissolved company")
+    public void testFoundReturnedDissolved() {
+
+        DissolvedResponseObject responseObject =
+                new DissolvedResponseObject(SEARCH_FOUND, new DissolvedSearchResults());
+
+        ResponseEntity responseEntity = apiToResponseMapper.mapDissolved(responseObject);
+
+        assertNotNull(responseEntity);
+        assertNotNull(responseEntity.getBody());
+        assertEquals(OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test if Not Found returned for dissolved company")
+    void testNotFoundReturnedDissolved() {
+
+        DissolvedResponseObject responseObject =
+                new DissolvedResponseObject(SEARCH_NOT_FOUND);
+
+        ResponseEntity responseEntity = apiToResponseMapper.mapDissolved(responseObject);
+
+        assertNotNull(responseEntity);
+        assertNull(responseEntity.getBody());
+        assertEquals(NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test if Internal Server Error returned for dissolved company")
+    void testInternalServerErrorReturnedDissolved() {
+
+        DissolvedResponseObject responseObject =
+                new DissolvedResponseObject(SEARCH_ERROR);
+
+        ResponseEntity responseEntity = apiToResponseMapper.mapDissolved(responseObject);
+
+        assertNotNull(responseEntity);
+        assertNull(responseEntity.getBody());
+        assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+    }
 }
