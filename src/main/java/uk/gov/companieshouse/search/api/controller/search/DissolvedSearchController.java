@@ -28,7 +28,7 @@ public class DissolvedSearchController {
 
     @GetMapping("/companies")
     @ResponseBody
-    public ResponseEntity searchCompanies(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
+    public ResponseEntity<Object> searchCompanies(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
                                                 @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         DissolvedResponseObject responseObject = searchIndexService
