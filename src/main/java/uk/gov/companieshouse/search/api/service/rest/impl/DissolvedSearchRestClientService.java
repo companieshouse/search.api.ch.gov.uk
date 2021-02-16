@@ -13,8 +13,11 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 
+@Service
 public class DissolvedSearchRestClientService implements RestClientService {
 	
 	@Autowired

@@ -11,6 +11,7 @@ import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
+import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
 
 import java.io.IOException;
 
@@ -20,7 +21,7 @@ import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_
 public class UpsertCompanyService {
 
     @Autowired
-    private RestClientService restClientService;
+    private AlphabeticalSearchRestClientService restClientService;
 
     @Autowired
     private UpsertRequestService upsertRequestService;
