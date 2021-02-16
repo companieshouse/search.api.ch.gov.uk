@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
-import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 

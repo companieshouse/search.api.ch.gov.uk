@@ -13,7 +13,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 
@@ -33,5 +32,4 @@ public class DissolvedSearchRestClientService implements RestClientService {
     public UpdateResponse upsert(UpdateRequest updateRequest) throws IOException {
         return dissolvedClient.update(updateRequest, RequestOptions.DEFAULT);
     }
-
 }

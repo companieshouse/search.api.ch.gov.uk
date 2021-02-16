@@ -37,5 +37,4 @@ public class AlphabeticalSearchRequests extends AbstractSearchRequest {
     AbstractSearchQuery getSearchQuery() {
         return alphabeticalSearchQueries;
     }
-
 }

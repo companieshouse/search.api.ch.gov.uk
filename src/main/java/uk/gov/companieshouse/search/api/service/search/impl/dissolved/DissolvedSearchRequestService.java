@@ -15,17 +15,12 @@ import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
-import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Company;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Links;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
-import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
 
 @Service
@@ -130,5 +125,4 @@ public class DissolvedSearchRequestService {
 
 		hits.forEach(h -> results.add(mapESResponse(h)));
 	}
-
 }

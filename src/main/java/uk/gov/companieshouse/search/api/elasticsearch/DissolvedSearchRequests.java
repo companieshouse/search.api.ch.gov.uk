@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
-import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.rest.impl.DissolvedSearchRestClientService;
 
 @Component
@@ -38,5 +37,4 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
 	AbstractSearchQuery getSearchQuery() {
 		return searchQueries;
 	}
-
 }
