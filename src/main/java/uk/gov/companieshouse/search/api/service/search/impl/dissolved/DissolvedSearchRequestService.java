@@ -91,18 +91,7 @@ public class DissolvedSearchRequestService {
 	private DissolvedCompany mapESResponse(SearchHit hit) {
 		Map<String, Object> sourceAsMap = hit.getSourceAsMap();
 		Map<String, Object> address = (Map<String, Object>) sourceAsMap.get("address");
-		//List previousCompanyCheese = (List) sourceAsMap.get("previous_company_names");
 		List<PreviousCompanyName> previousCompanyNamesList = (List<PreviousCompanyName>) sourceAsMap.get("previous_company_names");
-		//List<Map<String, Object>> previousNameList = (List<Map<String, Object>>) sourceAsMap.get("previous_company_names");
-
-//		List<PreviousCompanyName> previousCompanyNames = new ArrayList<>();
-//		for ( Map<String, Object> previousName : previousNameList) {
-//			PreviousCompanyName previousCompanyName = new PreviousCompanyName();
-//			previousCompanyName.setName((String) previousName.get("name"));
-//			previousCompanyName.setDateOfNameCessation((String) previousName.get("ceased_on"));
-//			previousCompanyName.setDateOfNameEffectiveness((String) previousName.get("effective_from"));
-//			previousCompanyNames.add(previousCompanyName);
-//		}
 
 		DissolvedCompany dissolvedCompany = new DissolvedCompany();
 		Address roAddress = new Address();
@@ -116,7 +105,7 @@ public class DissolvedSearchRequestService {
 		roAddress.setPostalCode((String) address.get("postal_code"));
 
 		dissolvedCompany.setAddress(roAddress);
-		//dissolvedCompany.setPreviousCompanyNames(previousCompanyNames);
+		dissolvedCompany.setPreviousCompanyNames(previousCompanyNamesList);
 
 		return dissolvedCompany;
 	}
