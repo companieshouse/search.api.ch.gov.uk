@@ -29,8 +29,6 @@ import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_
 public class AlphabeticalSearchRequestService implements SearchRequestService {
 
     @Autowired
-    private EnvironmentReader environmentReader;
-    @Autowired
     private AlphaKeyService alphaKeyService;
     @Autowired
     private AlphabeticalSearchRequests alphabeticalSearchRequests;
