@@ -1,6 +1,9 @@
 package uk.gov.companieshouse.search.api.service.search.impl.dissolved;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.elasticsearch.search.SearchHit;
@@ -11,7 +14,9 @@ import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
+import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
 import uk.gov.companieshouse.search.api.model.SearchResults;
+import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Company;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Links;
@@ -32,12 +37,16 @@ public class DissolvedSearchRequestService {
 	@Autowired
 	private DissolvedSearchRequests dissolvedSearchRequests;
 
-	public SearchResults getSearchResults(String companyName, String requestId) throws SearchException {
+	private static final String DISSOLVED_SEARCH = "Dissolved Search: ";
+
+	public DissolvedSearchResults getSearchResults(String companyName, String requestId) throws SearchException {
 		Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
 		logMap.put(LoggingUtils.COMPANY_NAME, companyName);
 		LoggingUtils.getLogger().info("getting dissolved search results", logMap);
 		
-		String orderedAlphaKey;
+		String orderedAlphaKey = "";
+		List<DissolvedCompany> results = new ArrayList<>();
+		TopHit topHit = new TopHit();
 		
 		AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(companyName);
         if (alphaKeyResponse != null) {
@@ -63,29 +72,37 @@ public class DissolvedSearchRequestService {
 				LoggingUtils.getLogger().info("A result has been found", logMap);
 
 				String orderedAlphaKeyWithId = SearchRequestUtils.getOrderedAlphaKeyWithId(hits.getHits()[0]);
-				SearchHit topHit = hits.getHits()[0];
-				Company topHitCompany = mapESResponse(topHit);
-				topHitCompanyName = topHitCompany.getItems().getCompanyName();
+				SearchHit bestMatch = hits.getHits()[0];
+				DissolvedCompany topHitCompany = mapESResponse(bestMatch);
+				topHit.setCompanyName(topHitCompany.getCompanyName());
+				topHit.setCompanyNumber(topHitCompany.getCompanyNumber());
 
-				populateSearchResults(requestId, topHitCompanyName, results, topHitCompany, orderedAlphaKeyWithId);
+				populateSearchResults(requestId, topHit.getCompanyName(), results, topHitCompany, orderedAlphaKeyWithId);
 			}
 		} catch (IOException e) {
-			LOG.error(ALPHABETICAL_SEARCH + "failed to map highest map to company object for: " + companyName, e);
+			LoggingUtils.getLogger().error(DISSOLVED_SEARCH + "failed to map highest map to company object for: ", logMap);
 			throw new SearchException("error occurred reading data for highest match from " +
 					"searchHits", e);
 		}
-        
-		return null;
+
+		return new DissolvedSearchResults("", topHit, results);
 	}
 
-	private Company mapESResponse(SearchHit hit) {
+	private DissolvedCompany mapESResponse(SearchHit hit) {
 		Map<String, Object> sourceAsMap = hit.getSourceAsMap();
 		Map<String, Object> address = (Map<String, Object>) sourceAsMap.get("address");
-		Map<String, Object> previousCompanyNames = (Map<String, Object>) sourceAsMap.get("previous_company_names");
+		List<Map<String, Object>> previousNameList = (List<Map<String, Object>>) sourceAsMap.get("previous_company_names");
+		List<PreviousCompanyName> previousCompanyNames = new ArrayList<>();
+		for ( Map<String, Object> previousName : previousNameList) {
+			PreviousCompanyName previousCompanyName = new PreviousCompanyName();
+			previousCompanyName.setName((String) previousName.get("name"));
+			previousCompanyName.setDateOfNameCessation((String) previousName.get("ceased_on"));
+			previousCompanyName.setDateOfNameEffectiveness((String) previousName.get("effective_from"));
+			previousCompanyNames.add(previousCompanyName);
+		}
 
 		DissolvedCompany dissolvedCompany = new DissolvedCompany();
 		Address roAddress = new Address();
-		PreviousCompanyName previousCompanyName = new PreviousCompanyName();
 
 		dissolvedCompany.setCompanyName((String) sourceAsMap.get("company_name"));
 		dissolvedCompany.setCompanyNumber((String) sourceAsMap.get("company_number"));
@@ -95,20 +112,31 @@ public class DissolvedSearchRequestService {
 		roAddress.setLocality((String) address.get("locality"));
 		roAddress.setPostalCode((String) address.get("postal_code"));
 
-		previousCompanyName.setName((String) previousCompanyNames.get("name"));
-		previousCompanyName.setDateOfNameEffectiveness((String) previousCompanyNames.get("effective_from"));
-		previousCompanyName.setDateOfNameCessation((String) previousCompanyNames.get("ceased_on"));
+		dissolvedCompany.setAddress(roAddress);
+		dissolvedCompany.setPreviousCompanyNames(previousCompanyNames);
 
-
-
-		company.setId((String) sourceAsMap.get("ID"));
-		company.setCompanyType((String) sourceAsMap.get("company_type"));
-		company.setItems(companyItems);
-		company.setLinks(companyLinks);
-
-		return company;
+		return dissolvedCompany;
 	}
-	
-	
+
+	private void populateSearchResults(String requestId,
+									   String topHitCompanyName,
+									   List<DissolvedCompany> results,
+									   DissolvedCompany topHitCompany,
+									   String orderedAlphaKeyWithId) throws IOException {
+		SearchHits hits;
+		hits = dissolvedSearchRequests.getAboveResultsResponse(requestId, orderedAlphaKeyWithId,
+				topHitCompanyName);
+		hits.forEach(h -> results.add(mapESResponse(h)));
+
+		Collections.reverse(results);
+
+		LoggingUtils.getLogger().info("Retrieving the top hit: " + topHitCompanyName);
+		results.add(topHitCompany);
+
+		hits = dissolvedSearchRequests.getDescendingResultsResponse(requestId, orderedAlphaKeyWithId,
+				topHitCompanyName);
+
+		hits.forEach(h -> results.add(mapESResponse(h)));
+	}
 
 }

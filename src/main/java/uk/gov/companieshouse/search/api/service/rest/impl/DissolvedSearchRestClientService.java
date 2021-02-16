@@ -19,16 +19,16 @@ public class DissolvedSearchRestClientService implements RestClientService {
 	
 	@Autowired
     @Qualifier("dissolvedClient")
-    private RestHighLevelClient alphabeticalClient;
+    private RestHighLevelClient dissolvedClient;
 
     @Override
     public SearchResponse search(SearchRequest searchRequest) throws IOException {
-        return alphabeticalClient.search(searchRequest, DEFAULT);
+        return dissolvedClient.search(searchRequest, DEFAULT);
     }
 
     @Override
     public UpdateResponse upsert(UpdateRequest updateRequest) throws IOException {
-        return alphabeticalClient.update(updateRequest, RequestOptions.DEFAULT);
+        return dissolvedClient.update(updateRequest, RequestOptions.DEFAULT);
     }
 
 }
