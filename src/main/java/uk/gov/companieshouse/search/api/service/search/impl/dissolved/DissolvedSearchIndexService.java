@@ -3,6 +3,7 @@ package uk.gov.companieshouse.search.api.service.search.impl.dissolved;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.DISSOLVED_SEARCH;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_TYPE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.createLoggingMap;
 
 import java.util.Map;
 
@@ -27,14 +28,21 @@ public class DissolvedSearchIndexService {
     	logMap.put(SEARCH_TYPE, DISSOLVED_SEARCH);
     	LoggingUtils.getLogger().info("searching for company", logMap);
 
-		DissolvedSearchResults searchResults = null;
+		DissolvedSearchResults searchResults;
 		try {
 			searchResults = dissolvedSearchRequestService.getSearchResults(companyName, requestId);
 		} catch (SearchException e) {
-			e.printStackTrace();
+			LoggingUtils.getLogger()
+					.error("An error occurred while trying to search for a dissolved company: ", logMap);
+			return new DissolvedResponseObject(ResponseStatus.SEARCH_ERROR, null);
 		}
 
-		LoggingUtils.getLogger().info("successful search for dissolved company", logMap);
-        return new DissolvedResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+		if(searchResults.getItems() != null) {
+			LoggingUtils.getLogger().info("successful search for dissolved company", logMap);
+			return new DissolvedResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+		}
+
+		LoggingUtils.getLogger().info("No results were returned while searching for a dissolved company", logMap);
+		return new DissolvedResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 }

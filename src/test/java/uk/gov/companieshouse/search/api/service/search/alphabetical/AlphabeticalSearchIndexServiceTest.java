@@ -42,7 +42,7 @@ class AlphabeticalSearchIndexServiceTest {
     @Test
     @DisplayName("Test search request returns successfully")
     void searchRequestSuccessful() throws Exception {
-        when(mockSearchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID))
+            when(mockSearchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID))
             .thenReturn(createSearchResults(true));
         ResponseObject responseObject = searchIndexService.search(CORPORATE_NAME, REQUEST_ID);
 

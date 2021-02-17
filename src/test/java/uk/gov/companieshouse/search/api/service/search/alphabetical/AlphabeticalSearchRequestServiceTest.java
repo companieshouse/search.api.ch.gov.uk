@@ -82,7 +82,7 @@ class AlphabeticalSearchRequestServiceTest {
             .thenReturn(createAlphaKeyResponse());
 
         when(mockAlphabeticalSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
-            .thenReturn(createEmpySearchHits());
+            .thenReturn(createEmptySearchHits());
 
         when(mockAlphabeticalSearchRequests.getStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
             .thenReturn(createSearchHits());
@@ -111,10 +111,10 @@ class AlphabeticalSearchRequestServiceTest {
             .thenReturn(createAlphaKeyResponse());
 
         when(mockAlphabeticalSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
-            .thenReturn(createEmpySearchHits());
+            .thenReturn(createEmptySearchHits());
 
         when(mockAlphabeticalSearchRequests.getStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
-            .thenReturn(createEmpySearchHits());
+            .thenReturn(createEmptySearchHits());
 
         when(mockAlphabeticalSearchRequests.getCorporateNameStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
             .thenReturn(createSearchHits());
@@ -170,7 +170,7 @@ class AlphabeticalSearchRequestServiceTest {
         return new SearchHits( new SearchHit[] { hit }, totalHits, 10 );
     }
 
-    private SearchHits createEmpySearchHits() {
+    private SearchHits createEmptySearchHits() {
         TotalHits totalHits = new TotalHits(0, EQUAL_TO);
         return new SearchHits( new SearchHit[] {}, totalHits, 0 );
     }
