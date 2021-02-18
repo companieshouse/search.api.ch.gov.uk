@@ -10,6 +10,12 @@ public class TopHit {
     @JsonProperty("company_number")
     private String companyNumber;
 
+    @JsonProperty("company_status")
+    private String companyStatus;
+
+    @JsonProperty("kind")
+    private String kind;
+
     public String getCompanyName() {
         return companyName;
     }
@@ -24,5 +30,21 @@ public class TopHit {
 
     public void setCompanyNumber(String companyNumber) {
         this.companyNumber = companyNumber;
+    }
+
+    public String getCompanyStatus() {
+        return companyStatus;
+    }
+
+    public void setCompanyStatus(String companyStatus) {
+        this.companyStatus = companyStatus;
+    }
+
+    public String getKind() {
+        return kind;
+    }
+
+    public void setKind(String kind) {
+        this.kind = kind;
     }
 }

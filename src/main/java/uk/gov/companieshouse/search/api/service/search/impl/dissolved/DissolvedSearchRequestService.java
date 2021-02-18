@@ -1,20 +1,14 @@
 package uk.gov.companieshouse.search.api.service.search.impl.dissolved;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
+import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
 import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
@@ -22,6 +16,12 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousComp
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class DissolvedSearchRequestService {
@@ -33,6 +33,7 @@ public class DissolvedSearchRequestService {
     private DissolvedSearchRequests dissolvedSearchRequests;
 
     private static final String DISSOLVED_SEARCH = "Dissolved Search: ";
+    private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedSearch";
 
     public DissolvedSearchResults getSearchResults(String companyName, String requestId) throws SearchException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
@@ -41,7 +42,7 @@ public class DissolvedSearchRequestService {
 
         String orderedAlphaKey = "";
         List<DissolvedCompany> results = new ArrayList<>();
-        TopHit topHit = new TopHit();
+        DissolvedTopHit topHit = new DissolvedTopHit();
 
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(companyName);
         if (alphaKeyResponse != null) {
@@ -66,8 +67,8 @@ public class DissolvedSearchRequestService {
                 String orderedAlphaKeyWithId = SearchRequestUtils.getOrderedAlphaKeyWithId(hits.getHits()[0]);
                 SearchHit bestMatch = hits.getHits()[0];
                 DissolvedCompany topHitCompany = mapESResponse(bestMatch);
-                topHit.setCompanyName(topHitCompany.getCompanyName());
-                topHit.setCompanyNumber(topHitCompany.getCompanyNumber());
+
+                mapTopHit(topHit, topHitCompany);
 
                 populateSearchResults(requestId, topHit.getCompanyName(), results, topHitCompany,
                         orderedAlphaKeyWithId);
@@ -93,6 +94,7 @@ public class DissolvedSearchRequestService {
         dissolvedCompany.setCompanyName((String) sourceAsMap.get("company_name"));
         dissolvedCompany.setCompanyNumber((String) sourceAsMap.get("company_number"));
         dissolvedCompany.setCompanyStatus((String) sourceAsMap.get("company_status"));
+        dissolvedCompany.setKind(SEARCH_RESULTS_KIND);
         dissolvedCompany.setDateOfCessation((String) sourceAsMap.get("date_of_cessation"));
         dissolvedCompany.setDateOfCreation((String) sourceAsMap.get("date_of_creation"));
         roAddress.setLocality((String) address.get("locality"));
@@ -102,6 +104,17 @@ public class DissolvedSearchRequestService {
         dissolvedCompany.setPreviousCompanyNames(previousCompanyNamesList);
 
         return dissolvedCompany;
+    }
+
+    private void mapTopHit(DissolvedTopHit topHit, DissolvedCompany dissolvedCompany) {
+        topHit.setCompanyName(dissolvedCompany.getCompanyName());
+        topHit.setCompanyNumber(dissolvedCompany.getCompanyNumber());
+        topHit.setCompanyStatus(dissolvedCompany.getCompanyStatus());
+        topHit.setKind(dissolvedCompany.getKind());
+        topHit.setAddress(dissolvedCompany.getAddress());
+        topHit.setDateOfCessation(dissolvedCompany.getDateOfCessation());
+        topHit.setDateOfCreation(dissolvedCompany.getDateOfCreation());
+        topHit.setPreviousCompanyNames(dissolvedCompany.getPreviousCompanyNames());
     }
 
     private void populateSearchResults(String requestId, 
