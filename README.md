@@ -21,3 +21,5 @@ Name                                      | Description                         
 SEARCH_API_HOST                           | elastic search database host name                                            | ✓         |         | es7-database-host-name.aws.chdev.org
 ALPHABETICAL_SEARCH_INDEX                 | elastic search index name for the alphabetical search                        | ✓         |         | alpha-search
 ALPHABETICAL_SEARCH_RESULT_MAX            | max results return for alphabetical search before filtering to 20            | ✓         |         | 250
+DISSOLVED_SEARCH_INDEX                    | elastic search index name for the dissolved search                           | ✓         |         | dissolved-search
+DISSOLVED_SEARCH_RESULT_MAX               | max results for the dissolved search before filtering to 20                  | ✓         |         | 250
