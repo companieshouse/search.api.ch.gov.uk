@@ -1,5 +1,5 @@
 # search.api.ch.gov.uk
-Provides functionality to query the alpha_search index within Elastic Search to return company profile information that is sorted in an alphabetical order. The service also provides the ability to ‘upsert’ a company. This feature allows the data present within elastic search to be up to date, providing an option to add new companies or update the existing. The search.api.ch.gov.uk at present relates only to alphabetical-search though potenial may encapsulate advanced search and search in general.
+Provides functionality to query the alpha_search index, and the dissolved search index within Elastic Search to return company profile information that is sorted in alphabetical order. In the case of the dissolved search index, this will currently only be companies which have been dissolved prior to 2009. The service also provides the ability to ‘upsert’ a company. This feature allows the data present within elastic search to be up to date, providing an option to add new companies or update the existing. The search.api.ch.gov.uk at present relates only to alphabetical-search & dissolved search, though potentially may encapsulate advanced search and search in general.
 
 ## Requirements
 In order to build document-generator locally you will need the following:
@@ -21,3 +21,5 @@ Name                                      | Description                         
 SEARCH_API_HOST                           | elastic search database host name                                            | ✓         |         | es7-database-host-name.aws.chdev.org
 ALPHABETICAL_SEARCH_INDEX                 | elastic search index name for the alphabetical search                        | ✓         |         | alpha-search
 ALPHABETICAL_SEARCH_RESULT_MAX            | max results return for alphabetical search before filtering to 20            | ✓         |         | 250
+DISSOLVED_SEARCH_INDEX                    | elastic search index name for the dissolved search                           | ✓         |         | dissolved-search
+DISSOLVED_SEARCH_RESULT_MAX               | max results for the dissolved search before filtering to 20                  | ✓         |         | 250

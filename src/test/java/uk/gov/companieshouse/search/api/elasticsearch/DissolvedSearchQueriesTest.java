@@ -6,15 +6,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class AlphabeticalSearchQueriesTest {
+class DissolvedSearchQueriesTest {
 
-    AlphabeticalSearchQueries alphabeticalSearchQueries = new AlphabeticalSearchQueries();
+    DissolvedSearchQueries dissolvedSearchQueries = new DissolvedSearchQueries();
 
     @Test
-        @DisplayName("Create Ordered AlphaKey Search Query")
-        void createOrderedAlphaKeySearchQuery() {
-            QueryBuilder queryBuilder =
-                    alphabeticalSearchQueries.createOrderedAlphaKeySearchQuery("orderAlphakey");
+    @DisplayName("Create Ordered AlphaKey Search Query")
+    void createOrderedAlphaKeySearchQuery() {
+        QueryBuilder queryBuilder =
+                dissolvedSearchQueries.createOrderedAlphaKeySearchQuery("orderAlphakey");
 
         assertNotNull(queryBuilder);
     }
@@ -23,7 +23,7 @@ class AlphabeticalSearchQueriesTest {
     @DisplayName("Create Ordered AlphaKey Keyword Query")
     void createOrderedAlphaKeyKeywordQuery() {
         QueryBuilder queryBuilder =
-            alphabeticalSearchQueries.createOrderedAlphaKeyKeywordQuery("orderAlphakey");
+                dissolvedSearchQueries.createOrderedAlphaKeyKeywordQuery("orderAlphakey");
 
         assertNotNull(queryBuilder);
     }
@@ -32,7 +32,7 @@ class AlphabeticalSearchQueriesTest {
     @DisplayName("Create Starts With Query")
     void createStartsWithQuery() {
         QueryBuilder queryBuilder =
-            alphabeticalSearchQueries.createStartsWithQuery("corporateNameStartsWith");
+                dissolvedSearchQueries.createStartsWithQuery("corporateNameStartsWith");
 
         assertNotNull(queryBuilder);
     }
@@ -41,7 +41,7 @@ class AlphabeticalSearchQueriesTest {
     @DisplayName("Create Alphabetical Query")
     void createAlphabeticalQuery() {
         QueryBuilder queryBuilder =
-            alphabeticalSearchQueries.createMatchAllQuery();
+                dissolvedSearchQueries.createMatchAllQuery();
 
         assertNotNull(queryBuilder);
     }

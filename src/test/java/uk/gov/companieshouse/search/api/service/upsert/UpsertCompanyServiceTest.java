@@ -13,6 +13,7 @@ import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
+import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,7 +32,7 @@ import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPS
 class UpsertCompanyServiceTest {
 
     @Mock
-    private RestClientService mockRestClientService;
+    private AlphabeticalSearchRestClientService mockRestClientService;
 
     @Mock
     private UpsertRequestService mockUpsertRequestService;

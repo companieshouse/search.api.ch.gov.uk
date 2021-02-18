@@ -1,64 +1,48 @@
 package uk.gov.companieshouse.search.api.service.search.impl.dissolved;
 
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.DISSOLVED_SEARCH;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_TYPE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.createLoggingMap;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.logging.LoggerFactory;
+
+import uk.gov.companieshouse.search.api.exception.SearchException;
+import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
-import uk.gov.companieshouse.search.api.model.TopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
 import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
 
 @Service
 public class DissolvedSearchIndexService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
-
-    private static final String DISSOLVED_SEARCH = "Dissolved search: ";
+    @Autowired
+    private DissolvedSearchRequestService dissolvedSearchRequestService;
 
     public DissolvedResponseObject search(String companyName, String requestId) {
+        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logMap.put(COMPANY_NAME, companyName);
+        logMap.put(SEARCH_TYPE, DISSOLVED_SEARCH);
+        LoggingUtils.getLogger().info("searching for company", logMap);
 
-        TopHit topHit = new TopHit();
-        topHit.setCompanyName("TEST COMPANY NAME");
-        topHit.setCompanyNumber("TEST COMPANY NUMBER");
+        DissolvedSearchResults searchResults;
+        try {
+            searchResults = dissolvedSearchRequestService.getSearchResults(companyName, requestId);
+        } catch (SearchException e) {
+            LoggingUtils.getLogger().error("An error occurred while trying to search for a dissolved company: ",
+                    logMap);
+            return new DissolvedResponseObject(ResponseStatus.SEARCH_ERROR, null);
+        }
 
-        List<DissolvedCompany> dissolvedCompanies = new ArrayList<>();
-        DissolvedCompany dissolvedCompany = new DissolvedCompany();
-        Address address = new Address();
-        address.setLocality("TEST LOCALITY");
-        address.setPostalCode("AB12 3CD");
+        if (searchResults.getItems() != null) {
+            LoggingUtils.getLogger().info("successful search for dissolved company", logMap);
+            return new DissolvedResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+        }
 
-        PreviousCompanyName previousCompanyName = new PreviousCompanyName();
-        previousCompanyName.setDateOfNameCessation("01/01/1993");
-        previousCompanyName.setDateOfNameEffectiveness("01/01/1983");
-        previousCompanyName.setName("PREVIOUS NAME");
-
-        List<PreviousCompanyName> previousCompanyNames = new ArrayList<>();
-        previousCompanyNames.add(previousCompanyName);
-
-        dissolvedCompany.setCompanyName("TEST COMPANY NAME");
-        dissolvedCompany.setCompanyNumber("TEST COMPANY NUMBER");
-        dissolvedCompany.setCompanyStatus("TEST COMPANY STATUS");
-        dissolvedCompany.setDateOfCessation("TEST DATE OF CESSATION");
-        dissolvedCompany.setDateOfCreation("TEST DATE OF CREATION");
-        dissolvedCompany.setAddress(address);
-        dissolvedCompany.setPreviousCompanyNames(previousCompanyNames);
-
-        dissolvedCompanies.add(dissolvedCompany);
-
-        DissolvedSearchResults searchResults = new DissolvedSearchResults();
-        searchResults.setTopHit(topHit);
-        searchResults.setEtag("TEST");
-        searchResults.setItems(dissolvedCompanies);
-
-        LOG.info(DISSOLVED_SEARCH + "successful for: " + companyName);
-        return new DissolvedResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+        LoggingUtils.getLogger().info("No results were returned while searching for a dissolved company", logMap);
+        return new DissolvedResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 }
