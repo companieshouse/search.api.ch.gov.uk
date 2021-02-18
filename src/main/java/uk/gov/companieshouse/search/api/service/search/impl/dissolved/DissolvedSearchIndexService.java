@@ -19,30 +19,30 @@ import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 @Service
 public class DissolvedSearchIndexService {
 
-	@Autowired
-	private DissolvedSearchRequestService dissolvedSearchRequestService;
-	
+    @Autowired
+    private DissolvedSearchRequestService dissolvedSearchRequestService;
+
     public DissolvedResponseObject search(String companyName, String requestId) {
-    	Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-    	logMap.put(COMPANY_NAME, companyName);
-    	logMap.put(SEARCH_TYPE, DISSOLVED_SEARCH);
-    	LoggingUtils.getLogger().info("searching for company", logMap);
+        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logMap.put(COMPANY_NAME, companyName);
+        logMap.put(SEARCH_TYPE, DISSOLVED_SEARCH);
+        LoggingUtils.getLogger().info("searching for company", logMap);
 
-		DissolvedSearchResults searchResults;
-		try {
-			searchResults = dissolvedSearchRequestService.getSearchResults(companyName, requestId);
-		} catch (SearchException e) {
-			LoggingUtils.getLogger()
-					.error("An error occurred while trying to search for a dissolved company: ", logMap);
-			return new DissolvedResponseObject(ResponseStatus.SEARCH_ERROR, null);
-		}
+        DissolvedSearchResults searchResults;
+        try {
+            searchResults = dissolvedSearchRequestService.getSearchResults(companyName, requestId);
+        } catch (SearchException e) {
+            LoggingUtils.getLogger().error("An error occurred while trying to search for a dissolved company: ",
+                    logMap);
+            return new DissolvedResponseObject(ResponseStatus.SEARCH_ERROR, null);
+        }
 
-		if(searchResults.getItems() != null) {
-			LoggingUtils.getLogger().info("successful search for dissolved company", logMap);
-			return new DissolvedResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
-		}
+        if (searchResults.getItems() != null) {
+            LoggingUtils.getLogger().info("successful search for dissolved company", logMap);
+            return new DissolvedResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+        }
 
-		LoggingUtils.getLogger().info("No results were returned while searching for a dissolved company", logMap);
-		return new DissolvedResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
+        LoggingUtils.getLogger().info("No results were returned while searching for a dissolved company", logMap);
+        return new DissolvedResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 }

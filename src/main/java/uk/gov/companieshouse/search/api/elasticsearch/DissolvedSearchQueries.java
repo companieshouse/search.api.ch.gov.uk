@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DissolvedSearchQueries extends AbstractSearchQuery {
 
-	public QueryBuilder createOrderedAlphaKeySearchQuery(String orderedAlphaKey) {
+    public QueryBuilder createOrderedAlphaKeySearchQuery(String orderedAlphaKey) {
         return QueryBuilders.matchQuery("ordered_alpha_key", orderedAlphaKey);
     }
 
