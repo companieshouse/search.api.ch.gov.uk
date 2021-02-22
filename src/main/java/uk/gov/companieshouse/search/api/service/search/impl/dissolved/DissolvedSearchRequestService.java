@@ -38,6 +38,7 @@ public class DissolvedSearchRequestService {
     public DissolvedSearchResults getSearchResults(String companyName, String requestId) throws SearchException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
+        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
         LoggingUtils.getLogger().info("getting dissolved search results", logMap);
 
         String orderedAlphaKey = "";
@@ -74,7 +75,7 @@ public class DissolvedSearchRequestService {
                         orderedAlphaKeyWithId);
             }
         } catch (IOException e) {
-            LoggingUtils.getLogger().error(DISSOLVED_SEARCH + "failed to map highest map to company object for: ",
+            LoggingUtils.getLogger().error("failed to map highest map to company object",
                     logMap);
             throw new SearchException("error occurred reading data for highest match from " + "searchHits", e);
         }

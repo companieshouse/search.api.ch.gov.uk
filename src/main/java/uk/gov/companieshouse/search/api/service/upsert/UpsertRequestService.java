@@ -10,10 +10,13 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
+import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
 
@@ -69,6 +72,10 @@ public class UpsertRequestService {
      */
     public UpdateRequest createUpdateRequest(CompanyProfileApi company, IndexRequest indexRequest)
         throws UpsertException {
+        Map<String, Object> logMap = new HashMap<>();
+        logMap.put(LoggingUtils.COMPANY_NAME, company.getCompanyName());
+        logMap.put(LoggingUtils.COMPANY_NUMBER, company.getCompanyNumber());
+        logMap.put(LoggingUtils.INDEX, INDEX);
 
         String orderedAlphaKey = "";
         String orderedAlphaKeyWithID = "";
@@ -77,17 +84,18 @@ public class UpsertRequestService {
         if (alphaKeyResponse != null) {
             orderedAlphaKey = alphaKeyResponse.getOrderedAlphaKey();
             orderedAlphaKeyWithID = alphaKeyResponse.getOrderedAlphaKey() + ":" + company.getCompanyNumber();
+            logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphaKey);
         }
 
         try {
-            LOG.info("Attempt to upsert document if it does not exist for "  + company.getCompanyName());
+            LoggingUtils.getLogger().info("Attempt to upsert document if it does not exist", logMap);
 
             return new UpdateRequest(environmentReader.getMandatoryString(INDEX), company.getCompanyNumber())
                 .docAsUpsert(true)
                 .doc(alphabeticalSearchUpsertRequest.buildRequest(company, orderedAlphaKey, orderedAlphaKeyWithID))
                 .upsert(indexRequest);
         } catch (IOException e) {
-            LOG.error("Failed to update a document for company: " + company.getCompanyName());
+            LoggingUtils.getLogger().error("Failed to update a document for company", logMap);
             throw new UpsertException("Unable to create update request");
         }
     }

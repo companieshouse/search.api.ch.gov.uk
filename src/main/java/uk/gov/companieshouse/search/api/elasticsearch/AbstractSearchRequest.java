@@ -3,6 +3,7 @@ package uk.gov.companieshouse.search.api.elasticsearch;
 import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
+import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 
 public abstract class AbstractSearchRequest {
@@ -30,12 +32,13 @@ public abstract class AbstractSearchRequest {
     @Autowired
     private EnvironmentReader environmentReader;
     
-    private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     
 
     public SearchHits getBestMatchResponse(String orderedAlphakey, String requestId) throws IOException {
-        LOG.info("Searching for best company match using: " + orderedAlphakey);
+        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphakey);
+        LoggingUtils.getLogger().info("Searching for best company match", logMap);
         SearchRequest searchRequestBestMatch = createBaseSearchRequest(requestId);
         searchRequestBestMatch.source(bestMatchSourceBuilder(
                 getSearchQuery().createOrderedAlphaKeySearchQuery(orderedAlphakey),
@@ -46,7 +49,10 @@ public abstract class AbstractSearchRequest {
     }
 
     public SearchHits getStartsWithResponse(String orderedAlphakey, String requestId) throws IOException {
-        LOG.info("A hit was not found for: " + orderedAlphakey + ", falling back to prefix on alphakey");
+        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphakey);
+        LoggingUtils.getLogger().info("Searching using alphakey prefix", logMap);
+        
         SearchRequest searchRequestStartsWith = createBaseSearchRequest(requestId);
 
         searchRequestStartsWith.source(bestMatchSourceBuilder(
@@ -59,8 +65,11 @@ public abstract class AbstractSearchRequest {
 
     public SearchHits getCorporateNameStartsWithResponse(String orderedAlphakey,
         String requestId) throws IOException {
+        
+        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphakey);
+        LoggingUtils.getLogger().info("Searching using orderedAlphaKey", logMap);
 
-        LOG.info("A hit was not found for: " + orderedAlphakey + ", falling back to corporate name");
         SearchRequest searchRequestCorporateName = createBaseSearchRequest(requestId);
 
         // Consider using corporateName instead of orderedAlphakey
@@ -76,7 +85,11 @@ public abstract class AbstractSearchRequest {
     public SearchHits getAboveResultsResponse(String requestId,
         String orderedAlphakeyWithId,
         String topHitCompanyName) throws IOException {
-        LOG.info("Retrieving the alphabetically descending results from " + topHitCompanyName);
+        
+        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logMap.put(LoggingUtils.ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
+        logMap.put(LoggingUtils.COMPANY_NAME, topHitCompanyName);
+        LoggingUtils.getLogger().info("Retrieving the alphabetically descending results", logMap);
 
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,
@@ -89,8 +102,12 @@ public abstract class AbstractSearchRequest {
     public SearchHits getDescendingResultsResponse(String requestId,
         String orderedAlphakeyWithId,
         String topHitCompanyName) throws IOException {
+        
+        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logMap.put(LoggingUtils.ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
+        logMap.put(LoggingUtils.COMPANY_NAME, topHitCompanyName);
+        LoggingUtils.getLogger().info("Retrieving the alphabetically ascending results", logMap);
 
-        LOG.info("Retrieving the alphabetically ascending results from: " + topHitCompanyName);
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,
                 getSearchQuery().createMatchAllQuery(), SortOrder.ASC));
