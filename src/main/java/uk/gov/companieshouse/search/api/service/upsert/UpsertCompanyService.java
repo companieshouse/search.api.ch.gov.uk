@@ -53,7 +53,7 @@ public class UpsertCompanyService {
         try {
             restClientService.upsert(updateRequest);
         } catch (IOException e) {
-            LoggingUtils.getLogger().error("An error occured attempting to make an update request: " + updateRequest);
+            LoggingUtils.getLogger().error("IOException when upserting company", logMap);
             return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
         }
 

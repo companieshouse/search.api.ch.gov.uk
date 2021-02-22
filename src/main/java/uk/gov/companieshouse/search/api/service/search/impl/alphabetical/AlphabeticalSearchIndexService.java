@@ -19,8 +19,6 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
     @Autowired
     private SearchRequestService searchRequestService;
 
-    private static final String ALPHABETICAL_SEARCH = "Alphabetical Search: ";
-
     /**
      * {@inheritDoc}
      */
@@ -34,19 +32,19 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         SearchResults searchResults;
 
         try {
-            LoggingUtils.getLogger().info(ALPHABETICAL_SEARCH + "started ", logMap);
+            LoggingUtils.getLogger().info("Search started ", logMap);
             searchResults = searchRequestService.getAlphabeticalSearchResults(corporateName, requestId);
         } catch (SearchException e) {
-            LoggingUtils.getLogger().error("An error occurred in alphabetical search whilst searching: " + corporateName, e);
+            LoggingUtils.getLogger().error("SearchException when searching for company", logMap);
             return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
 
         if(searchResults.getResults() != null) {
-            LoggingUtils.getLogger().info(ALPHABETICAL_SEARCH + "successful", logMap);
+            LoggingUtils.getLogger().info("Search successful", logMap);
             return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
         }
 
-        LoggingUtils.getLogger().info(ALPHABETICAL_SEARCH + "No results found", logMap);
+        LoggingUtils.getLogger().info("No results found", logMap);
         return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 }
