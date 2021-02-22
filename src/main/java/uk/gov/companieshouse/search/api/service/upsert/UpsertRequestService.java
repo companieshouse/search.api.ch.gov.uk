@@ -39,10 +39,7 @@ public class UpsertRequestService {
      */
     public IndexRequest createIndexRequest(CompanyProfileApi company) throws UpsertException {
         
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put(LoggingUtils.COMPANY_NAME, company.getCompanyName());
-        logMap.put(LoggingUtils.COMPANY_NUMBER, company.getCompanyNumber());
-        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
+        Map<String, Object> logMap = setUpUpsertLogging(company);
 
         String orderedAlphaKey = "";
         String orderedAlphaKeyWithID = "";
@@ -73,10 +70,7 @@ public class UpsertRequestService {
      */
     public UpdateRequest createUpdateRequest(CompanyProfileApi company, IndexRequest indexRequest)
         throws UpsertException {
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put(LoggingUtils.COMPANY_NAME, company.getCompanyName());
-        logMap.put(LoggingUtils.COMPANY_NUMBER, company.getCompanyNumber());
-        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
+        Map<String, Object> logMap = setUpUpsertLogging(company);
 
         String orderedAlphaKey = "";
         String orderedAlphaKeyWithID = "";
@@ -84,8 +78,8 @@ public class UpsertRequestService {
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(company.getCompanyName());
         if (alphaKeyResponse != null) {
             orderedAlphaKey = alphaKeyResponse.getOrderedAlphaKey();
-            orderedAlphaKeyWithID = alphaKeyResponse.getOrderedAlphaKey() + ":" + company.getCompanyNumber();
             logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphaKey);
+            orderedAlphaKeyWithID = alphaKeyResponse.getOrderedAlphaKey() + ":" + company.getCompanyNumber();
         }
 
         try {
@@ -99,5 +93,13 @@ public class UpsertRequestService {
             LoggingUtils.getLogger().error("Failed to update a document for company", logMap);
             throw new UpsertException("Unable to create update request");
         }
+    }
+
+    private Map<String, Object> setUpUpsertLogging(CompanyProfileApi company) {
+        Map<String, Object> logMap = new HashMap<>();
+        logMap.put(LoggingUtils.COMPANY_NAME, company.getCompanyName());
+        logMap.put(LoggingUtils.COMPANY_NUMBER, company.getCompanyNumber());
+        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
+        return logMap;
     }
 }
