@@ -19,6 +19,9 @@ public class DissolvedCompany {
     @JsonProperty("company_status")
     private String companyStatus;
 
+    @JsonProperty("kind")
+    private String kind;
+
     @JsonProperty("date_of_cessation")
     private String dateOfCessation;
 
@@ -53,6 +56,14 @@ public class DissolvedCompany {
 
     public void setCompanyStatus(String companyStatus) {
         this.companyStatus = companyStatus;
+    }
+
+    public String getKind() {
+        return kind;
+    }
+
+    public void setKind(String kind) {
+        this.kind = kind;
     }
 
     public String getDateOfCessation() {
