@@ -9,7 +9,6 @@ import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
-import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
@@ -33,7 +32,7 @@ public class DissolvedSearchRequestService {
     private DissolvedSearchRequests dissolvedSearchRequests;
 
     private static final String DISSOLVED_SEARCH = "Dissolved Search: ";
-    private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedSearch";
+    private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
 
     public DissolvedSearchResults getSearchResults(String companyName, String requestId) throws SearchException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
