@@ -95,8 +95,12 @@ public class DissolvedSearchRequestService {
         dissolvedCompany.setCompanyStatus((String) sourceAsMap.get("company_status"));
         dissolvedCompany.setDateOfCessation((String) sourceAsMap.get("date_of_cessation"));
         dissolvedCompany.setDateOfCreation((String) sourceAsMap.get("date_of_creation"));
-        roAddress.setLocality((String) address.get("locality"));
-        roAddress.setPostalCode((String) address.get("postal_code"));
+        if(address != null && address.containsKey("locality")) {            
+            roAddress.setLocality((String) address.get("locality"));
+        }
+        if(address != null && address.containsKey("postal_code")) {            
+            roAddress.setPostalCode((String) address.get("postal_code"));
+        }
 
         dissolvedCompany.setAddress(roAddress);
         dissolvedCompany.setPreviousCompanyNames(previousCompanyNamesList);
