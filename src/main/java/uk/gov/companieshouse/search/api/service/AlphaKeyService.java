@@ -1,7 +1,5 @@
 package uk.gov.companieshouse.search.api.service;
 
-import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,8 +10,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import uk.gov.companieshouse.environment.EnvironmentReader;
-import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 
@@ -28,7 +24,6 @@ public class AlphaKeyService {
 
     private static final String ALPHAKEY_SERVICE_URL = "ALPHAKEY_SERVICE_URL";
 
-    private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
 
     public AlphaKeyResponse getAlphaKeyForCorporateName(String corporateName){
         String alphaKeyUrl = environmentReader.getMandatoryString(ALPHAKEY_SERVICE_URL) + corporateName;

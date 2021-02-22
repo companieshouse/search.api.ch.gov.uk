@@ -36,7 +36,8 @@ public class DissolvedSearchController {
                                                 @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
-        LoggingUtils.getLogger().info("Dissolved search request received", logMap);
+        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
+        LoggingUtils.getLogger().info("Search request received", logMap);
 
         DissolvedResponseObject responseObject = searchIndexService
                 .search(companyName, requestId);

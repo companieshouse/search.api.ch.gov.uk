@@ -1,7 +1,5 @@
 package uk.gov.companieshouse.search.api.elasticsearch;
 
-import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -14,8 +12,6 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.gov.companieshouse.environment.EnvironmentReader;
-import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 

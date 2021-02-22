@@ -37,7 +37,8 @@ public class AlphabeticalSearchController {
 
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
-        LoggingUtils.getLogger().info("Alphabetical search request received", logMap);
+        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
+        LoggingUtils.getLogger().info("Search request received", logMap);
         
         ResponseObject responseObject = searchIndexService
             .search(companyName, requestId);

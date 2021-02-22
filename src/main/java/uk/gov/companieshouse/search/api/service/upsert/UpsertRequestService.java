@@ -1,24 +1,21 @@
 package uk.gov.companieshouse.search.api.service.upsert;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.environment.EnvironmentReader;
-import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
 
 @Service
 public class UpsertRequestService {
@@ -32,8 +29,6 @@ public class UpsertRequestService {
     @Autowired
     private AlphabeticalSearchUpsertRequest alphabeticalSearchUpsertRequest;
 
-    private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
-
     private static final String INDEX = "ALPHABETICAL_SEARCH_INDEX";
 
     /**
@@ -43,6 +38,11 @@ public class UpsertRequestService {
      * @throws UpsertException
      */
     public IndexRequest createIndexRequest(CompanyProfileApi company) throws UpsertException {
+        
+        Map<String, Object> logMap = new HashMap<>();
+        logMap.put(LoggingUtils.COMPANY_NAME, company.getCompanyName());
+        logMap.put(LoggingUtils.COMPANY_NUMBER, company.getCompanyNumber());
+        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
 
         String orderedAlphaKey = "";
         String orderedAlphaKeyWithID = "";
@@ -51,14 +51,15 @@ public class UpsertRequestService {
         if (alphaKeyResponse != null) {
             orderedAlphaKey = alphaKeyResponse.getOrderedAlphaKey();
             orderedAlphaKeyWithID = alphaKeyResponse.getOrderedAlphaKey() + ":" + company.getCompanyNumber();
+            logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphaKey);
         }
 
         try {
-            LOG.info("Preparing index request for "  + company.getCompanyName());
+            LoggingUtils.getLogger().info("Preparing index request", logMap);
             return new IndexRequest(environmentReader.getMandatoryString(INDEX))
                 .source(alphabeticalSearchUpsertRequest.buildRequest(company, orderedAlphaKey, orderedAlphaKeyWithID)).id(company.getCompanyNumber());
         } catch (IOException e) {
-            LOG.error("Failed to index a document for company number: " + company.getCompanyName());
+            LoggingUtils.getLogger().error("Failed to index a document for company", logMap);
             throw new UpsertException("Unable create index request");
         }
     }
@@ -75,7 +76,7 @@ public class UpsertRequestService {
         Map<String, Object> logMap = new HashMap<>();
         logMap.put(LoggingUtils.COMPANY_NAME, company.getCompanyName());
         logMap.put(LoggingUtils.COMPANY_NUMBER, company.getCompanyNumber());
-        logMap.put(LoggingUtils.INDEX, INDEX);
+        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
 
         String orderedAlphaKey = "";
         String orderedAlphaKeyWithID = "";
