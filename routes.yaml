@@ -5,3 +5,4 @@ routes:
   1: ^/alphabetical-search/companies
   2: ^/dissolved-search/companies
   3: ^/upsert-company
+  4: ^/dissolved-search/last-updated

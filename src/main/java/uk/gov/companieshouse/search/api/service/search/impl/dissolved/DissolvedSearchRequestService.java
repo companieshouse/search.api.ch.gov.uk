@@ -81,6 +81,18 @@ public class DissolvedSearchRequestService {
 
         return new DissolvedSearchResults("", topHit, results);
     }
+    
+    public String getLastUpdated(String requestId) {
+        String results;
+        try {
+            results = dissolvedSearchRequests.getLastUpdated(requestId);
+        } catch (IOException e) {
+            // TODO don't do this! :) 
+            results = "oops";
+            e.printStackTrace();
+        }
+        return results;
+    }
 
     private DissolvedCompany mapESResponse(SearchHit hit) {
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();

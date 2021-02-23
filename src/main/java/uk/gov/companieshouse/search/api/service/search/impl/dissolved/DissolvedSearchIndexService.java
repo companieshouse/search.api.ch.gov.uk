@@ -46,4 +46,8 @@ public class DissolvedSearchIndexService {
         LoggingUtils.getLogger().info("No results were returned while searching for a dissolved company", logMap);
         return new DissolvedResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
+    
+    public String getLastUpdated(String requestId) {
+        return dissolvedSearchRequestService.getLastUpdated(requestId);
+    }
 }

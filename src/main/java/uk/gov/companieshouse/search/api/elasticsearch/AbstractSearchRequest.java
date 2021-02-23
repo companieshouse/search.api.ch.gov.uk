@@ -7,6 +7,9 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.metrics.MaxAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.Max;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +80,15 @@ public abstract class AbstractSearchRequest {
         SearchResponse searchResponse = getRestClientService().search(searchRequestCorporateName);
         return searchResponse.getHits();
     }
+    
+    public String getLastUpdated(String requestId) throws IOException {
+        SearchRequest searchRequestLastUpdated = createBaseSearchRequest(requestId);
+        
+        searchRequestLastUpdated.source(lastUpdatedSourceBuilder(getSearchQuery().createMatchAllQuery()));
+        SearchResponse searchResponse = getRestClientService().search(searchRequestLastUpdated);
+        Max max = searchResponse.getAggregations().get("last_updated");
+        return max.getValueAsString();
+    }
 
     public SearchHits getAboveResultsResponse(String requestId,
         String orderedAlphakeyWithId,
@@ -138,6 +150,15 @@ public abstract class AbstractSearchRequest {
         sourceBuilder.searchAfter(new Object[]{orderedAlphakeyWithId});
         sourceBuilder.sort(ORDERED_ALPHA_KEY_WITH_ID, sortOrder);
 
+        return sourceBuilder;
+    }
+    
+    private SearchSourceBuilder lastUpdatedSourceBuilder(QueryBuilder queryBuilder) {
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.size(0);
+        sourceBuilder.query(queryBuilder);
+        MaxAggregationBuilder aggregation = AggregationBuilders.max("last_updated").field("@timestamp");       
+        sourceBuilder.aggregation(aggregation);
         return sourceBuilder;
     }
 

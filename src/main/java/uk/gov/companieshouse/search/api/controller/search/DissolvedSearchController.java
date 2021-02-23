@@ -3,6 +3,7 @@ package uk.gov.companieshouse.search.api.controller.search;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,5 +44,13 @@ public class DissolvedSearchController {
                 .search(companyName, requestId);
 
         return apiToResponseMapper.mapDissolved(responseObject);
+    }
+    
+    @GetMapping("/last-updated")
+    @ResponseBody
+    public ResponseEntity<String> lastUpdated(@RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
+        LoggingUtils.getLogger().info("Getting the last updated data");
+        String response = searchIndexService.getLastUpdated(requestId);
+        return new ResponseEntity<String>(response, HttpStatus.OK);
     }
 }
