@@ -9,7 +9,6 @@ import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
-import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
@@ -86,10 +85,21 @@ public class DissolvedSearchRequestService {
     private DissolvedCompany mapESResponse(SearchHit hit) {
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
         Map<String, Object> address = (Map<String, Object>) sourceAsMap.get("address");
-        List<PreviousCompanyName> previousCompanyNamesList = (List<PreviousCompanyName>) sourceAsMap
-                .get("previous_company_names");
-
+        List<Object> previousCompanyNamesList = (List<Object>) sourceAsMap.get("previous_company_names");
         DissolvedCompany dissolvedCompany = new DissolvedCompany();
+        if(previousCompanyNamesList != null) {
+            List<PreviousCompanyName> previousCompanyNames = new ArrayList<>();
+            for(Object o : previousCompanyNamesList){
+                Map<String, Object> companyNames = (Map<String, Object>) o;
+                PreviousCompanyName companyName = new PreviousCompanyName();
+                companyName.setName((String) companyNames.get("name"));
+                companyName.setDateOfNameCessation((String) companyNames.get("ceased_on"));
+                companyName.setDateOfNameEffectiveness((String) companyNames.get("effective_from"));
+                previousCompanyNames.add(companyName);
+            }
+            dissolvedCompany.setPreviousCompanyNames(previousCompanyNames);
+        }
+
         Address roAddress = new Address();
 
         dissolvedCompany.setCompanyName((String) sourceAsMap.get("company_name"));
@@ -106,7 +116,6 @@ public class DissolvedSearchRequestService {
         }
 
         dissolvedCompany.setAddress(roAddress);
-        dissolvedCompany.setPreviousCompanyNames(previousCompanyNamesList);
 
         return dissolvedCompany;
     }
