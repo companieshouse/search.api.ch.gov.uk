@@ -61,6 +61,12 @@ public class DissolvedSearchRequestService {
                 hits = dissolvedSearchRequests.getCorporateNameStartsWithResponse(orderedAlphaKey, requestId);
             }
 
+            if (hits.getTotalHits().value == 0) {
+
+                hits = dissolvedSearchRequests
+                        .noResultsFallbackQuery(orderedAlphaKey, requestId);
+            }
+
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info("A result has been found", logMap);
 

@@ -10,6 +10,8 @@ public abstract class AbstractSearchQuery {
     abstract QueryBuilder createOrderedAlphaKeyKeywordQuery(String orderedAlphaKey);
     
     abstract QueryBuilder createStartsWithQuery(String corporateName);
+
+    abstract QueryBuilder createNoResultsFoundQuery(String orderedAlphaKey);
     
     public QueryBuilder createMatchAllQuery() {
 

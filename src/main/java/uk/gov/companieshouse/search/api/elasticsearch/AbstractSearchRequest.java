@@ -99,6 +99,19 @@ public abstract class AbstractSearchRequest {
         return searchResponse.getHits();
     }
 
+    public SearchHits noResultsFallbackQuery(String orderedAlphakey, String requestId) throws IOException {
+        LOG.info("Failed to return any results for: " + orderedAlphakey + ". Breaking search term down to find results");
+        SearchRequest searchRequestNoResults = createBaseSearchRequest(requestId);
+        searchRequestNoResults.source(bestMatchSourceBuilder(
+                getSearchQuery().createNoResultsFoundQuery(orderedAlphakey),
+                ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC));
+
+        System.out.println(searchRequestNoResults);
+
+        SearchResponse searchResponse = getRestClientService().search(searchRequestNoResults);
+        return searchResponse.getHits();
+    }
+
     private SearchRequest createBaseSearchRequest(String requestId) {
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.indices(environmentReader.getMandatoryString(getIndex()));
