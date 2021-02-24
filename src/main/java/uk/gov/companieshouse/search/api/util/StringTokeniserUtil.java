@@ -6,6 +6,10 @@ import java.util.List;
 
 public class StringTokeniserUtil {
 
+    private StringTokeniserUtil() {
+        throw new IllegalStateException("Utility class - Not to be instantiated");
+    }
+
     public static List<String> tokeniseString(String str) {
         List<String> tokens = new ArrayList<>();
 
