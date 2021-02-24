@@ -12,11 +12,21 @@ public class LoggingUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
 
+    public static final String ALPHABETICAL_SEARCH = "alphabetical";
     public static final String COMPANY_NAME = "company_name";
+    public static final String COMPANY_NUMBER = "company_number";
+    public static final String DISSOLVED_SEARCH = "dissolved";
+    public static final String INDEX = "index_name";
+    public static final String INDEX_ALPHABETICAL = "alphabetical_search_index";
+    public static final String INDEX_DISSOLVED = "dissolved_search_index";
+    public static final String ORDERED_ALPHAKEY = "ordered_alphakey";
+    public static final String ORDERED_ALPHAKEY_WITH_ID = "ordered_alphakey_with_id";
     public static final String REQUEST_ID = "request_id";
     public static final String SEARCH_TYPE = "search_type";
-    public static final String DISSOLVED_SEARCH = "dissolved";
-    public static final String ALPHABETICAL_SEARCH = "alphabetical";
+    
+    private LoggingUtils() throws IllegalAccessException {
+        throw new IllegalAccessException("LoggingUtils is not to be instantiated");
+    }
 
     public static Logger getLogger() {
         return LOGGER;

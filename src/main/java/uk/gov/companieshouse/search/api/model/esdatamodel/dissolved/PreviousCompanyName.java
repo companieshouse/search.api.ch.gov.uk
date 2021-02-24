@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties({"ordered_alpha_key"})
 public class PreviousCompanyName {
 
-    @JsonProperty("date_of_name_cessation")
+    @JsonProperty("ceased_on")
     private String dateOfNameCessation;
 
-    @JsonProperty("date_of_name_effectiveness")
+    @JsonProperty("effective_from")
     private String dateOfNameEffectiveness;
 
     @JsonProperty("name")

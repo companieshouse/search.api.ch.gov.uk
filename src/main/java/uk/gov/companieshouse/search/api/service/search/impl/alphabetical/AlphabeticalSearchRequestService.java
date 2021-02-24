@@ -1,13 +1,19 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.logging.LoggerFactory;
+
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
+import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Company;
 import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
@@ -15,14 +21,6 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.company.Links;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
 
 @Service
 public class AlphabeticalSearchRequestService implements SearchRequestService {
@@ -32,17 +30,18 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     @Autowired
     private AlphabeticalSearchRequests alphabeticalSearchRequests;
 
-    private static final String ALPHABETICAL_SEARCH = "Alphabetical Search: ";
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
-    private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
 
     /**
      * {@inheritDoc}
      */
     @Override
     public SearchResults getAlphabeticalSearchResults(String corporateName, String requestId) throws SearchException {
+        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logMap.put(LoggingUtils.COMPANY_NAME, corporateName);
+        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
 
-        LOG.info(ALPHABETICAL_SEARCH + "Creating search request for: " + corporateName + " for user with Id: " + requestId);
+        LoggingUtils.getLogger().info("Performing search request", logMap);
 
         String orderedAlphakey = "";
         String topHitCompanyName = "";
@@ -51,6 +50,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(corporateName);
         if (alphaKeyResponse != null) {
             orderedAlphakey = alphaKeyResponse.getOrderedAlphaKey();
+            logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphakey);
         }
 
         try {
@@ -76,7 +76,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
             }
 
             if (hits.getTotalHits().value > 0) {
-                LOG.info("A result has been found");
+                LoggingUtils.getLogger().info("A result has been found", logMap);
 
                 String orderedAlphakeyWithId = getOrderedAlphaKeyWithId(hits.getHits()[0]);
                 SearchHit topHit = hits.getHits()[0];
@@ -86,7 +86,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 populateSearchResults(requestId, topHitCompanyName, results, topHitCompany, orderedAlphakeyWithId);
             }
         } catch (IOException e) {
-            LOG.error(ALPHABETICAL_SEARCH + "failed to map highest map to company object for: " + corporateName, e);
+            LoggingUtils.getLogger().error("failed to map highest map to company object", logMap);
             throw new SearchException("error occurred reading data for highest match from " +
                 "searchHits", e);
         }
@@ -105,7 +105,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
         Collections.reverse(results);
 
-        LOG.info("Retrieving the top hit: " + topHitCompanyName);
+        LoggingUtils.getLogger().info("Retrieving the top hit: " + topHitCompanyName);
         results.add(topHitCompany);
 
         hits = alphabeticalSearchRequests.getDescendingResultsResponse(requestId, orderedAlphakeyWithId,

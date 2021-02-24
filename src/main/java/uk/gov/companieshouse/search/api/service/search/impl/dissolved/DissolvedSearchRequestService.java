@@ -15,6 +15,7 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousComp
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
+import uk.gov.companieshouse.GenerateEtagUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,16 +33,18 @@ public class DissolvedSearchRequestService {
     private DissolvedSearchRequests dissolvedSearchRequests;
 
     private static final String DISSOLVED_SEARCH = "Dissolved Search: ";
-    private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedSearch";
+    private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
 
     public DissolvedSearchResults getSearchResults(String companyName, String requestId) throws SearchException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
+        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
         LoggingUtils.getLogger().info("getting dissolved search results", logMap);
 
         String orderedAlphaKey = "";
         List<DissolvedCompany> results = new ArrayList<>();
         DissolvedTopHit topHit = new DissolvedTopHit();
+        String etag = GenerateEtagUtil.generateEtag();
 
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(companyName);
         if (alphaKeyResponse != null) {
@@ -76,24 +79,35 @@ public class DissolvedSearchRequestService {
                 mapTopHit(topHit, topHitCompany);
 
                 populateSearchResults(requestId, topHit.getCompanyName(), results, topHitCompany,
-                        orderedAlphaKeyWithId);
+                    orderedAlphaKeyWithId);
             }
         } catch (IOException e) {
-            LoggingUtils.getLogger().error(DISSOLVED_SEARCH + "failed to map highest map to company object for: ",
-                    logMap);
+            LoggingUtils.getLogger().error("failed to map highest map to company object",
+                logMap);
             throw new SearchException("error occurred reading data for highest match from " + "searchHits", e);
         }
 
-        return new DissolvedSearchResults("", topHit, results);
+        return new DissolvedSearchResults(etag, topHit, results);
     }
 
     private DissolvedCompany mapESResponse(SearchHit hit) {
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
         Map<String, Object> address = (Map<String, Object>) sourceAsMap.get("address");
-        List<PreviousCompanyName> previousCompanyNamesList = (List<PreviousCompanyName>) sourceAsMap
-                .get("previous_company_names");
-
+        List<Object> previousCompanyNamesList = (List<Object>) sourceAsMap.get("previous_company_names");
         DissolvedCompany dissolvedCompany = new DissolvedCompany();
+        if(previousCompanyNamesList != null) {
+            List<PreviousCompanyName> previousCompanyNames = new ArrayList<>();
+            for(Object o : previousCompanyNamesList){
+                Map<String, Object> companyNames = (Map<String, Object>) o;
+                PreviousCompanyName companyName = new PreviousCompanyName();
+                companyName.setName((String) companyNames.get("name"));
+                companyName.setDateOfNameCessation((String) companyNames.get("ceased_on"));
+                companyName.setDateOfNameEffectiveness((String) companyNames.get("effective_from"));
+                previousCompanyNames.add(companyName);
+            }
+            dissolvedCompany.setPreviousCompanyNames(previousCompanyNames);
+        }
+
         Address roAddress = new Address();
 
         dissolvedCompany.setCompanyName((String) sourceAsMap.get("company_name"));
@@ -102,15 +116,14 @@ public class DissolvedSearchRequestService {
         dissolvedCompany.setKind(SEARCH_RESULTS_KIND);
         dissolvedCompany.setDateOfCessation((String) sourceAsMap.get("date_of_cessation"));
         dissolvedCompany.setDateOfCreation((String) sourceAsMap.get("date_of_creation"));
-        if(address != null && address.containsKey("locality")) {            
+        if(address != null && address.containsKey("locality")) {
             roAddress.setLocality((String) address.get("locality"));
         }
-        if(address != null && address.containsKey("postal_code")) {            
+        if(address != null && address.containsKey("postal_code")) {
             roAddress.setPostalCode((String) address.get("postal_code"));
         }
 
         dissolvedCompany.setAddress(roAddress);
-        dissolvedCompany.setPreviousCompanyNames(previousCompanyNamesList);
 
         return dissolvedCompany;
     }
@@ -126,11 +139,11 @@ public class DissolvedSearchRequestService {
         topHit.setPreviousCompanyNames(dissolvedCompany.getPreviousCompanyNames());
     }
 
-    private void populateSearchResults(String requestId, 
-            String topHitCompanyName, 
-            List<DissolvedCompany> results,
-            DissolvedCompany topHitCompany, 
-            String orderedAlphaKeyWithId) throws IOException {
+    private void populateSearchResults(String requestId,
+                                       String topHitCompanyName,
+                                       List<DissolvedCompany> results,
+                                       DissolvedCompany topHitCompany,
+                                       String orderedAlphaKeyWithId) throws IOException {
         SearchHits hits;
         hits = dissolvedSearchRequests.getAboveResultsResponse(requestId, orderedAlphaKeyWithId, topHitCompanyName);
         hits.forEach(h -> results.add(mapESResponse(h)));
@@ -141,7 +154,7 @@ public class DissolvedSearchRequestService {
         results.add(topHitCompany);
 
         hits = dissolvedSearchRequests.getDescendingResultsResponse(requestId, orderedAlphaKeyWithId,
-                topHitCompanyName);
+            topHitCompanyName);
 
         hits.forEach(h -> results.add(mapESResponse(h)));
     }

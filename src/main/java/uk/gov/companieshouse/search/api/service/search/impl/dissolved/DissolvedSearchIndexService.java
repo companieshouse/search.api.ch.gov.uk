@@ -26,6 +26,7 @@ public class DissolvedSearchIndexService {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(COMPANY_NAME, companyName);
         logMap.put(SEARCH_TYPE, DISSOLVED_SEARCH);
+        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
         LoggingUtils.getLogger().info("searching for company", logMap);
 
         DissolvedSearchResults searchResults;
