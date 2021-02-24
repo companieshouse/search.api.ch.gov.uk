@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.search.api.util;
 
-import com.sun.tools.corba.se.idl.toJavaPortable.Helper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
