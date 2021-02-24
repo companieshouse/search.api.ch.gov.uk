@@ -4,6 +4,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class AlphabeticalSearchQueriesTest {
@@ -33,6 +34,15 @@ class AlphabeticalSearchQueriesTest {
     void createStartsWithQuery() {
         QueryBuilder queryBuilder =
             alphabeticalSearchQueries.createStartsWithQuery("corporateNameStartsWith");
+
+        assertNotNull(queryBuilder);
+    }
+
+    @Test
+    @DisplayName("Create No Results Found Fallback Query")
+    void createNoResultsFoundFallbackQuery() {
+        QueryBuilder queryBuilder =
+                alphabeticalSearchQueries.createNoResultsFoundQuery("orderAlphakey");
 
         assertNotNull(queryBuilder);
     }

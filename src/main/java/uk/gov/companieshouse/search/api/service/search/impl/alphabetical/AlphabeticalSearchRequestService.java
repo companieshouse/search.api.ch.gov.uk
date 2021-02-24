@@ -69,6 +69,12 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                     .getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
             }
 
+            if (hits.getTotalHits().value == 0) {
+
+                hits = alphabeticalSearchRequests
+                        .noResultsFallbackQuery(orderedAlphakey, requestId);
+            }
+
             if (hits.getTotalHits().value > 0) {
                 LOG.info("A result has been found");
 

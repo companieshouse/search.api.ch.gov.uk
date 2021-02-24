@@ -138,6 +138,41 @@ class DissolvedSearchRequestServiceTest {
         assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
         assertEquals(3, dissolvedSearchResults.getItems().size());
     }
+
+    @Test
+    @DisplayName("Test search request returns results successfully with no results found fallback query")
+    void testNoResultsFoundFallbackSuccessful() throws Exception{
+
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(COMPANY_NAME))
+                .thenReturn(createAlphaKeyResponse());
+
+        when(mockDissolvedSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createEmptySearchHits());
+
+        when(mockDissolvedSearchRequests.getStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createEmptySearchHits());
+
+        when(mockDissolvedSearchRequests.getCorporateNameStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createEmptySearchHits());
+
+        when(mockDissolvedSearchRequests.noResultsFallbackQuery(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createSearchHits(true, true, true));
+
+        when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
+                ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+                .thenReturn(createSearchHits(true, true, true));
+
+        when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
+                ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+                .thenReturn(createSearchHits(true, true, true));
+
+        DissolvedSearchResults dissolvedSearchResults =
+                dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
+
+        assertNotNull(dissolvedSearchResults);
+        assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
+        assertEquals(3, dissolvedSearchResults.getItems().size());
+    }
     
     @Test
     @DisplayName("Test search request returns results successfully with corporate name starts with query when locality missing")

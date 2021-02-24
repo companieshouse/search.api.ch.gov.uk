@@ -106,8 +106,6 @@ public abstract class AbstractSearchRequest {
                 getSearchQuery().createNoResultsFoundQuery(orderedAlphakey),
                 ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC));
 
-        System.out.println(searchRequestNoResults);
-
         SearchResponse searchResponse = getRestClientService().search(searchRequestNoResults);
         return searchResponse.getHits();
     }
