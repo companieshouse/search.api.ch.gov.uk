@@ -32,7 +32,7 @@ class StringTokeniserUtilTest {
 
     @Test
     @DisplayName("Test instantiating private constructor throws exception")
-    public void privateConstructorTest() throws Exception {
+    void privateConstructorTest() throws Exception {
         Constructor<StringTokeniserUtil> constructor = StringTokeniserUtil.class.getDeclaredConstructor();
         assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
