@@ -3,9 +3,8 @@ package uk.gov.companieshouse.search.api.elasticsearch;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.stereotype.Component;
+import uk.gov.companieshouse.search.api.util.StringTokeniserUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -29,17 +28,7 @@ public class AlphabeticalSearchQueries extends AbstractSearchQuery {
 
     public QueryBuilder createNoResultsFoundQuery(String orderedAlphaKey) {
 
-        List<String> tokens = new ArrayList<>();
-
-        for (int i=0; i < orderedAlphaKey.length(); i++) {
-
-            if (i != orderedAlphaKey.length() - 1) {
-                String resultString = orderedAlphaKey.substring(0, orderedAlphaKey.length() - i);
-                tokens.add(resultString);
-            }
-        }
-
-        Collections.reverse(tokens);
+        List<String> tokens = StringTokeniserUtil.tokeniseString(orderedAlphaKey);
 
         return QueryBuilders.termsQuery("items.ordered_alpha_key.keyword", tokens);
     }
