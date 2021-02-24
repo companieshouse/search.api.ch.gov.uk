@@ -13,15 +13,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
 import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
-import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
-import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
-import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchRequestService;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchRequestService;
 
 import java.io.IOException;

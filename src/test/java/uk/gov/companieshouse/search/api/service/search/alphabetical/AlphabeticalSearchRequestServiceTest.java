@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
-import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;

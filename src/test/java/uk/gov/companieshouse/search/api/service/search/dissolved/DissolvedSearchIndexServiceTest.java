@@ -14,7 +14,6 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
 import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
-import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchIndexService;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchRequestService;

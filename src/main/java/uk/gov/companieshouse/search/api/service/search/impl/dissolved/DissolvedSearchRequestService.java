@@ -9,7 +9,6 @@ import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
-import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
