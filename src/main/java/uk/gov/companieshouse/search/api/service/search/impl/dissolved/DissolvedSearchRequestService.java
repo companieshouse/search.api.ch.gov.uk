@@ -136,7 +136,10 @@ public class DissolvedSearchRequestService {
         topHit.setAddress(dissolvedCompany.getAddress());
         topHit.setDateOfCessation(dissolvedCompany.getDateOfCessation());
         topHit.setDateOfCreation(dissolvedCompany.getDateOfCreation());
-        topHit.setPreviousCompanyNames(dissolvedCompany.getPreviousCompanyNames());
+
+        if (dissolvedCompany.getPreviousCompanyNames() != null) {
+            topHit.setPreviousCompanyNames(dissolvedCompany.getPreviousCompanyNames());
+        }
     }
 
     private void populateSearchResults(String requestId,
