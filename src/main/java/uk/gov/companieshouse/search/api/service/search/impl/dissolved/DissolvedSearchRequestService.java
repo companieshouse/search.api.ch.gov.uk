@@ -32,7 +32,6 @@ public class DissolvedSearchRequestService {
     @Autowired
     private DissolvedSearchRequests dissolvedSearchRequests;
 
-    private static final String DISSOLVED_SEARCH = "Dissolved Search: ";
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
 
     public DissolvedSearchResults getSearchResults(String companyName, String requestId) throws SearchException {
@@ -67,6 +66,11 @@ public class DissolvedSearchRequestService {
 
                 hits = dissolvedSearchRequests
                         .noResultsFallbackQuery(orderedAlphaKey, requestId);
+            }
+
+            if (hits.getTotalHits().value == 0) {
+
+                hits = dissolvedSearchRequests.finalFallbackQuery(orderedAlphaKey, requestId);
             }
 
             if (hits.getTotalHits().value > 0) {

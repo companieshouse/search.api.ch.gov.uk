@@ -75,6 +75,11 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                         .noResultsFallbackQuery(orderedAlphakey, requestId);
             }
 
+            if (hits.getTotalHits().value == 0) {
+
+                hits = alphabeticalSearchRequests.finalFallbackQuery(orderedAlphakey, requestId);
+            }
+
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info("A result has been found", logMap);
 
