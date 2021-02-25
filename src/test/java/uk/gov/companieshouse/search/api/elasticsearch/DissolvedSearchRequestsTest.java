@@ -18,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.environment.EnvironmentReader;
-import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.rest.impl.DissolvedSearchRestClientService;
 
 import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_TO;
@@ -113,6 +112,20 @@ class DissolvedSearchRequestsTest {
         SearchHits searchHits = dissolvedSearchRequests
                 .getDescendingResultsResponse("requestId",
                         "orderedAlpha", "topHit");
+
+        assertNotNull(searchHits);
+        assertEquals(1, searchHits.getTotalHits().value);
+    }
+
+    @Test
+    @DisplayName("Get no results found fallback response")
+    void noResultsFallbackQueryResponse() throws Exception {
+
+        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT);
+        when(mockSearchRestClient.search(any(SearchRequest.class))).thenReturn(createSearchResponse());
+
+        SearchHits searchHits = dissolvedSearchRequests
+                .noResultsFallbackQuery("orderedAlpha", "requestId");
 
         assertNotNull(searchHits);
         assertEquals(1, searchHits.getTotalHits().value);

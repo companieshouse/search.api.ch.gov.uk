@@ -136,6 +136,41 @@ class AlphabeticalSearchRequestServiceTest {
     }
 
     @Test
+    @DisplayName("Test search request returns results successfully with no results found fallback query")
+    void testNoResultsFoundFallbackSuccessful() throws Exception{
+
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(CORPORATE_NAME))
+                .thenReturn(createAlphaKeyResponse());
+
+        when(mockAlphabeticalSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createEmptySearchHits());
+
+        when(mockAlphabeticalSearchRequests.getStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createEmptySearchHits());
+
+        when(mockAlphabeticalSearchRequests.getCorporateNameStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createEmptySearchHits());
+
+        when(mockAlphabeticalSearchRequests.noResultsFallbackQuery(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createSearchHits());
+
+        when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID,
+                ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+                .thenReturn(createSearchHits());
+
+        when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID,
+                ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+                .thenReturn(createSearchHits());
+
+        SearchResults searchResults =
+                searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID);
+
+        assertNotNull(searchResults);
+        assertEquals(TOP_HIT, searchResults.getTopHit());
+        assertEquals(3, searchResults.getResults().size());
+    }
+
+    @Test
     @DisplayName("Test search request throws exception")
     void testThrowException() throws Exception{
 
