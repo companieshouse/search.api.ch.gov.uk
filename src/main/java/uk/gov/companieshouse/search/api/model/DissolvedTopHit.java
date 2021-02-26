@@ -1,11 +1,13 @@
 package uk.gov.companieshouse.search.api.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DissolvedTopHit extends TopHit {
 
     @JsonProperty("date_of_cessation")
