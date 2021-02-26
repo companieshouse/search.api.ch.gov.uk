@@ -329,10 +329,10 @@ class DissolvedSearchRequestServiceTest {
                 "\"ordered_alpha_key_with_id\": \"ordered_alpha_key_with_id\"," +
                 "\"company_status\" : \"dissolved\",");
         if(includeAddress) {
-            populateAddress(locality, postCode);
+            searchHits.append(populateAddress(locality, postCode));
         }
         if(includePreviousCompanyNames) {
-            populatePreviousCompanyNames();
+            searchHits.append(populatePreviousCompanyNames());
         }
         searchHits.append(
             "\"date_of_cessation\" : \"01-05-1999\"," +
@@ -365,15 +365,15 @@ class DissolvedSearchRequestServiceTest {
     }
 
     private String populatePreviousCompanyNames() {
-        StringBuilder previousNames = new StringBuilder("\"previous_company_names\" : [" +
+        String previousNames = "\"previous_company_names\" : [" +
                 "{" +
                 "\"name\" : \"TEST COMPANY 2\"," +
                 "\"ordered_alpha_key\": \"ordered_alpha_key\"," +
                 "\"effective_from\" : \"01-01-1989\"," +
                 "\"ceased_on\" : \"10-05-1992\"" +
                 "}" +
-                "],");
-        return previousNames.toString();
+                "],";
+        return previousNames;
     }
 
 }
