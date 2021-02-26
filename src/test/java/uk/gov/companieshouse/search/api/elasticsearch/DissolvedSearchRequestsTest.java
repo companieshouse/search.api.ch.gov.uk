@@ -131,6 +131,20 @@ class DissolvedSearchRequestsTest {
         assertEquals(1, searchHits.getTotalHits().value);
     }
 
+    @Test
+    @DisplayName("Get final fallback response")
+    void finalFallbackResponse() throws Exception {
+
+        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT);
+        when(mockSearchRestClient.search(any(SearchRequest.class))).thenReturn(createSearchResponse());
+
+        SearchHits searchHits = dissolvedSearchRequests
+                .finalFallbackQuery("orderedAlpha", "requestId");
+
+        assertNotNull(searchHits);
+        assertEquals(1, searchHits.getTotalHits().value);
+    }
+
     private SearchResponse createSearchResponse() {
         BytesReference source = new BytesArray(
                 "{test}" );
