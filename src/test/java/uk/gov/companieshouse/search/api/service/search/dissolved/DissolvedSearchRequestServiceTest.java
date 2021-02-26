@@ -217,15 +217,15 @@ class DissolvedSearchRequestServiceTest {
                 .thenReturn(createEmptySearchHits());
 
         when(mockDissolvedSearchRequests.finalFallbackQuery(ORDERED_ALPHA_KEY, REQUEST_ID))
-                .thenReturn(createSearchHits(true, true, true));
+                .thenReturn(createSearchHits(true, true, true, true));
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
                 ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-                .thenReturn(createSearchHits(true, true, true));
+                .thenReturn(createSearchHits(true, true, true, true));
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
                 ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-                .thenReturn(createSearchHits(true, true, true));
+                .thenReturn(createSearchHits(true, true, true, true));
 
         DissolvedSearchResults dissolvedSearchResults =
                 dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
