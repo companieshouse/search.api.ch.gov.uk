@@ -36,6 +36,7 @@ public class DissolvedSearchRequestService {
     private DissolvedSearchRequests dissolvedSearchRequests;
 
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
+    private static final String TOP_KIND = "search#alphabeticalDissolved";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
@@ -49,7 +50,7 @@ public class DissolvedSearchRequestService {
         List<DissolvedCompany> results = new ArrayList<>();
         DissolvedTopHit topHit = new DissolvedTopHit();
         String etag = GenerateEtagUtil.generateEtag();
-        String kind = SEARCH_RESULTS_KIND;
+        String kind = TOP_KIND;
 
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(companyName);
         if (alphaKeyResponse != null) {
