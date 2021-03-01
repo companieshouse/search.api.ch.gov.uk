@@ -373,8 +373,8 @@ class DissolvedSearchRequestServiceTest {
             searchHits.append(populatePreviousCompanyNames());
         }
         searchHits.append(
-            "\"date_of_cessation\" : \"01-05-1999\"," +
-                "\"date_of_creation\" : \"01-05-1989\"" +
+            "\"date_of_cessation\" : \"19990501\"," +
+                "\"date_of_creation\" : \"19890501\"" +
                 "}");
         BytesReference source = new BytesArray(searchHits.toString());
         SearchHit hit = new SearchHit( 1 );
@@ -407,8 +407,8 @@ class DissolvedSearchRequestServiceTest {
                 "{" +
                 "\"name\" : \"TEST COMPANY 2\"," +
                 "\"ordered_alpha_key\": \"ordered_alpha_key\"," +
-                "\"effective_from\" : \"01-01-1989\"," +
-                "\"ceased_on\" : \"10-05-1992\"" +
+                "\"effective_from\" : \"19890101\"," +
+                "\"ceased_on\" : \"19920510\"" +
                 "}" +
                 "],";
         return previousNames;

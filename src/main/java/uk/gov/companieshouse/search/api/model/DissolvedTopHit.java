@@ -5,16 +5,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DissolvedTopHit extends TopHit {
 
     @JsonProperty("date_of_cessation")
-    private String dateOfCessation;
+    private LocalDate dateOfCessation;
 
     @JsonProperty("date_of_creation")
-    private String dateOfCreation;
+    private LocalDate dateOfCreation;
 
     @JsonProperty("address")
     private Address address;
@@ -22,19 +23,19 @@ public class DissolvedTopHit extends TopHit {
     @JsonProperty("previous_company_names")
     private List<PreviousCompanyName> previousCompanyNames;
 
-    public String getDateOfCessation() {
+    public LocalDate getDateOfCessation() {
         return dateOfCessation;
     }
 
-    public void setDateOfCessation(String dateOfCessation) {
+    public void setDateOfCessation(LocalDate dateOfCessation) {
         this.dateOfCessation = dateOfCessation;
     }
 
-    public String getDateOfCreation() {
+    public LocalDate getDateOfCreation() {
         return dateOfCreation;
     }
 
-    public void setDateOfCreation(String dateOfCreation) {
+    public void setDateOfCreation(LocalDate dateOfCreation) {
         this.dateOfCreation = dateOfCreation;
     }
 

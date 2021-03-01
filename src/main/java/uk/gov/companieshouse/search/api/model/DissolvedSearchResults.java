@@ -15,13 +15,17 @@ public class DissolvedSearchResults<T> {
     @JsonProperty("items")
     private List<T> items;
 
+    @JsonProperty("kind")
+    private String kind;
+
     public DissolvedSearchResults() {
     }
 
-    public DissolvedSearchResults(String etag, TopHit topHit, List<T> items) {
+    public DissolvedSearchResults(String etag, TopHit topHit, List<T> items, String kind) {
         this.etag = etag;
         this.topHit = topHit;
         this.items = items;
+        this.kind = kind;
     }
 
     public String getEtag() {
@@ -46,5 +50,13 @@ public class DissolvedSearchResults<T> {
 
     public void setItems(List<T> items) {
         this.items = items;
+    }
+
+    public String getKind() {
+        return kind;
+    }
+
+    public void setKind(String kind) {
+        this.kind = kind;
     }
 }

@@ -18,6 +18,7 @@ import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchIndexService;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchRequestService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,13 +40,14 @@ class DissolvedSearchIndexServiceTest {
     private static final String COMPANY_NAME = "companyName";
     private static final String COMPANY_NUMBER = "companyName";
     private static final String COMPANY_STATUS = "companyStatus";
-    private static final String DATE_OF_CESSATION = "01/01/1993";
-    private static final String DATE_OF_CREATION = "01/01/1983";
-    private static final String DATE_OF_NAME_CESSATION = "01/01/1963";
-    private static final String DATE_OF_NAME_EFFECTIVENESS = "01/01/1973";
+    private static final LocalDate DATE_OF_CESSATION = LocalDate.of(1993, 01, 01);
+    private static final LocalDate DATE_OF_CREATION = LocalDate.of(1983, 01, 01);
+    private static final LocalDate DATE_OF_NAME_CESSATION = LocalDate.of(1963, 01, 01);
+    private static final LocalDate DATE_OF_NAME_EFFECTIVENESS = LocalDate.of(1973, 01, 01);
     private static final String LOCALITY = "locality";
     private static final String POSTAL_CODE = "AB12 C34";
     private static final String PREVIOUS_NAME = "previousName";
+    private static final String KIND = "searchresults#dissolvedCompany";
 
 
     @Test
@@ -90,6 +92,7 @@ class DissolvedSearchIndexServiceTest {
         topHit.setCompanyNumber("00000000");
         searchResults.setTopHit(topHit);
         searchResults.setEtag("etag");
+        searchResults.setKind(KIND);
         if (isResultsPopulated) {
             searchResults.setItems(createItems());
         }
