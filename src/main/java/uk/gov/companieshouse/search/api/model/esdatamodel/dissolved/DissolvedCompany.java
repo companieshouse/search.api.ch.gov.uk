@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -23,10 +24,10 @@ public class DissolvedCompany {
     private String kind;
 
     @JsonProperty("date_of_cessation")
-    private String dateOfCessation;
+    private LocalDate dateOfCessation;
 
     @JsonProperty("date_of_creation")
-    private String dateOfCreation;
+    private LocalDate dateOfCreation;
 
     @JsonProperty("address")
     private Address address;
@@ -66,19 +67,19 @@ public class DissolvedCompany {
         this.kind = kind;
     }
 
-    public String getDateOfCessation() {
+    public LocalDate getDateOfCessation() {
         return dateOfCessation;
     }
 
-    public void setDateOfCessation(String dateOfCessation) {
+    public void setDateOfCessation(LocalDate dateOfCessation) {
         this.dateOfCessation = dateOfCessation;
     }
 
-    public String getDateOfCreation() {
+    public LocalDate getDateOfCreation() {
         return dateOfCreation;
     }
 
-    public void setDateOfCreation(String dateOfCreation) {
+    public void setDateOfCreation(LocalDate dateOfCreation) {
         this.dateOfCreation = dateOfCreation;
     }
 

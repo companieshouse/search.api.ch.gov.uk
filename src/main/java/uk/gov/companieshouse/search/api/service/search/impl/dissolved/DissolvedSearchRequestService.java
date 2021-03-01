@@ -4,6 +4,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.companieshouse.GenerateEtagUtil;
 import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
@@ -15,12 +16,14 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousComp
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
-import uk.gov.companieshouse.GenerateEtagUtil;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -35,6 +38,8 @@ public class DissolvedSearchRequestService {
     private static final String DISSOLVED_SEARCH = "Dissolved Search: ";
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
 
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
+
     public DissolvedSearchResults getSearchResults(String companyName, String requestId) throws SearchException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
@@ -45,6 +50,7 @@ public class DissolvedSearchRequestService {
         List<DissolvedCompany> results = new ArrayList<>();
         DissolvedTopHit topHit = new DissolvedTopHit();
         String etag = GenerateEtagUtil.generateEtag();
+        String kind = SEARCH_RESULTS_KIND;
 
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(companyName);
         if (alphaKeyResponse != null) {
@@ -87,7 +93,7 @@ public class DissolvedSearchRequestService {
             throw new SearchException("error occurred reading data for highest match from " + "searchHits", e);
         }
 
-        return new DissolvedSearchResults(etag, topHit, results);
+        return new DissolvedSearchResults(etag, topHit, results, kind);
     }
 
     private DissolvedCompany mapESResponse(SearchHit hit) {
@@ -101,8 +107,8 @@ public class DissolvedSearchRequestService {
                 Map<String, Object> companyNames = (Map<String, Object>) o;
                 PreviousCompanyName companyName = new PreviousCompanyName();
                 companyName.setName((String) companyNames.get("name"));
-                companyName.setDateOfNameCessation((String) companyNames.get("ceased_on"));
-                companyName.setDateOfNameEffectiveness((String) companyNames.get("effective_from"));
+                companyName.setDateOfNameCessation(LocalDate.parse((String) companyNames.get("ceased_on"),formatter));
+                companyName.setDateOfNameEffectiveness(LocalDate.parse((String) companyNames.get("effective_from"),formatter));
                 previousCompanyNames.add(companyName);
             }
             dissolvedCompany.setPreviousCompanyNames(previousCompanyNames);
@@ -114,8 +120,8 @@ public class DissolvedSearchRequestService {
         dissolvedCompany.setCompanyNumber((String) sourceAsMap.get("company_number"));
         dissolvedCompany.setCompanyStatus((String) sourceAsMap.get("company_status"));
         dissolvedCompany.setKind(SEARCH_RESULTS_KIND);
-        dissolvedCompany.setDateOfCessation((String) sourceAsMap.get("date_of_cessation"));
-        dissolvedCompany.setDateOfCreation((String) sourceAsMap.get("date_of_creation"));
+        dissolvedCompany.setDateOfCessation(LocalDate.parse((String) sourceAsMap.get("date_of_cessation"), formatter));
+        dissolvedCompany.setDateOfCreation(LocalDate.parse((String) sourceAsMap.get("date_of_creation"), formatter));
         if(address != null && address.containsKey("locality")) {
             roAddress.setLocality((String) address.get("locality"));
         }

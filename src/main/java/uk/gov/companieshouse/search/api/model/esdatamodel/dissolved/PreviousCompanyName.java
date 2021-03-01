@@ -3,33 +3,34 @@ package uk.gov.companieshouse.search.api.model.esdatamodel.dissolved;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDate;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"ordered_alpha_key"})
 public class PreviousCompanyName {
 
     @JsonProperty("ceased_on")
-    private String dateOfNameCessation;
+    private LocalDate dateOfNameCessation;
 
     @JsonProperty("effective_from")
-    private String dateOfNameEffectiveness;
+    private LocalDate dateOfNameEffectiveness;
 
     @JsonProperty("name")
     private String name;
 
-    public String getDateOfNameCessation() {
+    public LocalDate getDateOfNameCessation() {
         return dateOfNameCessation;
     }
 
-    public void setDateOfNameCessation(String dateOfNameCessation) {
+    public void setDateOfNameCessation(LocalDate dateOfNameCessation) {
         this.dateOfNameCessation = dateOfNameCessation;
     }
 
-    public String getDateOfNameEffectiveness() {
+    public LocalDate getDateOfNameEffectiveness() {
         return dateOfNameEffectiveness;
     }
 
-    public void setDateOfNameEffectiveness(String dateOfNameEffectiveness) {
+    public void setDateOfNameEffectiveness(LocalDate dateOfNameEffectiveness) {
         this.dateOfNameEffectiveness = dateOfNameEffectiveness;
     }
 
