@@ -376,7 +376,6 @@ class DissolvedSearchRequestServiceTest {
             "\"date_of_cessation\" : \"19990501\"," +
                 "\"date_of_creation\" : \"19890501\"" +
                 "}");
-        System.out.println("***" + searchHits.toString());
         BytesReference source = new BytesArray(searchHits.toString());
         SearchHit hit = new SearchHit( 1 );
         hit.sourceRef( source );
