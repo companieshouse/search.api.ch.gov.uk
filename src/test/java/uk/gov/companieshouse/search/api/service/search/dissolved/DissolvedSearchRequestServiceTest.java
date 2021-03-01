@@ -56,18 +56,44 @@ class DissolvedSearchRequestServiceTest {
             .thenReturn(createAlphaKeyResponse());
 
         when(mockDissolvedSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
-            .thenReturn(createSearchHits(true, true, true));
+            .thenReturn(createSearchHits(true, true, true, true));
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
             ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-            .thenReturn(createSearchHits(true, true, true));
+            .thenReturn(createSearchHits(true, true, true, true));
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
             ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-            .thenReturn(createSearchHits(true, true, true));
+            .thenReturn(createSearchHits(true, true, true, true));
 
         DissolvedSearchResults dissolvedSearchResults =
             dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
+
+        assertNotNull(dissolvedSearchResults);
+        assertEquals( TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
+        assertEquals(3, dissolvedSearchResults.getItems().size());
+    }
+
+    @Test
+    @DisplayName("Test search request returns results successfully with best match query no previous names")
+    void testBestMatchSuccessfulWithNoPreviousNames() throws Exception{
+
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(COMPANY_NAME))
+                .thenReturn(createAlphaKeyResponse());
+
+        when(mockDissolvedSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createSearchHits(true, true, true, false));
+
+        when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
+                ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+                .thenReturn(createSearchHits(true, true, true, false));
+
+        when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
+                ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+                .thenReturn(createSearchHits(true, true, true, false));
+
+        DissolvedSearchResults dissolvedSearchResults =
+                dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals( TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -85,15 +111,15 @@ class DissolvedSearchRequestServiceTest {
             .thenReturn(createEmptySearchHits());
 
         when(mockDissolvedSearchRequests.getStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
-            .thenReturn(createSearchHits(true, true, true));
+            .thenReturn(createSearchHits(true, true, true, true));
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
             ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-            .thenReturn(createSearchHits(true, true, true));
+            .thenReturn(createSearchHits(true, true, true, true));
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
             ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-            .thenReturn(createSearchHits(true, true, true));
+            .thenReturn(createSearchHits(true, true, true, true));
 
         DissolvedSearchResults dissolvedSearchResults =
             dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
@@ -118,15 +144,15 @@ class DissolvedSearchRequestServiceTest {
             .thenReturn(createEmptySearchHits());
 
         when(mockDissolvedSearchRequests.getCorporateNameStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
-            .thenReturn(createSearchHits(true, true, true));
+            .thenReturn(createSearchHits(true, true, true, true));
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
             ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-            .thenReturn(createSearchHits(true, true, true));
+            .thenReturn(createSearchHits(true, true, true, true));
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
             ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-            .thenReturn(createSearchHits(true, true, true));
+            .thenReturn(createSearchHits(true, true, true, true));
 
         DissolvedSearchResults dissolvedSearchResults =
             dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
@@ -153,15 +179,53 @@ class DissolvedSearchRequestServiceTest {
                 .thenReturn(createEmptySearchHits());
 
         when(mockDissolvedSearchRequests.noResultsFallbackQuery(ORDERED_ALPHA_KEY, REQUEST_ID))
-                .thenReturn(createSearchHits(true, true, true));
+                .thenReturn(createSearchHits(true, true, true, true));
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
                 ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-                .thenReturn(createSearchHits(true, true, true));
+                .thenReturn(createSearchHits(true, true, true, true));
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
                 ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-                .thenReturn(createSearchHits(true, true, true));
+                .thenReturn(createSearchHits(true, true, true, true));
+
+        DissolvedSearchResults dissolvedSearchResults =
+                dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
+
+        assertNotNull(dissolvedSearchResults);
+        assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
+        assertEquals(3, dissolvedSearchResults.getItems().size());
+    }
+
+    @Test
+    @DisplayName("Test final fallback query returns a result")
+    void testFinalFallbackQuery() throws Exception{
+
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(COMPANY_NAME))
+                .thenReturn(createAlphaKeyResponse());
+
+        when(mockDissolvedSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createEmptySearchHits());
+
+        when(mockDissolvedSearchRequests.getStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createEmptySearchHits());
+
+        when(mockDissolvedSearchRequests.getCorporateNameStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createEmptySearchHits());
+
+        when(mockDissolvedSearchRequests.noResultsFallbackQuery(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createEmptySearchHits());
+
+        when(mockDissolvedSearchRequests.finalFallbackQuery(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createSearchHits(true, true, true, true));
+
+        when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
+                ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+                .thenReturn(createSearchHits(true, true, true, true));
+
+        when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
+                ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+                .thenReturn(createSearchHits(true, true, true, true));
 
         DissolvedSearchResults dissolvedSearchResults =
                 dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
@@ -185,15 +249,15 @@ class DissolvedSearchRequestServiceTest {
             .thenReturn(createEmptySearchHits());
 
         when(mockDissolvedSearchRequests.getCorporateNameStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
-            .thenReturn(createSearchHits(true, false, true));
+            .thenReturn(createSearchHits(true, false, true, true));
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
             ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-            .thenReturn(createSearchHits(true, false, true));
+            .thenReturn(createSearchHits(true, false, true, true));
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
             ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-            .thenReturn(createSearchHits(true, false, true));
+            .thenReturn(createSearchHits(true, false, true, true));
 
         DissolvedSearchResults dissolvedSearchResults =
             dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
@@ -217,15 +281,15 @@ class DissolvedSearchRequestServiceTest {
             .thenReturn(createEmptySearchHits());
 
         when(mockDissolvedSearchRequests.getCorporateNameStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
-            .thenReturn(createSearchHits(true, true, false));
+            .thenReturn(createSearchHits(true, true, false, true));
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
             ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-            .thenReturn(createSearchHits(true, true, false));
+            .thenReturn(createSearchHits(true, true, false, true));
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
             ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-            .thenReturn(createSearchHits(true, true, false));
+            .thenReturn(createSearchHits(true, true, false, true));
 
         DissolvedSearchResults dissolvedSearchResults =
             dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
@@ -249,15 +313,15 @@ class DissolvedSearchRequestServiceTest {
             .thenReturn(createEmptySearchHits());
 
         when(mockDissolvedSearchRequests.getCorporateNameStartsWithResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
-            .thenReturn(createSearchHits(false, true, false));
+            .thenReturn(createSearchHits(false, true, false, true));
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
             ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-            .thenReturn(createSearchHits(false, true, false));
+            .thenReturn(createSearchHits(false, true, false, true));
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
             ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
-            .thenReturn(createSearchHits(false, true, false));
+            .thenReturn(createSearchHits(false, true, false, true));
 
         DissolvedSearchResults dissolvedSearchResults =
             dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
@@ -289,7 +353,10 @@ class DissolvedSearchRequestServiceTest {
         return alphaKeyResponse;
     }
 
-    private SearchHits createSearchHits(boolean includeAddress, boolean locality, boolean postCode) {
+    private SearchHits createSearchHits(boolean includeAddress,
+                                        boolean locality,
+                                        boolean postCode,
+                                        boolean includePreviousCompanyNames) {
         StringBuilder searchHits = new StringBuilder();
         searchHits.append(
             "{" +
@@ -300,20 +367,16 @@ class DissolvedSearchRequestServiceTest {
                 "\"ordered_alpha_key_with_id\": \"ordered_alpha_key_with_id\"," +
                 "\"company_status\" : \"dissolved\",");
         if(includeAddress) {
-            populateAddress(locality, postCode);
+            searchHits.append(populateAddress(locality, postCode));
+        }
+        if(includePreviousCompanyNames) {
+            searchHits.append(populatePreviousCompanyNames());
         }
         searchHits.append(
             "\"date_of_cessation\" : \"19990501\"," +
-                "\"date_of_creation\" : \"19890501\"," +
-                "\"previous_company_names\" : [" +
-                "{" +
-                "\"name\" : \"TEST COMPANY 2\"," +
-                "\"ordered_alpha_key\": \"ordered_alpha_key\"," +
-                "\"effective_from\" : \"19890101\"," +
-                "\"ceased_on\" : \"19920510\"" +
-                "}" +
-                "]" +
+                "\"date_of_creation\" : \"19890501\"" +
                 "}");
+        System.out.println("***" + searchHits.toString());
         BytesReference source = new BytesArray(searchHits.toString());
         SearchHit hit = new SearchHit( 1 );
         hit.sourceRef( source );
@@ -338,6 +401,18 @@ class DissolvedSearchRequestServiceTest {
         }
         address.append("},");
         return address.toString();
+    }
+
+    private String populatePreviousCompanyNames() {
+        String previousNames = "\"previous_company_names\" : [" +
+                "{" +
+                "\"name\" : \"TEST COMPANY 2\"," +
+                "\"ordered_alpha_key\": \"ordered_alpha_key\"," +
+                "\"effective_from\" : \"19890101\"," +
+                "\"ceased_on\" : \"19920510\"" +
+                "}" +
+                "],";
+        return previousNames;
     }
 
 }

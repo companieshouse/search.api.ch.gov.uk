@@ -35,7 +35,6 @@ public class DissolvedSearchRequestService {
     @Autowired
     private DissolvedSearchRequests dissolvedSearchRequests;
 
-    private static final String DISSOLVED_SEARCH = "Dissolved Search: ";
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
@@ -73,6 +72,11 @@ public class DissolvedSearchRequestService {
 
                 hits = dissolvedSearchRequests
                         .noResultsFallbackQuery(orderedAlphaKey, requestId);
+            }
+
+            if (hits.getTotalHits().value == 0) {
+
+                hits = dissolvedSearchRequests.finalFallbackQuery(orderedAlphaKey, requestId);
             }
 
             if (hits.getTotalHits().value > 0) {
@@ -142,7 +146,10 @@ public class DissolvedSearchRequestService {
         topHit.setAddress(dissolvedCompany.getAddress());
         topHit.setDateOfCessation(dissolvedCompany.getDateOfCessation());
         topHit.setDateOfCreation(dissolvedCompany.getDateOfCreation());
-        topHit.setPreviousCompanyNames(dissolvedCompany.getPreviousCompanyNames());
+
+        if (dissolvedCompany.getPreviousCompanyNames() != null) {
+            topHit.setPreviousCompanyNames(dissolvedCompany.getPreviousCompanyNames());
+        }
     }
 
     private void populateSearchResults(String requestId,
