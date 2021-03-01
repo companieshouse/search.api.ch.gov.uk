@@ -51,6 +51,7 @@ public class DissolvedSearchRequestService {
         DissolvedTopHit topHit = new DissolvedTopHit();
         String etag = GenerateEtagUtil.generateEtag();
         String kind = TOP_KIND;
+        boolean isFallbackQuery = false;
 
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(companyName);
         if (alphaKeyResponse != null) {
@@ -73,6 +74,10 @@ public class DissolvedSearchRequestService {
 
                 hits = dissolvedSearchRequests
                         .noResultsFallbackQuery(orderedAlphaKey, requestId);
+
+                if (hits.getTotalHits().value > 0) {
+                    isFallbackQuery = true;
+                }
             }
 
             if (hits.getTotalHits().value == 0) {
@@ -83,8 +88,16 @@ public class DissolvedSearchRequestService {
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info("A result has been found", logMap);
 
-                String orderedAlphaKeyWithId = SearchRequestUtils.getOrderedAlphaKeyWithId(hits.getHits()[0]);
-                SearchHit bestMatch = hits.getHits()[0];
+                String orderedAlphaKeyWithId;
+                SearchHit bestMatch;
+                if (isFallbackQuery) {
+                    orderedAlphaKeyWithId = SearchRequestUtils.getOrderedAlphaKeyWithId(hits.getAt((int) hits.getTotalHits().value - 1));
+                    bestMatch = hits.getAt((int) hits.getTotalHits().value -1 );
+                } else {
+                    orderedAlphaKeyWithId = SearchRequestUtils.getOrderedAlphaKeyWithId(hits.getHits()[0]);
+                    bestMatch = hits.getHits()[0];
+                }
+
                 DissolvedCompany topHitCompany = mapESResponse(bestMatch);
 
                 mapTopHit(topHit, topHitCompany);

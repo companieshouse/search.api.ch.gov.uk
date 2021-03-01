@@ -46,6 +46,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         String orderedAlphakey = "";
         String topHitCompanyName = "";
         List<Company> results = new ArrayList<>();
+        boolean isFallbackQuery = false;
 
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(corporateName);
         if (alphaKeyResponse != null) {
@@ -73,6 +74,10 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
                 hits = alphabeticalSearchRequests
                         .noResultsFallbackQuery(orderedAlphakey, requestId);
+
+                if (hits.getTotalHits().value > 0) {
+                    isFallbackQuery = true;
+                }
             }
 
             if (hits.getTotalHits().value == 0) {
@@ -83,8 +88,15 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info("A result has been found", logMap);
 
-                String orderedAlphakeyWithId = getOrderedAlphaKeyWithId(hits.getHits()[0]);
-                SearchHit topHit = hits.getHits()[0];
+                String orderedAlphakeyWithId;
+                SearchHit topHit;
+                if (isFallbackQuery) {
+                    orderedAlphakeyWithId = getOrderedAlphaKeyWithId(hits.getAt((int) hits.getTotalHits().value - 1));
+                    topHit = hits.getAt((int) hits.getTotalHits().value -1 );
+                } else {
+                    orderedAlphakeyWithId = getOrderedAlphaKeyWithId(hits.getHits()[0]);
+                    topHit = hits.getHits()[0];
+                }
                 Company topHitCompany = getCompany(topHit);
                 topHitCompanyName = topHitCompany.getItems().getCorporateName();
 
