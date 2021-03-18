@@ -38,15 +38,6 @@ class DissolvedSearchQueriesTest {
     }
 
     @Test
-    @DisplayName("Create No Results Found Fallback Query")
-    void createNoResultsFoundFallbackQuery() {
-        QueryBuilder queryBuilder =
-                dissolvedSearchQueries.createNoResultsFoundQuery("orderAlphakey");
-
-        assertNotNull(queryBuilder);
-    }
-
-    @Test
     @DisplayName("Create Alphabetical Query")
     void createAlphabeticalQuery() {
         QueryBuilder queryBuilder =

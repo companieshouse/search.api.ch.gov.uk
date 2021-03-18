@@ -70,33 +70,14 @@ public class DissolvedSearchRequestService {
                 hits = dissolvedSearchRequests.getCorporateNameStartsWithResponse(orderedAlphaKey, requestId);
             }
 
-            if (hits.getTotalHits().value == 0) {
-
-                hits = dissolvedSearchRequests
-                        .noResultsFallbackQuery(orderedAlphaKey, requestId);
-
-                if (hits.getTotalHits().value > 0) {
-                    isFallbackQuery = true;
-                }
-            }
-
-            if (hits.getTotalHits().value == 0) {
-
-                hits = dissolvedSearchRequests.finalFallbackQuery(orderedAlphaKey, requestId);
-            }
-
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info("A result has been found", logMap);
 
                 String orderedAlphaKeyWithId;
                 SearchHit bestMatch;
-                if (isFallbackQuery) {
-                    orderedAlphaKeyWithId = SearchRequestUtils.getOrderedAlphaKeyWithId(hits.getAt((int) hits.getTotalHits().value - 1));
-                    bestMatch = hits.getAt((int) hits.getTotalHits().value -1 );
-                } else {
-                    orderedAlphaKeyWithId = SearchRequestUtils.getOrderedAlphaKeyWithId(hits.getHits()[0]);
-                    bestMatch = hits.getHits()[0];
-                }
+
+                orderedAlphaKeyWithId = SearchRequestUtils.getOrderedAlphaKeyWithId(hits.getHits()[0]);
+                bestMatch = hits.getHits()[0];
 
                 DissolvedCompany topHitCompany = mapESResponse(bestMatch);
 

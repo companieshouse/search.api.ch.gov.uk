@@ -21,11 +21,4 @@ public class DissolvedSearchQueries extends AbstractSearchQuery {
     public QueryBuilder createStartsWithQuery(String corporateName) {
         return QueryBuilders.matchPhrasePrefixQuery("company_name.startswith", corporateName);
     }
-
-    public QueryBuilder createNoResultsFoundQuery(String orderedAlphaKey) {
-
-        List<String> tokens = StringTokeniserUtil.tokeniseString(orderedAlphaKey);
-
-        return QueryBuilders.termsQuery("ordered_alpha_key", tokens);
-    }
 }
