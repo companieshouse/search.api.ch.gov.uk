@@ -37,6 +37,7 @@ public class DissolvedSearchRequestService {
 
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
     private static final String TOP_KIND = "search#alphabeticalDissolved";
+    private static final int FALLBACK_QUERY_LIMIT = 15;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
@@ -59,15 +60,23 @@ public class DissolvedSearchRequestService {
         }
 
         try {
-            SearchHits hits = dissolvedSearchRequests.getBestMatchResponse(orderedAlphaKey, requestId);
-            if (hits.getTotalHits().value == 0) {
-
-                hits = dissolvedSearchRequests.getStartsWithResponse(orderedAlphaKey, requestId);
-            }
+            SearchHits hits = getSearchHits(orderedAlphaKey, requestId);
 
             if (hits.getTotalHits().value == 0) {
 
-                hits = dissolvedSearchRequests.getCorporateNameStartsWithResponse(orderedAlphaKey, requestId);
+                for (int i = 0; i < orderedAlphaKey.length(); i++) {
+
+                    if (i != orderedAlphaKey.length() - 1) {
+
+                        String resultString = orderedAlphaKey.substring(0, orderedAlphaKey.length() - i);
+
+                        hits = getSearchHits(resultString, requestId);
+                    }
+
+                    if (hits.getTotalHits().value > 0 || i == FALLBACK_QUERY_LIMIT) {
+                        break;
+                    }
+                }
             }
 
             if (hits.getTotalHits().value > 0) {
@@ -145,6 +154,26 @@ public class DissolvedSearchRequestService {
         if (dissolvedCompany.getPreviousCompanyNames() != null) {
             topHit.setPreviousCompanyNames(dissolvedCompany.getPreviousCompanyNames());
         }
+    }
+
+    private SearchHits getSearchHits(String orderedAlphakey, String requestId) throws IOException {
+
+        SearchHits hits =  dissolvedSearchRequests
+                .getBestMatchResponse(orderedAlphakey, requestId);
+
+        if (hits.getTotalHits().value == 0) {
+
+            hits = dissolvedSearchRequests
+                    .getStartsWithResponse(orderedAlphakey, requestId);
+        }
+
+        if (hits.getTotalHits().value == 0) {
+
+            hits = dissolvedSearchRequests
+                    .getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
+        }
+
+        return hits;
     }
 
     private void populateSearchResults(String requestId,

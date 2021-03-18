@@ -31,6 +31,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     private AlphabeticalSearchRequests alphabeticalSearchRequests;
 
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
+    private static final int FALLBACK_QUERY_LIMIT = 15;
 
     /**
      * {@inheritDoc}
@@ -67,7 +68,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                         hits = getSearchHits(resultString, requestId);
                     }
 
-                    if (hits.getTotalHits().value > 0) {
+                    if (hits.getTotalHits().value > 0 || i == FALLBACK_QUERY_LIMIT) {
                         break;
                     }
                 }
