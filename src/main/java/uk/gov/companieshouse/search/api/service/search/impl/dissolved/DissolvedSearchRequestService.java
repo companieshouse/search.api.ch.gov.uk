@@ -37,7 +37,7 @@ public class DissolvedSearchRequestService {
 
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
     private static final String TOP_KIND = "search#alphabeticalDissolved";
-    private static final int FALLBACK_QUERY_LIMIT = 15;
+    private static final int FALLBACK_QUERY_LIMIT = 20;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
