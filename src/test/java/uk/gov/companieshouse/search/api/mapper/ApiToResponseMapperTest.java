@@ -23,6 +23,7 @@ import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOC
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_NOT_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.REQUEST_PARAMETER_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPDATE_REQUEST_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPSERT_ERROR;
 
@@ -144,6 +145,20 @@ class ApiToResponseMapperTest {
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
         assertEquals(NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test if Request Parameter Error returned for dissolved company")
+    void testRequestParamErrorReturnedDissolved() {
+
+        DissolvedResponseObject responseObject =
+                new DissolvedResponseObject(REQUEST_PARAMETER_ERROR);
+
+        ResponseEntity responseEntity = apiToResponseMapper.mapDissolved(responseObject);
+
+        assertNotNull(responseEntity);
+        assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+        assertEquals("Invalid url parameter for search_type, please try 'alphabetical' or 'best-match'", responseEntity.getBody().toString());
     }
 
     @Test
