@@ -10,6 +10,7 @@ import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
+import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
@@ -112,6 +113,15 @@ public class DissolvedSearchRequestService {
         }
 
         return new DissolvedSearchResults(etag, topHit, results, kind);
+    }
+
+    public DissolvedSearchResults getBestMatchSearchResults(String companyName, String requestId) throws SearchException {
+
+        String etag = GenerateEtagUtil.generateEtag();
+        DissolvedTopHit topHit = new DissolvedTopHit();
+        List<DissolvedCompany> results = new ArrayList<>();
+
+        return new DissolvedSearchResults(etag, topHit, results, "search#dissolved");
     }
 
     private DissolvedCompany mapESResponse(SearchHit hit) {

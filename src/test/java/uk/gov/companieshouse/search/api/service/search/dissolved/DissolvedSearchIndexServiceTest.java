@@ -55,7 +55,7 @@ class DissolvedSearchIndexServiceTest {
     void searchRequestSuccessful() throws Exception {
         when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID))
                 .thenReturn(createSearchResults(true));
-        DissolvedResponseObject responseObject = searchIndexService.search(COMPANY_NAME, REQUEST_ID);
+        DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_FOUND, responseObject.getStatus());
@@ -67,7 +67,7 @@ class DissolvedSearchIndexServiceTest {
         when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID))
                 .thenThrow(SearchException.class);
 
-        DissolvedResponseObject responseObject = searchIndexService.search(COMPANY_NAME, REQUEST_ID);
+        DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_ERROR, responseObject.getStatus());
@@ -78,7 +78,7 @@ class DissolvedSearchIndexServiceTest {
     void searchRequestReturnsNoResults() throws Exception {
         when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID))
                 .thenReturn(createSearchResults(false));
-        DissolvedResponseObject responseObject = searchIndexService.search(COMPANY_NAME, REQUEST_ID);
+        DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());

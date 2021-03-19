@@ -63,7 +63,7 @@ public class DissolvedSearchController {
         }
         LoggingUtils.getLogger().error("The search_type parameter is incorrect, please try either " +
                         "'alphabetical' or 'best-match': ", logMap);
-        return apiToResponseMapper.mapDissolved(new DissolvedResponseObject(ResponseStatus.SEARCH_ERROR, null));
+        return apiToResponseMapper.mapDissolved(new DissolvedResponseObject(ResponseStatus.REQUEST_PARAMETER_ERROR, null));
     }
 
     private boolean checkSearchTypeParam(String searchType) {
