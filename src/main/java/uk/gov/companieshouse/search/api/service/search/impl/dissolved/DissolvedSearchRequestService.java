@@ -63,13 +63,11 @@ public class DissolvedSearchRequestService {
             SearchHits hits = getSearchHits(orderedAlphaKey, requestId);
 
             if (hits.getTotalHits().value == 0) {
+                LoggingUtils.getLogger().info("A result was not found, reducing search term to find result", logMap);
 
                 for (int i = 0; i < orderedAlphaKey.length(); i++) {
-
                     if (i != orderedAlphaKey.length() - 1) {
-
                         String resultString = orderedAlphaKey.substring(0, orderedAlphaKey.length() - i);
-
                         hits = getSearchHits(resultString, requestId);
                     }
 
@@ -157,22 +155,18 @@ public class DissolvedSearchRequestService {
     }
 
     private SearchHits getSearchHits(String orderedAlphakey, String requestId) throws IOException {
-
         SearchHits hits =  dissolvedSearchRequests
                 .getBestMatchResponse(orderedAlphakey, requestId);
 
         if (hits.getTotalHits().value == 0) {
-
             hits = dissolvedSearchRequests
                     .getStartsWithResponse(orderedAlphakey, requestId);
         }
 
         if (hits.getTotalHits().value == 0) {
-
             hits = dissolvedSearchRequests
                     .getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
         }
-
         return hits;
     }
 

@@ -58,13 +58,11 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
             SearchHits hits =  getSearchHits(orderedAlphakey, requestId);
 
             if (hits.getTotalHits().value == 0) {
+                LoggingUtils.getLogger().info("A result was not found, reducing search term to find result", logMap);
 
                 for (int i = 0; i < orderedAlphakey.length(); i++) {
-
                     if (i != orderedAlphakey.length() - 1) {
-
                         String resultString = orderedAlphakey.substring(0, orderedAlphakey.length() - i);
-
                         hits = getSearchHits(resultString, requestId);
                     }
 
@@ -96,22 +94,18 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     }
 
     private SearchHits getSearchHits(String orderedAlphakey, String requestId) throws IOException {
-
         SearchHits hits =  alphabeticalSearchRequests
                 .getBestMatchResponse(orderedAlphakey, requestId);
 
         if (hits.getTotalHits().value == 0) {
-
             hits = alphabeticalSearchRequests
                     .getStartsWithResponse(orderedAlphakey, requestId);
         }
 
         if (hits.getTotalHits().value == 0) {
-
             hits = alphabeticalSearchRequests
                     .getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
         }
-
         return hits;
     }
 
