@@ -50,7 +50,7 @@ class DissolvedSearchRequestServiceTest {
 
     @Test
     @DisplayName("Test search request returns results successfully with best match query")
-    void testBestMatchSuccessful() throws Exception{
+    void testDissolvedAlphabeticalBestMatchSuccessful() throws Exception{
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(COMPANY_NAME))
             .thenReturn(createAlphaKeyResponse());
@@ -76,7 +76,7 @@ class DissolvedSearchRequestServiceTest {
 
     @Test
     @DisplayName("Test search request returns results successfully with best match query no previous names")
-    void testBestMatchSuccessfulWithNoPreviousNames() throws Exception{
+    void testDissolvedAlphabeticalBestMatchSuccessfulWithNoPreviousNames() throws Exception{
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(COMPANY_NAME))
                 .thenReturn(createAlphaKeyResponse());
@@ -102,7 +102,7 @@ class DissolvedSearchRequestServiceTest {
 
     @Test
     @DisplayName("Test search request returns results successfully with starts with query")
-    void testStartsWithSuccessful() throws Exception{
+    void testDissolvedAlphabeticalStartsWithSuccessful() throws Exception{
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(COMPANY_NAME))
             .thenReturn(createAlphaKeyResponse());
@@ -132,7 +132,7 @@ class DissolvedSearchRequestServiceTest {
 
     @Test
     @DisplayName("Test search request returns results successfully with corporate name starts with query")
-    void testCorporateNameStartsWithSuccessful() throws Exception{
+    void testDissolvedAlphabeticalCorporateNameStartsWithSuccessful() throws Exception{
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(COMPANY_NAME))
             .thenReturn(createAlphaKeyResponse());
@@ -270,6 +270,16 @@ class DissolvedSearchRequestServiceTest {
 
         assertThrows(SearchException.class, () ->
             dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID));
+    }
+
+    @Test
+    @DisplayName("Test best match search results successful")
+    void testBestMatchSuccessful() throws Exception {
+
+        DissolvedSearchResults dissolvedSearchResults =
+                dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID);
+
+        assertEquals("search#dissolved", dissolvedSearchResults.getKind());
     }
 
 
