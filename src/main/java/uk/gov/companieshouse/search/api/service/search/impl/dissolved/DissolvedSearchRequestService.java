@@ -37,7 +37,7 @@ public class DissolvedSearchRequestService {
 
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
     private static final String TOP_KIND = "search#alphabeticalDissolved";
-    private static final int FALLBACK_QUERY_LIMIT = 20;
+    private static final int FALLBACK_QUERY_LIMIT = 25;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
@@ -175,7 +175,7 @@ public class DissolvedSearchRequestService {
         for (int i = 0; i < orderedAlphaKey.length(); i++) {
 
             if (hits.getTotalHits().value > 0 || i == FALLBACK_QUERY_LIMIT) {
-                break;
+                return hits;
             }
 
             if (i != orderedAlphaKey.length() - 1) {
