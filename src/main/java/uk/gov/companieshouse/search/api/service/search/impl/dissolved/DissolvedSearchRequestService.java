@@ -52,7 +52,6 @@ public class DissolvedSearchRequestService {
         DissolvedTopHit topHit = new DissolvedTopHit();
         String etag = GenerateEtagUtil.generateEtag();
         String kind = TOP_KIND;
-        boolean isFallbackQuery = false;
 
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(companyName);
         if (alphaKeyResponse != null) {
