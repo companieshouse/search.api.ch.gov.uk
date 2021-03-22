@@ -20,8 +20,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.FOUND;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.REQUEST_PARAMETER_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,24 +42,59 @@ class DissolvedSearchControllerTest {
 
     private static final String REQUEST_ID = "requestID";
     private static final String COMPANY_NAME = "test company";
+    private static final String SEARCH_TYPE_ALPHABETICAL = "alphabetical";
+    private static final String SEARCH_TYPE_BEST_MATCH = "best-match";
     private static final String COMPANY_NUMBER = "00000000";
 
     @Test
-    @DisplayName("Test search found")
-    void testSearchFound() {
+    @DisplayName("Test alphabetical search for dissolved found")
+    void testAlphabeticalSearchForDissolvedFound() {
 
         DissolvedResponseObject responseObject =
                 new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
 
-        when(mockSearchIndexService.search(COMPANY_NAME, REQUEST_ID)).thenReturn(responseObject);
+        when(mockSearchIndexService.searchAlphabetical(COMPANY_NAME, REQUEST_ID)).thenReturn(responseObject);
         when(mockApiToResponseMapper.mapDissolved(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity responseEntity =
-                dissolvedSearchController.searchCompanies(COMPANY_NAME, REQUEST_ID);
+                dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_ALPHABETICAL, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test best match for dissolved found")
+    void testBestMatchForDissolvedFound() {
+
+        DissolvedResponseObject responseObject =
+                new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
+
+        when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID)).thenReturn(responseObject);
+        when(mockApiToResponseMapper.mapDissolved(responseObject))
+                .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
+
+        ResponseEntity responseEntity =
+                dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH, REQUEST_ID);
+
+        assertNotNull(responseEntity);
+        assertEquals(FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test incorrect search_type parameter returns correct response")
+    void testIncorrectSearchTypeParameter() {
+
+        when(mockApiToResponseMapper.mapDissolved(any()))
+                .thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                        .body("Invalid url parameter for search_type, please try 'alphabetical' or 'best-match'"));
+
+        ResponseEntity responseEntity =
+                dissolvedSearchController.searchCompanies(COMPANY_NAME, "aaa", REQUEST_ID);
+
+        assertNotNull(responseEntity);
+        assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     }
 
     private DissolvedSearchResults createSearchResults() {

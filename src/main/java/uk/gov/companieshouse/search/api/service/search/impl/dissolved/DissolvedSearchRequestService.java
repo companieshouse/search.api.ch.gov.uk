@@ -114,6 +114,15 @@ public class DissolvedSearchRequestService {
         return new DissolvedSearchResults(etag, topHit, results, kind);
     }
 
+    public DissolvedSearchResults getBestMatchSearchResults(String companyName, String requestId) throws SearchException {
+
+        String etag = GenerateEtagUtil.generateEtag();
+        DissolvedTopHit topHit = new DissolvedTopHit();
+        List<DissolvedCompany> results = new ArrayList<>();
+
+        return new DissolvedSearchResults(etag, topHit, results, "search#dissolved");
+    }
+
     private DissolvedCompany mapESResponse(SearchHit hit) {
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
         Map<String, Object> address = (Map<String, Object>) sourceAsMap.get("address");
