@@ -112,30 +112,6 @@ public abstract class AbstractSearchRequest {
         return searchResponse.getHits();
     }
 
-    public SearchHits noResultsFallbackQuery(String orderedAlphakey, String requestId) throws IOException {
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphakey);
-        LoggingUtils.getLogger()
-                .info("Failed to return any results, breaking search term down to find results", logMap);
-
-        SearchRequest searchRequestNoResults = createBaseSearchRequest(requestId);
-        searchRequestNoResults.source(bestMatchSourceBuilder(
-                getSearchQuery().createNoResultsFoundQuery(orderedAlphakey),
-                ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC));
-
-        SearchResponse searchResponse = getRestClientService().search(searchRequestNoResults);
-        return searchResponse.getHits();
-    }
-
-    public SearchHits finalFallbackQuery(String orderedAlphakey, String requestId) throws IOException {
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphakey);
-        LoggingUtils.getLogger()
-                .info("Final fallback - breaking down search term to bare minimum: " + orderedAlphakey.substring(0,2), logMap);
-
-        return getStartsWithResponse(orderedAlphakey.substring(0,2), requestId);
-    }
-
     private SearchRequest createBaseSearchRequest(String requestId) {
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.indices(environmentReader.getMandatoryString(getIndex()));

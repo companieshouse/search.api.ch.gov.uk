@@ -37,6 +37,7 @@ public class DissolvedSearchRequestService {
 
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
     private static final String TOP_KIND = "search#alphabeticalDissolved";
+    private static final int FALLBACK_QUERY_LIMIT = 25;
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
@@ -51,7 +52,6 @@ public class DissolvedSearchRequestService {
         DissolvedTopHit topHit = new DissolvedTopHit();
         String etag = GenerateEtagUtil.generateEtag();
         String kind = TOP_KIND;
-        boolean isFallbackQuery = false;
 
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(companyName);
         if (alphaKeyResponse != null) {
@@ -59,30 +59,12 @@ public class DissolvedSearchRequestService {
         }
 
         try {
-            SearchHits hits = dissolvedSearchRequests.getBestMatchResponse(orderedAlphaKey, requestId);
-            if (hits.getTotalHits().value == 0) {
-
-                hits = dissolvedSearchRequests.getStartsWithResponse(orderedAlphaKey, requestId);
-            }
+            SearchHits hits = getSearchHits(orderedAlphaKey, requestId);
 
             if (hits.getTotalHits().value == 0) {
+                LoggingUtils.getLogger().info("A result was not found, reducing search term to find result", logMap);
 
-                hits = dissolvedSearchRequests.getCorporateNameStartsWithResponse(orderedAlphaKey, requestId);
-            }
-
-            if (hits.getTotalHits().value == 0) {
-
-                hits = dissolvedSearchRequests
-                        .noResultsFallbackQuery(orderedAlphaKey, requestId);
-
-                if (hits.getTotalHits().value > 0) {
-                    isFallbackQuery = true;
-                }
-            }
-
-            if (hits.getTotalHits().value == 0) {
-
-                hits = dissolvedSearchRequests.finalFallbackQuery(orderedAlphaKey, requestId);
+                hits = peelbackSearchRequest(hits, orderedAlphaKey, requestId);
             }
 
             if (hits.getTotalHits().value > 0) {
@@ -90,13 +72,9 @@ public class DissolvedSearchRequestService {
 
                 String orderedAlphaKeyWithId;
                 SearchHit bestMatch;
-                if (isFallbackQuery) {
-                    orderedAlphaKeyWithId = SearchRequestUtils.getOrderedAlphaKeyWithId(hits.getAt((int) hits.getTotalHits().value - 1));
-                    bestMatch = hits.getAt((int) hits.getTotalHits().value -1 );
-                } else {
-                    orderedAlphaKeyWithId = SearchRequestUtils.getOrderedAlphaKeyWithId(hits.getHits()[0]);
-                    bestMatch = hits.getHits()[0];
-                }
+
+                orderedAlphaKeyWithId = SearchRequestUtils.getOrderedAlphaKeyWithId(hits.getHits()[0]);
+                bestMatch = hits.getHits()[0];
 
                 DissolvedCompany topHitCompany = mapESResponse(bestMatch);
 
@@ -173,6 +151,38 @@ public class DissolvedSearchRequestService {
         if (dissolvedCompany.getPreviousCompanyNames() != null) {
             topHit.setPreviousCompanyNames(dissolvedCompany.getPreviousCompanyNames());
         }
+    }
+
+    private SearchHits getSearchHits(String orderedAlphakey, String requestId) throws IOException {
+        SearchHits hits =  dissolvedSearchRequests
+                .getBestMatchResponse(orderedAlphakey, requestId);
+
+        if (hits.getTotalHits().value == 0) {
+            hits = dissolvedSearchRequests
+                    .getStartsWithResponse(orderedAlphakey, requestId);
+        }
+
+        if (hits.getTotalHits().value == 0) {
+            hits = dissolvedSearchRequests
+                    .getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
+        }
+        return hits;
+    }
+
+    public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphaKey,
+                                            String requestId) throws IOException {
+        for (int i = 0; i < orderedAlphaKey.length(); i++) {
+
+            if (hits.getTotalHits().value > 0 || i == FALLBACK_QUERY_LIMIT) {
+                return hits;
+            }
+
+            if (i != orderedAlphaKey.length() - 1) {
+                String resultString = orderedAlphaKey.substring(0, orderedAlphaKey.length() - i);
+                hits = getSearchHits(resultString, requestId);
+            }
+        }
+        return hits;
     }
 
     private void populateSearchResults(String requestId,

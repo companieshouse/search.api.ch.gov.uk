@@ -31,6 +31,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     private AlphabeticalSearchRequests alphabeticalSearchRequests;
 
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
+    private static final int FALLBACK_QUERY_LIMIT = 25;
 
     /**
      * {@inheritDoc}
@@ -46,7 +47,6 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         String orderedAlphakey = "";
         String topHitCompanyName = "";
         List<Company> results = new ArrayList<>();
-        boolean isFallbackQuery = false;
 
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(corporateName);
         if (alphaKeyResponse != null) {
@@ -55,34 +55,12 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         }
 
         try {
-            SearchHits hits =  alphabeticalSearchRequests
-                .getBestMatchResponse(orderedAlphakey, requestId);
+            SearchHits hits =  getSearchHits(orderedAlphakey, requestId);
 
             if (hits.getTotalHits().value == 0) {
+                LoggingUtils.getLogger().info("A result was not found, reducing search term to find result", logMap);
 
-                hits = alphabeticalSearchRequests
-                    .getStartsWithResponse(orderedAlphakey, requestId);
-            }
-
-            if (hits.getTotalHits().value == 0) {
-
-                hits = alphabeticalSearchRequests
-                    .getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
-            }
-
-            if (hits.getTotalHits().value == 0) {
-
-                hits = alphabeticalSearchRequests
-                        .noResultsFallbackQuery(orderedAlphakey, requestId);
-
-                if (hits.getTotalHits().value > 0) {
-                    isFallbackQuery = true;
-                }
-            }
-
-            if (hits.getTotalHits().value == 0) {
-
-                hits = alphabeticalSearchRequests.finalFallbackQuery(orderedAlphakey, requestId);
+                hits = peelbackSearchRequest(hits, orderedAlphakey, requestId);
             }
 
             if (hits.getTotalHits().value > 0) {
@@ -90,13 +68,9 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
                 String orderedAlphakeyWithId;
                 SearchHit topHit;
-                if (isFallbackQuery) {
-                    orderedAlphakeyWithId = getOrderedAlphaKeyWithId(hits.getAt((int) hits.getTotalHits().value - 1));
-                    topHit = hits.getAt((int) hits.getTotalHits().value -1 );
-                } else {
-                    orderedAlphakeyWithId = getOrderedAlphaKeyWithId(hits.getHits()[0]);
-                    topHit = hits.getHits()[0];
-                }
+                orderedAlphakeyWithId = getOrderedAlphaKeyWithId(hits.getHits()[0]);
+                topHit = hits.getHits()[0];
+
                 Company topHitCompany = getCompany(topHit);
                 topHitCompanyName = topHitCompany.getItems().getCorporateName();
 
@@ -108,6 +82,39 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 "searchHits", e);
         }
         return new SearchResults("", topHitCompanyName, results);
+    }
+
+
+    public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphakey,
+                                            String requestId) throws IOException {
+        for (int i = 0; i < orderedAlphakey.length(); i++) {
+
+            if (hits.getTotalHits().value > 0 || i == FALLBACK_QUERY_LIMIT) {
+                return hits;
+            }
+
+            if (i != orderedAlphakey.length() - 1) {
+                String resultString = orderedAlphakey.substring(0, orderedAlphakey.length() - i);
+                hits = getSearchHits(resultString, requestId);
+            }
+        }
+        return hits;
+    }
+
+    private SearchHits getSearchHits(String orderedAlphakey, String requestId) throws IOException {
+        SearchHits hits =  alphabeticalSearchRequests
+                .getBestMatchResponse(orderedAlphakey, requestId);
+
+        if (hits.getTotalHits().value == 0) {
+            hits = alphabeticalSearchRequests
+                    .getStartsWithResponse(orderedAlphakey, requestId);
+        }
+
+        if (hits.getTotalHits().value == 0) {
+            hits = alphabeticalSearchRequests
+                    .getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
+        }
+        return hits;
     }
 
     private void populateSearchResults(String requestId,
