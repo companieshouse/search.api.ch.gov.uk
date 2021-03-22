@@ -17,7 +17,6 @@ import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
-import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchRequestService;
 
 import java.io.IOException;
@@ -34,7 +33,7 @@ import static org.mockito.Mockito.when;
 class AlphabeticalSearchRequestServiceTest {
 
     @InjectMocks
-    private SearchRequestService searchRequestService = new AlphabeticalSearchRequestService();
+    private AlphabeticalSearchRequestService searchRequestService;
 
     @Mock
     private AlphaKeyService mockAlphaKeyService;
@@ -147,6 +146,19 @@ class AlphabeticalSearchRequestServiceTest {
 
         assertThrows(SearchException.class, () ->
             searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID));
+    }
+
+    @Test
+    @DisplayName("Test peelbackSearchRequest successful")
+    void testPeelbackSearchRequestSuccessful() throws Exception {
+
+        when(mockAlphabeticalSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createSearchHits());
+
+        SearchHits searchHits =
+                searchRequestService.peelbackSearchRequest(createEmptySearchHits(), ORDERED_ALPHA_KEY, REQUEST_ID);
+
+        assertEquals(1L, searchHits.getTotalHits().value);
     }
 
     private SearchHits createSearchHits() {

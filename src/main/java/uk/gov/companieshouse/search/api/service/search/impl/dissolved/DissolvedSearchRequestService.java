@@ -65,16 +65,7 @@ public class DissolvedSearchRequestService {
             if (hits.getTotalHits().value == 0) {
                 LoggingUtils.getLogger().info("A result was not found, reducing search term to find result", logMap);
 
-                for (int i = 0; i < orderedAlphaKey.length(); i++) {
-                    if (i != orderedAlphaKey.length() - 1) {
-                        String resultString = orderedAlphaKey.substring(0, orderedAlphaKey.length() - i);
-                        hits = getSearchHits(resultString, requestId);
-                    }
-
-                    if (hits.getTotalHits().value > 0 || i == FALLBACK_QUERY_LIMIT) {
-                        break;
-                    }
-                }
+                hits = peelbackSearchRequest(hits, orderedAlphaKey, requestId);
             }
 
             if (hits.getTotalHits().value > 0) {
@@ -175,6 +166,22 @@ public class DissolvedSearchRequestService {
         if (hits.getTotalHits().value == 0) {
             hits = dissolvedSearchRequests
                     .getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
+        }
+        return hits;
+    }
+
+    public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphaKey,
+                                            String requestId) throws IOException {
+        for (int i = 0; i < orderedAlphaKey.length(); i++) {
+
+            if (hits.getTotalHits().value > 0 || i == FALLBACK_QUERY_LIMIT) {
+                break;
+            }
+
+            if (i != orderedAlphaKey.length() - 1) {
+                String resultString = orderedAlphaKey.substring(0, orderedAlphaKey.length() - i);
+                hits = getSearchHits(resultString, requestId);
+            }
         }
         return hits;
     }

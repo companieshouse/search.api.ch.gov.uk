@@ -60,16 +60,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
             if (hits.getTotalHits().value == 0) {
                 LoggingUtils.getLogger().info("A result was not found, reducing search term to find result", logMap);
 
-                for (int i = 0; i < orderedAlphakey.length(); i++) {
-                    if (i != orderedAlphakey.length() - 1) {
-                        String resultString = orderedAlphakey.substring(0, orderedAlphakey.length() - i);
-                        hits = getSearchHits(resultString, requestId);
-                    }
-
-                    if (hits.getTotalHits().value > 0 || i == FALLBACK_QUERY_LIMIT) {
-                        break;
-                    }
-                }
+                hits = peelbackSearchRequest(hits, orderedAlphakey, requestId);
             }
 
             if (hits.getTotalHits().value > 0) {
@@ -91,6 +82,23 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 "searchHits", e);
         }
         return new SearchResults("", topHitCompanyName, results);
+    }
+
+
+    public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphakey,
+                                            String requestId) throws IOException {
+        for (int i = 0; i < orderedAlphakey.length(); i++) {
+
+            if (hits.getTotalHits().value > 0 || i == FALLBACK_QUERY_LIMIT) {
+                break;
+            }
+
+            if (i != orderedAlphakey.length() - 1) {
+                String resultString = orderedAlphakey.substring(0, orderedAlphakey.length() - i);
+                hits = getSearchHits(resultString, requestId);
+            }
+        }
+        return hits;
     }
 
     private SearchHits getSearchHits(String orderedAlphakey, String requestId) throws IOException {

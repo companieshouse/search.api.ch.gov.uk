@@ -282,6 +282,19 @@ class DissolvedSearchRequestServiceTest {
         assertEquals("search#dissolved", dissolvedSearchResults.getKind());
     }
 
+    @Test
+    @DisplayName("Test peelbackSearchRequest successful")
+    void testPeelbackSearchRequestSuccessful() throws Exception {
+
+        when(mockDissolvedSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createSearchHits(true, true, true, true));
+
+        SearchHits searchHits =
+                dissolvedSearchRequestService.peelbackSearchRequest(createEmptySearchHits(), ORDERED_ALPHA_KEY, REQUEST_ID);
+
+        assertEquals(1L, searchHits.getTotalHits().value);
+    }
+
 
     private AlphaKeyResponse createAlphaKeyResponse() {
         AlphaKeyResponse alphaKeyResponse = new AlphaKeyResponse();
