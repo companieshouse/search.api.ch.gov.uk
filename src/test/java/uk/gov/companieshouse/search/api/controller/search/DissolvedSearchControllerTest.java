@@ -58,7 +58,25 @@ class DissolvedSearchControllerTest {
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity responseEntity =
-                dissolvedSearchController.searchCompanies(COMPANY_NAME, REQUEST_ID);
+                dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_ALPHABETICAL, REQUEST_ID);
+
+        assertNotNull(responseEntity);
+        assertEquals(FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test best match for dissolved found")
+    void testBestMatchForDissolvedFound() {
+
+        DissolvedResponseObject responseObject =
+                new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
+
+        when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID)).thenReturn(responseObject);
+        when(mockApiToResponseMapper.mapDissolved(responseObject))
+                .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
+
+        ResponseEntity responseEntity =
+                dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
@@ -73,7 +91,7 @@ class DissolvedSearchControllerTest {
                         .body("Invalid url parameter for search_type, please try 'alphabetical' or 'best-match'"));
 
         ResponseEntity responseEntity =
-                dissolvedSearchController.searchCompanies(COMPANY_NAME, REQUEST_ID);
+                dissolvedSearchController.searchCompanies(COMPANY_NAME, "aaa", REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());

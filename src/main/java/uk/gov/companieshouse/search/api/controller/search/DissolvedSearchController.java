@@ -38,16 +38,37 @@ public class DissolvedSearchController {
     @GetMapping("/companies")
     @ResponseBody
     public ResponseEntity<Object> searchCompanies(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
+                                                  @RequestParam(name = SEARCH_TYPE_QUERY_PARAM) String searchType,
                                                   @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
         LoggingUtils.getLogger().info("Search request received", logMap);
 
+        if (checkSearchTypeParam(searchType)) {
 
-        DissolvedResponseObject responseObject = searchIndexService
-                .searchAlphabetical(companyName, requestId);
+            if (searchType.equals(ALPHABETICAL_SEARCH_TYPE)) {
+                DissolvedResponseObject responseObject = searchIndexService
+                        .searchAlphabetical(companyName, requestId);
 
-        return apiToResponseMapper.mapDissolved(responseObject);
+                return apiToResponseMapper.mapDissolved(responseObject);
+            }
+
+            if (searchType.equals(BEST_MATCH_SEARCH_TYPE)) {
+                DissolvedResponseObject responseObject = searchIndexService
+                        .searchBestMatch(companyName, requestId);
+
+                return apiToResponseMapper.mapDissolved(responseObject);
+            }
+        }
+        LoggingUtils.getLogger().error("The search_type parameter is incorrect, please try either " +
+                "'alphabetical' or 'best-match': ", logMap);
+        return apiToResponseMapper.mapDissolved(new DissolvedResponseObject(ResponseStatus.REQUEST_PARAMETER_ERROR, null));
+    }
+
+    private boolean checkSearchTypeParam(String searchType) {
+
+        return searchType.equals(ALPHABETICAL_SEARCH_TYPE)
+                || searchType.equals(BEST_MATCH_SEARCH_TYPE);
     }
 }
