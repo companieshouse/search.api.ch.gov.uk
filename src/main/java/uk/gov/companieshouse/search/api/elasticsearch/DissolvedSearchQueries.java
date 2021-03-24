@@ -18,4 +18,8 @@ public class DissolvedSearchQueries extends AbstractSearchQuery {
     public QueryBuilder createStartsWithQuery(String corporateName) {
         return QueryBuilders.matchPhrasePrefixQuery("company_name.startswith", corporateName);
     }
+
+    public QueryBuilder createBestMatchQuery(String companyName) {
+        return QueryBuilders.matchQuery("company_name.doconly", companyName);
+    }
 }
