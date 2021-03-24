@@ -4,7 +4,6 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.environment.EnvironmentReader;
@@ -62,7 +61,6 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.size(Integer.parseInt(environmentReader.getMandatoryString(getResultsSize())));
         sourceBuilder.query(searchQueries.createBestMatchQuery(companyName));
-        sourceBuilder.sort("ordered_alpha_key_with_id", SortOrder.ASC);
 
         searchRequest.source(sourceBuilder);
 

@@ -108,15 +108,11 @@ public class DissolvedSearchRequestService {
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info("A result has been found", logMap);
 
-                SearchHit bestMatch;
-                bestMatch = hits.getHits()[0];
-                DissolvedCompany topHitCompany = mapESResponse(bestMatch);
+                DissolvedCompany topHitCompany = mapESResponse(hits.getHits()[0]);
 
                 mapTopHit(topHit, topHitCompany);
 
-//                SearchHits searchHits;
-//                searchHits = hits.get;
-
+                hits.forEach(h -> results.add(mapESResponse(h)));
             }
         } catch (IOException e) {
             LoggingUtils.getLogger().error("failed to get best match for dissolved company",
