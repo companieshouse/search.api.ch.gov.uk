@@ -47,6 +47,7 @@ class DissolvedSearchRequestServiceTest {
     private static final String ORDERED_ALPHA_KEY = "orderedAlphaKey";
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final String REQUEST_ID = "requestId";
+    private static final String DISSOLVED_ALPHABETICAL_KIND = "search#alphabetical-dissolved";
 
     @Test
     @DisplayName("Test search request returns results successfully with best match query")
@@ -72,6 +73,7 @@ class DissolvedSearchRequestServiceTest {
         assertNotNull(dissolvedSearchResults);
         assertEquals( TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
         assertEquals(3, dissolvedSearchResults.getItems().size());
+        assertEquals(DISSOLVED_ALPHABETICAL_KIND, dissolvedSearchResults.getKind());
     }
 
     @Test
@@ -98,6 +100,7 @@ class DissolvedSearchRequestServiceTest {
         assertNotNull(dissolvedSearchResults);
         assertEquals( TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
         assertEquals(3, dissolvedSearchResults.getItems().size());
+        assertEquals(DISSOLVED_ALPHABETICAL_KIND, dissolvedSearchResults.getKind());
     }
 
     @Test
@@ -128,6 +131,7 @@ class DissolvedSearchRequestServiceTest {
         assertNotNull(dissolvedSearchResults.getEtag());
         assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
         assertEquals(3, dissolvedSearchResults.getItems().size());
+        assertEquals(DISSOLVED_ALPHABETICAL_KIND, dissolvedSearchResults.getKind());
     }
 
     @Test
@@ -160,6 +164,7 @@ class DissolvedSearchRequestServiceTest {
         assertNotNull(dissolvedSearchResults);
         assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
         assertEquals(3, dissolvedSearchResults.getItems().size());
+        assertEquals(DISSOLVED_ALPHABETICAL_KIND, dissolvedSearchResults.getKind());
     }
 
     @Test
@@ -192,6 +197,7 @@ class DissolvedSearchRequestServiceTest {
         assertNotNull(dissolvedSearchResults);
         assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
         assertEquals(3, dissolvedSearchResults.getItems().size());
+        assertEquals(DISSOLVED_ALPHABETICAL_KIND, dissolvedSearchResults.getKind());
     }
 
     @Test
@@ -224,6 +230,7 @@ class DissolvedSearchRequestServiceTest {
         assertNotNull(dissolvedSearchResults);
         assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
         assertEquals(3, dissolvedSearchResults.getItems().size());
+        assertEquals(DISSOLVED_ALPHABETICAL_KIND, dissolvedSearchResults.getKind());
     }
 
     @Test
@@ -256,6 +263,7 @@ class DissolvedSearchRequestServiceTest {
         assertNotNull(dissolvedSearchResults);
         assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
         assertEquals(3, dissolvedSearchResults.getItems().size());
+        assertEquals(DISSOLVED_ALPHABETICAL_KIND, dissolvedSearchResults.getKind());
     }
 
     @Test
