@@ -41,7 +41,16 @@ class DissolvedSearchQueriesTest {
     @DisplayName("Create Alphabetical Query")
     void createAlphabeticalQuery() {
         QueryBuilder queryBuilder =
-                dissolvedSearchQueries.createMatchAllQuery();
+            dissolvedSearchQueries.createMatchAllQuery();
+
+        assertNotNull(queryBuilder);
+    }
+
+    @Test
+    @DisplayName("Create best match query")
+    void createBestMatchQuery() {
+        QueryBuilder queryBuilder =
+            dissolvedSearchQueries.createBestMatchQuery("company name");
 
         assertNotNull(queryBuilder);
     }

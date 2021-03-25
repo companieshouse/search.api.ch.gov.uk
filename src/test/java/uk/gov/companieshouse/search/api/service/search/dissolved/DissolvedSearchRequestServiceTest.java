@@ -284,10 +284,27 @@ class DissolvedSearchRequestServiceTest {
     @DisplayName("Test best match search results successful")
     void testBestMatchSuccessful() throws Exception {
 
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID)).
+            thenReturn(createSearchHits(true,true,true, true));
+
+
+
         DissolvedSearchResults dissolvedSearchResults =
                 dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID);
 
         assertEquals("search#dissolved", dissolvedSearchResults.getKind());
+        assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
+    }
+
+    @Test
+    @DisplayName("Test get best match search request throws exception")
+    void testBestMatchThrowException() throws Exception{
+
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID))
+            .thenThrow(IOException.class);
+
+        assertThrows(SearchException.class, () ->
+            dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID));
     }
 
     @Test
