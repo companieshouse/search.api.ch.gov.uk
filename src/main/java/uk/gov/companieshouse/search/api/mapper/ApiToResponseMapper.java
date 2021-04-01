@@ -39,7 +39,7 @@ public class ApiToResponseMapper {
                 return ResponseEntity.status(NOT_FOUND).build();
             case REQUEST_PARAMETER_ERROR:
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR)
-                        .body("Invalid url parameter for search_type, please try 'alphabetical' or 'best-match'");
+                        .body("Invalid url parameter for search_type, please try 'alphabetical', 'best-match' or 'previous-name-dissolved'");
             default:
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
         }
