@@ -33,6 +33,7 @@ public class DissolvedSearchController {
     private static final String SEARCH_TYPE_QUERY_PARAM = "search_type";
     private static final String ALPHABETICAL_SEARCH_TYPE = "alphabetical";
     private static final String BEST_MATCH_SEARCH_TYPE = "best-match";
+    private static final String PREVIOUS_NAMES_SEARCH_TYPE = "previous-name-dissolved";
 
 
     @GetMapping("/companies")
@@ -57,6 +58,12 @@ public class DissolvedSearchController {
             if (searchType.equals(BEST_MATCH_SEARCH_TYPE)) {
                 DissolvedResponseObject responseObject = searchIndexService
                         .searchBestMatch(companyName, requestId);
+
+                return apiToResponseMapper.mapDissolved(responseObject);
+            }
+
+            if (searchType.equals(PREVIOUS_NAMES_SEARCH_TYPE)) {
+                DissolvedResponseObject responseObject = searchIndexService.searchPreviousNamesBestMatch(companyName, requestId);
 
                 return apiToResponseMapper.mapDissolved(responseObject);
             }
