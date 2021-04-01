@@ -74,4 +74,31 @@ public class DissolvedSearchIndexService {
                 "best match on a dissolved company", logMap);
         return new DissolvedResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
+
+    public DissolvedResponseObject searchPreviousNamesBestMatch(String companyName, String requestId) {
+        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logMap.put(COMPANY_NAME, companyName);
+        logMap.put(SEARCH_TYPE, DISSOLVED_SEARCH_BEST_MATCH);
+        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
+        LoggingUtils.getLogger().info("searching for company", logMap);
+
+        DissolvedSearchResults searchResults;
+        try {
+            searchResults = dissolvedSearchRequestService.getBestMatchSearchResults(companyName, requestId);
+        } catch (SearchException e) {
+            LoggingUtils.getLogger().error("An error occurred while trying to search for " +
+                            "best matches on a dissolved company: ",
+                    logMap);
+            return new DissolvedResponseObject(ResponseStatus.SEARCH_ERROR, null);
+        }
+
+        if (searchResults.getItems() != null) {
+            LoggingUtils.getLogger().info("successful best match search for dissolved company", logMap);
+            return new DissolvedResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+        }
+
+        LoggingUtils.getLogger().info("No results were returned while searching for " +
+                "best match on a dissolved company", logMap);
+        return new DissolvedResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
+    }
 }
