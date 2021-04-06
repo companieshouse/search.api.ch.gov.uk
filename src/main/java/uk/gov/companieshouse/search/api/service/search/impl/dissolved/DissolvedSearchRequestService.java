@@ -123,6 +123,37 @@ public class DissolvedSearchRequestService {
         return new DissolvedSearchResults(etag, topHit, results, "search#dissolved");
     }
 
+    public DissolvedSearchResults getPreviousNamesBestMatchSearchResults(String companyName, String requestId) throws SearchException {
+        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logMap.put(LoggingUtils.COMPANY_NAME, companyName);
+        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
+        LoggingUtils.getLogger().info("getting dissolved previous names best match search results", logMap);
+
+        String etag = GenerateEtagUtil.generateEtag();
+        DissolvedTopHit topHit = new DissolvedTopHit();
+        List<DissolvedCompany> results = new ArrayList<>();
+
+        try {
+            SearchHits hits  = dissolvedSearchRequests.getPreviousNamesBestMatch(companyName, requestId);
+
+            if (hits.getTotalHits().value > 0) {
+                LoggingUtils.getLogger().info("A result has been found", logMap);
+
+                DissolvedCompany topHitCompany = mapESResponse(hits.getHits()[0]);
+
+                mapTopHit(topHit, topHitCompany);
+
+                hits.forEach(h -> results.add(mapESResponse(h)));
+            }
+        } catch (IOException e) {
+            LoggingUtils.getLogger().error("failed to get best match for dissolved company",
+                    logMap);
+            throw new SearchException("error occurred reading data for best match from " + "searchHits", e);
+        }
+
+        return new DissolvedSearchResults(etag, topHit, results, "search#dissolved");
+    }
+
     private DissolvedCompany mapESResponse(SearchHit hit) {
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
         Map<String, Object> address = (Map<String, Object>) sourceAsMap.get("address");

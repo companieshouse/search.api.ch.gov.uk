@@ -69,13 +69,14 @@ public class DissolvedSearchController {
             }
         }
         LoggingUtils.getLogger().error("The search_type parameter is incorrect, please try either " +
-                "'alphabetical' or 'best-match': ", logMap);
+                "'alphabetical', 'best-match' or 'previous-name-dissolved': " , logMap);
         return apiToResponseMapper.mapDissolved(new DissolvedResponseObject(ResponseStatus.REQUEST_PARAMETER_ERROR, null));
     }
 
     private boolean checkSearchTypeParam(String searchType) {
 
         return searchType.equals(ALPHABETICAL_SEARCH_TYPE)
-                || searchType.equals(BEST_MATCH_SEARCH_TYPE);
+                || searchType.equals(BEST_MATCH_SEARCH_TYPE)
+                || searchType.equals(PREVIOUS_NAMES_SEARCH_TYPE);
     }
 }
