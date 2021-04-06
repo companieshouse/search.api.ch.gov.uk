@@ -92,18 +92,18 @@ public class DissolvedSearchIndexService {
             searchResults = dissolvedSearchRequestService.getPreviousNamesBestMatchSearchResults(companyName, requestId);
         } catch (SearchException e) {
             LoggingUtils.getLogger().error(STANDARD_ERROR_MESSAGE +
-                            "best matches on a dissolved company: ",
+                            "best matches for previous company name on a dissolved company: ",
                     logMap);
             return new DissolvedResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
 
         if (searchResults.getItems() != null) {
-            LoggingUtils.getLogger().info("successful best match search for dissolved company", logMap);
+            LoggingUtils.getLogger().info("successful best match search for previous company name on a dissolved company", logMap);
             return new DissolvedResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
         }
 
         LoggingUtils.getLogger().info(NO_RESULTS_FOUND +
-                "best match on a dissolved company", logMap);
+                "best match search for previous company name on a dissolved company", logMap);
         return new DissolvedResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 }

@@ -308,6 +308,33 @@ class DissolvedSearchRequestServiceTest {
     }
 
     @Test
+    @DisplayName("Test best match previous names search results successful")
+    void testBestMatchPreviousNamesSuccessful() throws Exception {
+
+        when(mockDissolvedSearchRequests.getPreviousNamesBestMatch(COMPANY_NAME, REQUEST_ID)).
+                thenReturn(createSearchHits(true,true,true, true));
+
+
+
+        DissolvedSearchResults dissolvedSearchResults =
+                dissolvedSearchRequestService.getPreviousNamesBestMatchSearchResults(COMPANY_NAME, REQUEST_ID);
+
+        assertEquals("search#dissolved", dissolvedSearchResults.getKind());
+        assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
+    }
+
+    @Test
+    @DisplayName("Test get best match previous names search request throws exception")
+    void testBestMatchPreviousNamesThrowException() throws Exception{
+
+        when(mockDissolvedSearchRequests.getPreviousNamesBestMatch(COMPANY_NAME, REQUEST_ID))
+                .thenThrow(IOException.class);
+
+        assertThrows(SearchException.class, () ->
+                dissolvedSearchRequestService.getPreviousNamesBestMatchSearchResults(COMPANY_NAME, REQUEST_ID));
+    }
+
+    @Test
     @DisplayName("Test peelbackSearchRequest successful")
     void testPeelbackSearchRequestSuccessful() throws Exception {
 

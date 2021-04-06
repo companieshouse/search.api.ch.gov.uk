@@ -118,6 +118,40 @@ class DissolvedSearchIndexServiceTest {
         assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
     }
 
+    @Test
+    @DisplayName("Test best match for previous company names on a dissolved search request returns successfully")
+    void searchBestMatchPreviousNamesDissolvedRequestSuccessful() throws Exception {
+        when(mockDissolvedSearchRequestService.getPreviousNamesBestMatchSearchResults(COMPANY_NAME, REQUEST_ID))
+                .thenReturn(createSearchResults(true));
+        DissolvedResponseObject responseObject = searchIndexService.searchPreviousNamesBestMatch(COMPANY_NAME, REQUEST_ID);
+
+        assertNotNull(responseObject);
+        assertEquals(ResponseStatus.SEARCH_FOUND, responseObject.getStatus());
+    }
+
+    @Test
+    @DisplayName("Test best match for previous company names on a dissolved search returns an error")
+    void searchBestMatchPreviousNamesDissolvedRequestReturnsError() throws Exception {
+        when(mockDissolvedSearchRequestService.getPreviousNamesBestMatchSearchResults(COMPANY_NAME, REQUEST_ID))
+                .thenThrow(SearchException.class);
+
+        DissolvedResponseObject responseObject = searchIndexService.searchPreviousNamesBestMatch(COMPANY_NAME, REQUEST_ID);
+
+        assertNotNull(responseObject);
+        assertEquals(ResponseStatus.SEARCH_ERROR, responseObject.getStatus());
+    }
+
+    @Test
+    @DisplayName("Test best match for previous company names on a dissolved search returns no results")
+    void searchBestMatchPreviousNamesDissolvedRequestReturnsNoResults() throws Exception {
+        when(mockDissolvedSearchRequestService.getPreviousNamesBestMatchSearchResults(COMPANY_NAME, REQUEST_ID))
+                .thenReturn(createSearchResults(false));
+        DissolvedResponseObject responseObject = searchIndexService.searchPreviousNamesBestMatch(COMPANY_NAME, REQUEST_ID);
+
+        assertNotNull(responseObject);
+        assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
+    }
+
     private DissolvedSearchResults createSearchResults(boolean isResultsPopulated) {
         DissolvedSearchResults searchResults = new DissolvedSearchResults();
         TopHit topHit = new TopHit();
