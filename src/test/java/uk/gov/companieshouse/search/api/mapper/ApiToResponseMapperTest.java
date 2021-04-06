@@ -158,7 +158,7 @@ class ApiToResponseMapperTest {
 
         assertNotNull(responseEntity);
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
-        assertEquals("Invalid url parameter for search_type, please try 'alphabetical' or 'best-match'", responseEntity.getBody().toString());
+        assertEquals("Invalid url parameter for search_type, please try 'alphabetical', 'best-match' or 'previous-name-dissolved'", responseEntity.getBody());
     }
 
     @Test
