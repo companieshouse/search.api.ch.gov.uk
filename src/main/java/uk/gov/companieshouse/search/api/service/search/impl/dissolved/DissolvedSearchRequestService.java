@@ -41,6 +41,7 @@ public class DissolvedSearchRequestService {
     private static final String RESULT_FOUND = "A result has been found";
     private static final String SEARCH_HITS = "searchHits";
 
+
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
     public DissolvedSearchResults getSearchResults(String companyName, String requestId) throws SearchException {
@@ -98,13 +99,14 @@ public class DissolvedSearchRequestService {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
-        LoggingUtils.getLogger().info("getting dissolved" + searchType + "search results", logMap);
+        LoggingUtils.getLogger().info("getting dissolved " + searchType + " search results", logMap);
 
         String etag = GenerateEtagUtil.generateEtag();
         DissolvedTopHit topHit = new DissolvedTopHit();
         List<DissolvedCompany> results = new ArrayList<>();
 
         try {
+
             SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType);
 
             if (hits.getTotalHits().value > 0) {
@@ -119,30 +121,6 @@ public class DissolvedSearchRequestService {
         } catch (IOException e) {
             LoggingUtils.getLogger().error("failed to get best match for dissolved company",
                 logMap);
-            throw new SearchException("error occurred reading data for best match from " + SEARCH_HITS, e);
-        }
-
-        return new DissolvedSearchResults(etag, topHit, results, "search#dissolved");
-    }
-
-    public DissolvedSearchResults getPreviousNamesBestMatchSearchResults(String companyName, String requestId) throws SearchException {
-
-
-        try {
-            SearchHits hits  = dissolvedSearchRequests.getPreviousNamesBestMatch(companyName, requestId);
-
-            if (hits.getTotalHits().value > 0) {
-                LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
-
-                DissolvedCompany topHitCompany = mapESResponse(hits.getHits()[0]);
-
-                mapTopHit(topHit, topHitCompany);
-
-                hits.forEach(h -> results.add(mapESResponse(h)));
-            }
-        } catch (IOException e) {
-            LoggingUtils.getLogger().error("failed to get best match for dissolved company",
-                    logMap);
             throw new SearchException("error occurred reading data for best match from " + SEARCH_HITS, e);
         }
 

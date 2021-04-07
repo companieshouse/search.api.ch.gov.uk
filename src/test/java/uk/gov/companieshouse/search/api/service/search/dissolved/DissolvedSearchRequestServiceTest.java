@@ -286,13 +286,13 @@ class DissolvedSearchRequestServiceTest {
     @DisplayName("Test best match search results successful")
     void testBestMatchSuccessful() throws Exception {
 
-        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID,)).
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID,SEARCH_TYPE_BEST_MATCH)).
             thenReturn(createSearchHits(true,true,true, true));
 
 
 
         DissolvedSearchResults dissolvedSearchResults =
-                dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID);
+                dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH);
 
         assertEquals("search#dissolved", dissolvedSearchResults.getKind());
         assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -319,7 +319,7 @@ class DissolvedSearchRequestServiceTest {
 
 
         DissolvedSearchResults dissolvedSearchResults =
-                dissolvedSearchRequestService.getPreviousNamesBestMatchSearchResults(COMPANY_NAME, REQUEST_ID);
+                dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH);
 
         assertEquals("search#dissolved", dissolvedSearchResults.getKind());
         assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -329,11 +329,11 @@ class DissolvedSearchRequestServiceTest {
     @DisplayName("Test get best match previous names search request throws exception")
     void testBestMatchPreviousNamesThrowException() throws Exception{
 
-        when(mockDissolvedSearchRequests.getPreviousNamesBestMatch(COMPANY_NAME, REQUEST_ID))
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH))
                 .thenThrow(IOException.class);
 
         assertThrows(SearchException.class, () ->
-                dissolvedSearchRequestService.getPreviousNamesBestMatchSearchResults(COMPANY_NAME, REQUEST_ID));
+                dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH));
     }
 
     @Test

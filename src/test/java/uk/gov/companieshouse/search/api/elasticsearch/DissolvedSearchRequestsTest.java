@@ -139,7 +139,7 @@ class DissolvedSearchRequestsTest {
         when(mockSearchRestClient.search(any(SearchRequest.class))).thenReturn(createSearchResponse());
 
         SearchHits searchHits = dissolvedSearchRequests
-                .getPreviousNamesBestMatch("companyName", "requestId");
+                .getDissolved("companyName", "requestId", "searchType");
 
         assertNotNull(searchHits);
         assertEquals(1, searchHits.getTotalHits().value);

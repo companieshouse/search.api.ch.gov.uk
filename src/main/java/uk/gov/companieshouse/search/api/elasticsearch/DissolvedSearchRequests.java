@@ -29,7 +29,6 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
     private static final String INDEX = "DISSOLVED_SEARCH_INDEX";
     private static final String RESULTS_SIZE = "DISSOLVED_SEARCH_RESULT_MAX";
     private static final String BEST_MATCH_SEARCH_TYPE = "best-match";
-    private static final String PREVIOUS_NAMES_SEARCH_TYPE = "previous-name-dissolved";
 
     @Override
     String getIndex() {
@@ -54,7 +53,7 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
     public SearchHits getDissolved(String companyName, String requestId, String searchType) throws IOException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
-        LoggingUtils.getLogger().info("Searching for best dissolved company name" + searchType + "match", logMap);
+        LoggingUtils.getLogger().info("Searching for best dissolved company name " + searchType + " match", logMap);
 
         SearchRequest searchRequest = getBaseSearchRequest(requestId);
 
