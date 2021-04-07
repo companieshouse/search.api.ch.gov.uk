@@ -120,6 +120,7 @@ class DissolvedSearchIndexServiceTest {
         assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
     }
 
+    //PREVIOUS
     @Test
     @DisplayName("Test best match for previous company names on a dissolved search request returns successfully")
     void searchBestMatchPreviousNamesDissolvedRequestSuccessful() throws Exception {

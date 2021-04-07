@@ -72,12 +72,7 @@ public class DissolvedSearchIndexService {
 
         DissolvedSearchResults searchResults;
         try {
-            if (searchType.equals(BEST_MATCH_SEARCH_TYPE)) {
-                searchResults = dissolvedSearchRequestService.getBestMatchSearchResults(companyName, requestId);
-            }
-            else {
-                searchResults = dissolvedSearchRequestService.getPreviousNamesBestMatchSearchResults(companyName, requestId);
-            }
+                searchResults = dissolvedSearchRequestService.getBestMatchSearchResults(companyName, requestId, searchType);
         } catch (SearchException e) {
             LoggingUtils.getLogger().error(STANDARD_ERROR_MESSAGE +
                             "best matches on a" + searchType + " dissolved company: ",

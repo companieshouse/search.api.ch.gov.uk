@@ -94,18 +94,18 @@ public class DissolvedSearchRequestService {
         return new DissolvedSearchResults(etag, topHit, results, kind);
     }
 
-    public DissolvedSearchResults getBestMatchSearchResults(String companyName, String requestId) throws SearchException {
+    public DissolvedSearchResults getBestMatchSearchResults(String companyName, String requestId, String searchType) throws SearchException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
-        LoggingUtils.getLogger().info("getting dissolved best match search results", logMap);
+        LoggingUtils.getLogger().info("getting dissolved" + searchType + "search results", logMap);
 
         String etag = GenerateEtagUtil.generateEtag();
         DissolvedTopHit topHit = new DissolvedTopHit();
         List<DissolvedCompany> results = new ArrayList<>();
 
         try {
-            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId);
+            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType);
 
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
@@ -126,14 +126,7 @@ public class DissolvedSearchRequestService {
     }
 
     public DissolvedSearchResults getPreviousNamesBestMatchSearchResults(String companyName, String requestId) throws SearchException {
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(LoggingUtils.COMPANY_NAME, companyName);
-        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
-        LoggingUtils.getLogger().info("getting dissolved previous names best match search results", logMap);
 
-        String etag = GenerateEtagUtil.generateEtag();
-        DissolvedTopHit topHit = new DissolvedTopHit();
-        List<DissolvedCompany> results = new ArrayList<>();
 
         try {
             SearchHits hits  = dissolvedSearchRequests.getPreviousNamesBestMatch(companyName, requestId);

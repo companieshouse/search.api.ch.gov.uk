@@ -48,6 +48,8 @@ class DissolvedSearchRequestServiceTest {
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final String REQUEST_ID = "requestId";
     private static final String DISSOLVED_ALPHABETICAL_KIND = "search#alphabetical-dissolved";
+    private static final String SEARCH_TYPE_BEST_MATCH = "best-match";
+    private static final String SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH = "previous-name-dissolved";
 
     @Test
     @DisplayName("Test search request returns results successfully with best match query")
@@ -284,7 +286,7 @@ class DissolvedSearchRequestServiceTest {
     @DisplayName("Test best match search results successful")
     void testBestMatchSuccessful() throws Exception {
 
-        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID)).
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID,)).
             thenReturn(createSearchHits(true,true,true, true));
 
 
@@ -300,18 +302,18 @@ class DissolvedSearchRequestServiceTest {
     @DisplayName("Test get best match search request throws exception")
     void testBestMatchThrowException() throws Exception{
 
-        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID))
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH))
             .thenThrow(IOException.class);
 
         assertThrows(SearchException.class, () ->
-            dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID));
+            dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH));
     }
 
     @Test
     @DisplayName("Test best match previous names search results successful")
     void testBestMatchPreviousNamesSuccessful() throws Exception {
 
-        when(mockDissolvedSearchRequests.getPreviousNamesBestMatch(COMPANY_NAME, REQUEST_ID)).
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH)).
                 thenReturn(createSearchHits(true,true,true, true));
 
 

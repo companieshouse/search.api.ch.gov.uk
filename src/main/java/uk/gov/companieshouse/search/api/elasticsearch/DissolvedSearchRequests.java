@@ -28,6 +28,8 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
 
     private static final String INDEX = "DISSOLVED_SEARCH_INDEX";
     private static final String RESULTS_SIZE = "DISSOLVED_SEARCH_RESULT_MAX";
+    private static final String BEST_MATCH_SEARCH_TYPE = "best-match";
+    private static final String PREVIOUS_NAMES_SEARCH_TYPE = "previous-name-dissolved";
 
     @Override
     String getIndex() {
@@ -49,31 +51,20 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
         return searchQueries;
     }
 
-    public SearchHits getDissolved(String companyName, String requestId) throws IOException {
+    public SearchHits getDissolved(String companyName, String requestId, String searchType) throws IOException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
-        LoggingUtils.getLogger().info("Searching for best dissolved company name match", logMap);
+        LoggingUtils.getLogger().info("Searching for best dissolved company name" + searchType + "match", logMap);
 
         SearchRequest searchRequest = getBaseSearchRequest(requestId);
 
         SearchSourceBuilder sourceBuilder = getBaseSourceBuilder();
-        sourceBuilder.query(searchQueries.createBestMatchQuery(companyName));
-
-        searchRequest.source(sourceBuilder);
-
-        SearchResponse searchResponse = searchRestClient.search(searchRequest);
-        return searchResponse.getHits();
-    }
-
-    public SearchHits getPreviousNamesBestMatch(String companyName, String requestId) throws IOException {
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(LoggingUtils.COMPANY_NAME, companyName);
-        LoggingUtils.getLogger().info("Searching for best dissolved company name match", logMap);
-
-        SearchRequest searchRequest = getBaseSearchRequest(requestId);
-
-        SearchSourceBuilder sourceBuilder = getBaseSourceBuilder();
-        sourceBuilder.query(searchQueries.createPreviousNamesBestMatchQuery(companyName));
+        if (searchType.equals(BEST_MATCH_SEARCH_TYPE)){
+            sourceBuilder.query(searchQueries.createBestMatchQuery(companyName));
+        }
+        else {
+            sourceBuilder.query(searchQueries.createPreviousNamesBestMatchQuery(companyName));
+        }
 
         searchRequest.source(sourceBuilder);
 

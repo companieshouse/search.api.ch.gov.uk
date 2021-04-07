@@ -125,7 +125,7 @@ class DissolvedSearchRequestsTest {
         when(mockSearchRestClient.search(any(SearchRequest.class))).thenReturn(createSearchResponse());
 
         SearchHits searchHits = dissolvedSearchRequests
-            .getDissolved("orderedAlpha", "requestId");
+            .getDissolved("orderedAlpha", "requestId", "searchType");
 
         assertNotNull(searchHits);
         assertEquals(1, searchHits.getTotalHits().value);
