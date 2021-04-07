@@ -72,7 +72,7 @@ class DissolvedSearchControllerTest {
         DissolvedResponseObject responseObject =
                 new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
 
-        when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID)).thenReturn(responseObject);
+        when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH)).thenReturn(responseObject);
         when(mockApiToResponseMapper.mapDissolved(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
@@ -90,7 +90,7 @@ class DissolvedSearchControllerTest {
         DissolvedResponseObject responseObject =
                 new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
 
-        when(mockSearchIndexService.searchPreviousNamesBestMatch(COMPANY_NAME, REQUEST_ID)).thenReturn(responseObject);
+        when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH)).thenReturn(responseObject);
         when(mockApiToResponseMapper.mapDissolved(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
