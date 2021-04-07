@@ -70,6 +70,10 @@ public class DissolvedSearchIndexService {
             logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
             LoggingUtils.getLogger().info(SEARCHING_FOR_COMPANY_INFO, logMap);
         }
+        else {
+            LoggingUtils.getLogger().error("The search_type parameter is incorrect, please try either " +
+            "'best-match' or 'previous-name-dissolved': " , logMap);
+        }
 
         DissolvedSearchResults searchResults;
         try {
@@ -78,6 +82,10 @@ public class DissolvedSearchIndexService {
             }
             if (searchType == PREVIOUS_NAMES_SEARCH_TYPE) {
                 searchResults = dissolvedSearchRequestService.getPreviousNamesBestMatchSearchResults(companyName, requestId);
+            }
+            else {
+                LoggingUtils.getLogger().error("The search_type parameter is incorrect, please try either " +
+                "'best-match' or 'previous-name-dissolved': " , logMap);
             }
         } catch (SearchException e) {
             LoggingUtils.getLogger().error(STANDARD_ERROR_MESSAGE +
