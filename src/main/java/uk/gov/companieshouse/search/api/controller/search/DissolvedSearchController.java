@@ -55,15 +55,9 @@ public class DissolvedSearchController {
                 return apiToResponseMapper.mapDissolved(responseObject);
             }
 
-            if (searchType.equals(BEST_MATCH_SEARCH_TYPE)) {
+            if (searchType.equals(BEST_MATCH_SEARCH_TYPE) || searchType.equals(PREVIOUS_NAMES_SEARCH_TYPE)) {
                 DissolvedResponseObject responseObject = searchIndexService
-                        .searchBestMatch(companyName, requestId);
-
-                return apiToResponseMapper.mapDissolved(responseObject);
-            }
-
-            if (searchType.equals(PREVIOUS_NAMES_SEARCH_TYPE)) {
-                DissolvedResponseObject responseObject = searchIndexService.searchPreviousNamesBestMatch(companyName, requestId);
+                        .searchBestMatch(companyName, requestId, searchType);
 
                 return apiToResponseMapper.mapDissolved(responseObject);
             }
