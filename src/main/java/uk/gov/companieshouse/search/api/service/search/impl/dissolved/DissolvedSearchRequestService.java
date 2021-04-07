@@ -38,6 +38,7 @@ public class DissolvedSearchRequestService {
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
     private static final String TOP_KIND = "search#alphabetical-dissolved";
     private static final int FALLBACK_QUERY_LIMIT = 25;
+    private static final String RESULT_FOUND = "A result has been found";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
@@ -68,7 +69,7 @@ public class DissolvedSearchRequestService {
             }
 
             if (hits.getTotalHits().value > 0) {
-                LoggingUtils.getLogger().info("A result has been found", logMap);
+                LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
 
                 String orderedAlphaKeyWithId;
                 SearchHit bestMatch;
@@ -106,7 +107,7 @@ public class DissolvedSearchRequestService {
             SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId);
 
             if (hits.getTotalHits().value > 0) {
-                LoggingUtils.getLogger().info("A result has been found", logMap);
+                LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
 
                 DissolvedCompany topHitCompany = mapESResponse(hits.getHits()[0]);
 
@@ -137,7 +138,7 @@ public class DissolvedSearchRequestService {
             SearchHits hits  = dissolvedSearchRequests.getPreviousNamesBestMatch(companyName, requestId);
 
             if (hits.getTotalHits().value > 0) {
-                LoggingUtils.getLogger().info("A result has been found", logMap);
+                LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
 
                 DissolvedCompany topHitCompany = mapESResponse(hits.getHits()[0]);
 
