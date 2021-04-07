@@ -39,6 +39,7 @@ public class DissolvedSearchRequestService {
     private static final String TOP_KIND = "search#alphabetical-dissolved";
     private static final int FALLBACK_QUERY_LIMIT = 25;
     private static final String RESULT_FOUND = "A result has been found";
+    private static final String SEARCH_HITS = "searchHits";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
@@ -87,7 +88,7 @@ public class DissolvedSearchRequestService {
         } catch (IOException e) {
             LoggingUtils.getLogger().error("failed to map highest map to company object",
                 logMap);
-            throw new SearchException("error occurred reading data for highest match from " + "searchHits", e);
+            throw new SearchException("error occurred reading data for highest match from " + SEARCH_HITS, e);
         }
 
         return new DissolvedSearchResults(etag, topHit, results, kind);
@@ -118,7 +119,7 @@ public class DissolvedSearchRequestService {
         } catch (IOException e) {
             LoggingUtils.getLogger().error("failed to get best match for dissolved company",
                 logMap);
-            throw new SearchException("error occurred reading data for best match from " + "searchHits", e);
+            throw new SearchException("error occurred reading data for best match from " + SEARCH_HITS, e);
         }
 
         return new DissolvedSearchResults(etag, topHit, results, "search#dissolved");
@@ -149,7 +150,7 @@ public class DissolvedSearchRequestService {
         } catch (IOException e) {
             LoggingUtils.getLogger().error("failed to get best match for dissolved company",
                     logMap);
-            throw new SearchException("error occurred reading data for best match from " + "searchHits", e);
+            throw new SearchException("error occurred reading data for best match from " + SEARCH_HITS, e);
         }
 
         return new DissolvedSearchResults(etag, topHit, results, "search#dissolved");
