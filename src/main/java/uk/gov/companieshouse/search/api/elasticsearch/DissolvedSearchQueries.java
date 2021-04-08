@@ -20,6 +20,6 @@ public class DissolvedSearchQueries extends AbstractSearchQuery {
     }
 
     public QueryBuilder createBestMatchQuery(String companyName) {
-        return QueryBuilders.matchQuery("company_name.doconly", companyName);
+        return QueryBuilders.matchPhrasePrefixQuery("company_name.company_name_phrase", companyName).slop(1);
     }
 }
