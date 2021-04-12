@@ -28,6 +28,7 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
 
     private static final String INDEX = "DISSOLVED_SEARCH_INDEX";
     private static final String RESULTS_SIZE = "DISSOLVED_SEARCH_RESULT_MAX";
+    private static final String BEST_MATCH_SEARCH_TYPE = "best-match";
 
     @Override
     String getIndex() {
@@ -49,22 +50,39 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
         return searchQueries;
     }
 
-    public SearchHits getDissolved(String companyName, String requestId) throws IOException {
+    public SearchHits getDissolved(String companyName, String requestId, String searchType) throws IOException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
-        LoggingUtils.getLogger().info("Searching for best dissolved company name match", logMap);
+        LoggingUtils.getLogger().info("Searching for best dissolved company name " + searchType + " match", logMap);
 
-        SearchRequest searchRequest = new SearchRequest();
-        searchRequest.indices(environmentReader.getMandatoryString(getIndex()));
-        searchRequest.preference(requestId);
+        SearchRequest searchRequest = getBaseSearchRequest(requestId);
 
-        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-        sourceBuilder.size(Integer.parseInt(environmentReader.getMandatoryString(getResultsSize())));
-        sourceBuilder.query(searchQueries.createBestMatchQuery(companyName));
+        SearchSourceBuilder sourceBuilder = getBaseSourceBuilder();
+        if (searchType.equals(BEST_MATCH_SEARCH_TYPE)){
+            sourceBuilder.query(searchQueries.createBestMatchQuery(companyName));
+        }
+        else {
+            sourceBuilder.query(searchQueries.createPreviousNamesBestMatchQuery(companyName));
+        }
 
         searchRequest.source(sourceBuilder);
 
         SearchResponse searchResponse = searchRestClient.search(searchRequest);
         return searchResponse.getHits();
+    }
+
+    private SearchRequest getBaseSearchRequest(String requestId) {
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.indices(environmentReader.getMandatoryString(getIndex()));
+        searchRequest.preference(requestId);
+
+        return searchRequest;
+    }
+
+    private SearchSourceBuilder getBaseSourceBuilder() {
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.size(Integer.parseInt(environmentReader.getMandatoryString(getResultsSize())));
+
+        return sourceBuilder;
     }
 }

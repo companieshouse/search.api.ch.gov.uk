@@ -33,6 +33,7 @@ public class DissolvedSearchController {
     private static final String SEARCH_TYPE_QUERY_PARAM = "search_type";
     private static final String ALPHABETICAL_SEARCH_TYPE = "alphabetical";
     private static final String BEST_MATCH_SEARCH_TYPE = "best-match";
+    private static final String PREVIOUS_NAMES_SEARCH_TYPE = "previous-name-dissolved";
 
 
     @GetMapping("/companies")
@@ -54,21 +55,22 @@ public class DissolvedSearchController {
                 return apiToResponseMapper.mapDissolved(responseObject);
             }
 
-            if (searchType.equals(BEST_MATCH_SEARCH_TYPE)) {
+            if (searchType.equals(BEST_MATCH_SEARCH_TYPE) || searchType.equals(PREVIOUS_NAMES_SEARCH_TYPE)) {
                 DissolvedResponseObject responseObject = searchIndexService
-                        .searchBestMatch(companyName, requestId);
+                        .searchBestMatch(companyName, requestId, searchType);
 
                 return apiToResponseMapper.mapDissolved(responseObject);
             }
         }
         LoggingUtils.getLogger().error("The search_type parameter is incorrect, please try either " +
-                "'alphabetical' or 'best-match': ", logMap);
+                "'alphabetical', 'best-match' or 'previous-name-dissolved': " , logMap);
         return apiToResponseMapper.mapDissolved(new DissolvedResponseObject(ResponseStatus.REQUEST_PARAMETER_ERROR, null));
     }
 
     private boolean checkSearchTypeParam(String searchType) {
 
         return searchType.equals(ALPHABETICAL_SEARCH_TYPE)
-                || searchType.equals(BEST_MATCH_SEARCH_TYPE);
+                || searchType.equals(BEST_MATCH_SEARCH_TYPE)
+                || searchType.equals(PREVIOUS_NAMES_SEARCH_TYPE);
     }
 }

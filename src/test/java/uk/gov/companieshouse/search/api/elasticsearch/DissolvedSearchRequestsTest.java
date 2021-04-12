@@ -118,14 +118,28 @@ class DissolvedSearchRequestsTest {
     }
 
     @Test
-    @DisplayName("Get dissolved response")
-    void getDissolvedhResponse() throws Exception {
+    @DisplayName("Get dissolved search best match response")
+    void getDissolvedSearchBestMatchResponse() throws Exception {
 
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT);
         when(mockSearchRestClient.search(any(SearchRequest.class))).thenReturn(createSearchResponse());
 
         SearchHits searchHits = dissolvedSearchRequests
-            .getDissolved("orderedAlpha", "requestId");
+            .getDissolved("orderedAlpha", "requestId", "searchType");
+
+        assertNotNull(searchHits);
+        assertEquals(1, searchHits.getTotalHits().value);
+    }
+
+    @Test
+    @DisplayName("Get dissolved search previous names best match response")
+    void getDissolvedSearchPreviousNamesResponse() throws Exception {
+
+        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT);
+        when(mockSearchRestClient.search(any(SearchRequest.class))).thenReturn(createSearchResponse());
+
+        SearchHits searchHits = dissolvedSearchRequests
+                .getDissolved("companyName", "requestId", "searchType");
 
         assertNotNull(searchHits);
         assertEquals(1, searchHits.getTotalHits().value);

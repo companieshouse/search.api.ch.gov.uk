@@ -54,4 +54,13 @@ class DissolvedSearchQueriesTest {
 
         assertNotNull(queryBuilder);
     }
+
+    @Test
+    @DisplayName("Create previous names best match query")
+    void createPreviousNamesBestMatchQuery() {
+        QueryBuilder queryBuilder =
+                dissolvedSearchQueries.createPreviousNamesBestMatchQuery("company name");
+
+        assertNotNull(queryBuilder);
+    }
 }

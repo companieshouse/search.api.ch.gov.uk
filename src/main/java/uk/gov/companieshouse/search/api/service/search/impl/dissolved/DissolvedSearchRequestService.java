@@ -38,6 +38,9 @@ public class DissolvedSearchRequestService {
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
     private static final String TOP_KIND = "search#alphabetical-dissolved";
     private static final int FALLBACK_QUERY_LIMIT = 25;
+    private static final String RESULT_FOUND = "A result has been found";
+    private static final String SEARCH_HITS = "searchHits";
+
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
@@ -68,7 +71,7 @@ public class DissolvedSearchRequestService {
             }
 
             if (hits.getTotalHits().value > 0) {
-                LoggingUtils.getLogger().info("A result has been found", logMap);
+                LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
 
                 String orderedAlphaKeyWithId;
                 SearchHit bestMatch;
@@ -86,27 +89,28 @@ public class DissolvedSearchRequestService {
         } catch (IOException e) {
             LoggingUtils.getLogger().error("failed to map highest map to company object",
                 logMap);
-            throw new SearchException("error occurred reading data for highest match from " + "searchHits", e);
+            throw new SearchException("error occurred reading data for highest match from " + SEARCH_HITS, e);
         }
 
         return new DissolvedSearchResults(etag, topHit, results, kind);
     }
 
-    public DissolvedSearchResults getBestMatchSearchResults(String companyName, String requestId) throws SearchException {
+    public DissolvedSearchResults getBestMatchSearchResults(String companyName, String requestId, String searchType) throws SearchException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
-        LoggingUtils.getLogger().info("getting dissolved best match search results", logMap);
+        LoggingUtils.getLogger().info("getting dissolved " + searchType + " search results", logMap);
 
         String etag = GenerateEtagUtil.generateEtag();
         DissolvedTopHit topHit = new DissolvedTopHit();
         List<DissolvedCompany> results = new ArrayList<>();
 
         try {
-            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId);
+
+            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType);
 
             if (hits.getTotalHits().value > 0) {
-                LoggingUtils.getLogger().info("A result has been found", logMap);
+                LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
 
                 DissolvedCompany topHitCompany = mapESResponse(hits.getHits()[0]);
 
@@ -117,7 +121,7 @@ public class DissolvedSearchRequestService {
         } catch (IOException e) {
             LoggingUtils.getLogger().error("failed to get best match for dissolved company",
                 logMap);
-            throw new SearchException("error occurred reading data for best match from " + "searchHits", e);
+            throw new SearchException("error occurred reading data for best match from " + SEARCH_HITS, e);
         }
 
         return new DissolvedSearchResults(etag, topHit, results, "search#dissolved");

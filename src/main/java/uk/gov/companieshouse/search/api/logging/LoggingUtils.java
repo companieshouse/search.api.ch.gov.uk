@@ -17,6 +17,7 @@ public class LoggingUtils {
     public static final String COMPANY_NUMBER = "company_number";
     public static final String DISSOLVED_SEARCH_ALPHABETICAL = "dissolved - alphabetical";
     public static final String DISSOLVED_SEARCH_BEST_MATCH = "dissolved - best match";
+    public static final String DISSOLVED_SEARCH_PREVIOUS_NAMES_BEST_MATCH = "dissolved - previous names best match";
     public static final String INDEX = "index_name";
     public static final String INDEX_ALPHABETICAL = "alphabetical_search_index";
     public static final String INDEX_DISSOLVED = "dissolved_search_index";
