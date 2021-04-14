@@ -104,6 +104,7 @@ public class DissolvedSearchRequestService {
         String etag = GenerateEtagUtil.generateEtag();
         DissolvedTopHit topHit = new DissolvedTopHit();
         List<DissolvedCompany> results = new ArrayList<>();
+        String kind = searchType.equals("best-match") ? "search#dissolved" : "search#previous-name-dissolved";
 
         try {
 
@@ -124,7 +125,7 @@ public class DissolvedSearchRequestService {
             throw new SearchException("error occurred reading data for best match from " + SEARCH_HITS, e);
         }
 
-        return new DissolvedSearchResults(etag, topHit, results, "search#dissolved");
+        return new DissolvedSearchResults(etag, topHit, results, kind);
     }
 
     private DissolvedCompany mapESResponse(SearchHit hit) {
