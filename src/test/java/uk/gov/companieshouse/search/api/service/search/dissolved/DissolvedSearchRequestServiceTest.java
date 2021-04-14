@@ -47,9 +47,11 @@ class DissolvedSearchRequestServiceTest {
     private static final String ORDERED_ALPHA_KEY = "orderedAlphaKey";
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final String REQUEST_ID = "requestId";
-    private static final String DISSOLVED_ALPHABETICAL_KIND = "search#alphabetical-dissolved";
     private static final String SEARCH_TYPE_BEST_MATCH = "best-match";
     private static final String SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH = "previous-name-dissolved";
+    private static final String PREVIOUS_NAME_KIND = "search#previous-name-dissolved";
+    private static final String BEST_MATCH_KIND = "search#dissolved";
+    private static final String DISSOLVED_ALPHABETICAL_KIND = "search#alphabetical-dissolved";
 
     @Test
     @DisplayName("Test search request returns results successfully with best match query")
@@ -294,8 +296,8 @@ class DissolvedSearchRequestServiceTest {
         DissolvedSearchResults dissolvedSearchResults =
                 dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH);
 
-        assertEquals("search#dissolved", dissolvedSearchResults.getKind());
         assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
+        assertEquals(BEST_MATCH_KIND, dissolvedSearchResults.getKind());
     }
 
     @Test
@@ -316,13 +318,11 @@ class DissolvedSearchRequestServiceTest {
         when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH)).
                 thenReturn(createSearchHits(true,true,true, true));
 
-
-
         DissolvedSearchResults dissolvedSearchResults =
                 dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH);
 
-        assertEquals("search#dissolved", dissolvedSearchResults.getKind());
         assertEquals(TOP_HIT, dissolvedSearchResults.getTopHit().getCompanyName());
+        assertEquals(PREVIOUS_NAME_KIND, dissolvedSearchResults.getKind());
     }
 
     @Test
