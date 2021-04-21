@@ -31,6 +31,7 @@ public class DissolvedSearchController {
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
     private static final String COMPANY_NAME_QUERY_PARAM = "q";
     private static final String SEARCH_TYPE_QUERY_PARAM = "search_type";
+    private static final String CHANGED_NAME_QUERY_PARAM = "changed-name";
     private static final String ALPHABETICAL_SEARCH_TYPE = "alphabetical";
     private static final String BEST_MATCH_SEARCH_TYPE = "best-match";
     private static final String PREVIOUS_NAMES_SEARCH_TYPE = "previous-name-dissolved";
@@ -40,6 +41,7 @@ public class DissolvedSearchController {
     @ResponseBody
     public ResponseEntity<Object> searchCompanies(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
                                                   @RequestParam(name = SEARCH_TYPE_QUERY_PARAM) String searchType,
+                                                  @RequestParam(name = CHANGED_NAME_QUERY_PARAM) String changedName,
                                                   @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);

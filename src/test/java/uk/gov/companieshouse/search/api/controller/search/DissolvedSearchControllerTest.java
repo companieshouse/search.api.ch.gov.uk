@@ -41,6 +41,7 @@ class DissolvedSearchControllerTest {
 
     private static final String REQUEST_ID = "requestID";
     private static final String COMPANY_NAME = "test company";
+    private static final String CHANGED_NAME_QUERY_PARAM = "changed-name";
     private static final String SEARCH_TYPE_ALPHABETICAL = "alphabetical";
     private static final String SEARCH_TYPE_BEST_MATCH = "best-match";
     private static final String SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH = "previous-name-dissolved";
@@ -58,7 +59,7 @@ class DissolvedSearchControllerTest {
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity responseEntity =
-                dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_ALPHABETICAL, REQUEST_ID);
+                dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_ALPHABETICAL, CHANGED_NAME_QUERY_PARAM, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
@@ -76,7 +77,7 @@ class DissolvedSearchControllerTest {
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity responseEntity =
-                dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH, REQUEST_ID);
+                dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH, CHANGED_NAME_QUERY_PARAM, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
@@ -94,7 +95,7 @@ class DissolvedSearchControllerTest {
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity responseEntity =
-                dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, REQUEST_ID);
+                dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, CHANGED_NAME_QUERY_PARAM, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
@@ -109,7 +110,7 @@ class DissolvedSearchControllerTest {
                         .body("Invalid url parameter for search_type, please try 'alphabetical' or 'best-match'"));
 
         ResponseEntity responseEntity =
-                dissolvedSearchController.searchCompanies(COMPANY_NAME, "aaa", REQUEST_ID);
+                dissolvedSearchController.searchCompanies(COMPANY_NAME, "aaa", "bbb", REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
