@@ -4,6 +4,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
+import uk.gov.companieshouse.search.api.model.PreviousNamesTopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
@@ -84,6 +85,17 @@ public class ElasticSearchResponseMapper {
         return results;
     }
 
+    public void mapPreviousNamesTopHit(List<DissolvedPreviousName> results, PreviousNamesTopHit topHit) {
+        topHit.setPreviousCompanyName(results.get(0).getDissolvedPreviousName());
+        topHit.setCompanyName(results.get(0).getCompanyName());
+        topHit.setCompanyNumber(results.get(0).getCompanyNumber());
+        topHit.setCompanyStatus(results.get(0).getCompanyStatus());
+        topHit.setKind(results.get(0).getKind());
+        topHit.setAddress(results.get(0).getAddress());
+        topHit.setDateOfCessation(results.get(0).getDateOfCessation());
+        topHit.setDateOfCreation(results.get(0).getDateOfCreation());
+    }
+
     private void mapPreviousName(SearchHit hit, List<DissolvedPreviousName> results) {
         // company details at dissolution in the main hit
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
@@ -101,12 +113,19 @@ public class ElasticSearchResponseMapper {
             previousCompanyName.setDateOfCessation((LocalDate.parse((String) sourceAsMap.get("date_of_cessation"), formatter)));
             previousCompanyName.setDateOfCreation((LocalDate.parse((String) sourceAsMap.get("date_of_creation"), formatter)));
             previousCompanyName.setKind(SEARCH_RESULTS_KIND);
+
+            Address roAddress = new Address();
+            Map<String, Object> address = (Map<String, Object>) sourceAsMap.get("address");
+
+            if(address != null && address.containsKey("postal_code")) {
+                roAddress.setPostalCode((String) address.get("postal_code"));
+            } else {
+                roAddress = null;
+            }
+
+            previousCompanyName.setAddress(roAddress);
             previousCompanyName.setDissolvedPreviousName((String)nameHit.getSourceAsMap().get("name"));
             results.add(previousCompanyName);
         }
     }
-
-//    private void mapInnerHits() {
-//
-//    }
 }

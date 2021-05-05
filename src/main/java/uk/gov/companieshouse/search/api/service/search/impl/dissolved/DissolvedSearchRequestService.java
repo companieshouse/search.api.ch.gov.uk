@@ -138,11 +138,8 @@ public class DissolvedSearchRequestService {
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
 
-                DissolvedPreviousName topHitPreviousName = new DissolvedPreviousName();
-
                 results = elasticSearchResponseMapper.mapPreviousNames(hits);
-
-//                hits.forEach(h -> results.add(elasticSearchResponseMapper.mapPreviousNames(h)));
+                elasticSearchResponseMapper.mapPreviousNamesTopHit(results, topHit);
 
             }
         } catch (IOException e) {

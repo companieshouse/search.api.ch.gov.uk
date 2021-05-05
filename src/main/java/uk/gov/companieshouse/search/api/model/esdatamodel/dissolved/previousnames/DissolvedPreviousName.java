@@ -1,9 +1,12 @@
 package uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.previousnames;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
 
 import java.time.LocalDate;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DissolvedPreviousName {
 
     @JsonProperty("previous_company_names")
@@ -20,6 +23,9 @@ public class DissolvedPreviousName {
 
     @JsonProperty("kind")
     private String kind;
+
+    @JsonProperty("address")
+    private Address address;
 
     @JsonProperty("date_of_cessation")
     private LocalDate dateOfCessation;
@@ -65,6 +71,14 @@ public class DissolvedPreviousName {
 
     public void setKind(String kind) {
         this.kind = kind;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public LocalDate getDateOfCessation() {

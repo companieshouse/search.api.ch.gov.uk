@@ -63,17 +63,13 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
             sourceBuilder.query(searchQueries.createBestMatchQuery(companyName));
         }
         else {
-            String[] includes = {"company_name", "company_number", "company_status", "date_of_creation", "date_of_cessation"};
+            String[] includes = {"company_name", "company_number", "company_status", "date_of_creation", "date_of_cessation", "address.postal_code"};
 
             sourceBuilder.fetchSource(new FetchSourceContext(true, includes, null));
             sourceBuilder.query(searchQueries.createPreviousNamesBestMatchQuery(companyName));
         }
 
         searchRequest.source(sourceBuilder);
-
-        System.out.println("===================");
-        System.out.println(searchRequest);
-        System.out.println("===================");
 
         SearchResponse searchResponse = searchRestClient.search(searchRequest);
         return searchResponse.getHits();
