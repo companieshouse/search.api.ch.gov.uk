@@ -85,19 +85,25 @@ public class ElasticSearchResponseMapper {
     }
 
     private void mapPreviousName(SearchHit hit, List<DissolvedPreviousName> results) {
-
+        // company details at dissolution in the main hit
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-        String companyName = (String) sourceAsMap.get("company_name");
-        String companyNumber = (String) sourceAsMap.get("company_name");
-        String companyStatus = (String) sourceAsMap.get("company_status");
-        String kind = SEARCH_RESULTS_KIND;
-        LocalDate dateOfCessation = (LocalDate.parse((String) sourceAsMap.get("date_of_cessation"), formatter));
-        LocalDate dateOfCreation = (LocalDate.parse((String) sourceAsMap.get("date_of_creation"), formatter));
-
+        // previous name details in the inner hits
         Map<String, SearchHits> innerHits = hit.getInnerHits();
 
-        innerHits.forEach((k, ih) -> ih.forEach(i -> System.out.println(i)));
-
+        // get the previous name details element from the inner hits
+        SearchHits previousNames = innerHits.get("previous_company_names");
+        
+        for(SearchHit nameHit : previousNames.getHits()) {
+            DissolvedPreviousName previousCompanyName = new DissolvedPreviousName(); 
+            previousCompanyName.setCompanyName((String) sourceAsMap.get("company_name"));
+            previousCompanyName.setCompanyNumber((String) sourceAsMap.get("company_number"));
+            previousCompanyName.setCompanyStatus((String) sourceAsMap.get("company_status"));
+            previousCompanyName.setDateOfCessation((LocalDate.parse((String) sourceAsMap.get("date_of_cessation"), formatter)));
+            previousCompanyName.setDateOfCreation((LocalDate.parse((String) sourceAsMap.get("date_of_creation"), formatter)));
+            previousCompanyName.setKind(SEARCH_RESULTS_KIND);
+            previousCompanyName.setDissolvedPreviousName((String)nameHit.getSourceAsMap().get("name"));
+            results.add(previousCompanyName);
+        }
     }
 
 //    private void mapInnerHits() {
