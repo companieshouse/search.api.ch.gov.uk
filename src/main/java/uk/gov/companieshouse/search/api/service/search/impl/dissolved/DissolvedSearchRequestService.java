@@ -121,8 +121,8 @@ public class DissolvedSearchRequestService {
         return new DissolvedSearchResults(etag, topHit, results, kind);
     }
 
-    public DissolvedSearchResults getPreviousNamesResults(String companyName, String requestId,
-                                                       String searchType) throws SearchException {
+    public DissolvedSearchResults<DissolvedPreviousName> getPreviousNamesResults(String companyName, String requestId,
+                                                                               String searchType) throws SearchException {
 
         Map<String, Object> logMap = getLogMap(requestId, companyName);
         LoggingUtils.getLogger().info("getting dissolved " + searchType + " search results", logMap);
@@ -148,7 +148,7 @@ public class DissolvedSearchRequestService {
             throw new SearchException("error occurred reading data for previous names from " + SEARCH_HITS, e);
         }
 
-        return new DissolvedSearchResults(etag, topHit, results, kind);
+        return new DissolvedSearchResults<>(etag, topHit, results, kind);
     }
 
     private SearchHits getSearchHits(String orderedAlphakey, String requestId) throws IOException {

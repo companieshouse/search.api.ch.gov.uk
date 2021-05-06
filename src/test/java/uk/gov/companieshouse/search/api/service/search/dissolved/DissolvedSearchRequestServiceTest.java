@@ -18,9 +18,11 @@ import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
 import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
+import uk.gov.companieshouse.search.api.model.PreviousNamesTopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
+import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.previousnames.DissolvedPreviousName;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchRequestService;
@@ -62,14 +64,9 @@ class DissolvedSearchRequestServiceTest {
     private static final String COMPANY_NUMBER = "00000000";
     private static final String COMPANY_STATUS = "dissolved";
     private static final String KIND = "searchresults#dissolvedCompany";
-    private static final String DATE_OF_CESSATION = "1999-05-01";
-    private static final String DATE_OF_CREATION = "1989-05-01";
     private static final String LOCALITY = "locality";
     private static final String POSTCODE = "AB00 0 AB";
     private static final String PREVIOUS_COMPANY_NAME = "TEST COMPANY 2";
-    private static final String EFFECTIVE_FROM = "1989-01-01";
-    private static final String CEASED_ON = "1992-05-10";
-    private static final String DISSOLVED_PREVIOUS_NAME = "PREVIOUS NAME LIMITED";
     private static final String ORDERED_ALPHA_KEY = "orderedAlphaKey";
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final String REQUEST_ID = "requestId";
@@ -400,6 +397,38 @@ class DissolvedSearchRequestServiceTest {
     }
 
     @Test
+    @DisplayName("Test previous names best match search results successful")
+    void testPreviousNamesBestMatchSuccessful() throws Exception {
+
+        List<DissolvedPreviousName> results = createPreviousCompanyNames();
+        PreviousNamesTopHit topHit = createPreviousNamesTopHit();
+
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH)).
+                thenReturn(createSearchHits(true,true,true, true));
+
+        when(mockElasticSearchResponseMapper.mapPreviousNames(any(SearchHits.class))).thenReturn(results);
+
+        when(mockElasticSearchResponseMapper.mapPreviousNamesTopHit(results)).thenReturn(topHit);
+
+        DissolvedSearchResults dissolvedSearchResults =
+                dissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH);
+
+        assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
+        assertEquals(PREVIOUS_NAME_KIND, dissolvedSearchResults.getKind());
+    }
+
+    @Test
+    @DisplayName("Test get previous names best match search request throws exception")
+    void testPreviousNamesBestMatchThrowException() throws Exception{
+
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH))
+                .thenThrow(IOException.class);
+
+        assertThrows(SearchException.class, () ->
+                dissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH));
+    }
+
+    @Test
     @DisplayName("Test get best match previous names search request throws exception")
     void testBestMatchPreviousNamesThrowException() throws Exception{
 
@@ -540,6 +569,45 @@ class DissolvedSearchRequestServiceTest {
 
         previousCompanyNames.add(previousCompanyName);
         topHit.setPreviousCompanyNames(previousCompanyNames);
+
+        return topHit;
+    }
+
+    private List<DissolvedPreviousName> createPreviousCompanyNames() {
+        List<DissolvedPreviousName> previousNames = new ArrayList<>();
+        DissolvedPreviousName previousName = new DissolvedPreviousName();
+        previousName.setPreviousCompanyName(PREVIOUS_COMPANY_NAME);
+        previousName.setCompanyName(COMPANY_NAME);
+        previousName.setCompanyNumber(COMPANY_NUMBER);
+        previousName.setCompanyStatus(COMPANY_STATUS);
+        previousName.setKind(KIND);
+        previousName.setDateOfCessation(LocalDate.parse("19990501", formatter));
+        previousName.setDateOfCreation(LocalDate.parse("19890501", formatter));
+
+        Address address = new Address();
+        address.setPostalCode(POSTCODE);
+        address.setLocality(LOCALITY);
+        previousName.setAddress(address);
+
+        previousNames.add(previousName);
+
+        return previousNames;
+    }
+
+    private PreviousNamesTopHit createPreviousNamesTopHit() {
+        PreviousNamesTopHit topHit = new PreviousNamesTopHit();
+        topHit.setPreviousCompanyName(PREVIOUS_COMPANY_NAME);
+        topHit.setCompanyName(COMPANY_NAME);
+        topHit.setCompanyNumber(COMPANY_NUMBER);
+        topHit.setCompanyStatus(COMPANY_STATUS);
+        topHit.setKind(KIND);
+        topHit.setDateOfCessation(LocalDate.parse("19990501", formatter));
+        topHit.setDateOfCreation(LocalDate.parse("19890501", formatter));
+
+        Address address = new Address();
+        address.setPostalCode(POSTCODE);
+        address.setLocality(LOCALITY);
+        topHit.setAddress(address);
 
         return topHit;
     }

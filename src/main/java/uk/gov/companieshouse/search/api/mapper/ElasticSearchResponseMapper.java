@@ -83,7 +83,7 @@ public class ElasticSearchResponseMapper {
 
     public PreviousNamesTopHit mapPreviousNamesTopHit(List<DissolvedPreviousName> results) {
         PreviousNamesTopHit topHit = new PreviousNamesTopHit();
-        topHit.setPreviousCompanyName(results.get(0).getDissolvedPreviousName());
+        topHit.setPreviousCompanyName(results.get(0).getPreviousCompanyName());
         topHit.setCompanyName(results.get(0).getCompanyName());
         topHit.setCompanyNumber(results.get(0).getCompanyNumber());
         topHit.setCompanyStatus(results.get(0).getCompanyStatus());
@@ -132,7 +132,7 @@ public class ElasticSearchResponseMapper {
             }
 
             previousCompanyName.setAddress(roAddress);
-            previousCompanyName.setDissolvedPreviousName((String) nameHit.getSourceAsMap().get("name"));
+            previousCompanyName.setPreviousCompanyName((String) nameHit.getSourceAsMap().get("name"));
             results.add(previousCompanyName);
         }
     }

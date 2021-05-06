@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class DissolvedPreviousName {
 
     @JsonProperty("previous_company_names")
-    private String dissolvedPreviousName;
+    private String previousCompanyName;
 
     @JsonProperty("company_name")
     private String companyName;
@@ -33,12 +33,12 @@ public class DissolvedPreviousName {
     @JsonProperty("date_of_creation")
     private LocalDate dateOfCreation;
 
-    public String getDissolvedPreviousName() {
-        return dissolvedPreviousName;
+    public String getPreviousCompanyName() {
+        return previousCompanyName;
     }
 
-    public void setDissolvedPreviousName(String dissolvedPreviousName) {
-        this.dissolvedPreviousName = dissolvedPreviousName;
+    public void setPreviousCompanyName(String previousCompanyName) {
+        this.previousCompanyName = previousCompanyName;
     }
 
     public String getCompanyName() {

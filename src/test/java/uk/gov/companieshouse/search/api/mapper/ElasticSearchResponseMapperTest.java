@@ -122,7 +122,7 @@ class ElasticSearchResponseMapperTest {
                 elasticSearchResponseMapper.mapPreviousNames(searchHits);
 
         DissolvedPreviousName previousName = previousNames.get(0);
-        assertEquals(DISSOLVED_PREVIOUS_NAME, previousName.getDissolvedPreviousName());
+        assertEquals(DISSOLVED_PREVIOUS_NAME, previousName.getPreviousCompanyName());
         assertEquals(COMPANY_NAME, previousName.getCompanyName());
         assertEquals(COMPANY_NUMBER, previousName.getCompanyNumber());
         assertEquals(COMPANY_STATUS, previousName.getCompanyStatus());
@@ -142,7 +142,7 @@ class ElasticSearchResponseMapperTest {
                 elasticSearchResponseMapper.mapPreviousNames(searchHits);
 
         DissolvedPreviousName previousName = previousNames.get(0);
-        assertEquals(DISSOLVED_PREVIOUS_NAME, previousName.getDissolvedPreviousName());
+        assertEquals(DISSOLVED_PREVIOUS_NAME, previousName.getPreviousCompanyName());
         assertEquals(COMPANY_NAME, previousName.getCompanyName());
         assertEquals(COMPANY_NUMBER, previousName.getCompanyNumber());
         assertEquals(COMPANY_STATUS, previousName.getCompanyStatus());
@@ -267,7 +267,7 @@ class ElasticSearchResponseMapperTest {
     private List<DissolvedPreviousName> createPreviousCompanyNames() {
         List<DissolvedPreviousName> previousNames = new ArrayList<>();
         DissolvedPreviousName previousName = new DissolvedPreviousName();
-        previousName.setDissolvedPreviousName(PREVIOUS_COMPANY_NAME);
+        previousName.setPreviousCompanyName(PREVIOUS_COMPANY_NAME);
         previousName.setCompanyName(COMPANY_NAME);
         previousName.setCompanyNumber(COMPANY_NUMBER);
         previousName.setCompanyStatus(COMPANY_STATUS);
