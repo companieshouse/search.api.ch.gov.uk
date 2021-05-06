@@ -21,6 +21,7 @@ import java.util.Map;
 public class ElasticSearchResponseMapper {
 
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
+    private static final String POSTAL_CODE_KEY = "postal_code";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
@@ -53,8 +54,8 @@ public class ElasticSearchResponseMapper {
         if(address != null && address.containsKey("locality")) {
             roAddress.setLocality((String) address.get("locality"));
         }
-        if(address != null && address.containsKey("postal_code")) {
-            roAddress.setPostalCode((String) address.get("postal_code"));
+        if(address != null && address.containsKey(POSTAL_CODE_KEY)) {
+            roAddress.setPostalCode((String) address.get(POSTAL_CODE_KEY));
         }
 
         dissolvedCompany.setAddress(roAddress);
@@ -117,8 +118,8 @@ public class ElasticSearchResponseMapper {
             Address roAddress = new Address();
             Map<String, Object> address = (Map<String, Object>) sourceAsMap.get("address");
 
-            if(address != null && address.containsKey("postal_code")) {
-                roAddress.setPostalCode((String) address.get("postal_code"));
+            if(address != null && address.containsKey(POSTAL_CODE_KEY)) {
+                roAddress.setPostalCode((String) address.get(POSTAL_CODE_KEY));
             } else {
                 roAddress = null;
             }
