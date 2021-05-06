@@ -76,15 +76,6 @@ public class ElasticSearchResponseMapper {
         }
     }
 
-    public List<DissolvedPreviousName> mapPreviousNames(SearchHits hits) {
-
-        List<DissolvedPreviousName> results = new ArrayList<>();
-
-        hits.forEach(h -> mapPreviousName(h, results));
-
-        return results;
-    }
-
     public void mapPreviousNamesTopHit(List<DissolvedPreviousName> results, PreviousNamesTopHit topHit) {
         topHit.setPreviousCompanyName(results.get(0).getDissolvedPreviousName());
         topHit.setCompanyName(results.get(0).getCompanyName());
@@ -94,6 +85,15 @@ public class ElasticSearchResponseMapper {
         topHit.setAddress(results.get(0).getAddress());
         topHit.setDateOfCessation(results.get(0).getDateOfCessation());
         topHit.setDateOfCreation(results.get(0).getDateOfCreation());
+    }
+
+    public List<DissolvedPreviousName> mapPreviousNames(SearchHits hits) {
+
+        List<DissolvedPreviousName> results = new ArrayList<>();
+
+        hits.forEach(h -> mapPreviousName(h, results));
+
+        return results;
     }
 
     private void mapPreviousName(SearchHit hit, List<DissolvedPreviousName> results) {
@@ -106,7 +106,7 @@ public class ElasticSearchResponseMapper {
         SearchHits previousNames = innerHits.get("previous_company_names");
         
         for(SearchHit nameHit : previousNames.getHits()) {
-            DissolvedPreviousName previousCompanyName = new DissolvedPreviousName(); 
+            DissolvedPreviousName previousCompanyName = new DissolvedPreviousName();
             previousCompanyName.setCompanyName((String) sourceAsMap.get("company_name"));
             previousCompanyName.setCompanyNumber((String) sourceAsMap.get("company_number"));
             previousCompanyName.setCompanyStatus((String) sourceAsMap.get("company_status"));
@@ -124,7 +124,7 @@ public class ElasticSearchResponseMapper {
             }
 
             previousCompanyName.setAddress(roAddress);
-            previousCompanyName.setDissolvedPreviousName((String)nameHit.getSourceAsMap().get("name"));
+            previousCompanyName.setDissolvedPreviousName((String) nameHit.getSourceAsMap().get("name"));
             results.add(previousCompanyName);
         }
     }
