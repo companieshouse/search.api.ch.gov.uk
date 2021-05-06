@@ -76,7 +76,7 @@ public class DissolvedSearchRequestService {
 
                 DissolvedCompany topHitCompany = elasticSearchResponseMapper.mapDissolvedResponse(bestMatch);
 
-                elasticSearchResponseMapper.mapDissolvedTopHit(topHit, topHitCompany);
+                topHit = elasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany);
 
                 populateSearchResults(requestId, topHit.getCompanyName(), results, topHitCompany,
                     orderedAlphaKeyWithId);
@@ -95,7 +95,7 @@ public class DissolvedSearchRequestService {
         LoggingUtils.getLogger().info("getting dissolved " + searchType + " search results", logMap);
 
         String etag = GenerateEtagUtil.generateEtag();
-        DissolvedTopHit topHit = new DissolvedTopHit();
+        DissolvedTopHit topHit= new DissolvedTopHit();
         List<DissolvedCompany> results = new ArrayList<>();
         String kind = "search#dissolved";
 
@@ -108,7 +108,7 @@ public class DissolvedSearchRequestService {
 
                 DissolvedCompany topHitCompany = elasticSearchResponseMapper.mapDissolvedResponse(hits.getHits()[0]);
 
-                elasticSearchResponseMapper.mapDissolvedTopHit(topHit, topHitCompany);
+                topHit = elasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany);
 
                 hits.forEach(h -> results.add(elasticSearchResponseMapper.mapDissolvedResponse(h)));
             }
@@ -139,7 +139,7 @@ public class DissolvedSearchRequestService {
                 LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
 
                 results = elasticSearchResponseMapper.mapPreviousNames(hits);
-                elasticSearchResponseMapper.mapPreviousNamesTopHit(results, topHit);
+                topHit = elasticSearchResponseMapper.mapPreviousNamesTopHit(results);
 
             }
         } catch (IOException e) {
@@ -147,7 +147,6 @@ public class DissolvedSearchRequestService {
                     logMap);
             throw new SearchException("error occurred reading data for previous names from " + SEARCH_HITS, e);
         }
-
 
         return new DissolvedSearchResults(etag, topHit, results, kind);
     }

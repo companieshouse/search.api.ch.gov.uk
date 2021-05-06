@@ -63,7 +63,9 @@ public class ElasticSearchResponseMapper {
         return dissolvedCompany;
     }
 
-    public void mapDissolvedTopHit(DissolvedTopHit topHit, DissolvedCompany dissolvedCompany) {
+    public DissolvedTopHit mapDissolvedTopHit(DissolvedCompany dissolvedCompany) {
+        DissolvedTopHit topHit = new DissolvedTopHit();
+
         topHit.setCompanyName(dissolvedCompany.getCompanyName());
         topHit.setCompanyNumber(dissolvedCompany.getCompanyNumber());
         topHit.setCompanyStatus(dissolvedCompany.getCompanyStatus());
@@ -75,9 +77,12 @@ public class ElasticSearchResponseMapper {
         if (dissolvedCompany.getPreviousCompanyNames() != null) {
             topHit.setPreviousCompanyNames(dissolvedCompany.getPreviousCompanyNames());
         }
+
+        return topHit;
     }
 
-    public void mapPreviousNamesTopHit(List<DissolvedPreviousName> results, PreviousNamesTopHit topHit) {
+    public PreviousNamesTopHit mapPreviousNamesTopHit(List<DissolvedPreviousName> results) {
+        PreviousNamesTopHit topHit = new PreviousNamesTopHit();
         topHit.setPreviousCompanyName(results.get(0).getDissolvedPreviousName());
         topHit.setCompanyName(results.get(0).getCompanyName());
         topHit.setCompanyNumber(results.get(0).getCompanyNumber());
@@ -86,6 +91,8 @@ public class ElasticSearchResponseMapper {
         topHit.setAddress(results.get(0).getAddress());
         topHit.setDateOfCessation(results.get(0).getDateOfCessation());
         topHit.setDateOfCreation(results.get(0).getDateOfCreation());
+
+        return topHit;
     }
 
     public List<DissolvedPreviousName> mapPreviousNames(SearchHits hits) {

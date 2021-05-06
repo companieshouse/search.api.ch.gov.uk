@@ -36,7 +36,6 @@ class ElasticSearchResponseMapperTest {
     @InjectMocks
     private ElasticSearchResponseMapper elasticSearchResponseMapper;
 
-
     private static final String COMPANY_NAME = "TEST COMPANY";
     private static final String COMPANY_NUMBER = "00000000";
     private static final String COMPANY_STATUS = "dissolved";
@@ -80,20 +79,18 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved top hit successful")
     void mapDissolvedTopHitSuccessful() {
 
-        DissolvedTopHit dissolvedCompany = new DissolvedTopHit();
+        DissolvedTopHit topHit = elasticSearchResponseMapper.mapDissolvedTopHit(createDissolvedCompany());
 
-        elasticSearchResponseMapper.mapDissolvedTopHit(dissolvedCompany, createDissolvedCompany());
+        assertEquals(COMPANY_NAME, topHit.getCompanyName());
+        assertEquals(COMPANY_NUMBER, topHit.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, topHit.getCompanyStatus());
+        assertEquals(KIND, topHit.getKind());
+        assertEquals(DATE_OF_CESSATION, topHit.getDateOfCessation().toString());
+        assertEquals(DATE_OF_CREATION, topHit.getDateOfCreation().toString());
+        assertEquals(LOCALITY, topHit.getAddress().getLocality());
+        assertEquals(POSTCODE, topHit.getAddress().getPostalCode());
 
-        assertEquals(COMPANY_NAME, dissolvedCompany.getCompanyName());
-        assertEquals(COMPANY_NUMBER, dissolvedCompany.getCompanyNumber());
-        assertEquals(COMPANY_STATUS, dissolvedCompany.getCompanyStatus());
-        assertEquals(KIND, dissolvedCompany.getKind());
-        assertEquals(DATE_OF_CESSATION, dissolvedCompany.getDateOfCessation().toString());
-        assertEquals(DATE_OF_CREATION, dissolvedCompany.getDateOfCreation().toString());
-        assertEquals(LOCALITY, dissolvedCompany.getAddress().getLocality());
-        assertEquals(POSTCODE, dissolvedCompany.getAddress().getPostalCode());
-
-        List<PreviousCompanyName> previousCompanyNames = dissolvedCompany.getPreviousCompanyNames();
+        List<PreviousCompanyName> previousCompanyNames = topHit.getPreviousCompanyNames();
         assertEquals(PREVIOUS_COMPANY_NAME, previousCompanyNames.get(0).getName());
         assertEquals(EFFECTIVE_FROM, previousCompanyNames.get(0).getDateOfNameEffectiveness().toString());
         assertEquals(CEASED_ON, previousCompanyNames.get(0).getDateOfNameCessation().toString());
@@ -103,9 +100,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved previous names top hit successful")
     void mapDissolvedPreviousNamesTopHit() {
 
-        PreviousNamesTopHit previousNamesTopHit = new PreviousNamesTopHit();
-
-        elasticSearchResponseMapper.mapPreviousNamesTopHit(createPreviousCompanyNames(), previousNamesTopHit);
+        PreviousNamesTopHit previousNamesTopHit = elasticSearchResponseMapper.mapPreviousNamesTopHit(createPreviousCompanyNames());
 
         assertEquals(COMPANY_NAME, previousNamesTopHit.getCompanyName());
         assertEquals(COMPANY_NUMBER, previousNamesTopHit.getCompanyNumber());
