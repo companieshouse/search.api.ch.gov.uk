@@ -28,7 +28,7 @@ public class DissolvedSearchQueries extends AbstractSearchQuery {
     public QueryBuilder createPreviousNamesBestMatchQuery(String companyName) {
 
         BoolQueryBuilder boolQueryBuilder =
-                QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("previous_company_names.name.doconly", companyName));
+                QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("previous_company_names.short_name.company_name_best_match", companyName));
 
         return QueryBuilders.nestedQuery("previous_company_names", boolQueryBuilder, ScoreMode.Avg);
     }
