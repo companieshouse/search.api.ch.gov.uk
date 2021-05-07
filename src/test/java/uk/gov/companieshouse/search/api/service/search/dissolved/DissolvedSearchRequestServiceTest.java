@@ -579,7 +579,6 @@ class DissolvedSearchRequestServiceTest {
         previousName.setPreviousCompanyName(PREVIOUS_COMPANY_NAME);
         previousName.setCompanyName(COMPANY_NAME);
         previousName.setCompanyNumber(COMPANY_NUMBER);
-        previousName.setCompanyStatus(COMPANY_STATUS);
         previousName.setKind(KIND);
         previousName.setDateOfCessation(LocalDate.parse("19990501", formatter));
         previousName.setDateOfCreation(LocalDate.parse("19890501", formatter));

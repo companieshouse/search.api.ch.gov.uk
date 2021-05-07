@@ -18,9 +18,6 @@ public class DissolvedPreviousName {
     @JsonProperty("company_number")
     private String companyNumber;
 
-    @JsonProperty("company_status")
-    private String companyStatus;
-
     @JsonProperty("kind")
     private String kind;
 
@@ -55,14 +52,6 @@ public class DissolvedPreviousName {
 
     public void setCompanyNumber(String companyNumber) {
         this.companyNumber = companyNumber;
-    }
-
-    public String getCompanyStatus() {
-        return companyStatus;
-    }
-
-    public void setCompanyStatus(String companyStatus) {
-        this.companyStatus = companyStatus;
     }
 
     public String getKind() {

@@ -178,7 +178,6 @@ class ElasticSearchResponseMapperTest {
 
         assertEquals(COMPANY_NAME, previousNamesTopHit.getCompanyName());
         assertEquals(COMPANY_NUMBER, previousNamesTopHit.getCompanyNumber());
-        assertEquals(COMPANY_STATUS, previousNamesTopHit.getCompanyStatus());
         assertEquals(KIND, previousNamesTopHit.getKind());
         assertEquals(DATE_OF_CESSATION, previousNamesTopHit.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousNamesTopHit.getDateOfCreation().toString());
@@ -194,7 +193,6 @@ class ElasticSearchResponseMapperTest {
 
         assertEquals(COMPANY_NAME, previousNamesTopHit.getCompanyName());
         assertEquals(COMPANY_NUMBER, previousNamesTopHit.getCompanyNumber());
-        assertEquals(COMPANY_STATUS, previousNamesTopHit.getCompanyStatus());
         assertEquals(KIND, previousNamesTopHit.getKind());
         assertEquals(DATE_OF_CESSATION, previousNamesTopHit.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousNamesTopHit.getDateOfCreation().toString());
@@ -209,7 +207,6 @@ class ElasticSearchResponseMapperTest {
 
         assertEquals(COMPANY_NAME, previousNamesTopHit.getCompanyName());
         assertEquals(COMPANY_NUMBER, previousNamesTopHit.getCompanyNumber());
-        assertEquals(COMPANY_STATUS, previousNamesTopHit.getCompanyStatus());
         assertEquals(KIND, previousNamesTopHit.getKind());
         assertEquals(DATE_OF_CESSATION, previousNamesTopHit.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousNamesTopHit.getDateOfCreation().toString());
@@ -230,7 +227,6 @@ class ElasticSearchResponseMapperTest {
         assertEquals(DISSOLVED_PREVIOUS_NAME, previousName.getPreviousCompanyName());
         assertEquals(COMPANY_NAME, previousName.getCompanyName());
         assertEquals(COMPANY_NUMBER, previousName.getCompanyNumber());
-        assertEquals(COMPANY_STATUS, previousName.getCompanyStatus());
         assertEquals(KIND, previousName.getKind());
         assertEquals(DATE_OF_CESSATION, previousName.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousName.getDateOfCreation().toString());
@@ -250,7 +246,6 @@ class ElasticSearchResponseMapperTest {
         assertEquals(DISSOLVED_PREVIOUS_NAME, previousName.getPreviousCompanyName());
         assertEquals(COMPANY_NAME, previousName.getCompanyName());
         assertEquals(COMPANY_NUMBER, previousName.getCompanyNumber());
-        assertEquals(COMPANY_STATUS, previousName.getCompanyStatus());
         assertEquals(KIND, previousName.getKind());
         assertEquals(DATE_OF_CESSATION, previousName.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousName.getDateOfCreation().toString());
@@ -269,7 +264,6 @@ class ElasticSearchResponseMapperTest {
         assertEquals(DISSOLVED_PREVIOUS_NAME, previousName.getPreviousCompanyName());
         assertEquals(COMPANY_NAME, previousName.getCompanyName());
         assertEquals(COMPANY_NUMBER, previousName.getCompanyNumber());
-        assertEquals(COMPANY_STATUS, previousName.getCompanyStatus());
         assertEquals(KIND, previousName.getKind());
         assertEquals(DATE_OF_CESSATION, previousName.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousName.getDateOfCreation().toString());
@@ -400,7 +394,6 @@ class ElasticSearchResponseMapperTest {
         previousName.setPreviousCompanyName(PREVIOUS_COMPANY_NAME);
         previousName.setCompanyName(COMPANY_NAME);
         previousName.setCompanyNumber(COMPANY_NUMBER);
-        previousName.setCompanyStatus(COMPANY_STATUS);
         previousName.setKind(KIND);
         previousName.setDateOfCessation(LocalDate.parse("19990501", formatter));
         previousName.setDateOfCreation(LocalDate.parse("19890501", formatter));
