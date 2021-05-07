@@ -99,7 +99,7 @@ class ElasticSearchResponseMapperTest {
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
 
         Address address = dissolvedCompany.getAddress();
-        assertEquals(address.getPostalCode(), POSTCODE);
+        assertEquals(POSTCODE, address.getPostalCode());
         assertNull(address.getLocality());
     }
 
@@ -113,7 +113,7 @@ class ElasticSearchResponseMapperTest {
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
 
         Address address = dissolvedCompany.getAddress();
-        assertEquals(address.getLocality(), LOCALITY);
+        assertEquals(LOCALITY, address.getLocality());
         assertNull(address.getPostalCode());
     }
 
@@ -221,7 +221,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved previous names successful")
     void mapDissolvedPreviousNames() {
 
-        SearchHits searchHits = createSearchHitsWithInnerHits(true);
+        SearchHits searchHits = createSearchHitsWithInnerHits(true, true, true, false);
 
         List<DissolvedPreviousName> previousNames =
                 elasticSearchResponseMapper.mapPreviousNames(searchHits);
@@ -241,7 +241,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved previous names successful no address object")
     void mapDissolvedPreviousNamesNoAddress() {
 
-        SearchHits searchHits = createSearchHitsWithInnerHits(false);
+        SearchHits searchHits = createSearchHitsWithInnerHits(false, false, false, false);
 
         List<DissolvedPreviousName> previousNames =
                 elasticSearchResponseMapper.mapPreviousNames(searchHits);
@@ -254,6 +254,26 @@ class ElasticSearchResponseMapperTest {
         assertEquals(KIND, previousName.getKind());
         assertEquals(DATE_OF_CESSATION, previousName.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousName.getDateOfCreation().toString());
+    }
+
+    @Test
+    @DisplayName("Map dissolved previous names successful no postal code")
+    void mapDissolvedPreviousNamesNoPostalCode() {
+
+        SearchHits searchHits = createSearchHitsWithInnerHits(true, false, false, false);
+
+        List<DissolvedPreviousName> previousNames =
+                elasticSearchResponseMapper.mapPreviousNames(searchHits);
+
+        DissolvedPreviousName previousName = previousNames.get(0);
+        assertEquals(DISSOLVED_PREVIOUS_NAME, previousName.getPreviousCompanyName());
+        assertEquals(COMPANY_NAME, previousName.getCompanyName());
+        assertEquals(COMPANY_NUMBER, previousName.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, previousName.getCompanyStatus());
+        assertEquals(KIND, previousName.getKind());
+        assertEquals(DATE_OF_CESSATION, previousName.getDateOfCessation().toString());
+        assertEquals(DATE_OF_CREATION, previousName.getDateOfCreation().toString());
+        assertNull(previousName.getAddress());
     }
 
     private SearchHits createSearchHits(boolean includeAddress,
@@ -287,9 +307,12 @@ class ElasticSearchResponseMapperTest {
         return new SearchHits( new SearchHit[] { hit }, totalHits, 10 );
     }
 
-    private SearchHits createSearchHitsWithInnerHits(boolean includePostcode) {
+    private SearchHits createSearchHitsWithInnerHits(boolean includeAddress,
+                                                     boolean includeLocality,
+                                                     boolean includePostCode,
+                                                     boolean includePreviousCompanyNames) {
 
-        SearchHits searchHits = createSearchHits(true, true, includePostcode, false);
+        SearchHits searchHits = createSearchHits(includeAddress, includeLocality, includePostCode, includePreviousCompanyNames);
         SearchHit searchHit = searchHits.getAt(0);
 
         Map<String, SearchHits> innerHits = new HashMap<>();
