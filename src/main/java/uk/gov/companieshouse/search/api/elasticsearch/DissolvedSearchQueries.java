@@ -2,6 +2,7 @@ package uk.gov.companieshouse.search.api.elasticsearch;
 
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.InnerHitBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ public class DissolvedSearchQueries extends AbstractSearchQuery {
         BoolQueryBuilder boolQueryBuilder =
                 QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("previous_company_names.name.doconly", companyName));
 
-        return QueryBuilders.nestedQuery("previous_company_names", boolQueryBuilder, ScoreMode.Avg);
+        return QueryBuilders.nestedQuery("previous_company_names", boolQueryBuilder, ScoreMode.Avg)
+                .innerHit(new InnerHitBuilder());
     }
 }

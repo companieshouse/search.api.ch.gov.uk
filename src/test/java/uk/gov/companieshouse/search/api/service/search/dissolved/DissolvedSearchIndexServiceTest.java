@@ -124,7 +124,7 @@ class DissolvedSearchIndexServiceTest {
     @Test
     @DisplayName("Test best match for previous company names on a dissolved search request returns successfully")
     void searchBestMatchPreviousNamesDissolvedRequestSuccessful() throws Exception {
-        when(mockDissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH))
+        when(mockDissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH))
                 .thenReturn(createSearchResults(true));
         DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH);
 
@@ -135,7 +135,7 @@ class DissolvedSearchIndexServiceTest {
     @Test
     @DisplayName("Test best match for previous company names on a dissolved search returns an error")
     void searchBestMatchPreviousNamesDissolvedRequestReturnsError() throws Exception {
-        when(mockDissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH))
+        when(mockDissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH))
                 .thenThrow(SearchException.class);
 
         DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH);
@@ -147,7 +147,7 @@ class DissolvedSearchIndexServiceTest {
     @Test
     @DisplayName("Test best match for previous company names on a dissolved search returns no results")
     void searchBestMatchPreviousNamesDissolvedRequestReturnsNoResults() throws Exception {
-        when(mockDissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH))
+        when(mockDissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH))
                 .thenReturn(createSearchResults(false));
         DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH);
 
