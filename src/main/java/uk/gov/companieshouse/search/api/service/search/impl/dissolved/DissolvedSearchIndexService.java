@@ -23,6 +23,7 @@ public class DissolvedSearchIndexService {
     private static final String SEARCHING_FOR_COMPANY_INFO = "searching for company";
     private static final String STANDARD_ERROR_MESSAGE = "An error occurred while trying to search for ";
     private static final String NO_RESULTS_FOUND = "No results were returned while searching for ";
+    private static final String BEST_MATCH_SEARCH_TYPE = "best-match";
 
     public DissolvedResponseObject searchAlphabetical(String companyName, String requestId) {
         Map<String, Object> logMap = getLogMap(companyName, requestId, DISSOLVED_SEARCH_ALPHABETICAL);
@@ -52,7 +53,11 @@ public class DissolvedSearchIndexService {
 
         DissolvedSearchResults searchResults;
         try {
-            searchResults = dissolvedSearchRequestService.getBestMatchSearchResults(companyName, requestId, searchType);
+            if (searchType.equals(BEST_MATCH_SEARCH_TYPE)) {
+                searchResults = dissolvedSearchRequestService.getBestMatchSearchResults(companyName, requestId, searchType);
+            } else {
+                searchResults = dissolvedSearchRequestService.getPreviousNamesResults(companyName, requestId, searchType);
+            }
         } catch (SearchException e) {
             LoggingUtils.getLogger().error(STANDARD_ERROR_MESSAGE +
                             "best matches on a " + searchType + " dissolved company: ",

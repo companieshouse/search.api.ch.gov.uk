@@ -4,6 +4,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.environment.EnvironmentReader;
@@ -62,6 +63,9 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
             sourceBuilder.query(searchQueries.createBestMatchQuery(companyName));
         }
         else {
+            String[] includes = {"company_name", "company_number", "date_of_creation", "date_of_cessation", "address.postal_code"};
+
+            sourceBuilder.fetchSource(new FetchSourceContext(true, includes, null));
             sourceBuilder.query(searchQueries.createPreviousNamesBestMatchQuery(companyName));
         }
 
