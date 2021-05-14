@@ -155,6 +155,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         companyItems.setCorporateName((String) (items.get("corporate_name")));
         companyItems.setCompanyNumber((String) (items.get("company_number")));
         companyItems.setCompanyStatus((String) (items.get("company_status")));
+        companyItems.setOrderedAlphaKey((String) items.get("ordered_alpha_key"));
 
         companyLinks.setSelf((String) (links.get("self")));
 
