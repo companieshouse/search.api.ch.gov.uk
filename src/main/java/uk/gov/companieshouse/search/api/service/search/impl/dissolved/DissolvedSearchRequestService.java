@@ -90,7 +90,10 @@ public class DissolvedSearchRequestService {
         return new DissolvedSearchResults(etag, topHit, results, kind);
     }
 
-    public DissolvedSearchResults getBestMatchSearchResults(String companyName, String requestId, String searchType) throws SearchException {
+    public DissolvedSearchResults getBestMatchSearchResults(String companyName,
+                                                            String requestId,
+                                                            String searchType,
+                                                            Integer startIndex) throws SearchException {
         Map<String, Object> logMap = getLogMap(requestId, companyName);
         LoggingUtils.getLogger().info("getting dissolved " + searchType + " search results", logMap);
 
@@ -101,7 +104,7 @@ public class DissolvedSearchRequestService {
 
         try {
 
-            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType);
+            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType, startIndex);
 
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
@@ -121,8 +124,10 @@ public class DissolvedSearchRequestService {
         return new DissolvedSearchResults(etag, topHit, results, kind);
     }
 
-    public DissolvedSearchResults<DissolvedPreviousName> getPreviousNamesResults(String companyName, String requestId,
-                                                                               String searchType) throws SearchException {
+    public DissolvedSearchResults<DissolvedPreviousName> getPreviousNamesResults(String companyName,
+                                                                                 String requestId,
+                                                                                 String searchType,
+                                                                                 Integer startIndex) throws SearchException {
 
         Map<String, Object> logMap = getLogMap(requestId, companyName);
         LoggingUtils.getLogger().info("getting dissolved " + searchType + " search results", logMap);
@@ -133,7 +138,7 @@ public class DissolvedSearchRequestService {
         String kind = "search#previous-name-dissolved";
 
         try {
-            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType);
+            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType, startIndex);
 
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
