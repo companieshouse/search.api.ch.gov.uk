@@ -75,6 +75,7 @@ class DissolvedSearchRequestServiceTest {
     private static final String PREVIOUS_NAME_KIND = "search#previous-name-dissolved";
     private static final String BEST_MATCH_KIND = "search#dissolved";
     private static final String DISSOLVED_ALPHABETICAL_KIND = "search#alphabetical-dissolved";
+    private static final Integer START_INDEX = 0;
 
 
     @Test
@@ -371,7 +372,7 @@ class DissolvedSearchRequestServiceTest {
         DissolvedCompany topHitCompany = createDissolvedCompany();
         DissolvedTopHit topHit = createDissolvedTopHit();
 
-        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID,SEARCH_TYPE_BEST_MATCH)).
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID,SEARCH_TYPE_BEST_MATCH, START_INDEX)).
             thenReturn(createSearchHits(true,true,true, true));
 
         when(mockElasticSearchResponseMapper.mapDissolvedResponse(any(SearchHit.class))).thenReturn(topHitCompany);
@@ -379,7 +380,7 @@ class DissolvedSearchRequestServiceTest {
         when(mockElasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany)).thenReturn(topHit);
 
         DissolvedSearchResults dissolvedSearchResults =
-                dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH);
+                dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX);
 
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
         assertEquals(BEST_MATCH_KIND, dissolvedSearchResults.getKind());
@@ -389,11 +390,11 @@ class DissolvedSearchRequestServiceTest {
     @DisplayName("Test get best match search request throws exception")
     void testBestMatchThrowException() throws Exception{
 
-        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH))
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX))
             .thenThrow(IOException.class);
 
         assertThrows(SearchException.class, () ->
-            dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH));
+            dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX));
     }
 
     @Test
@@ -403,7 +404,7 @@ class DissolvedSearchRequestServiceTest {
         List<DissolvedPreviousName> results = createPreviousCompanyNames();
         PreviousNamesTopHit topHit = createPreviousNamesTopHit();
 
-        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH)).
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX)).
                 thenReturn(createSearchHits(true,true,true, true));
 
         when(mockElasticSearchResponseMapper.mapPreviousNames(any(SearchHits.class))).thenReturn(results);
@@ -411,7 +412,7 @@ class DissolvedSearchRequestServiceTest {
         when(mockElasticSearchResponseMapper.mapPreviousNamesTopHit(results)).thenReturn(topHit);
 
         DissolvedSearchResults dissolvedSearchResults =
-                dissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH);
+                dissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX);
 
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
         assertEquals(PREVIOUS_NAME_KIND, dissolvedSearchResults.getKind());
@@ -421,22 +422,22 @@ class DissolvedSearchRequestServiceTest {
     @DisplayName("Test get previous names best match search request throws exception")
     void testPreviousNamesBestMatchThrowException() throws Exception{
 
-        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH))
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX))
                 .thenThrow(IOException.class);
 
         assertThrows(SearchException.class, () ->
-                dissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH));
+                dissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX));
     }
 
     @Test
     @DisplayName("Test get best match previous names search request throws exception")
     void testBestMatchPreviousNamesThrowException() throws Exception{
 
-        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH))
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX))
                 .thenThrow(IOException.class);
 
         assertThrows(SearchException.class, () ->
-                dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH));
+                dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX));
     }
 
     @Test

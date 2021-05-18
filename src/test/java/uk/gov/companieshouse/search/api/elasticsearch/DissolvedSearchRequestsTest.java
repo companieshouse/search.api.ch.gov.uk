@@ -44,6 +44,7 @@ class DissolvedSearchRequestsTest {
     private EnvironmentReader mockEnvironmentReader;
 
     private static final String ENV_READER_RESULT = "1";
+    private static final Integer START_INDEX = 0;
 
     @Test
     @DisplayName("Get best match response")
@@ -125,7 +126,7 @@ class DissolvedSearchRequestsTest {
         when(mockSearchRestClient.search(any(SearchRequest.class))).thenReturn(createSearchResponse());
 
         SearchHits searchHits = dissolvedSearchRequests
-            .getDissolved("orderedAlpha", "requestId", "searchType");
+            .getDissolved("orderedAlpha", "requestId", "searchType", START_INDEX);
 
         assertNotNull(searchHits);
         assertEquals(1, searchHits.getTotalHits().value);
@@ -139,7 +140,7 @@ class DissolvedSearchRequestsTest {
         when(mockSearchRestClient.search(any(SearchRequest.class))).thenReturn(createSearchResponse());
 
         SearchHits searchHits = dissolvedSearchRequests
-                .getDissolved("companyName", "requestId", "searchType");
+                .getDissolved("companyName", "requestId", "searchType", START_INDEX);
 
         assertNotNull(searchHits);
         assertEquals(1, searchHits.getTotalHits().value);
