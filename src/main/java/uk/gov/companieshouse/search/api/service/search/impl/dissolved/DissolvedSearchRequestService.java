@@ -101,10 +101,12 @@ public class DissolvedSearchRequestService {
         DissolvedTopHit topHit= new DissolvedTopHit();
         List<DissolvedCompany> results = new ArrayList<>();
         String kind = "search#dissolved";
+        long numberOfHits;
 
         try {
 
             SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType, startIndex);
+            numberOfHits = hits.getTotalHits().value;
 
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
@@ -121,7 +123,11 @@ public class DissolvedSearchRequestService {
             throw new SearchException("error occurred reading data for best match from " + SEARCH_HITS, e);
         }
 
-        return new DissolvedSearchResults(etag, topHit, results, kind);
+        DissolvedSearchResults<DissolvedCompany> dissolvedSearchResults =
+                new DissolvedSearchResults<>(etag, topHit, results, kind);
+        dissolvedSearchResults.setHits(numberOfHits);
+
+        return dissolvedSearchResults;
     }
 
     public DissolvedSearchResults<DissolvedPreviousName> getPreviousNamesResults(String companyName,
