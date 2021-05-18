@@ -142,9 +142,11 @@ public class DissolvedSearchRequestService {
         PreviousNamesTopHit topHit = new PreviousNamesTopHit();
         List<DissolvedPreviousName> results = new ArrayList<>();
         String kind = "search#previous-name-dissolved";
+        long numberOfHits;
 
         try {
             SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType, startIndex);
+            numberOfHits = hits.getTotalHits().value;
 
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
@@ -159,7 +161,11 @@ public class DissolvedSearchRequestService {
             throw new SearchException("error occurred reading data for previous names from " + SEARCH_HITS, e);
         }
 
-        return new DissolvedSearchResults<>(etag, topHit, results, kind);
+        DissolvedSearchResults<DissolvedPreviousName> dissolvedSearchResults =
+                new DissolvedSearchResults<>(etag, topHit, results, kind);
+        dissolvedSearchResults.setHits(numberOfHits);
+
+        return dissolvedSearchResults;
     }
 
     private SearchHits getSearchHits(String orderedAlphakey, String requestId) throws IOException {
