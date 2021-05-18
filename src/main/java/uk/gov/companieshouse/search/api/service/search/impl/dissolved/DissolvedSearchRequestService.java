@@ -90,7 +90,7 @@ public class DissolvedSearchRequestService {
         return new DissolvedSearchResults(etag, topHit, results, kind);
     }
 
-    public DissolvedSearchResults getBestMatchSearchResults(String companyName,
+    public DissolvedSearchResults<DissolvedCompany> getBestMatchSearchResults(String companyName,
                                                             String requestId,
                                                             String searchType,
                                                             Integer startIndex) throws SearchException {
