@@ -48,16 +48,12 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 
-
-
-
-
-    public ResponseObject searchAfter(String searchAfter, Integer size) {
+    public ResponseObject pagingNext(String searchAfter, Integer size) {
         SearchResults searchResults;
 
         try {
 
-            searchResults = searchRequestService.getSearchAfter(searchAfter, size);
+            searchResults = searchRequestService.pagingNext(searchAfter, size);
         } catch (SearchException e) {
 
             return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
@@ -70,23 +66,22 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 
-//    public ResponseObject searchBefore(String corporateName, String requestId) {
-//
-//        SearchResults searchResults;
-//
-//        try {
-//            searchResults = searchRequestService.getSearchBefore(corporateName, requestId);
-//        } catch (SearchException e) {
-//
-//            return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
-//        }
-//
-//        if(searchResults.getResults() != null) {
-//
-//            return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
-//        }
-//
-//        return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
-//    }
+    public ResponseObject pagingPrevious(String searchBefore, Integer size) {
+        SearchResults searchResults;
+
+        try {
+
+            searchResults = searchRequestService.pagingPrevious(searchBefore, size);
+        } catch (SearchException e) {
+
+            return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
+        }
+
+        if(searchResults.getResults() != null) {
+            return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+        }
+
+        return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
+    }
 }
 

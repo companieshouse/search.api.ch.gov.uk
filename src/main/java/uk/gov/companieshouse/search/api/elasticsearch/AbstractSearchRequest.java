@@ -116,6 +116,24 @@ public abstract class AbstractSearchRequest {
         return searchResponse.getHits();
     }
 
+    public SearchHits searchBefore(String searchBefore, Integer size) throws IOException {
+
+
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.indices(environmentReader.getMandatoryString(getIndex()));
+
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.size(size);
+        sourceBuilder.query(QueryBuilders.matchAllQuery());
+        sourceBuilder.searchAfter(new Object[]{searchBefore});
+        sourceBuilder.sort(ORDERED_ALPHA_KEY_WITH_ID, SortOrder.DESC);
+
+        searchRequest.source(sourceBuilder);
+
+        SearchResponse searchResponse = getRestClientService().search(searchRequest);
+        return searchResponse.getHits();
+    }
+
     public SearchHits getDescendingResultsResponse(String requestId,
         String orderedAlphakeyWithId,
         String topHitCompanyName) throws IOException {

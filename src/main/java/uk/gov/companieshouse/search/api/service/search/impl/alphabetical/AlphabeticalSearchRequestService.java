@@ -84,23 +84,14 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         return new SearchResults("", topHitCompanyName, results);
     }
 
-
-
-
-
-
-    public SearchResults getSearchAfter(String searchAfterTerm, Integer size) throws SearchException {
+    public SearchResults pagingNext(String searchAfterTerm, Integer size) throws SearchException {
 
         List<Company> results = new ArrayList<>();
 
         try {
-
             SearchHits hits = alphabeticalSearchRequests.searchAfter(searchAfterTerm, size);
 
             hits.forEach(h -> results.add(getCompany(h)));
-
-
-
         } catch (IOException e) {
 
             throw new SearchException("error occurred reading data for highest match from " +
@@ -109,13 +100,24 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         return new SearchResults("", "topHitCompanyName", results);
     }
 
+    public SearchResults pagingPrevious(String searchBeforeTerm, Integer size) throws SearchException {
 
+        List<Company> results = new ArrayList<>();
 
+        try {
+            SearchHits hits = alphabeticalSearchRequests.searchBefore(searchBeforeTerm, size);
 
+            hits.forEach(h -> results.add(getCompany(h)));
 
+            Collections.reverse(results);
 
+        } catch (IOException e) {
 
-
+            throw new SearchException("error occurred reading data for highest match from " +
+                    "searchHits", e);
+        }
+        return new SearchResults("", "topHitCompanyName", results);
+    }
 
     public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphakey,
                                             String requestId) throws IOException {

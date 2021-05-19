@@ -45,15 +45,15 @@ public class AlphabeticalSearchController {
 
         if (searchAfter != null) {
             ResponseObject responseObject = searchIndexService
-                    .searchAfter(searchAfter, size);
+                    .pagingNext(searchAfter, size);
 
             return apiToResponseMapper.map(responseObject);
         }
 
-//        if (searchBefore != null) {
-//            ResponseObject responseObject = searchIndexService
-//                    .searchBefore(searchAfter, size, requestId);
-//        }
+        if (searchBefore != null) {
+            ResponseObject responseObject = searchIndexService
+                    .pagingPrevious(searchAfter, size);
+        }
 
         ResponseObject responseObject = searchIndexService
             .search(companyName, requestId);
