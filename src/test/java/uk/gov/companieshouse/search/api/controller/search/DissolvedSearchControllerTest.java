@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
+import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchIndexService;
 

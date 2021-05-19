@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
-import uk.gov.companieshouse.search.api.model.response.ResponseObject;
+import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
 
 @RestController
@@ -40,7 +40,7 @@ public class AlphabeticalSearchController {
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
         LoggingUtils.getLogger().info("Search request received", logMap);
         
-        ResponseObject responseObject = searchIndexService
+        DissolvedResponseObject responseObject = searchIndexService
             .search(companyName, requestId);
 
         return apiToResponseMapper.map(responseObject);

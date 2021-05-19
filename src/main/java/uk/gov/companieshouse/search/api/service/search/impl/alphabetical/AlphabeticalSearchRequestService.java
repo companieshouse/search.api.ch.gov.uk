@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
-import uk.gov.companieshouse.search.api.model.SearchResults;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Company;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Items;
-import uk.gov.companieshouse.search.api.model.esdatamodel.company.Links;
+import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
+import uk.gov.companieshouse.search.api.model.TopHit;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
@@ -37,7 +37,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
      * {@inheritDoc}
      */
     @Override
-    public SearchResults getAlphabeticalSearchResults(String corporateName, String requestId) throws SearchException {
+    public DissolvedSearchResults getAlphabeticalSearchResults(String corporateName, String requestId) throws SearchException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, corporateName);
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
@@ -45,8 +45,10 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         LoggingUtils.getLogger().info("Performing search request", logMap);
 
         String orderedAlphakey = "";
-        String topHitCompanyName = "";
+        TopHit topHitCompany = new TopHit();
+        
         List<Company> results = new ArrayList<>();
+        String kind = "search#alphabetical";
 
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(corporateName);
         if (alphaKeyResponse != null) {
@@ -71,17 +73,20 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 orderedAlphakeyWithId = getOrderedAlphaKeyWithId(hits.getHits()[0]);
                 topHit = hits.getHits()[0];
 
-                Company topHitCompany = getCompany(topHit);
-                topHitCompanyName = topHitCompany.getItems().getCorporateName();
+                Company company = getCompany(topHit);
+                topHitCompany.setCompanyName(company.getCompanyName());
+                topHitCompany.setCompanyNumber(company.getCompanyNumber());
+                topHitCompany.setCompanyStatus(company.getCompanyStatus());
+                topHitCompany.setKind(company.getKind());
 
-                populateSearchResults(requestId, topHitCompanyName, results, topHitCompany, orderedAlphakeyWithId);
+                populateSearchResults(requestId, company.getCompanyName(), results, company, orderedAlphakeyWithId);
             }
         } catch (IOException e) {
             LoggingUtils.getLogger().error("failed to map highest map to company object", logMap);
             throw new SearchException("error occurred reading data for highest match from " +
                 "searchHits", e);
         }
-        return new SearchResults("", topHitCompanyName, results);
+        return new DissolvedSearchResults("", topHitCompany, results, kind);
     }
 
 
@@ -149,20 +154,18 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         Map<String, Object> links = (Map<String, Object>) sourceAsMap.get("links");
 
         Company company = new Company();
-        Items companyItems = new Items();
         Links companyLinks = new Links();
 
-        companyItems.setCorporateName((String) (items.get("corporate_name")));
-        companyItems.setCompanyNumber((String) (items.get("company_number")));
-        companyItems.setCompanyStatus((String) (items.get("company_status")));
-        companyItems.setOrderedAlphaKey((String) items.get("ordered_alpha_key"));
+        company.setCompanyName((String) (items.get("corporate_name")));
+        company.setCompanyNumber((String) (items.get("company_number")));
+        company.setCompanyStatus((String) (items.get("company_status")));
+        company.setOrderedAlphaKey((String) items.get("ordered_alpha_key"));
 
         companyLinks.setSelf((String) (links.get("self")));
-
-        company.setId((String) sourceAsMap.get("ID"));
-        company.setCompanyType((String) sourceAsMap.get("company_type"));
-        company.setItems(companyItems);
         company.setLinks(companyLinks);
+
+        // company.setId((String) sourceAsMap.get("ID"));
+        company.setCompanyType((String) sourceAsMap.get("company_type"));
 
         return company;
     }
