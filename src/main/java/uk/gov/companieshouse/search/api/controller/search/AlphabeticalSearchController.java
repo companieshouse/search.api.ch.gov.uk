@@ -52,7 +52,9 @@ public class AlphabeticalSearchController {
 
         if (searchBefore != null) {
             ResponseObject responseObject = searchIndexService
-                    .pagingPrevious(searchAfter, size);
+                    .pagingPrevious(searchBefore, size);
+
+            return apiToResponseMapper.map(responseObject);
         }
 
         ResponseObject responseObject = searchIndexService
