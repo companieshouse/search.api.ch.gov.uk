@@ -189,7 +189,7 @@ public class DissolvedSearchRequestService {
                                        DissolvedCompany topHitCompany,
                                        String orderedAlphaKeyWithId) throws IOException {
         SearchHits hits;
-        hits = dissolvedSearchRequests.getAboveResultsResponse(requestId, orderedAlphaKeyWithId, topHitCompanyName);
+        hits = dissolvedSearchRequests.getAboveResultsResponse(requestId, orderedAlphaKeyWithId, topHitCompanyName, 10);
         hits.forEach(h -> results.add(elasticSearchResponseMapper.mapDissolvedResponse(h)));
 
         Collections.reverse(results);
@@ -198,8 +198,8 @@ public class DissolvedSearchRequestService {
         results.add(topHitCompany);
 
         hits = dissolvedSearchRequests.getDescendingResultsResponse(requestId, orderedAlphaKeyWithId,
-            topHitCompanyName);
-
+            topHitCompanyName, 10);
+// TODO refactor this like alphabetical search
         hits.forEach(h -> results.add(elasticSearchResponseMapper.mapDissolvedResponse(h)));
     }
 

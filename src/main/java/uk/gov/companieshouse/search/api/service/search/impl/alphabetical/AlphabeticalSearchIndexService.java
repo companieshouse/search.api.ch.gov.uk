@@ -23,8 +23,9 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
      * {@inheritDoc}
      */
     @Override
-    public ResponseObject search(String corporateName, String requestId) {
-        
+    public ResponseObject search(String corporateName, String searchBefore, String searchAfter, Integer size,
+            String requestId) {
+
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, corporateName);
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
@@ -33,13 +34,14 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
 
         try {
             LoggingUtils.getLogger().info("Search started ", logMap);
-            searchResults = searchRequestService.getAlphabeticalSearchResults(corporateName, requestId);
+            searchResults = searchRequestService.getAlphabeticalSearchResults(corporateName, searchBefore, searchAfter,
+                    size, requestId);
         } catch (SearchException e) {
             LoggingUtils.getLogger().error("SearchException when searching for company", logMap);
             return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
 
-        if(searchResults.getResults() != null) {
+        if (searchResults.getResults() != null) {
             LoggingUtils.getLogger().info("Search successful", logMap);
             return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
         }
@@ -47,5 +49,9 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         LoggingUtils.getLogger().info("No results found", logMap);
         return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
-}
 
+    @Override
+    public ResponseObject search(String corporateName, String requestId) {
+        return search(corporateName, null, null, null, requestId);
+    }
+}

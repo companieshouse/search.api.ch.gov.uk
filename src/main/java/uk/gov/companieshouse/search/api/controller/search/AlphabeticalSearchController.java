@@ -23,6 +23,9 @@ public class AlphabeticalSearchController {
 
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
     private static final String COMPANY_NAME_QUERY_PARAM = "q";
+    private static final String SEARCH_BEFORE_PARAM = "search_before";
+    private static final String SEARCH_AFTER_PARAM = "search_after";
+    private static final String SIZE_PARAM = "size";
 
     @Autowired
     private AlphabeticalSearchIndexService searchIndexService;
@@ -33,6 +36,9 @@ public class AlphabeticalSearchController {
     @GetMapping("/companies")
     @ResponseBody
     public ResponseEntity searchByCorporateName(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
+                                                @RequestParam(name = SEARCH_BEFORE_PARAM, required=false) String searchBefore,
+                                                @RequestParam(name = SEARCH_AFTER_PARAM, required=false) String searchAfter,
+                                                @RequestParam(name = SIZE_PARAM, required=false) Integer size,
                                                 @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
@@ -41,7 +47,7 @@ public class AlphabeticalSearchController {
         LoggingUtils.getLogger().info("Search request received", logMap);
         
         ResponseObject responseObject = searchIndexService
-            .search(companyName, requestId);
+            .search(companyName, searchBefore, searchAfter, size, requestId);
 
         return apiToResponseMapper.map(responseObject);
     }

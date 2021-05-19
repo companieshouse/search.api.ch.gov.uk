@@ -44,6 +44,7 @@ class DissolvedSearchRequestsTest {
     private EnvironmentReader mockEnvironmentReader;
 
     private static final String ENV_READER_RESULT = "1";
+    private static final Integer SIZE = 10;
 
     @Test
     @DisplayName("Get best match response")
@@ -96,7 +97,7 @@ class DissolvedSearchRequestsTest {
 
         SearchHits searchHits = dissolvedSearchRequests
                 .getAboveResultsResponse("requestId",
-                        "orderedAlpha", "topHit");
+                        "orderedAlpha", "topHit", SIZE);
 
         assertNotNull(searchHits);
         assertEquals(1, searchHits.getTotalHits().value);
@@ -111,7 +112,7 @@ class DissolvedSearchRequestsTest {
 
         SearchHits searchHits = dissolvedSearchRequests
                 .getDescendingResultsResponse("requestId",
-                        "orderedAlpha", "topHit");
+                        "orderedAlpha", "topHit", SIZE);
 
         assertNotNull(searchHits);
         assertEquals(1, searchHits.getTotalHits().value);

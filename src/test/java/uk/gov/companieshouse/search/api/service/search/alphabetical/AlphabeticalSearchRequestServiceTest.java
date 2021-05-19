@@ -46,6 +46,7 @@ class AlphabeticalSearchRequestServiceTest {
     private static final String ORDERED_ALPHA_KEY = "orderedAlphaKey";
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final String REQUEST_ID = "requestId";
+    private static final Integer SIZE = 10;
 
     @Test
     @DisplayName("Test search request returns results successfully with best match query")
@@ -58,11 +59,11 @@ class AlphabeticalSearchRequestServiceTest {
             .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, SIZE))
             .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, SIZE))
             .thenReturn(createSearchHits());
 
         SearchResults searchResults =
@@ -87,11 +88,11 @@ class AlphabeticalSearchRequestServiceTest {
             .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, SIZE))
             .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, SIZE))
             .thenReturn(createSearchHits());
 
         SearchResults searchResults =
@@ -119,11 +120,11 @@ class AlphabeticalSearchRequestServiceTest {
             .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, SIZE))
             .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT))
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, SIZE))
             .thenReturn(createSearchHits());
 
         SearchResults searchResults =

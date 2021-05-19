@@ -75,6 +75,7 @@ class DissolvedSearchRequestServiceTest {
     private static final String PREVIOUS_NAME_KIND = "search#previous-name-dissolved";
     private static final String BEST_MATCH_KIND = "search#dissolved";
     private static final String DISSOLVED_ALPHABETICAL_KIND = "search#alphabetical-dissolved";
+    private static final Integer SIZE = 10;
 
 
     @Test
@@ -96,11 +97,11 @@ class DissolvedSearchRequestServiceTest {
         when(mockElasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany)).thenReturn(topHit);
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
             .thenReturn(searchHits);
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
             .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =
@@ -131,11 +132,11 @@ class DissolvedSearchRequestServiceTest {
         when(mockElasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany)).thenReturn(topHit);
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
-                ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+                ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
                 .thenReturn(searchHits);
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
-                ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+                ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
                 .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =
@@ -169,11 +170,11 @@ class DissolvedSearchRequestServiceTest {
         when(mockElasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany)).thenReturn(topHit);
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
             .thenReturn(searchHits);
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
             .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =
@@ -211,11 +212,11 @@ class DissolvedSearchRequestServiceTest {
         when(mockElasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany)).thenReturn(topHit);
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
             .thenReturn(searchHits);
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
             .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =
@@ -252,11 +253,11 @@ class DissolvedSearchRequestServiceTest {
         when(mockElasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany)).thenReturn(topHit);
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
             .thenReturn(searchHits);
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
             .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =
@@ -293,11 +294,11 @@ class DissolvedSearchRequestServiceTest {
         when(mockElasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany)).thenReturn(topHit);
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
             .thenReturn(searchHits);
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
             .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =
@@ -334,11 +335,11 @@ class DissolvedSearchRequestServiceTest {
         when(mockElasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany)).thenReturn(topHit);
 
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
             .thenReturn(searchHits);
 
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME))
+            ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, SIZE))
             .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =

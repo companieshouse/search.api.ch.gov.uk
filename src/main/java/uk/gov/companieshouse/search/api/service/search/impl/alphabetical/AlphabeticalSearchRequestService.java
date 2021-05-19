@@ -33,14 +33,24 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final int FALLBACK_QUERY_LIMIT = 25;
 
+    @Override
+    public SearchResults getAlphabeticalSearchResults(String corporateName, String requestId) throws SearchException {
+        return getAlphabeticalSearchResults(corporateName, null, null, null, requestId);
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public SearchResults getAlphabeticalSearchResults(String corporateName, String requestId) throws SearchException {
+    public SearchResults getAlphabeticalSearchResults(String corporateName, String searchBefore, String searchAfter,
+            Integer size, String requestId) throws SearchException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, corporateName);
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
+        // TODO fix the logging properly
+        logMap.put("search_before", searchBefore);
+        logMap.put("after", searchAfter);
+        logMap.put("search_before", size);
 
         LoggingUtils.getLogger().info("Performing search request", logMap);
 
@@ -55,7 +65,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         }
 
         try {
-            SearchHits hits =  getSearchHits(orderedAlphakey, requestId);
+            SearchHits hits = getSearchHits(orderedAlphakey, requestId);
 
             if (hits.getTotalHits().value == 0) {
                 LoggingUtils.getLogger().info("A result was not found, reducing search term to find result", logMap);
@@ -74,19 +84,26 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 Company topHitCompany = getCompany(topHit);
                 topHitCompanyName = topHitCompany.getItems().getCorporateName();
 
-                populateSearchResults(requestId, topHitCompanyName, results, topHitCompany, orderedAlphakeyWithId);
+                logMap.remove("message");
+                if (searchBefore == null && searchAfter == null) {
+                    results = populateAboveResults(requestId, topHitCompanyName, orderedAlphakeyWithId, size);
+                    results.add(topHitCompany);
+                    results.addAll(populateBelowResults(requestId, topHitCompanyName, orderedAlphakeyWithId, size));
+                } else if(searchAfter != null){
+                    results.addAll(populateBelowResults(requestId, topHitCompanyName, searchAfter, size));
+                } else {
+                    results.addAll(populateAboveResults(requestId, topHitCompanyName, searchBefore, size));
+                }
             }
         } catch (IOException e) {
             LoggingUtils.getLogger().error("failed to map highest map to company object", logMap);
-            throw new SearchException("error occurred reading data for highest match from " +
-                "searchHits", e);
+            throw new SearchException("error occurred reading data for highest match from " + "searchHits", e);
         }
         return new SearchResults("", topHitCompanyName, results);
     }
 
-
-    public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphakey,
-                                            String requestId) throws IOException {
+    public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphakey, String requestId)
+            throws IOException {
         for (int i = 0; i < orderedAlphakey.length(); i++) {
 
             if (hits.getTotalHits().value > 0 || i == FALLBACK_QUERY_LIMIT) {
@@ -102,40 +119,55 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     }
 
     private SearchHits getSearchHits(String orderedAlphakey, String requestId) throws IOException {
-        SearchHits hits =  alphabeticalSearchRequests
-                .getBestMatchResponse(orderedAlphakey, requestId);
+        SearchHits hits = alphabeticalSearchRequests.getBestMatchResponse(orderedAlphakey, requestId);
 
         if (hits.getTotalHits().value == 0) {
-            hits = alphabeticalSearchRequests
-                    .getStartsWithResponse(orderedAlphakey, requestId);
+            hits = alphabeticalSearchRequests.getStartsWithResponse(orderedAlphakey, requestId);
         }
 
         if (hits.getTotalHits().value == 0) {
-            hits = alphabeticalSearchRequests
-                    .getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
+            hits = alphabeticalSearchRequests.getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
         }
         return hits;
     }
 
-    private void populateSearchResults(String requestId,
-                                       String topHitCompanyName,
-                                       List<Company> results,
-                                       Company topHitCompany,
-                                       String orderedAlphakeyWithId) throws IOException {
+    /**
+     * method to populate the entries following the ordered alphakey
+     * @param requestId
+     * @param topHitCompanyName
+     * @param orderedAlphakeyWithId
+     * @param size
+     * @return the list of company objects returned from ES
+     * @throws IOException
+     */
+    private List<Company> populateBelowResults(String requestId, String topHitCompanyName, String orderedAlphakeyWithId,
+            Integer size) throws IOException {
+        List<Company> results = new ArrayList<>();
         SearchHits hits;
-        hits = alphabeticalSearchRequests.getAboveResultsResponse(requestId, orderedAlphakeyWithId,
-            topHitCompanyName);
+        hits = alphabeticalSearchRequests.getDescendingResultsResponse(requestId, orderedAlphakeyWithId,
+                topHitCompanyName, size);
+        hits.forEach(h -> results.add(getCompany(h)));
+        return results;
+    }
+
+    /**
+     * method to populate the entries before the ordered alphakey
+     * @param requestId
+     * @param topHitCompanyName
+     * @param orderedAlphakeyWithId
+     * @param size
+     * @return the list of company objects returned from ES
+     * @throws IOException
+     */
+    private List<Company> populateAboveResults(String requestId, String topHitCompanyName, String orderedAlphakeyWithId,
+            Integer size) throws IOException {
+        List<Company> results = new ArrayList<>();
+        SearchHits hits;
+        hits = alphabeticalSearchRequests.getAboveResultsResponse(requestId, orderedAlphakeyWithId, topHitCompanyName, size);
         hits.forEach(h -> results.add(getCompany(h)));
 
         Collections.reverse(results);
-
-        LoggingUtils.getLogger().info("Retrieving the top hit: " + topHitCompanyName);
-        results.add(topHitCompany);
-
-        hits = alphabeticalSearchRequests.getDescendingResultsResponse(requestId, orderedAlphakeyWithId,
-            topHitCompanyName);
-
-        hits.forEach(h -> results.add(getCompany(h)));
+        return results;
     }
 
     private String getOrderedAlphaKeyWithId(SearchHit hit) {

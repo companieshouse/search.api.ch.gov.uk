@@ -80,7 +80,7 @@ public abstract class AbstractSearchRequest {
 
     public SearchHits getAboveResultsResponse(String requestId,
         String orderedAlphakeyWithId,
-        String topHitCompanyName) throws IOException {
+        String topHitCompanyName, Integer size) throws IOException {
         
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
@@ -89,7 +89,7 @@ public abstract class AbstractSearchRequest {
 
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,
-                getSearchQuery().createMatchAllQuery(), SortOrder.DESC));
+                getSearchQuery().createMatchAllQuery(), SortOrder.DESC, size));
 
         SearchResponse searchResponse = getRestClientService().search(searchAlphabetic);
         return searchResponse.getHits();
@@ -97,7 +97,7 @@ public abstract class AbstractSearchRequest {
 
     public SearchHits getDescendingResultsResponse(String requestId,
         String orderedAlphakeyWithId,
-        String topHitCompanyName) throws IOException {
+        String topHitCompanyName, Integer size) throws IOException {
         
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
@@ -106,7 +106,7 @@ public abstract class AbstractSearchRequest {
 
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,
-                getSearchQuery().createMatchAllQuery(), SortOrder.ASC));
+                getSearchQuery().createMatchAllQuery(), SortOrder.ASC, size));
 
         SearchResponse searchResponse = getRestClientService().search(searchAlphabetic);
         return searchResponse.getHits();
@@ -130,10 +130,14 @@ public abstract class AbstractSearchRequest {
         return sourceBuilder;
     }
 
-    private SearchSourceBuilder alphabeticalSourceBuilder(String orderedAlphakeyWithId, QueryBuilder queryBuilder, SortOrder sortOrder) {
+    private SearchSourceBuilder alphabeticalSourceBuilder(String orderedAlphakeyWithId, QueryBuilder queryBuilder, SortOrder sortOrder, Integer size) {
 
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-        sourceBuilder.size(Integer.parseInt(environmentReader.getMandatoryString(getResultsSize())));
+        if(size != null) {
+            sourceBuilder.size(size.intValue());
+        } else {
+            sourceBuilder.size(Integer.parseInt(environmentReader.getMandatoryString(getResultsSize())));
+        }
         sourceBuilder.query(queryBuilder);
         sourceBuilder.searchAfter(new Object[]{orderedAlphakeyWithId});
         sourceBuilder.sort(ORDERED_ALPHA_KEY_WITH_ID, sortOrder);
