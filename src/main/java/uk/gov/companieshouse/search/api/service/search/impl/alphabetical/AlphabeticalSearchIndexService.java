@@ -17,7 +17,7 @@ import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
 public class AlphabeticalSearchIndexService implements SearchIndexService {
 
     @Autowired
-    private SearchRequestService searchRequestService;
+    private AlphabeticalSearchRequestService searchRequestService;
 
     /**
      * {@inheritDoc}
@@ -47,5 +47,46 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         LoggingUtils.getLogger().info("No results found", logMap);
         return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
+
+
+
+
+
+    public ResponseObject searchAfter(String searchAfter, Integer size) {
+        SearchResults searchResults;
+
+        try {
+
+            searchResults = searchRequestService.getSearchAfter(searchAfter, size);
+        } catch (SearchException e) {
+
+            return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
+        }
+
+        if(searchResults.getResults() != null) {
+            return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+        }
+
+        return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
+    }
+
+//    public ResponseObject searchBefore(String corporateName, String requestId) {
+//
+//        SearchResults searchResults;
+//
+//        try {
+//            searchResults = searchRequestService.getSearchBefore(corporateName, requestId);
+//        } catch (SearchException e) {
+//
+//            return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
+//        }
+//
+//        if(searchResults.getResults() != null) {
+//
+//            return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+//        }
+//
+//        return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
+//    }
 }
 

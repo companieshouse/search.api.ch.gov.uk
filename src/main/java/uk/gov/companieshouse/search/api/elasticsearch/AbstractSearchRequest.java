@@ -6,6 +6,7 @@ import java.util.Map;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -39,6 +40,8 @@ public abstract class AbstractSearchRequest {
         searchRequestBestMatch.source(bestMatchSourceBuilder(
                 getSearchQuery().createOrderedAlphaKeySearchQuery(orderedAlphakey),
             ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC));
+
+        System.out.println(searchRequestBestMatch);
 
         SearchResponse searchResponse = getRestClientService().search(searchRequestBestMatch);
         return searchResponse.getHits();
@@ -92,6 +95,24 @@ public abstract class AbstractSearchRequest {
                 getSearchQuery().createMatchAllQuery(), SortOrder.DESC));
 
         SearchResponse searchResponse = getRestClientService().search(searchAlphabetic);
+        return searchResponse.getHits();
+    }
+
+    public SearchHits searchAfter(String searchAfter, Integer size) throws IOException {
+
+
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.indices(environmentReader.getMandatoryString(getIndex()));
+
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.size(size);
+        sourceBuilder.query(QueryBuilders.matchAllQuery());
+        sourceBuilder.searchAfter(new Object[]{searchAfter});
+        sourceBuilder.sort(ORDERED_ALPHA_KEY_WITH_ID, SortOrder.ASC);
+
+        searchRequest.source(sourceBuilder);
+
+        SearchResponse searchResponse = getRestClientService().search(searchRequest);
         return searchResponse.getHits();
     }
 

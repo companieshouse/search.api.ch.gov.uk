@@ -85,6 +85,38 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     }
 
 
+
+
+
+
+    public SearchResults getSearchAfter(String searchAfterTerm, Integer size) throws SearchException {
+
+        List<Company> results = new ArrayList<>();
+
+        try {
+
+            SearchHits hits = alphabeticalSearchRequests.searchAfter(searchAfterTerm, size);
+
+            hits.forEach(h -> results.add(getCompany(h)));
+
+
+
+        } catch (IOException e) {
+
+            throw new SearchException("error occurred reading data for highest match from " +
+                    "searchHits", e);
+        }
+        return new SearchResults("", "topHitCompanyName", results);
+    }
+
+
+
+
+
+
+
+
+
     public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphakey,
                                             String requestId) throws IOException {
         for (int i = 0; i < orderedAlphakey.length(); i++) {

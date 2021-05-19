@@ -33,13 +33,28 @@ public class AlphabeticalSearchController {
     @GetMapping("/companies")
     @ResponseBody
     public ResponseEntity searchByCorporateName(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
+                                                @RequestParam(name = "search_after", required = false) String searchAfter,
+                                                @RequestParam(name = "search_before", required = false) String searchBefore,
+                                                @RequestParam(name = "size", required = false) Integer size,
                                                 @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
         LoggingUtils.getLogger().info("Search request received", logMap);
-        
+
+        if (searchAfter != null) {
+            ResponseObject responseObject = searchIndexService
+                    .searchAfter(searchAfter, size);
+
+            return apiToResponseMapper.map(responseObject);
+        }
+
+//        if (searchBefore != null) {
+//            ResponseObject responseObject = searchIndexService
+//                    .searchBefore(searchAfter, size, requestId);
+//        }
+
         ResponseObject responseObject = searchIndexService
             .search(companyName, requestId);
 
