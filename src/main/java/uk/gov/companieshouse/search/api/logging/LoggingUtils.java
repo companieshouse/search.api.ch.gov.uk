@@ -24,7 +24,7 @@ public class LoggingUtils {
     public static final String ORDERED_ALPHAKEY = "ordered_alphakey";
     public static final String ORDERED_ALPHAKEY_WITH_ID = "ordered_alphakey_with_id";
     public static final String REQUEST_ID = "request_id";
-    public static final String SEARCH_AFTER = "";
+    public static final String SEARCH_AFTER = "search_after";
     public static final String SEARCH_BEFORE = "search_before";
     public static final String SEARCH_TYPE = "search_type";
     public static final String SIZE = "size";
