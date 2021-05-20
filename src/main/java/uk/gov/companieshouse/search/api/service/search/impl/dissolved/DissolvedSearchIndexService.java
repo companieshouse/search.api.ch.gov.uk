@@ -25,15 +25,16 @@ public class DissolvedSearchIndexService {
     private static final String NO_RESULTS_FOUND = "No results were returned while searching for ";
     private static final String BEST_MATCH_SEARCH_TYPE = "best-match";
 
-    public DissolvedResponseObject searchAlphabetical(String companyName, String requestId) {
+    public DissolvedResponseObject searchAlphabetical(String companyName, String searchBefore, String searchAfter,
+            Integer size, String requestId) {
         Map<String, Object> logMap = getLogMap(companyName, requestId, DISSOLVED_SEARCH_ALPHABETICAL);
 
         DissolvedSearchResults searchResults;
         try {
-            searchResults = dissolvedSearchRequestService.getSearchResults(companyName, null, null, null, requestId);
+            searchResults = dissolvedSearchRequestService.getSearchResults(companyName, searchBefore, searchAfter, size,
+                    requestId);
         } catch (SearchException e) {
-            LoggingUtils.getLogger().error(STANDARD_ERROR_MESSAGE +
-                            "alphabetical results on a dissolved company: ",
+            LoggingUtils.getLogger().error(STANDARD_ERROR_MESSAGE + "alphabetical results on a dissolved company: ",
                     logMap);
             return new DissolvedResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
@@ -43,35 +44,37 @@ public class DissolvedSearchIndexService {
             return new DissolvedResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
         }
 
-        LoggingUtils.getLogger().info(NO_RESULTS_FOUND +
-                "alphabetical results on a dissolved company", logMap);
+        LoggingUtils.getLogger().info(NO_RESULTS_FOUND + "alphabetical results on a dissolved company", logMap);
         return new DissolvedResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 
-    public DissolvedResponseObject searchBestMatch(String companyName, String requestId, String searchType, Integer startIndex) {
+    public DissolvedResponseObject searchBestMatch(String companyName, String requestId, String searchType,
+            Integer startIndex) {
         Map<String, Object> logMap = getLogMap(companyName, requestId, searchType);
 
         DissolvedSearchResults searchResults;
         try {
             if (searchType.equals(BEST_MATCH_SEARCH_TYPE)) {
-                searchResults = dissolvedSearchRequestService.getBestMatchSearchResults(companyName, requestId, searchType, startIndex);
+                searchResults = dissolvedSearchRequestService.getBestMatchSearchResults(companyName, requestId,
+                        searchType, startIndex);
             } else {
-                searchResults = dissolvedSearchRequestService.getPreviousNamesResults(companyName, requestId, searchType, startIndex);
+                searchResults = dissolvedSearchRequestService.getPreviousNamesResults(companyName, requestId,
+                        searchType, startIndex);
             }
         } catch (SearchException e) {
-            LoggingUtils.getLogger().error(STANDARD_ERROR_MESSAGE +
-                            "best matches on a " + searchType + " dissolved company: ",
-                    logMap);
+            LoggingUtils.getLogger()
+                    .error(STANDARD_ERROR_MESSAGE + "best matches on a " + searchType + " dissolved company: ", logMap);
             return new DissolvedResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
 
         if (searchResults.getItems() != null) {
-            LoggingUtils.getLogger().info("successful best match search for " + searchType + " dissolved company", logMap);
+            LoggingUtils.getLogger().info("successful best match search for " + searchType + " dissolved company",
+                    logMap);
             return new DissolvedResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
         }
 
-        LoggingUtils.getLogger().info(NO_RESULTS_FOUND +
-                "best match on a " + searchType + " dissolved company", logMap);
+        LoggingUtils.getLogger().info(NO_RESULTS_FOUND + "best match on a " + searchType + " dissolved company",
+                logMap);
         return new DissolvedResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 

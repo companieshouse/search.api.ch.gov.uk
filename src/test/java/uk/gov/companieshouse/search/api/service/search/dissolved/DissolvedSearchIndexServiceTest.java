@@ -51,14 +51,17 @@ class DissolvedSearchIndexServiceTest {
     private static final String SEARCH_TYPE_BEST_MATCH = "best-match";
     private static final String SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH = "previous-name-dissolved";
     private static final Integer START_INDEX = 0;
-
+    private static final String SEARCH_BEFORE = null;
+    private static final String SEARCH_AFTER = null;
+    private static final Integer SIZE = null;
 
     @Test
     @DisplayName("Test dissolved alphabetical search request returns successfully")
     void searchDissolvedAlphabeticalRequestSuccessful() throws Exception {
-        when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID))
-                .thenReturn(createSearchResults(true));
-        DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, REQUEST_ID);
+        when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, SEARCH_BEFORE, SEARCH_AFTER, SIZE,
+                REQUEST_ID)).thenReturn(createSearchResults(true));
+        DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, SEARCH_BEFORE,
+                SEARCH_AFTER, SIZE, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_FOUND, responseObject.getStatus());
@@ -67,10 +70,11 @@ class DissolvedSearchIndexServiceTest {
     @Test
     @DisplayName("Test dissolved alphabetical search returns an error")
     void searchDissolvedAlphabeticalRequestReturnsError() throws Exception {
-        when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID))
-                .thenThrow(SearchException.class);
+        when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, SEARCH_BEFORE, SEARCH_AFTER, SIZE,
+                REQUEST_ID)).thenThrow(SearchException.class);
 
-        DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, REQUEST_ID);
+        DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, SEARCH_BEFORE,
+                SEARCH_AFTER, SIZE, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_ERROR, responseObject.getStatus());
@@ -81,7 +85,8 @@ class DissolvedSearchIndexServiceTest {
     void searchDissolvedAlphabeticalRequestReturnsNoResults() throws Exception {
         when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID))
                 .thenReturn(createSearchResults(false));
-        DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, REQUEST_ID);
+        DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, SEARCH_BEFORE,
+                SEARCH_AFTER, SIZE, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
@@ -90,9 +95,10 @@ class DissolvedSearchIndexServiceTest {
     @Test
     @DisplayName("Test best match dissolved search request returns successfully")
     void searchBestMatchDissolvedRequestSuccessful() throws Exception {
-        when(mockDissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX))
-                .thenReturn(createSearchResults(true));
-        DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX);
+        when(mockDissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID,
+                SEARCH_TYPE_BEST_MATCH, START_INDEX)).thenReturn(createSearchResults(true));
+        DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID,
+                SEARCH_TYPE_BEST_MATCH, START_INDEX);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_FOUND, responseObject.getStatus());
@@ -101,10 +107,11 @@ class DissolvedSearchIndexServiceTest {
     @Test
     @DisplayName("Test best match dissolved search returns an error")
     void searchBestMatchDissolvedRequestReturnsError() throws Exception {
-        when(mockDissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX))
-                .thenThrow(SearchException.class);
+        when(mockDissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID,
+                SEARCH_TYPE_BEST_MATCH, START_INDEX)).thenThrow(SearchException.class);
 
-        DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX);
+        DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID,
+                SEARCH_TYPE_BEST_MATCH, START_INDEX);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_ERROR, responseObject.getStatus());
@@ -113,21 +120,23 @@ class DissolvedSearchIndexServiceTest {
     @Test
     @DisplayName("Test best match dissolved search returns no results")
     void searchBestMatchDissolvedRequestReturnsNoResults() throws Exception {
-        when(mockDissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX))
-                .thenReturn(createSearchResults(false));
-        DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX);
+        when(mockDissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID,
+                SEARCH_TYPE_BEST_MATCH, START_INDEX)).thenReturn(createSearchResults(false));
+        DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID,
+                SEARCH_TYPE_BEST_MATCH, START_INDEX);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
     }
 
-    //PREVIOUS
+    // PREVIOUS
     @Test
     @DisplayName("Test best match for previous company names on a dissolved search request returns successfully")
     void searchBestMatchPreviousNamesDissolvedRequestSuccessful() throws Exception {
-        when(mockDissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX))
-                .thenReturn(createSearchResults(true));
-        DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX);
+        when(mockDissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID,
+                SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX)).thenReturn(createSearchResults(true));
+        DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID,
+                SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_FOUND, responseObject.getStatus());
@@ -136,10 +145,11 @@ class DissolvedSearchIndexServiceTest {
     @Test
     @DisplayName("Test best match for previous company names on a dissolved search returns an error")
     void searchBestMatchPreviousNamesDissolvedRequestReturnsError() throws Exception {
-        when(mockDissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX))
-                .thenThrow(SearchException.class);
+        when(mockDissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID,
+                SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX)).thenThrow(SearchException.class);
 
-        DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX);
+        DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID,
+                SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_ERROR, responseObject.getStatus());
@@ -148,9 +158,10 @@ class DissolvedSearchIndexServiceTest {
     @Test
     @DisplayName("Test best match for previous company names on a dissolved search returns no results")
     void searchBestMatchPreviousNamesDissolvedRequestReturnsNoResults() throws Exception {
-        when(mockDissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX))
-                .thenReturn(createSearchResults(false));
-        DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX);
+        when(mockDissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID,
+                SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX)).thenReturn(createSearchResults(false));
+        DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID,
+                SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
@@ -169,6 +180,7 @@ class DissolvedSearchIndexServiceTest {
         }
         return searchResults;
     }
+
     private List<DissolvedCompany> createItems() {
         List<DissolvedCompany> items = new ArrayList<>();
         DissolvedCompany dissolvedCompany = new DissolvedCompany();

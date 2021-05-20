@@ -39,16 +39,15 @@ public class DissolvedSearchController {
     private static final String SEARCH_AFTER_PARAM = "search_after";
     private static final String SIZE_PARAM = "size";
 
-
     @GetMapping("/companies")
     @ResponseBody
     public ResponseEntity<Object> searchCompanies(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
-                                                  @RequestParam(name = SEARCH_TYPE_QUERY_PARAM) String searchType,
-                                                  @RequestParam(name = SEARCH_BEFORE_PARAM, required=false) String searchBefore,
-                                                  @RequestParam(name = SEARCH_AFTER_PARAM, required=false) String searchAfter,
-                                                  @RequestParam(name = SIZE_PARAM, required=false) Integer size,
-                                                  @RequestParam(name = START_INDEX_QUERY_PARAM, required = false) Integer startIndex,
-                                                  @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
+            @RequestParam(name = SEARCH_TYPE_QUERY_PARAM) String searchType,
+            @RequestParam(name = SEARCH_BEFORE_PARAM, required = false) String searchBefore,
+            @RequestParam(name = SEARCH_AFTER_PARAM, required = false) String searchAfter,
+            @RequestParam(name = SIZE_PARAM, required = false) Integer size,
+            @RequestParam(name = START_INDEX_QUERY_PARAM, required = false) Integer startIndex,
+            @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
@@ -60,8 +59,8 @@ public class DissolvedSearchController {
         if (checkSearchTypeParam(searchType)) {
 
             if (searchType.equals(ALPHABETICAL_SEARCH_TYPE)) {
-                DissolvedResponseObject responseObject = searchIndexService
-                        .searchAlphabetical(companyName, requestId);
+                DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(companyName,
+                        searchBefore, searchAfter, size, requestId);
 
                 return apiToResponseMapper.mapDissolved(responseObject);
             }
@@ -72,21 +71,21 @@ public class DissolvedSearchController {
                     startIndex = 0;
                 }
 
-                DissolvedResponseObject responseObject = searchIndexService
-                        .searchBestMatch(companyName, requestId, searchType, startIndex);
+                DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(companyName, requestId,
+                        searchType, startIndex);
 
                 return apiToResponseMapper.mapDissolved(responseObject);
             }
         }
-        LoggingUtils.getLogger().error("The search_type parameter is incorrect, please try either " +
-                "'alphabetical', 'best-match' or 'previous-name-dissolved': " , logMap);
-        return apiToResponseMapper.mapDissolved(new DissolvedResponseObject(ResponseStatus.REQUEST_PARAMETER_ERROR, null));
+        LoggingUtils.getLogger().error("The search_type parameter is incorrect, please try either "
+                + "'alphabetical', 'best-match' or 'previous-name-dissolved': ", logMap);
+        return apiToResponseMapper
+                .mapDissolved(new DissolvedResponseObject(ResponseStatus.REQUEST_PARAMETER_ERROR, null));
     }
 
     private boolean checkSearchTypeParam(String searchType) {
 
-        return searchType.equals(ALPHABETICAL_SEARCH_TYPE)
-                || searchType.equals(BEST_MATCH_SEARCH_TYPE)
+        return searchType.equals(ALPHABETICAL_SEARCH_TYPE) || searchType.equals(BEST_MATCH_SEARCH_TYPE)
                 || searchType.equals(PREVIOUS_NAMES_SEARCH_TYPE);
     }
 }
