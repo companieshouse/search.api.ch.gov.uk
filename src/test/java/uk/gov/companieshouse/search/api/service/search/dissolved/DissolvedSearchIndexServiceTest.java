@@ -55,7 +55,7 @@ class DissolvedSearchIndexServiceTest {
     @Test
     @DisplayName("Test dissolved alphabetical search request returns successfully")
     void searchDissolvedAlphabeticalRequestSuccessful() throws Exception {
-        when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID))
+        when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID))
                 .thenReturn(createSearchResults(true));
         DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, REQUEST_ID);
 
@@ -66,7 +66,7 @@ class DissolvedSearchIndexServiceTest {
     @Test
     @DisplayName("Test dissolved alphabetical search returns an error")
     void searchDissolvedAlphabeticalRequestReturnsError() throws Exception {
-        when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID))
+        when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID))
                 .thenThrow(SearchException.class);
 
         DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, REQUEST_ID);
@@ -78,7 +78,7 @@ class DissolvedSearchIndexServiceTest {
     @Test
     @DisplayName("Test dissolved alphabetical search returns no results")
     void searchDissolvedAlphabeticalRequestReturnsNoResults() throws Exception {
-        when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID))
+        when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID))
                 .thenReturn(createSearchResults(false));
         DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, REQUEST_ID);
 

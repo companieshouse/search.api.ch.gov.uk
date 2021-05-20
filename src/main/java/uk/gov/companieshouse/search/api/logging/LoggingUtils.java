@@ -24,7 +24,10 @@ public class LoggingUtils {
     public static final String ORDERED_ALPHAKEY = "ordered_alphakey";
     public static final String ORDERED_ALPHAKEY_WITH_ID = "ordered_alphakey_with_id";
     public static final String REQUEST_ID = "request_id";
+    public static final String SEARCH_AFTER = "";
+    public static final String SEARCH_BEFORE = "search_before";
     public static final String SEARCH_TYPE = "search_type";
+    public static final String SIZE = "size";
     
     private LoggingUtils() throws IllegalAccessException {
         throw new IllegalAccessException("LoggingUtils is not to be instantiated");
@@ -38,6 +41,12 @@ public class LoggingUtils {
         Map<String, Object> logMap = new HashMap<>();
         logMap.put(REQUEST_ID, requestId);
         return logMap;
+    }
+    
+    public static void logIfNotNull(Map<String, Object> logMap, String key, Object value) {
+        if(value != null) {
+            logMap.put(key, value);
+        }
     }
 
 }

@@ -47,12 +47,12 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, corporateName);
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
-        // TODO fix the logging properly
-        logMap.put("search_before", searchBefore);
-        logMap.put("after", searchAfter);
-        logMap.put("search_before", size);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_BEFORE, searchBefore);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_AFTER, searchAfter);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SIZE, size);
 
         LoggingUtils.getLogger().info("Performing search request", logMap);
+        logMap.remove("message");
 
         String orderedAlphakey = "";
         String topHitCompanyName = "";
@@ -69,12 +69,14 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
             if (hits.getTotalHits().value == 0) {
                 LoggingUtils.getLogger().info("A result was not found, reducing search term to find result", logMap);
+                logMap.remove("message");
 
                 hits = peelbackSearchRequest(hits, orderedAlphakey, requestId);
             }
 
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info("A result has been found", logMap);
+                logMap.remove("message");
 
                 String orderedAlphakeyWithId;
                 SearchHit topHit;
@@ -84,7 +86,6 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 Company topHitCompany = getCompany(topHit);
                 topHitCompanyName = topHitCompany.getItems().getCorporateName();
 
-                logMap.remove("message");
                 if (searchBefore == null && searchAfter == null) {
                     results = populateAboveResults(requestId, topHitCompanyName, orderedAlphakeyWithId, size);
                     results.add(topHitCompany);

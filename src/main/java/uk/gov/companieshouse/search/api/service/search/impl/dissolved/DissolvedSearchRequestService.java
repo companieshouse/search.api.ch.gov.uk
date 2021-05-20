@@ -1,9 +1,16 @@
 package uk.gov.companieshouse.search.api.service.search.impl.dissolved;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import uk.gov.companieshouse.GenerateEtagUtil;
 import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
@@ -17,12 +24,6 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.previousname
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class DissolvedSearchRequestService {
@@ -41,8 +42,12 @@ public class DissolvedSearchRequestService {
     private static final String RESULT_FOUND = "A result has been found";
     private static final String SEARCH_HITS = "searchHits";
 
-    public DissolvedSearchResults getSearchResults(String companyName, String requestId) throws SearchException {
+    public DissolvedSearchResults getSearchResults(String companyName, String searchBefore, String searchAfter,
+            Integer size, String requestId) throws SearchException {
         Map<String, Object> logMap = getLogMap(requestId, companyName);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_BEFORE, searchBefore);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_AFTER, searchAfter);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SIZE, size);
         LoggingUtils.getLogger().info("getting dissolved search results", logMap);
 
         String orderedAlphaKey = "";
@@ -78,30 +83,38 @@ public class DissolvedSearchRequestService {
 
                 topHit = elasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany);
 
-                populateSearchResults(requestId, topHit.getCompanyName(), results, topHitCompany,
-                    orderedAlphaKeyWithId);
+                if (searchBefore == null && searchAfter == null) {
+                    results = populateAboveResults(requestId, topHit.getCompanyName(), orderedAlphaKeyWithId, size);
+                    results.add(topHitCompany);
+                    results.addAll(
+                            populateBelowResults(requestId, topHit.getCompanyName(), orderedAlphaKeyWithId, size));
+                } else if (searchAfter != null) {
+                    results.addAll(populateBelowResults(requestId, topHit.getCompanyName(), searchAfter, size));
+                } else {
+                    results.addAll(populateAboveResults(requestId, topHit.getCompanyName(), searchBefore, size));
+                }
             }
         } catch (IOException e) {
-            LoggingUtils.getLogger().error("failed to map highest map to company object",
-                logMap);
+            LoggingUtils.getLogger().error("failed to map highest map to company object", logMap);
             throw new SearchException("error occurred reading data for highest match from " + SEARCH_HITS, e);
         }
 
         return new DissolvedSearchResults(etag, topHit, results, kind);
     }
 
-    public DissolvedSearchResults getBestMatchSearchResults(String companyName, String requestId, String searchType) throws SearchException {
+    public DissolvedSearchResults getBestMatchSearchResults(String companyName, String requestId, String searchType)
+            throws SearchException {
         Map<String, Object> logMap = getLogMap(requestId, companyName);
         LoggingUtils.getLogger().info("getting dissolved " + searchType + " search results", logMap);
 
         String etag = GenerateEtagUtil.generateEtag();
-        DissolvedTopHit topHit= new DissolvedTopHit();
+        DissolvedTopHit topHit = new DissolvedTopHit();
         List<DissolvedCompany> results = new ArrayList<>();
         String kind = "search#dissolved";
 
         try {
 
-            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType);
+            SearchHits hits = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType);
 
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
@@ -113,8 +126,7 @@ public class DissolvedSearchRequestService {
                 hits.forEach(h -> results.add(elasticSearchResponseMapper.mapDissolvedResponse(h)));
             }
         } catch (IOException e) {
-            LoggingUtils.getLogger().error("failed to get best match for dissolved company",
-                logMap);
+            LoggingUtils.getLogger().error("failed to get best match for dissolved company", logMap);
             throw new SearchException("error occurred reading data for best match from " + SEARCH_HITS, e);
         }
 
@@ -122,7 +134,7 @@ public class DissolvedSearchRequestService {
     }
 
     public DissolvedSearchResults<DissolvedPreviousName> getPreviousNamesResults(String companyName, String requestId,
-                                                                               String searchType) throws SearchException {
+            String searchType) throws SearchException {
 
         Map<String, Object> logMap = getLogMap(requestId, companyName);
         LoggingUtils.getLogger().info("getting dissolved " + searchType + " search results", logMap);
@@ -133,7 +145,7 @@ public class DissolvedSearchRequestService {
         String kind = "search#previous-name-dissolved";
 
         try {
-            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType);
+            SearchHits hits = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType);
 
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info(RESULT_FOUND, logMap);
@@ -143,8 +155,7 @@ public class DissolvedSearchRequestService {
 
             }
         } catch (IOException e) {
-            LoggingUtils.getLogger().error("failed to get previous names for dissolved company",
-                    logMap);
+            LoggingUtils.getLogger().error("failed to get previous names for dissolved company", logMap);
             throw new SearchException("error occurred reading data for previous names from " + SEARCH_HITS, e);
         }
 
@@ -152,23 +163,20 @@ public class DissolvedSearchRequestService {
     }
 
     private SearchHits getSearchHits(String orderedAlphakey, String requestId) throws IOException {
-        SearchHits hits =  dissolvedSearchRequests
-                .getBestMatchResponse(orderedAlphakey, requestId);
+        SearchHits hits = dissolvedSearchRequests.getBestMatchResponse(orderedAlphakey, requestId);
 
         if (hits.getTotalHits().value == 0) {
-            hits = dissolvedSearchRequests
-                    .getStartsWithResponse(orderedAlphakey, requestId);
+            hits = dissolvedSearchRequests.getStartsWithResponse(orderedAlphakey, requestId);
         }
 
         if (hits.getTotalHits().value == 0) {
-            hits = dissolvedSearchRequests
-                    .getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
+            hits = dissolvedSearchRequests.getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
         }
         return hits;
     }
 
-    public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphaKey,
-                                            String requestId) throws IOException {
+    public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphaKey, String requestId)
+            throws IOException {
         for (int i = 0; i < orderedAlphaKey.length(); i++) {
 
             if (hits.getTotalHits().value > 0 || i == FALLBACK_QUERY_LIMIT) {
@@ -183,24 +191,26 @@ public class DissolvedSearchRequestService {
         return hits;
     }
 
-    private void populateSearchResults(String requestId,
-                                       String topHitCompanyName,
-                                       List<DissolvedCompany> results,
-                                       DissolvedCompany topHitCompany,
-                                       String orderedAlphaKeyWithId) throws IOException {
+    private List<DissolvedCompany> populateBelowResults(String requestId, String topHitCompanyName,
+            String orderedAlphaKeyWithId, Integer size) throws IOException {
+        List<DissolvedCompany> results = new ArrayList<>();
         SearchHits hits;
-        hits = dissolvedSearchRequests.getAboveResultsResponse(requestId, orderedAlphaKeyWithId, topHitCompanyName, 10);
+        hits = dissolvedSearchRequests.getDescendingResultsResponse(requestId, orderedAlphaKeyWithId, topHitCompanyName,
+                size);
+        hits.forEach(h -> results.add(elasticSearchResponseMapper.mapDissolvedResponse(h)));
+        return results;
+    }
+
+    private List<DissolvedCompany> populateAboveResults(String requestId, String topHitCompanyName,
+            String orderedAlphaKeyWithId, Integer size) throws IOException {
+        List<DissolvedCompany> results = new ArrayList<>();
+        SearchHits hits;
+        hits = dissolvedSearchRequests.getAboveResultsResponse(requestId, orderedAlphaKeyWithId, topHitCompanyName,
+                size);
         hits.forEach(h -> results.add(elasticSearchResponseMapper.mapDissolvedResponse(h)));
 
         Collections.reverse(results);
-
-        LoggingUtils.getLogger().info("Retrieving the top hit: " + topHitCompanyName);
-        results.add(topHitCompany);
-
-        hits = dissolvedSearchRequests.getDescendingResultsResponse(requestId, orderedAlphaKeyWithId,
-            topHitCompanyName, 10);
-// TODO refactor this like alphabetical search
-        hits.forEach(h -> results.add(elasticSearchResponseMapper.mapDissolvedResponse(h)));
+        return results;
     }
 
     private Map<String, Object> getLogMap(String requestId, String companyName) {

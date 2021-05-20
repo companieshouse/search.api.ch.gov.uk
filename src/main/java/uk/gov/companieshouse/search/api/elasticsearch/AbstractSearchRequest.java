@@ -85,6 +85,7 @@ public abstract class AbstractSearchRequest {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
         logMap.put(LoggingUtils.COMPANY_NAME, topHitCompanyName);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SIZE, size);
         LoggingUtils.getLogger().info("Retrieving the alphabetically descending results", logMap);
 
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
@@ -102,6 +103,7 @@ public abstract class AbstractSearchRequest {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
         logMap.put(LoggingUtils.COMPANY_NAME, topHitCompanyName);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SIZE, size);
         LoggingUtils.getLogger().info("Retrieving the alphabetically ascending results", logMap);
 
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);

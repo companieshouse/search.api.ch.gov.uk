@@ -30,7 +30,7 @@ public class DissolvedSearchIndexService {
 
         DissolvedSearchResults searchResults;
         try {
-            searchResults = dissolvedSearchRequestService.getSearchResults(companyName, requestId);
+            searchResults = dissolvedSearchRequestService.getSearchResults(companyName, null, null, null, requestId);
         } catch (SearchException e) {
             LoggingUtils.getLogger().error(STANDARD_ERROR_MESSAGE +
                             "alphabetical results on a dissolved company: ",

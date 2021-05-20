@@ -75,7 +75,7 @@ class DissolvedSearchRequestServiceTest {
     private static final String PREVIOUS_NAME_KIND = "search#previous-name-dissolved";
     private static final String BEST_MATCH_KIND = "search#dissolved";
     private static final String DISSOLVED_ALPHABETICAL_KIND = "search#alphabetical-dissolved";
-    private static final Integer SIZE = 10;
+    private static final Integer SIZE = null;
 
 
     @Test
@@ -105,7 +105,7 @@ class DissolvedSearchRequestServiceTest {
             .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =
-            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
+            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals( COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -140,7 +140,7 @@ class DissolvedSearchRequestServiceTest {
                 .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =
-                dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
+                dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals( COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -178,7 +178,7 @@ class DissolvedSearchRequestServiceTest {
             .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =
-            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
+            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertNotNull(dissolvedSearchResults.getEtag());
@@ -220,7 +220,7 @@ class DissolvedSearchRequestServiceTest {
             .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =
-            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
+            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -261,7 +261,7 @@ class DissolvedSearchRequestServiceTest {
             .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =
-            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
+            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -302,7 +302,7 @@ class DissolvedSearchRequestServiceTest {
             .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =
-            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
+            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -343,7 +343,7 @@ class DissolvedSearchRequestServiceTest {
             .thenReturn(searchHits);
 
         DissolvedSearchResults dissolvedSearchResults =
-            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
+            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -362,7 +362,7 @@ class DissolvedSearchRequestServiceTest {
             .thenThrow(IOException.class);
 
         assertThrows(SearchException.class, () ->
-            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID));
+            dissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID));
     }
 
     @Test

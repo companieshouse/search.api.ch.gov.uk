@@ -59,11 +59,11 @@ class AlphabeticalSearchRequestServiceTest {
             .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, SIZE))
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, null))
             .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, SIZE))
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, null))
             .thenReturn(createSearchHits());
 
         SearchResults searchResults =
@@ -88,11 +88,11 @@ class AlphabeticalSearchRequestServiceTest {
             .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, SIZE))
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, null))
             .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, SIZE))
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, null))
             .thenReturn(createSearchHits());
 
         SearchResults searchResults =
@@ -120,11 +120,11 @@ class AlphabeticalSearchRequestServiceTest {
             .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, SIZE))
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, null))
             .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID,
-            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, SIZE))
+            ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT, null))
             .thenReturn(createSearchHits());
 
         SearchResults searchResults =

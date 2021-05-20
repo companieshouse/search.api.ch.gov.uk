@@ -29,6 +29,9 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, corporateName);
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_BEFORE, searchBefore);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_AFTER, searchAfter);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SIZE, size);
 
         SearchResults searchResults;
 

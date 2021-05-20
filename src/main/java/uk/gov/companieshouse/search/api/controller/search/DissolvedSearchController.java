@@ -34,16 +34,25 @@ public class DissolvedSearchController {
     private static final String ALPHABETICAL_SEARCH_TYPE = "alphabetical";
     private static final String BEST_MATCH_SEARCH_TYPE = "best-match";
     private static final String PREVIOUS_NAMES_SEARCH_TYPE = "previous-name-dissolved";
+    private static final String SEARCH_BEFORE_PARAM = "search_before";
+    private static final String SEARCH_AFTER_PARAM = "search_after";
+    private static final String SIZE_PARAM = "size";
 
 
     @GetMapping("/companies")
     @ResponseBody
     public ResponseEntity<Object> searchCompanies(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
                                                   @RequestParam(name = SEARCH_TYPE_QUERY_PARAM) String searchType,
+                                                  @RequestParam(name = SEARCH_BEFORE_PARAM, required=false) String searchBefore,
+                                                  @RequestParam(name = SEARCH_AFTER_PARAM, required=false) String searchAfter,
+                                                  @RequestParam(name = SIZE_PARAM, required=false) Integer size,
                                                   @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_DISSOLVED);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_BEFORE, searchBefore);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_AFTER, searchAfter);
+        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SIZE, size);
         LoggingUtils.getLogger().info("Search request received", logMap);
 
         if (checkSearchTypeParam(searchType)) {
