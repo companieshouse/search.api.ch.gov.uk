@@ -86,7 +86,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 Company topHitCompany = getCompany(topHit);
                 topHitCompanyName = topHitCompany.getItems().getCorporateName();
 
-                if (searchBefore == null && searchAfter == null) {
+                if ((searchBefore == null && searchAfter == null) || (searchBefore != null && searchAfter != null)) {
                     results = populateAboveResults(requestId, topHitCompanyName, orderedAlphakeyWithId, size);
                     results.add(topHitCompany);
                     results.addAll(populateBelowResults(requestId, topHitCompanyName, orderedAlphakeyWithId, size));

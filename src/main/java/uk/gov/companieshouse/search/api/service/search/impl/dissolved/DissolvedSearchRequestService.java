@@ -83,7 +83,7 @@ public class DissolvedSearchRequestService {
 
                 topHit = elasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany);
 
-                if (searchBefore == null && searchAfter == null) {
+                if ((searchBefore == null && searchAfter == null) || (searchBefore != null && searchAfter != null)) {
                     results = populateAboveResults(requestId, topHit.getCompanyName(), orderedAlphaKeyWithId, size);
                     results.add(topHitCompany);
                     results.addAll(
