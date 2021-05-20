@@ -48,15 +48,15 @@ public class DissolvedSearchIndexService {
         return new DissolvedResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 
-    public DissolvedResponseObject searchBestMatch(String companyName, String requestId, String searchType) {
+    public DissolvedResponseObject searchBestMatch(String companyName, String requestId, String searchType, Integer startIndex) {
         Map<String, Object> logMap = getLogMap(companyName, requestId, searchType);
 
         DissolvedSearchResults searchResults;
         try {
             if (searchType.equals(BEST_MATCH_SEARCH_TYPE)) {
-                searchResults = dissolvedSearchRequestService.getBestMatchSearchResults(companyName, requestId, searchType);
+                searchResults = dissolvedSearchRequestService.getBestMatchSearchResults(companyName, requestId, searchType, startIndex);
             } else {
-                searchResults = dissolvedSearchRequestService.getPreviousNamesResults(companyName, requestId, searchType);
+                searchResults = dissolvedSearchRequestService.getPreviousNamesResults(companyName, requestId, searchType, startIndex);
             }
         } catch (SearchException e) {
             LoggingUtils.getLogger().error(STANDARD_ERROR_MESSAGE +

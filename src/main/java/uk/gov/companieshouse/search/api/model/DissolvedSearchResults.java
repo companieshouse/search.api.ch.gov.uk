@@ -1,9 +1,11 @@
 package uk.gov.companieshouse.search.api.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DissolvedSearchResults<T> {
 
     @JsonProperty("etag")
@@ -17,6 +19,9 @@ public class DissolvedSearchResults<T> {
 
     @JsonProperty("kind")
     private String kind;
+
+    @JsonProperty("hits")
+    private Long hits;
 
     public DissolvedSearchResults() {
     }
@@ -58,5 +63,13 @@ public class DissolvedSearchResults<T> {
 
     public void setKind(String kind) {
         this.kind = kind;
+    }
+
+    public Long getHits() {
+        return hits;
+    }
+
+    public void setHits(Long hits) {
+        this.hits = hits;
     }
 }

@@ -31,6 +31,7 @@ public class DissolvedSearchController {
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
     private static final String COMPANY_NAME_QUERY_PARAM = "q";
     private static final String SEARCH_TYPE_QUERY_PARAM = "search_type";
+    private static final String START_INDEX_QUERY_PARAM = "start_index";
     private static final String ALPHABETICAL_SEARCH_TYPE = "alphabetical";
     private static final String BEST_MATCH_SEARCH_TYPE = "best-match";
     private static final String PREVIOUS_NAMES_SEARCH_TYPE = "previous-name-dissolved";
@@ -46,6 +47,7 @@ public class DissolvedSearchController {
                                                   @RequestParam(name = SEARCH_BEFORE_PARAM, required=false) String searchBefore,
                                                   @RequestParam(name = SEARCH_AFTER_PARAM, required=false) String searchAfter,
                                                   @RequestParam(name = SIZE_PARAM, required=false) Integer size,
+                                                  @RequestParam(name = START_INDEX_QUERY_PARAM, required = false) Integer startIndex,
                                                   @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
@@ -65,8 +67,13 @@ public class DissolvedSearchController {
             }
 
             if (searchType.equals(BEST_MATCH_SEARCH_TYPE) || searchType.equals(PREVIOUS_NAMES_SEARCH_TYPE)) {
+
+                if (startIndex == null || startIndex < 0) {
+                    startIndex = 0;
+                }
+
                 DissolvedResponseObject responseObject = searchIndexService
-                        .searchBestMatch(companyName, requestId, searchType);
+                        .searchBestMatch(companyName, requestId, searchType, startIndex);
 
                 return apiToResponseMapper.mapDissolved(responseObject);
             }
