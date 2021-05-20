@@ -48,6 +48,7 @@ public class ElasticSearchResponseMapper {
         dissolvedCompany.setCompanyName((String) sourceAsMap.get("company_name"));
         dissolvedCompany.setCompanyNumber((String) sourceAsMap.get("company_number"));
         dissolvedCompany.setCompanyStatus((String) sourceAsMap.get("company_status"));
+        dissolvedCompany.setOrderedAlphaKeyWithId((String) sourceAsMap.get("ordered_alpha_key_with_id"));
         dissolvedCompany.setKind(SEARCH_RESULTS_KIND);
         dissolvedCompany.setDateOfCessation(LocalDate.parse((String) sourceAsMap.get("date_of_cessation"), formatter));
         dissolvedCompany.setDateOfCreation(LocalDate.parse((String) sourceAsMap.get("date_of_creation"), formatter));
@@ -69,6 +70,7 @@ public class ElasticSearchResponseMapper {
         topHit.setCompanyName(dissolvedCompany.getCompanyName());
         topHit.setCompanyNumber(dissolvedCompany.getCompanyNumber());
         topHit.setCompanyStatus(dissolvedCompany.getCompanyStatus());
+        topHit.setOrderedAlphaKeyWithId(dissolvedCompany.getOrderedAlphaKeyWithId());
         topHit.setKind(dissolvedCompany.getKind());
         topHit.setAddress(dissolvedCompany.getAddress());
         topHit.setDateOfCessation(dissolvedCompany.getDateOfCessation());
