@@ -33,11 +33,6 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final int FALLBACK_QUERY_LIMIT = 25;
 
-    @Override
-    public SearchResults getAlphabeticalSearchResults(String corporateName, String requestId) throws SearchException {
-        return getAlphabeticalSearchResults(corporateName, null, null, null, requestId);
-    }
-
     /**
      * {@inheritDoc}
      */

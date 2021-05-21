@@ -46,7 +46,6 @@ class AlphabeticalSearchRequestServiceTest {
     private static final String ORDERED_ALPHA_KEY = "orderedAlphaKey";
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final String REQUEST_ID = "requestId";
-    private static final Integer SIZE = 10;
     private static final String SEARCH_BEFORE_VALUE = "search_before:1234";
     private static final String SEARCH_AFTER_VALUE = "search_after:1234";
 
@@ -65,7 +64,7 @@ class AlphabeticalSearchRequestServiceTest {
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
                 null)).thenReturn(createSearchHits());
 
-        SearchResults searchResults = searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID);
+        SearchResults searchResults = searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(searchResults);
         assertEquals(TOP_HIT, searchResults.getTopHit());
@@ -90,7 +89,7 @@ class AlphabeticalSearchRequestServiceTest {
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
                 null)).thenReturn(createSearchHits());
 
-        SearchResults searchResults = searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID);
+        SearchResults searchResults = searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(searchResults);
         assertEquals(TOP_HIT, searchResults.getTopHit());
@@ -118,7 +117,7 @@ class AlphabeticalSearchRequestServiceTest {
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
                 null)).thenReturn(createSearchHits());
 
-        SearchResults searchResults = searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID);
+        SearchResults searchResults = searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(searchResults);
         assertEquals(TOP_HIT, searchResults.getTopHit());
@@ -135,7 +134,7 @@ class AlphabeticalSearchRequestServiceTest {
                 .thenThrow(IOException.class);
 
         assertThrows(SearchException.class,
-                () -> searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, REQUEST_ID));
+                () -> searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID));
     }
 
     @Test
