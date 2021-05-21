@@ -52,7 +52,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         LoggingUtils.logIfNotNull(logMap, LoggingUtils.SIZE, size);
 
         LoggingUtils.getLogger().info("Performing search request", logMap);
-        logMap.remove("message");
+        logMap.remove(LoggingUtils.MESSAGE);
 
         String orderedAlphakey = "";
         String topHitCompanyName = "";
@@ -69,14 +69,14 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
             if (hits.getTotalHits().value == 0) {
                 LoggingUtils.getLogger().info("A result was not found, reducing search term to find result", logMap);
-                logMap.remove("message");
+                logMap.remove(LoggingUtils.MESSAGE);
 
                 hits = peelbackSearchRequest(hits, orderedAlphakey, requestId);
             }
 
             if (hits.getTotalHits().value > 0) {
                 LoggingUtils.getLogger().info("A result has been found", logMap);
-                logMap.remove("message");
+                logMap.remove(LoggingUtils.MESSAGE);
 
                 String orderedAlphakeyWithId;
                 SearchHit topHit;
