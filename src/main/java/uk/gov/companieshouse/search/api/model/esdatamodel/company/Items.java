@@ -22,6 +22,9 @@ public class Items {
     @JsonProperty("ordered_alpha_key")
     private String orderedAlphaKey;
 
+    @JsonProperty("ordered_alpha_key_with_id")
+    private String orderedAlphaKeyWithId;
+
     @JsonProperty("record_type")
     private String recordType;
 
@@ -63,6 +66,14 @@ public class Items {
 
     public void setOrderedAlphaKey(String orderedAlphaKey) {
         this.orderedAlphaKey = orderedAlphaKey;
+    }
+
+    public String getOrderedAlphaKeyWithId() {
+        return orderedAlphaKeyWithId;
+    }
+
+    public void setOrderedAlphaKeyWithId(String orderedAlphaKeyWithId) {
+        this.orderedAlphaKeyWithId = orderedAlphaKeyWithId;
     }
 
     @Override

@@ -42,6 +42,7 @@ class AlphabeticalSearchRequestsTest {
     private EnvironmentReader mockEnvironmentReader;
 
     private static final String ENV_READER_RESULT = "1";
+    private static final Integer SIZE = 10;
 
     @Test
     @DisplayName("Get best match response")
@@ -94,7 +95,7 @@ class AlphabeticalSearchRequestsTest {
 
         SearchHits searchHits = alphabeticalSearchRequests
             .getAboveResultsResponse("requestId",
-                "orderedAlpha", "topHit");
+                "orderedAlpha", "topHit", SIZE);
 
         assertNotNull(searchHits);
         assertEquals(1, searchHits.getTotalHits().value);
@@ -109,7 +110,7 @@ class AlphabeticalSearchRequestsTest {
 
         SearchHits searchHits = alphabeticalSearchRequests
             .getDescendingResultsResponse("requestId",
-                "orderedAlpha", "topHit");
+                "orderedAlpha", "topHit", SIZE);
 
         assertNotNull(searchHits);
         assertEquals(1, searchHits.getTotalHits().value);

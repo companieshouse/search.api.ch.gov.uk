@@ -45,20 +45,25 @@ class DissolvedSearchControllerTest {
     private static final String SEARCH_TYPE_BEST_MATCH = "best-match";
     private static final String SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH = "previous-name-dissolved";
     private static final String COMPANY_NUMBER = "00000000";
+    private static final Integer START_INDEX = 0;
+    private static final Integer START_INDEX_LESS_THAN_ZERO = -1;
+    private static final String SEARCH_BEFORE = null;
+    private static final String SEARCH_AFTER = null;
+    private static final Integer SIZE = null;
 
     @Test
     @DisplayName("Test alphabetical search for dissolved found")
     void testAlphabeticalSearchForDissolvedFound() {
 
-        DissolvedResponseObject responseObject =
-                new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
+        DissolvedResponseObject responseObject = new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
 
-        when(mockSearchIndexService.searchAlphabetical(COMPANY_NAME, REQUEST_ID)).thenReturn(responseObject);
+        when(mockSearchIndexService.searchAlphabetical(COMPANY_NAME, SEARCH_BEFORE, SEARCH_AFTER, SIZE, REQUEST_ID))
+                .thenReturn(responseObject);
         when(mockApiToResponseMapper.mapDissolved(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
-        ResponseEntity responseEntity =
-                dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_ALPHABETICAL, REQUEST_ID);
+        ResponseEntity responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME,
+                SEARCH_TYPE_ALPHABETICAL, SEARCH_BEFORE, SEARCH_AFTER, SIZE, START_INDEX, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
@@ -68,15 +73,51 @@ class DissolvedSearchControllerTest {
     @DisplayName("Test best match for dissolved found")
     void testBestMatchForDissolvedFound() {
 
-        DissolvedResponseObject responseObject =
-                new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
+        DissolvedResponseObject responseObject = new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
 
-        when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH)).thenReturn(responseObject);
+        when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX))
+                .thenReturn(responseObject);
         when(mockApiToResponseMapper.mapDissolved(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
-        ResponseEntity responseEntity =
-                dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH, REQUEST_ID);
+        ResponseEntity responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH,
+                SEARCH_BEFORE, SEARCH_AFTER, SIZE, START_INDEX, REQUEST_ID);
+
+        assertNotNull(responseEntity);
+        assertEquals(FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test best match for dissolved found without providing start index")
+    void testBestMatchForDissolvedFoundNoStartIndex() {
+
+        DissolvedResponseObject responseObject = new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
+
+        when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX))
+                .thenReturn(responseObject);
+        when(mockApiToResponseMapper.mapDissolved(responseObject))
+                .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
+
+        ResponseEntity responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH,
+                SEARCH_BEFORE, SEARCH_AFTER, SIZE, null, REQUEST_ID);
+
+        assertNotNull(responseEntity);
+        assertEquals(FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test best match for dissolved found with start index out of bounds")
+    void testBestMatchForDissolvedFoundStartIndexOutOfBounds() {
+
+        DissolvedResponseObject responseObject = new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
+
+        when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX))
+                .thenReturn(responseObject);
+        when(mockApiToResponseMapper.mapDissolved(responseObject))
+                .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
+
+        ResponseEntity responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH,
+                SEARCH_BEFORE, SEARCH_AFTER, SIZE, -1, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
@@ -86,15 +127,15 @@ class DissolvedSearchControllerTest {
     @DisplayName("Test previous names best match for dissolved found")
     void testPreviousNamesBestMatchForDissolvedFound() {
 
-        DissolvedResponseObject responseObject =
-                new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
+        DissolvedResponseObject responseObject = new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
 
-        when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH)).thenReturn(responseObject);
+        when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH,
+                START_INDEX)).thenReturn(responseObject);
         when(mockApiToResponseMapper.mapDissolved(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
-        ResponseEntity responseEntity =
-                dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, REQUEST_ID);
+        ResponseEntity responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME,
+                SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, SEARCH_BEFORE, SEARCH_AFTER, SIZE, START_INDEX, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
@@ -104,12 +145,11 @@ class DissolvedSearchControllerTest {
     @DisplayName("Test incorrect search_type parameter returns correct response")
     void testIncorrectSearchTypeParameter() {
 
-        when(mockApiToResponseMapper.mapDissolved(any()))
-                .thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR)
-                        .body("Invalid url parameter for search_type, please try 'alphabetical' or 'best-match'"));
+        when(mockApiToResponseMapper.mapDissolved(any())).thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                .body("Invalid url parameter for search_type, please try 'alphabetical' or 'best-match'"));
 
-        ResponseEntity responseEntity =
-                dissolvedSearchController.searchCompanies(COMPANY_NAME, "aaa", REQUEST_ID);
+        ResponseEntity responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME, "aaa", SEARCH_BEFORE,
+                SEARCH_AFTER, SIZE, START_INDEX, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
@@ -132,7 +172,6 @@ class DissolvedSearchControllerTest {
         searchResults.setItems(companies);
         searchResults.setEtag("test etag");
         searchResults.setTopHit(topHit);
-
 
         return searchResults;
     }

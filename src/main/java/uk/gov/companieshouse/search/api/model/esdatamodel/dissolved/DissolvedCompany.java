@@ -20,6 +20,9 @@ public class DissolvedCompany {
     @JsonProperty("company_status")
     private String companyStatus;
 
+    @JsonProperty("ordered_alpha_key_with_id")
+    private String orderedAlphaKeyWithId;
+
     @JsonProperty("kind")
     private String kind;
 
@@ -57,6 +60,14 @@ public class DissolvedCompany {
 
     public void setCompanyStatus(String companyStatus) {
         this.companyStatus = companyStatus;
+    }
+
+    public String getOrderedAlphaKeyWithId() {
+        return orderedAlphaKeyWithId;
+    }
+
+    public void setOrderedAlphaKeyWithId(String orderedAlphaKeyWithId) {
+        this.orderedAlphaKeyWithId = orderedAlphaKeyWithId;
     }
 
     public String getKind() {

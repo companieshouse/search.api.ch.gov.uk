@@ -27,7 +27,7 @@ import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEA
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AlphabeticalSearchControllerTest {
+class AlphabeticalSearchControllerTest {
 
     @Mock
     private AlphabeticalSearchIndexService mockSearchIndexService;
@@ -48,12 +48,12 @@ public class AlphabeticalSearchControllerTest {
         ResponseObject responseObject =
             new ResponseObject(SEARCH_NOT_FOUND, null);
 
-        when(mockSearchIndexService.search(COMPANY_NAME, REQUEST_ID)).thenReturn(responseObject);
+        when(mockSearchIndexService.search(COMPANY_NAME, null, null, null, REQUEST_ID)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(NOT_FOUND).build());
 
         ResponseEntity responseEntity =
-            alphabeticalSearchController.searchByCorporateName("test name", REQUEST_ID);
+            alphabeticalSearchController.searchByCorporateName("test name", null, null, null, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(NOT_FOUND, responseEntity.getStatusCode());
@@ -66,12 +66,12 @@ public class AlphabeticalSearchControllerTest {
         ResponseObject responseObject =
             new ResponseObject(SEARCH_FOUND, createSearchResults());
 
-        when(mockSearchIndexService.search(COMPANY_NAME, REQUEST_ID)).thenReturn(responseObject);
+        when(mockSearchIndexService.search(COMPANY_NAME, null, null, null, REQUEST_ID)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity responseEntity =
-            alphabeticalSearchController.searchByCorporateName("test name", REQUEST_ID);
+            alphabeticalSearchController.searchByCorporateName("test name", null, null, null, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());

@@ -11,4 +11,6 @@ public interface SearchIndexService {
      * @return {@link ResponseObject}
      */
     ResponseObject search(String searchParam, String requestId);
+    
+    ResponseObject search(String searchParam, String searchBefore, String searchAfter, Integer size, String requestId);
 }
