@@ -42,7 +42,7 @@ public class DissolvedSearchRequestService {
     private static final String RESULT_FOUND = "A result has been found";
     private static final String SEARCH_HITS = "searchHits";
 
-    public DissolvedSearchResults getSearchResults(String companyName, String searchBefore, String searchAfter,
+    public DissolvedSearchResults<DissolvedCompany> getSearchResults(String companyName, String searchBefore, String searchAfter,
             Integer size, String requestId) throws SearchException {
         Map<String, Object> logMap = getLogMap(requestId, companyName);
         LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_BEFORE, searchBefore);
@@ -99,7 +99,7 @@ public class DissolvedSearchRequestService {
             throw new SearchException("error occurred reading data for highest match from " + SEARCH_HITS, e);
         }
 
-        return new DissolvedSearchResults(etag, topHit, results, kind);
+        return new DissolvedSearchResults<DissolvedCompany>(etag, topHit, results, kind);
     }
 
     public DissolvedSearchResults<DissolvedCompany> getBestMatchSearchResults(String companyName,
