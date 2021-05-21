@@ -121,7 +121,7 @@ class ApiToResponseMapperTest {
 
     @Test
     @DisplayName("Test if Search found returned for dissolved company")
-    public void testFoundReturnedDissolved() {
+    void testFoundReturnedDissolved() {
 
         DissolvedResponseObject responseObject =
                 new DissolvedResponseObject(SEARCH_FOUND, new DissolvedSearchResults());
