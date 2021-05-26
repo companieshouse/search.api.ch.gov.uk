@@ -30,7 +30,7 @@ public class DissolvedSearchQueries extends AbstractSearchQuery {
 
         BoolQueryBuilder boolQueryBuilder =
                 QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("previous_company_names.short_name.company_name_best_match", companySearchTerm))
-                        .should(QueryBuilders.matchQuery("_id", companySearchTerm));;
+                        .should(QueryBuilders.matchQuery("_id", companySearchTerm));
 
         return QueryBuilders.nestedQuery("previous_company_names", boolQueryBuilder, ScoreMode.Avg)
                 .innerHit(new InnerHitBuilder());
