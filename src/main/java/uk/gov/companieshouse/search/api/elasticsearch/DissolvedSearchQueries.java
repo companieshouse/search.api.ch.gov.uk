@@ -23,7 +23,7 @@ public class DissolvedSearchQueries extends AbstractSearchQuery {
     }
 
     public QueryBuilder createBestMatchQuery(String companySearchTerm) {
-        return QueryBuilders.multiMatchQuery(companySearchTerm,"company_number", "short_name.company_name_best_match");
+        return QueryBuilders.multiMatchQuery(companySearchTerm,"company_number.company_number_tokenised", "short_name.company_name_best_match");
     }
 
     public QueryBuilder createPreviousNamesBestMatchQuery(String companySearchTerm) {
