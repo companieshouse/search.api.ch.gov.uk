@@ -18,8 +18,10 @@ The supported environmental variables have been categorised by use case and are 
 ### Deployment Variables
 Name                                      | Description                                                                  | Mandatory | Default | Example
 ----------------------------------------- | ---------------------------------------------------------------------------- | --------- | ------- | ----------------------------------------
-SEARCH_API_HOST                           | elastic search database host name                                            | ✓         |         | es7-database-host-name.aws.chdev.org
+ELASTIC_SEARCH_URL                        | elastic search cluster host name for alphabetical search index                                            | ✓         |         | es7-alphabetical-host-name.aws.chdev.org
 ALPHABETICAL_SEARCH_INDEX                 | elastic search index name for the alphabetical search                        | ✓         |         | alpha-search
-ALPHABETICAL_SEARCH_RESULT_MAX            | max results return for alphabetical search before filtering to 20            | ✓         |         | 250
+ALPHABETICAL_SEARCH_RESULT_MAX            | max results returned for alphabetical search before filtering to 20          | ✓         |         | 20
+ALPHAKEY_SERVICE_URL                      | pointer to alphakey service                                                  | ✓         |         | alpha-key-url/alphakey?name=
+DISSOLVED_SEARCH_URL                      | elastic search cluster for dissolved search index                            | ✓         |         | es7-dissolved-host-name.aws.chdev.org
 DISSOLVED_SEARCH_INDEX                    | elastic search index name for the dissolved search                           | ✓         |         | dissolved-search
-DISSOLVED_SEARCH_RESULT_MAX               | max results for the dissolved search before filtering to 20                  | ✓         |         | 250
+DISSOLVED_SEARCH_RESULT_MAX               | max results for the dissolved search before filtering to 20                  | ✓         |         | 20
