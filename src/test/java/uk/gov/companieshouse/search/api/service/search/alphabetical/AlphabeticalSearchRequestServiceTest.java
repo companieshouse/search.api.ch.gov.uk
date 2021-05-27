@@ -69,7 +69,7 @@ class AlphabeticalSearchRequestServiceTest {
             searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(searchResults);
-        assertEquals( TOP_HIT, searchResults.getTopHit());
+        assertEquals( TOP_HIT, searchResults.getTopHit().getCompanyName());
         assertEquals(3, searchResults.getItems().size());
     }
 
@@ -95,7 +95,7 @@ class AlphabeticalSearchRequestServiceTest {
             searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(searchResults);
-        assertEquals(TOP_HIT, searchResults.getTopHit());
+        assertEquals(TOP_HIT, searchResults.getTopHit().getCompanyName());
         assertEquals(3, searchResults.getItems().size());
     }
 
@@ -124,7 +124,7 @@ class AlphabeticalSearchRequestServiceTest {
             searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(searchResults);
-        assertEquals(TOP_HIT, searchResults.getTopHit());
+        assertEquals(TOP_HIT, searchResults.getTopHit().getCompanyName());
         assertEquals(3, searchResults.getItems().size());
     }
 
@@ -170,7 +170,7 @@ class AlphabeticalSearchRequestServiceTest {
                 SEARCH_BEFORE_VALUE, null, null, REQUEST_ID);
 
         assertNotNull(searchResults);
-        assertEquals(TOP_HIT, searchResults.getTopHit());
+        assertEquals(TOP_HIT, searchResults.getTopHit().getCompanyName());
         assertEquals(1, searchResults.getItems().size());
     }
 
@@ -190,7 +190,7 @@ class AlphabeticalSearchRequestServiceTest {
                 null, SEARCH_AFTER_VALUE, null, REQUEST_ID);
 
         assertNotNull(searchResults);
-        assertEquals(TOP_HIT, searchResults.getTopHit());
+        assertEquals(TOP_HIT, searchResults.getTopHit().getCompanyName());
         assertEquals(1, searchResults.getItems().size());
     }
 
@@ -213,7 +213,7 @@ class AlphabeticalSearchRequestServiceTest {
                 SEARCH_BEFORE_VALUE, SEARCH_AFTER_VALUE, null, REQUEST_ID);
 
         assertNotNull(searchResults);
-        assertEquals(TOP_HIT, searchResults.getTopHit());
+        assertEquals(TOP_HIT, searchResults.getTopHit().getCompanyName());
         assertEquals(3, searchResults.getItems().size());
     }
 

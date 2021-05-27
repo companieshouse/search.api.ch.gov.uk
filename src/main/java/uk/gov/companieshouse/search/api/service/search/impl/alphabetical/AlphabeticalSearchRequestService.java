@@ -84,6 +84,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 topHitCompany.setCompanyName(company.getCompanyName());
                 topHitCompany.setCompanyNumber(company.getCompanyNumber());
                 topHitCompany.setCompanyStatus(company.getCompanyStatus());
+                topHitCompany.setOrderedAlphaKeyWithId(company.getOrderedAlphaKeyWithId());
                 topHitCompany.setKind(company.getKind());
 
                 if ((searchBefore == null && searchAfter == null) || (searchBefore != null && searchAfter != null)) {
@@ -190,6 +191,8 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         company.setCompanyNumber((String) (items.get("company_number")));
         company.setCompanyStatus((String) (items.get("company_status")));
         company.setOrderedAlphaKey((String) items.get("ordered_alpha_key"));
+        company.setOrderedAlphaKeyWithId((String) sourceAsMap.get("ordered_alpha_key_with_id"));
+        company.setKind((String) sourceAsMap.get("kind"));
 
         companyLinks.setSelf((String) (links.get("self")));
         company.setLinks(companyLinks);

@@ -18,9 +18,6 @@ public class DissolvedTopHit extends TopHit {
     @JsonProperty("date_of_creation")
     private LocalDate dateOfCreation;
 
-    @JsonProperty("ordered_alpha_key_with_id")
-    private String orderedAlphaKeyWithId;
-
     @JsonProperty("address")
     private Address address;
 
@@ -41,14 +38,6 @@ public class DissolvedTopHit extends TopHit {
 
     public void setDateOfCreation(LocalDate dateOfCreation) {
         this.dateOfCreation = dateOfCreation;
-    }
-
-    public String getOrderedAlphaKeyWithId() {
-        return orderedAlphaKeyWithId;
-    }
-
-    public void setOrderedAlphaKeyWithId(String orderedAlphaKeyWithId) {
-        this.orderedAlphaKeyWithId = orderedAlphaKeyWithId;
     }
 
     public Address getAddress() {
