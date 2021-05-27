@@ -22,14 +22,15 @@ public class DissolvedSearchQueries extends AbstractSearchQuery {
         return QueryBuilders.matchPhrasePrefixQuery("company_name.startswith", corporateName);
     }
 
-    public QueryBuilder createBestMatchQuery(String companyName) {
-        return QueryBuilders.matchQuery("short_name.company_name_best_match", companyName);
+    public QueryBuilder createBestMatchQuery(String companySearchTerm) {
+        return QueryBuilders.multiMatchQuery(companySearchTerm,"company_number", "short_name.company_name_best_match");
     }
 
-    public QueryBuilder createPreviousNamesBestMatchQuery(String companyName) {
+    public QueryBuilder createPreviousNamesBestMatchQuery(String companySearchTerm) {
 
         BoolQueryBuilder boolQueryBuilder =
-                QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("previous_company_names.short_name.company_name_best_match", companyName));
+                QueryBuilders.boolQuery().should(QueryBuilders.matchQuery("previous_company_names.short_name.company_name_best_match", companySearchTerm))
+                        .should(QueryBuilders.matchQuery("_id", companySearchTerm));
 
         return QueryBuilders.nestedQuery("previous_company_names", boolQueryBuilder, ScoreMode.Avg)
                 .innerHit(new InnerHitBuilder());
