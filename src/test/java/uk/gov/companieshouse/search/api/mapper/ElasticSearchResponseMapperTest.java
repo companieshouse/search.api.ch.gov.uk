@@ -11,11 +11,12 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
 import uk.gov.companieshouse.search.api.model.PreviousNamesTopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
+import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
+import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.previousnames.DissolvedPreviousName;
 
 import java.time.LocalDate;

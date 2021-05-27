@@ -2,8 +2,9 @@ package uk.gov.companieshouse.search.api.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
+
+import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
+import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
 
 import java.time.LocalDate;
 import java.util.List;

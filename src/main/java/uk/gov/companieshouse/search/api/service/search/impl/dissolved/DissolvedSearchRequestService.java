@@ -19,7 +19,7 @@ import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
 import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
 import uk.gov.companieshouse.search.api.model.PreviousNamesTopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
+import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.previousnames.DissolvedPreviousName;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;

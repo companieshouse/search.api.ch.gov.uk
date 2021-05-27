@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
-import uk.gov.companieshouse.search.api.model.response.ResponseObject;
+import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 
 @RestController
@@ -35,7 +35,7 @@ public class UpsertCompanyController {
         logMap.put(LoggingUtils.COMPANY_NUMBER, company.getCompanyNumber());
         LoggingUtils.getLogger().info("Upserting company", logMap);
 
-        ResponseObject responseObject = upsertCompanyService.upsert(company);
+        DissolvedResponseObject responseObject = upsertCompanyService.upsert(company);
 
         return apiToResponseMapper.map(responseObject);
     }

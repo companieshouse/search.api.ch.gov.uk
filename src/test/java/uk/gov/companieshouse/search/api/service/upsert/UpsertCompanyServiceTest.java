@@ -1,5 +1,17 @@
 package uk.gov.companieshouse.search.api.service.upsert;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_UPSERTED;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPDATE_REQUEST_ERROR;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPSERT_ERROR;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -9,23 +21,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
-import uk.gov.companieshouse.search.api.model.response.ResponseObject;
-import uk.gov.companieshouse.search.api.service.rest.RestClientService;
+import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_UPSERTED;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPDATE_REQUEST_ERROR;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPSERT_ERROR;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -51,7 +51,7 @@ class UpsertCompanyServiceTest {
         when(mockUpsertRequestService.createUpdateRequest(
             company, indexRequest)).thenReturn(any(UpdateRequest.class));
 
-        ResponseObject responseObject = upsertCompanyService.upsert(company);
+        DissolvedResponseObject responseObject = upsertCompanyService.upsert(company);
 
         assertNotNull(responseObject);
         assertEquals(DOCUMENT_UPSERTED, responseObject.getStatus());
@@ -66,7 +66,7 @@ class UpsertCompanyServiceTest {
 
         when(mockUpsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
 
-        ResponseObject responseObject = upsertCompanyService.upsert(company);
+        DissolvedResponseObject responseObject = upsertCompanyService.upsert(company);
 
         assertNotNull(responseObject);
         assertEquals(UPSERT_ERROR, responseObject.getStatus());
@@ -83,7 +83,7 @@ class UpsertCompanyServiceTest {
         when(mockUpsertRequestService.createUpdateRequest(
             company, indexRequest)).thenThrow(UpsertException.class);
 
-        ResponseObject responseObject = upsertCompanyService.upsert(company);
+        DissolvedResponseObject responseObject = upsertCompanyService.upsert(company);
 
         assertNotNull(responseObject);
         assertEquals(UPSERT_ERROR, responseObject.getStatus());
@@ -103,7 +103,7 @@ class UpsertCompanyServiceTest {
 
         when(mockRestClientService.upsert(updateRequest)).thenThrow(IOException.class);
 
-        ResponseObject responseObject = upsertCompanyService.upsert(company);
+        DissolvedResponseObject responseObject = upsertCompanyService.upsert(company);
 
         assertNotNull(responseObject);
         assertEquals(UPDATE_REQUEST_ERROR, responseObject.getStatus());
