@@ -104,7 +104,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
             LoggingUtils.getLogger().error("failed to map highest map to company object", logMap);
             throw new SearchException("error occurred reading data for highest match from " + "searchHits", e);
         }
-        return new SearchResults<Company>("", topHitCompany, results, kind);
+        return new SearchResults<>("", topHitCompany, results, kind);
     }
 
     public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphakey, String requestId)
@@ -192,13 +192,12 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         company.setCompanyNumber((String) (items.get("company_number")));
         company.setCompanyStatus((String) (items.get("company_status")));
         company.setOrderedAlphaKey((String) items.get("ordered_alpha_key"));
-        company.setOrderedAlphaKeyWithId((String) sourceAsMap.get("ordered_alpha_key_with_id"));
+        company.setOrderedAlphaKeyWithId((String) sourceAsMap.get(ORDERED_ALPHA_KEY_WITH_ID));
         company.setKind((String) sourceAsMap.get("kind"));
 
         companyLinks.setSelf((String) (links.get("self")));
         company.setLinks(companyLinks);
 
-        // company.setId((String) sourceAsMap.get("ID"));
         company.setCompanyType((String) sourceAsMap.get("company_type"));
 
         return company;

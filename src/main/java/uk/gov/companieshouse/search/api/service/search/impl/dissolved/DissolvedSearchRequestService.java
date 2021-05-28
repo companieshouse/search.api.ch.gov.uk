@@ -99,7 +99,7 @@ public class DissolvedSearchRequestService {
             throw new SearchException("error occurred reading data for highest match from " + SEARCH_HITS, e);
         }
 
-        return new SearchResults<DissolvedCompany>(etag, topHit, results, kind);
+        return new SearchResults<>(etag, topHit, results, kind);
     }
 
     public SearchResults<DissolvedCompany> getBestMatchSearchResults(String companyName,

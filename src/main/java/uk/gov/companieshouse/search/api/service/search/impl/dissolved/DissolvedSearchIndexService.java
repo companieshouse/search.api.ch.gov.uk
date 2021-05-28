@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.SearchResults;
+import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 
@@ -29,7 +30,7 @@ public class DissolvedSearchIndexService {
             Integer size, String requestId) {
         Map<String, Object> logMap = getLogMap(companyName, requestId, DISSOLVED_SEARCH_ALPHABETICAL);
 
-        SearchResults searchResults;
+        SearchResults<DissolvedCompany> searchResults;
         try {
             searchResults = dissolvedSearchRequestService.getSearchResults(companyName, searchBefore, searchAfter, size,
                     requestId);
