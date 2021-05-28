@@ -9,10 +9,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
-import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
+import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
-import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
+import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchIndexService;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ class DissolvedSearchControllerTest {
     @DisplayName("Test alphabetical search for dissolved found")
     void testAlphabeticalSearchForDissolvedFound() {
 
-        DissolvedResponseObject responseObject = new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
+        ResponseObject responseObject = new ResponseObject(SEARCH_FOUND, createSearchResults());
 
         when(mockSearchIndexService.searchAlphabetical(COMPANY_NAME, SEARCH_BEFORE, SEARCH_AFTER, SIZE, REQUEST_ID))
                 .thenReturn(responseObject);
@@ -73,7 +73,7 @@ class DissolvedSearchControllerTest {
     @DisplayName("Test best match for dissolved found")
     void testBestMatchForDissolvedFound() {
 
-        DissolvedResponseObject responseObject = new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
+        ResponseObject responseObject = new ResponseObject(SEARCH_FOUND, createSearchResults());
 
         when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX))
                 .thenReturn(responseObject);
@@ -91,7 +91,7 @@ class DissolvedSearchControllerTest {
     @DisplayName("Test best match for dissolved found without providing start index")
     void testBestMatchForDissolvedFoundNoStartIndex() {
 
-        DissolvedResponseObject responseObject = new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
+        ResponseObject responseObject = new ResponseObject(SEARCH_FOUND, createSearchResults());
 
         when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX))
                 .thenReturn(responseObject);
@@ -109,7 +109,7 @@ class DissolvedSearchControllerTest {
     @DisplayName("Test best match for dissolved found with start index out of bounds")
     void testBestMatchForDissolvedFoundStartIndexOutOfBounds() {
 
-        DissolvedResponseObject responseObject = new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
+        ResponseObject responseObject = new ResponseObject(SEARCH_FOUND, createSearchResults());
 
         when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX))
                 .thenReturn(responseObject);
@@ -127,7 +127,7 @@ class DissolvedSearchControllerTest {
     @DisplayName("Test previous names best match for dissolved found")
     void testPreviousNamesBestMatchForDissolvedFound() {
 
-        DissolvedResponseObject responseObject = new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
+        ResponseObject responseObject = new ResponseObject(SEARCH_FOUND, createSearchResults());
 
         when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH,
                 START_INDEX)).thenReturn(responseObject);
@@ -155,8 +155,8 @@ class DissolvedSearchControllerTest {
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     }
 
-    private DissolvedSearchResults createSearchResults() {
-        DissolvedSearchResults<DissolvedCompany> searchResults = new DissolvedSearchResults<>();
+    private SearchResults createSearchResults() {
+        SearchResults<DissolvedCompany> searchResults = new SearchResults<>();
         List<DissolvedCompany> companies = new ArrayList<>();
         DissolvedCompany company = new DissolvedCompany();
 

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
-import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
+import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
 
@@ -32,7 +32,7 @@ public class UpsertCompanyService {
      * @param company - Company sent over in REST call to be added/updated
      * @return {@link ResponseObject}
      */
-    public DissolvedResponseObject upsert(CompanyProfileApi company) {
+    public ResponseObject upsert(CompanyProfileApi company) {
         Map<String, Object> logMap = new HashMap<>();
         logMap.put(LoggingUtils.COMPANY_NAME, company.getCompanyName());
         logMap.put(LoggingUtils.COMPANY_NUMBER, company.getCompanyNumber());
@@ -47,17 +47,17 @@ public class UpsertCompanyService {
             updateRequest = upsertRequestService.createUpdateRequest(company, indexRequest);
         } catch (UpsertException e) {
             LoggingUtils.getLogger().error("An error occured attempting upsert the document", logMap);
-            return new DissolvedResponseObject(ResponseStatus.UPSERT_ERROR);
+            return new ResponseObject(ResponseStatus.UPSERT_ERROR);
         }
 
         try {
             restClientService.upsert(updateRequest);
         } catch (IOException e) {
             LoggingUtils.getLogger().error("IOException when upserting company", logMap);
-            return new DissolvedResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
+            return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
         }
 
         LoggingUtils.getLogger().info("Upsert successful for ", logMap);
-        return new DissolvedResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
+        return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
     }
 }

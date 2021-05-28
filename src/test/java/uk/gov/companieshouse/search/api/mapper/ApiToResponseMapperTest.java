@@ -23,8 +23,8 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
-import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
-import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
+import uk.gov.companieshouse.search.api.model.SearchResults;
+import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -37,8 +37,8 @@ class ApiToResponseMapperTest {
     @DisplayName("Test if OK returned")
     void testFoundReturned() {
 
-        DissolvedResponseObject responseObject =
-            new DissolvedResponseObject(SEARCH_FOUND, new DissolvedSearchResults());
+        ResponseObject responseObject =
+            new ResponseObject(SEARCH_FOUND, new SearchResults());
 
         ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
 
@@ -51,8 +51,8 @@ class ApiToResponseMapperTest {
     @DisplayName("Test if Not Found returned")
     void testNotFoundReturned() {
 
-        DissolvedResponseObject responseObject =
-            new DissolvedResponseObject(SEARCH_NOT_FOUND);
+        ResponseObject responseObject =
+            new ResponseObject(SEARCH_NOT_FOUND);
 
         ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
 
@@ -65,8 +65,8 @@ class ApiToResponseMapperTest {
     @DisplayName("Test if OK returned")
     void testOKReturned() {
 
-        DissolvedResponseObject responseObject =
-            new DissolvedResponseObject(DOCUMENT_UPSERTED);
+        ResponseObject responseObject =
+            new ResponseObject(DOCUMENT_UPSERTED);
 
         ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
 
@@ -79,8 +79,8 @@ class ApiToResponseMapperTest {
     @DisplayName("Test if Bad Request returned on update request error")
     void testBadRequestOnUpdateReturned() {
 
-        DissolvedResponseObject responseObject =
-            new DissolvedResponseObject(UPDATE_REQUEST_ERROR);
+        ResponseObject responseObject =
+            new ResponseObject(UPDATE_REQUEST_ERROR);
 
         ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
 
@@ -94,8 +94,8 @@ class ApiToResponseMapperTest {
     @DisplayName("Test if Bad Request returned on upsert error")
     void testBadRequestOnUpsertReturned() {
 
-        DissolvedResponseObject responseObject =
-            new DissolvedResponseObject(UPSERT_ERROR);
+        ResponseObject responseObject =
+            new ResponseObject(UPSERT_ERROR);
 
         ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
 
@@ -108,8 +108,8 @@ class ApiToResponseMapperTest {
     @DisplayName("Test if Internal Server Error returned")
     void testInternalServerErrorReturned() {
 
-        DissolvedResponseObject responseObject =
-            new DissolvedResponseObject(SEARCH_ERROR);
+        ResponseObject responseObject =
+            new ResponseObject(SEARCH_ERROR);
 
         ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
 
@@ -122,8 +122,8 @@ class ApiToResponseMapperTest {
     @DisplayName("Test if Search found returned for dissolved company")
     void testFoundReturnedDissolved() {
 
-        DissolvedResponseObject responseObject =
-                new DissolvedResponseObject(SEARCH_FOUND, new DissolvedSearchResults());
+        ResponseObject responseObject =
+                new ResponseObject(SEARCH_FOUND, new SearchResults());
 
         ResponseEntity responseEntity = apiToResponseMapper.mapDissolved(responseObject);
 
@@ -136,8 +136,8 @@ class ApiToResponseMapperTest {
     @DisplayName("Test if Not Found returned for dissolved company")
     void testNotFoundReturnedDissolved() {
 
-        DissolvedResponseObject responseObject =
-                new DissolvedResponseObject(SEARCH_NOT_FOUND);
+        ResponseObject responseObject =
+                new ResponseObject(SEARCH_NOT_FOUND);
 
         ResponseEntity responseEntity = apiToResponseMapper.mapDissolved(responseObject);
 
@@ -150,8 +150,8 @@ class ApiToResponseMapperTest {
     @DisplayName("Test if Request Parameter Error returned for dissolved company")
     void testRequestParamErrorReturnedDissolved() {
 
-        DissolvedResponseObject responseObject =
-                new DissolvedResponseObject(REQUEST_PARAMETER_ERROR);
+        ResponseObject responseObject =
+                new ResponseObject(REQUEST_PARAMETER_ERROR);
 
         ResponseEntity responseEntity = apiToResponseMapper.mapDissolved(responseObject);
 
@@ -164,8 +164,8 @@ class ApiToResponseMapperTest {
     @DisplayName("Test if Internal Server Error returned for dissolved company")
     void testInternalServerErrorReturnedDissolved() {
 
-        DissolvedResponseObject responseObject =
-                new DissolvedResponseObject(SEARCH_ERROR);
+        ResponseObject responseObject =
+                new ResponseObject(SEARCH_ERROR);
 
         ResponseEntity responseEntity = apiToResponseMapper.mapDissolved(responseObject);
 

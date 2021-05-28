@@ -17,11 +17,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import uk.gov.companieshouse.search.api.exception.SearchException;
-import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
+import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
-import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
+import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
@@ -52,7 +52,7 @@ class AlphabeticalSearchIndexServiceTest {
     void searchRequestSuccessful() throws Exception {
         when(mockSearchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID))
             .thenReturn(createSearchResults(true));
-        DissolvedResponseObject responseObject = searchIndexService.search(CORPORATE_NAME, null, null, null, REQUEST_ID);
+        ResponseObject responseObject = searchIndexService.search(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_FOUND, responseObject.getStatus());
@@ -64,7 +64,7 @@ class AlphabeticalSearchIndexServiceTest {
         when(mockSearchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID))
             .thenThrow(SearchException.class);
 
-        DissolvedResponseObject responseObject = searchIndexService.search(CORPORATE_NAME, null, null, null, REQUEST_ID);
+        ResponseObject responseObject = searchIndexService.search(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_ERROR, responseObject.getStatus());
@@ -75,14 +75,14 @@ class AlphabeticalSearchIndexServiceTest {
     void searchRequestReturnsNoResults() throws Exception {
         when(mockSearchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID))
             .thenReturn(createSearchResults(false));
-        DissolvedResponseObject responseObject = searchIndexService.search(CORPORATE_NAME, null, null, null, REQUEST_ID);
+        ResponseObject responseObject = searchIndexService.search(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
     }
 
-    private DissolvedSearchResults createSearchResults(boolean isResultsPopulated) {
-        DissolvedSearchResults searchResults = new DissolvedSearchResults();
+    private SearchResults<Company> createSearchResults(boolean isResultsPopulated) {
+        SearchResults<Company> searchResults = new SearchResults<>();
         searchResults.setKind("alphabetical");
         searchResults.setTopHit(TOP_HIT);
 

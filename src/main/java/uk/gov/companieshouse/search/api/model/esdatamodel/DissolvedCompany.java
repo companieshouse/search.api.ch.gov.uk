@@ -9,22 +9,7 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DissolvedCompany {
-
-    @JsonProperty("company_name")
-    private String companyName;
-
-    @JsonProperty("company_number")
-    private String companyNumber;
-
-    @JsonProperty("company_status")
-    private String companyStatus;
-
-    @JsonProperty("ordered_alpha_key_with_id")
-    private String orderedAlphaKeyWithId;
-
-    @JsonProperty("kind")
-    private String kind;
+public class DissolvedCompany extends BaseCompany {
 
     @JsonProperty("date_of_cessation")
     private LocalDate dateOfCessation;
@@ -37,46 +22,6 @@ public class DissolvedCompany {
 
     @JsonProperty("previous_company_names")
     private List<PreviousCompanyName> previousCompanyNames;
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getCompanyNumber() {
-        return companyNumber;
-    }
-
-    public void setCompanyNumber(String companyNumber) {
-        this.companyNumber = companyNumber;
-    }
-
-    public String getCompanyStatus() {
-        return companyStatus;
-    }
-
-    public void setCompanyStatus(String companyStatus) {
-        this.companyStatus = companyStatus;
-    }
-
-    public String getOrderedAlphaKeyWithId() {
-        return orderedAlphaKeyWithId;
-    }
-
-    public void setOrderedAlphaKeyWithId(String orderedAlphaKeyWithId) {
-        this.orderedAlphaKeyWithId = orderedAlphaKeyWithId;
-    }
-
-    public String getKind() {
-        return kind;
-    }
-
-    public void setKind(String kind) {
-        this.kind = kind;
-    }
 
     public LocalDate getDateOfCessation() {
         return dateOfCessation;

@@ -23,7 +23,7 @@ import org.springframework.http.ResponseEntity;
 
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
-import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
+import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,7 +42,7 @@ class UpsertCompanyControllerTest {
     @Test
     @DisplayName("Test upsert company is successful")
     void testUpsertSuccessful() {
-        DissolvedResponseObject responseObject = new DissolvedResponseObject(DOCUMENT_UPSERTED);
+        ResponseObject responseObject = new ResponseObject(DOCUMENT_UPSERTED);
         CompanyProfileApi company = createCompany();
 
         when(mockUpsertCompanyService.upsert(company)).thenReturn(responseObject);
@@ -58,7 +58,7 @@ class UpsertCompanyControllerTest {
     @Test
     @DisplayName("Test upsert company failed to index or update document")
     void testUpsertFailedToIndexOrUpdate() {
-        DissolvedResponseObject responseObject = new DissolvedResponseObject(UPSERT_ERROR);
+        ResponseObject responseObject = new ResponseObject(UPSERT_ERROR);
         CompanyProfileApi company = createCompany();
 
         when(mockUpsertCompanyService.upsert(company)).thenReturn(responseObject);
@@ -74,7 +74,7 @@ class UpsertCompanyControllerTest {
     @Test
     @DisplayName("Test upsert failed during update request")
     void testUpsertFailedUpdateRequest() {
-        DissolvedResponseObject responseObject = new DissolvedResponseObject(UPDATE_REQUEST_ERROR);
+        ResponseObject responseObject = new ResponseObject(UPDATE_REQUEST_ERROR);
         CompanyProfileApi company = createCompany();
 
         when(mockUpsertCompanyService.upsert(company)).thenReturn(responseObject);

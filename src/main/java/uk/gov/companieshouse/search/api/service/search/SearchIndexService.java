@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.search.api.service.search;
 
-import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
+import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 
 public interface SearchIndexService {
 
@@ -10,6 +10,6 @@ public interface SearchIndexService {
      * @param searchParam - Value to search elastc search database with.
      * @return {@link ResponseObject}
      */    
-    DissolvedResponseObject search(String searchParam, String searchBefore, String searchAfter, Integer size, String requestId);
+    ResponseObject search(String searchParam, String searchBefore, String searchAfter, Integer size, String requestId);
 
 }

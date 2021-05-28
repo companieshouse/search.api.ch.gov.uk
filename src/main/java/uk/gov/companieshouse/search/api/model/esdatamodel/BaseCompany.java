@@ -22,9 +22,7 @@ public class BaseCompany {
 
     @JsonProperty("ordered_alpha_key_with_id")
     private String orderedAlphaKeyWithId;
-
-    @JsonProperty("record_type")
-    private String recordType;
+    
     @JsonProperty("kind")
     private String kind;
 

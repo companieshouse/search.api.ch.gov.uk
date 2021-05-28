@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
-import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
+import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
@@ -37,7 +37,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
      * {@inheritDoc}
      */
     @Override
-    public DissolvedSearchResults getAlphabeticalSearchResults(String corporateName, String searchBefore, String searchAfter,
+    public SearchResults<Company> getAlphabeticalSearchResults(String corporateName, String searchBefore, String searchAfter,
             Integer size, String requestId) throws SearchException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, corporateName);
@@ -88,22 +88,23 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 topHitCompany.setKind(company.getKind());
 
                 if ((searchBefore == null && searchAfter == null) || (searchBefore != null && searchAfter != null)) {
+                    LoggingUtils.getLogger().info("Default search before tophit and after top hit", logMap);
                     results = populateAboveResults(requestId, topHitCompany.getCompanyName(), orderedAlphakeyWithId, size);
                     results.add(company);
                     results.addAll(populateBelowResults(requestId, topHitCompany.getCompanyName(), orderedAlphakeyWithId, size));
                 } else if(searchAfter != null){
+                    LoggingUtils.getLogger().info("Searching only companies before ordered alpha key with id", logMap);
                     results.addAll(populateBelowResults(requestId, topHitCompany.getCompanyName(), searchAfter, size));
                 } else {
+                    LoggingUtils.getLogger().info("Searching only companies after ordered alpha key with id", logMap);
                     results.addAll(populateAboveResults(requestId, topHitCompany.getCompanyName(), searchBefore, size));
                 }
-
-                //populateSearchResults(requestId, company.getCompanyName(), results, company, orderedAlphakeyWithId);
             }
         } catch (IOException e) {
             LoggingUtils.getLogger().error("failed to map highest map to company object", logMap);
             throw new SearchException("error occurred reading data for highest match from " + "searchHits", e);
         }
-        return new DissolvedSearchResults("", topHitCompany, results, kind);
+        return new SearchResults<Company>("", topHitCompany, results, kind);
     }
 
     public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphakey, String requestId)

@@ -24,7 +24,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
-import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
+import uk.gov.companieshouse.search.api.model.SearchResults;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchRequestService;
@@ -65,7 +66,7 @@ class AlphabeticalSearchRequestServiceTest {
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
                 null)).thenReturn(createSearchHits());
 
-        DissolvedSearchResults searchResults =
+        SearchResults<Company> searchResults =
             searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(searchResults);
@@ -91,7 +92,7 @@ class AlphabeticalSearchRequestServiceTest {
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
                 null)).thenReturn(createSearchHits());
 
-        DissolvedSearchResults searchResults =
+        SearchResults<Company> searchResults =
             searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(searchResults);
@@ -120,7 +121,7 @@ class AlphabeticalSearchRequestServiceTest {
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
                 null)).thenReturn(createSearchHits());
 
-        DissolvedSearchResults searchResults =
+        SearchResults<Company> searchResults =
             searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(searchResults);
@@ -157,7 +158,7 @@ class AlphabeticalSearchRequestServiceTest {
     @Test
     @DisplayName("Test search request returns results successfully when search_before is not null")
     void testSearchUsinfSearchBefore() throws Exception {
-// TODO
+
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(CORPORATE_NAME)).thenReturn(createAlphaKeyResponse());
 
         when(mockAlphabeticalSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
@@ -166,7 +167,7 @@ class AlphabeticalSearchRequestServiceTest {
         when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID, SEARCH_BEFORE_VALUE, TOP_HIT, null))
                 .thenReturn(createSearchHits());
 
-        DissolvedSearchResults searchResults = searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME,
+        SearchResults<Company> searchResults = searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME,
                 SEARCH_BEFORE_VALUE, null, null, REQUEST_ID);
 
         assertNotNull(searchResults);
@@ -186,7 +187,7 @@ class AlphabeticalSearchRequestServiceTest {
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID, SEARCH_AFTER_VALUE, TOP_HIT, null))
                 .thenReturn(createSearchHits());
 
-        DissolvedSearchResults searchResults = searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME,
+        SearchResults<Company> searchResults = searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME,
                 null, SEARCH_AFTER_VALUE, null, REQUEST_ID);
 
         assertNotNull(searchResults);
@@ -209,7 +210,7 @@ class AlphabeticalSearchRequestServiceTest {
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
                 null)).thenReturn(createSearchHits());
 
-        DissolvedSearchResults searchResults = searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME,
+        SearchResults<Company> searchResults = searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME,
                 SEARCH_BEFORE_VALUE, SEARCH_AFTER_VALUE, null, REQUEST_ID);
 
         assertNotNull(searchResults);

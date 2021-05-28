@@ -1,9 +1,9 @@
 package uk.gov.companieshouse.search.api.service.search;
 
 import uk.gov.companieshouse.search.api.exception.SearchException;
-import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
+import uk.gov.companieshouse.search.api.model.SearchResults;
 
-public interface SearchRequestService {
+public interface SearchRequestService<T> {
 
     /**
      * Returns alphabetical search results for a company
@@ -15,7 +15,7 @@ public interface SearchRequestService {
      * @return {@link SearchResults}
      * @throws SearchException
      */
-    DissolvedSearchResults getAlphabeticalSearchResults(String searchParam, String searchBefore, String searchAfter,
+    SearchResults<T> getAlphabeticalSearchResults(String searchParam, String searchBefore, String searchAfter,
             Integer size, String requestId) throws SearchException;
 
 }

@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
-import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
+import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +51,7 @@ class UpsertCompanyServiceTest {
         when(mockUpsertRequestService.createUpdateRequest(
             company, indexRequest)).thenReturn(any(UpdateRequest.class));
 
-        DissolvedResponseObject responseObject = upsertCompanyService.upsert(company);
+        ResponseObject responseObject = upsertCompanyService.upsert(company);
 
         assertNotNull(responseObject);
         assertEquals(DOCUMENT_UPSERTED, responseObject.getStatus());
@@ -66,7 +66,7 @@ class UpsertCompanyServiceTest {
 
         when(mockUpsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
 
-        DissolvedResponseObject responseObject = upsertCompanyService.upsert(company);
+        ResponseObject responseObject = upsertCompanyService.upsert(company);
 
         assertNotNull(responseObject);
         assertEquals(UPSERT_ERROR, responseObject.getStatus());
@@ -83,7 +83,7 @@ class UpsertCompanyServiceTest {
         when(mockUpsertRequestService.createUpdateRequest(
             company, indexRequest)).thenThrow(UpsertException.class);
 
-        DissolvedResponseObject responseObject = upsertCompanyService.upsert(company);
+        ResponseObject responseObject = upsertCompanyService.upsert(company);
 
         assertNotNull(responseObject);
         assertEquals(UPSERT_ERROR, responseObject.getStatus());
@@ -103,7 +103,7 @@ class UpsertCompanyServiceTest {
 
         when(mockRestClientService.upsert(updateRequest)).thenThrow(IOException.class);
 
-        DissolvedResponseObject responseObject = upsertCompanyService.upsert(company);
+        ResponseObject responseObject = upsertCompanyService.upsert(company);
 
         assertNotNull(responseObject);
         assertEquals(UPDATE_REQUEST_ERROR, responseObject.getStatus());

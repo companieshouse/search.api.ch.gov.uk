@@ -21,9 +21,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
-import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
+import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
-import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
+import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,8 +46,8 @@ class AlphabeticalSearchControllerTest {
     @DisplayName("Test search not found")
     void testSearchNotFound() {
 
-        DissolvedResponseObject responseObject =
-            new DissolvedResponseObject(SEARCH_NOT_FOUND, null);
+        ResponseObject responseObject =
+            new ResponseObject(SEARCH_NOT_FOUND, null);
 
         when(mockSearchIndexService.search(COMPANY_NAME, null, null, null, REQUEST_ID)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
@@ -64,8 +64,8 @@ class AlphabeticalSearchControllerTest {
     @DisplayName("Test search found")
      void testSearchFound() {
 
-        DissolvedResponseObject responseObject =
-            new DissolvedResponseObject(SEARCH_FOUND, createSearchResults());
+        ResponseObject responseObject =
+            new ResponseObject(SEARCH_FOUND, createSearchResults());
 
         when(mockSearchIndexService.search(COMPANY_NAME, null, null, null, REQUEST_ID)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
@@ -78,8 +78,8 @@ class AlphabeticalSearchControllerTest {
         assertEquals(FOUND, responseEntity.getStatusCode());
     }
 
-    private DissolvedSearchResults createSearchResults() {
-        DissolvedSearchResults<Company> searchResults = new DissolvedSearchResults<>();
+    private SearchResults<Company> createSearchResults() {
+        SearchResults<Company> searchResults = new SearchResults<>();
         List<Company> companies = new ArrayList<>();
         
         Company company = new Company();
