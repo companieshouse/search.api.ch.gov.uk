@@ -15,12 +15,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
-import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
+import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
 import uk.gov.companieshouse.search.api.model.PreviousNamesTopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.Address;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.PreviousCompanyName;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
+import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
+import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.previousnames.DissolvedPreviousName;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
@@ -101,8 +101,8 @@ class DissolvedSearchRequestServiceTest {
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID,
                 COMPANY_NAME, SIZE)).thenReturn(searchHits);
 
-        DissolvedSearchResults dissolvedSearchResults = dissolvedSearchRequestService.getSearchResults(COMPANY_NAME,
-                null, null, null, REQUEST_ID);
+        SearchResults<DissolvedCompany> dissolvedSearchResults = dissolvedSearchRequestService
+                .getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -132,8 +132,8 @@ class DissolvedSearchRequestServiceTest {
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID,
                 COMPANY_NAME, SIZE)).thenReturn(searchHits);
 
-        DissolvedSearchResults dissolvedSearchResults = dissolvedSearchRequestService.getSearchResults(COMPANY_NAME,
-                null, null, null, REQUEST_ID);
+        SearchResults<DissolvedCompany> dissolvedSearchResults = dissolvedSearchRequestService
+                .getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -166,8 +166,8 @@ class DissolvedSearchRequestServiceTest {
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID,
                 COMPANY_NAME, SIZE)).thenReturn(searchHits);
 
-        DissolvedSearchResults dissolvedSearchResults = dissolvedSearchRequestService.getSearchResults(COMPANY_NAME,
-                null, null, null, REQUEST_ID);
+        SearchResults<DissolvedCompany> dissolvedSearchResults = dissolvedSearchRequestService
+                .getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertNotNull(dissolvedSearchResults.getEtag());
@@ -205,8 +205,8 @@ class DissolvedSearchRequestServiceTest {
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID,
                 COMPANY_NAME, SIZE)).thenReturn(searchHits);
 
-        DissolvedSearchResults dissolvedSearchResults = dissolvedSearchRequestService.getSearchResults(COMPANY_NAME,
-                null, null, null, REQUEST_ID);
+        SearchResults<DissolvedCompany> dissolvedSearchResults = dissolvedSearchRequestService
+                .getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -243,8 +243,8 @@ class DissolvedSearchRequestServiceTest {
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID,
                 COMPANY_NAME, SIZE)).thenReturn(searchHits);
 
-        DissolvedSearchResults dissolvedSearchResults = dissolvedSearchRequestService.getSearchResults(COMPANY_NAME,
-                null, null, null, REQUEST_ID);
+        SearchResults<DissolvedCompany> dissolvedSearchResults = dissolvedSearchRequestService
+                .getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -281,8 +281,8 @@ class DissolvedSearchRequestServiceTest {
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID,
                 COMPANY_NAME, SIZE)).thenReturn(searchHits);
 
-        DissolvedSearchResults dissolvedSearchResults = dissolvedSearchRequestService.getSearchResults(COMPANY_NAME,
-                null, null, null, REQUEST_ID);
+        SearchResults<DissolvedCompany> dissolvedSearchResults = dissolvedSearchRequestService
+                .getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -319,8 +319,8 @@ class DissolvedSearchRequestServiceTest {
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID,
                 COMPANY_NAME, SIZE)).thenReturn(searchHits);
 
-        DissolvedSearchResults dissolvedSearchResults = dissolvedSearchRequestService.getSearchResults(COMPANY_NAME,
-                null, null, null, REQUEST_ID);
+        SearchResults<DissolvedCompany> dissolvedSearchResults = dissolvedSearchRequestService
+                .getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -355,7 +355,7 @@ class DissolvedSearchRequestServiceTest {
 
         when(mockElasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany)).thenReturn(topHit);
 
-        DissolvedSearchResults dissolvedSearchResults = dissolvedSearchRequestService
+        SearchResults<DissolvedCompany> dissolvedSearchResults = dissolvedSearchRequestService
                 .getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX);
 
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -387,7 +387,7 @@ class DissolvedSearchRequestServiceTest {
 
         when(mockElasticSearchResponseMapper.mapPreviousNamesTopHit(results)).thenReturn(topHit);
 
-        DissolvedSearchResults dissolvedSearchResults = dissolvedSearchRequestService
+        SearchResults<DissolvedPreviousName> dissolvedSearchResults = dissolvedSearchRequestService
                 .getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX);
 
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -448,8 +448,8 @@ class DissolvedSearchRequestServiceTest {
         when(mockDissolvedSearchRequests.getAboveResultsResponse(REQUEST_ID, SEARCH_BEFORE_VALUE, COMPANY_NAME, SIZE))
                 .thenReturn(searchHits);
 
-        DissolvedSearchResults dissolvedSearchResults = dissolvedSearchRequestService.getSearchResults(COMPANY_NAME,
-                SEARCH_BEFORE_VALUE, null, null, REQUEST_ID);
+        SearchResults<DissolvedCompany> dissolvedSearchResults = dissolvedSearchRequestService
+                .getSearchResults(COMPANY_NAME, SEARCH_BEFORE_VALUE, null, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -476,8 +476,8 @@ class DissolvedSearchRequestServiceTest {
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID, SEARCH_AFTER_VALUE, COMPANY_NAME,
                 SIZE)).thenReturn(searchHits);
 
-        DissolvedSearchResults dissolvedSearchResults = dissolvedSearchRequestService.getSearchResults(COMPANY_NAME,
-                null, SEARCH_AFTER_VALUE, null, REQUEST_ID);
+        SearchResults<DissolvedCompany> dissolvedSearchResults = dissolvedSearchRequestService
+                .getSearchResults(COMPANY_NAME, null, SEARCH_AFTER_VALUE, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -507,8 +507,8 @@ class DissolvedSearchRequestServiceTest {
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID,
                 COMPANY_NAME, SIZE)).thenReturn(searchHits);
 
-        DissolvedSearchResults dissolvedSearchResults = dissolvedSearchRequestService.getSearchResults(COMPANY_NAME,
-                SEARCH_BEFORE_VALUE, SEARCH_AFTER_VALUE, null, REQUEST_ID);
+        SearchResults<DissolvedCompany> dissolvedSearchResults = dissolvedSearchRequestService
+                .getSearchResults(COMPANY_NAME, SEARCH_BEFORE_VALUE, SEARCH_AFTER_VALUE, null, REQUEST_ID);
 
         assertNotNull(dissolvedSearchResults);
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
-import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
+import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchIndexService;
 
@@ -59,7 +59,7 @@ public class DissolvedSearchController {
         if (checkSearchTypeParam(searchType)) {
 
             if (searchType.equals(ALPHABETICAL_SEARCH_TYPE)) {
-                DissolvedResponseObject responseObject = searchIndexService.searchAlphabetical(companyName,
+                ResponseObject responseObject = searchIndexService.searchAlphabetical(companyName,
                         searchBefore, searchAfter, size, requestId);
 
                 return apiToResponseMapper.mapDissolved(responseObject);
@@ -71,7 +71,7 @@ public class DissolvedSearchController {
                     startIndex = 0;
                 }
 
-                DissolvedResponseObject responseObject = searchIndexService.searchBestMatch(companyName, requestId,
+                ResponseObject responseObject = searchIndexService.searchBestMatch(companyName, requestId,
                         searchType, startIndex);
 
                 return apiToResponseMapper.mapDissolved(responseObject);
@@ -80,7 +80,7 @@ public class DissolvedSearchController {
         LoggingUtils.getLogger().error("The search_type parameter is incorrect, please try either "
                 + "'alphabetical', 'best-match' or 'previous-name-dissolved': ", logMap);
         return apiToResponseMapper
-                .mapDissolved(new DissolvedResponseObject(ResponseStatus.REQUEST_PARAMETER_ERROR, null));
+                .mapDissolved(new ResponseObject(ResponseStatus.REQUEST_PARAMETER_ERROR, null));
     }
 
     private boolean checkSearchTypeParam(String searchType) {

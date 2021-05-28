@@ -2,9 +2,7 @@ package uk.gov.companieshouse.search.api.mapper;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
-
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -30,7 +28,7 @@ public class ApiToResponseMapper {
     }
 
     // To be removed when alphabetical search response has been updated
-    public ResponseEntity<Object> mapDissolved(DissolvedResponseObject responseObject) {
+    public ResponseEntity<Object> mapDissolved(ResponseObject responseObject) {
 
         switch(responseObject.getStatus()) {
             case SEARCH_FOUND:

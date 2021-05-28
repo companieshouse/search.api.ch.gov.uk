@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
-import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
-import uk.gov.companieshouse.search.api.model.response.DissolvedResponseObject;
+import uk.gov.companieshouse.search.api.model.SearchResults;
+import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
+import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 
 import java.util.Map;
@@ -25,34 +26,34 @@ public class DissolvedSearchIndexService {
     private static final String NO_RESULTS_FOUND = "No results were returned while searching for ";
     private static final String BEST_MATCH_SEARCH_TYPE = "best-match";
 
-    public DissolvedResponseObject searchAlphabetical(String companyName, String searchBefore, String searchAfter,
+    public ResponseObject searchAlphabetical(String companyName, String searchBefore, String searchAfter,
             Integer size, String requestId) {
         Map<String, Object> logMap = getLogMap(companyName, requestId, DISSOLVED_SEARCH_ALPHABETICAL);
 
-        DissolvedSearchResults searchResults;
+        SearchResults<DissolvedCompany> searchResults;
         try {
             searchResults = dissolvedSearchRequestService.getSearchResults(companyName, searchBefore, searchAfter, size,
                     requestId);
         } catch (SearchException e) {
             LoggingUtils.getLogger().error(STANDARD_ERROR_MESSAGE + "alphabetical results on a dissolved company: ",
                     logMap);
-            return new DissolvedResponseObject(ResponseStatus.SEARCH_ERROR, null);
+            return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
 
         if (searchResults.getItems() != null) {
             LoggingUtils.getLogger().info("successful alphabetical search for dissolved company", logMap);
-            return new DissolvedResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+            return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
         }
 
         LoggingUtils.getLogger().info(NO_RESULTS_FOUND + "alphabetical results on a dissolved company", logMap);
-        return new DissolvedResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
+        return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 
-    public DissolvedResponseObject searchBestMatch(String companyName, String requestId, String searchType,
+    public ResponseObject searchBestMatch(String companyName, String requestId, String searchType,
             Integer startIndex) {
         Map<String, Object> logMap = getLogMap(companyName, requestId, searchType);
 
-        DissolvedSearchResults searchResults;
+        SearchResults<?> searchResults;
         try {
             if (searchType.equals(BEST_MATCH_SEARCH_TYPE)) {
                 searchResults = dissolvedSearchRequestService.getBestMatchSearchResults(companyName, requestId,
@@ -64,18 +65,18 @@ public class DissolvedSearchIndexService {
         } catch (SearchException e) {
             LoggingUtils.getLogger()
                     .error(STANDARD_ERROR_MESSAGE + "best matches on a " + searchType + " dissolved company: ", logMap);
-            return new DissolvedResponseObject(ResponseStatus.SEARCH_ERROR, null);
+            return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
 
         if (searchResults.getItems() != null) {
             LoggingUtils.getLogger().info("successful best match search for " + searchType + " dissolved company",
                     logMap);
-            return new DissolvedResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+            return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
         }
 
         LoggingUtils.getLogger().info(NO_RESULTS_FOUND + "best match on a " + searchType + " dissolved company",
                 logMap);
-        return new DissolvedResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
+        return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 
     private Map<String, Object> getLogMap(String companyName, String requestId, String searchType) {

@@ -1,52 +1,75 @@
 package uk.gov.companieshouse.search.api.model;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SearchResults<T> {
 
-    private String searchType;
+    @JsonProperty("etag")
+    private String etag;
 
-    private String topHit;
+    @JsonProperty("top_hit")
+    private TopHit topHit;
 
-    private List<T> results;
+    @JsonProperty("items")
+    private List<T> items;
+
+    @JsonProperty("kind")
+    private String kind;
+
+    @JsonProperty("hits")
+    private Long hits;
 
     public SearchResults() {
     }
 
-    public SearchResults(String searchType, String topHit, List<T> results) {
-        this.searchType = searchType;
+    public SearchResults(String etag, TopHit topHit, List<T> items, String kind) {
+        this.etag = etag;
         this.topHit = topHit;
-        this.results = results;
+        this.items = items;
+        this.kind = kind;
     }
 
-    public String getSearchType() {
-        return searchType;
+    public String getEtag() {
+        return etag;
     }
 
-    public void setSearchType(String searchType) {
-        this.searchType = searchType;
+    public void setEtag(String etag) {
+        this.etag = etag;
     }
 
-    public String getTopHit() {
+    public TopHit getTopHit() {
         return topHit;
     }
 
-    public void setTopHit(String topHit) {
+    public void setTopHit(TopHit topHit) {
         this.topHit = topHit;
     }
 
-    public List<T> getResults() {
-        return results;
+    public List<T> getItems() {
+        return items;
     }
 
-    public void setResults(List<T> results) {
-        this.results = results;
+    public void setItems(List<T> items) {
+        this.items = items;
     }
 
-    @Override
-    public String toString() {
-        return new Gson().toJson(this);
+    public String getKind() {
+        return kind;
+    }
+
+    public void setKind(String kind) {
+        this.kind = kind;
+    }
+
+    public Long getHits() {
+        return hits;
+    }
+
+    public void setHits(Long hits) {
+        this.hits = hits;
     }
 }

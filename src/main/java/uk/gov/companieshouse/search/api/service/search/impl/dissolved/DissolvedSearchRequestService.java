@@ -16,10 +16,10 @@ import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
-import uk.gov.companieshouse.search.api.model.DissolvedSearchResults;
+import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
 import uk.gov.companieshouse.search.api.model.PreviousNamesTopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.DissolvedCompany;
+import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.previousnames.DissolvedPreviousName;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
@@ -42,7 +42,7 @@ public class DissolvedSearchRequestService {
     private static final String RESULT_FOUND = "A result has been found";
     private static final String SEARCH_HITS = "searchHits";
 
-    public DissolvedSearchResults<DissolvedCompany> getSearchResults(String companyName, String searchBefore, String searchAfter,
+    public SearchResults<DissolvedCompany> getSearchResults(String companyName, String searchBefore, String searchAfter,
             Integer size, String requestId) throws SearchException {
         Map<String, Object> logMap = getLogMap(requestId, companyName);
         LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_BEFORE, searchBefore);
@@ -99,10 +99,10 @@ public class DissolvedSearchRequestService {
             throw new SearchException("error occurred reading data for highest match from " + SEARCH_HITS, e);
         }
 
-        return new DissolvedSearchResults<DissolvedCompany>(etag, topHit, results, kind);
+        return new SearchResults<>(etag, topHit, results, kind);
     }
 
-    public DissolvedSearchResults<DissolvedCompany> getBestMatchSearchResults(String companyName,
+    public SearchResults<DissolvedCompany> getBestMatchSearchResults(String companyName,
                                                             String requestId,
                                                             String searchType,
                                                             Integer startIndex) throws SearchException {
@@ -133,14 +133,14 @@ public class DissolvedSearchRequestService {
             throw new SearchException("error occurred reading data for best match from " + SEARCH_HITS, e);
         }
 
-        DissolvedSearchResults<DissolvedCompany> dissolvedSearchResults =
-                new DissolvedSearchResults<>(etag, topHit, results, kind);
+        SearchResults<DissolvedCompany> dissolvedSearchResults =
+                new SearchResults<>(etag, topHit, results, kind);
         dissolvedSearchResults.setHits(numberOfHits);
 
         return dissolvedSearchResults;
     }
 
-    public DissolvedSearchResults<DissolvedPreviousName> getPreviousNamesResults(String companyName,
+    public SearchResults<DissolvedPreviousName> getPreviousNamesResults(String companyName,
                                                                                  String requestId,
                                                                                  String searchType,
                                                                                  Integer startIndex) throws SearchException {
@@ -169,8 +169,8 @@ public class DissolvedSearchRequestService {
             throw new SearchException("error occurred reading data for previous names from " + SEARCH_HITS, e);
         }
 
-        DissolvedSearchResults<DissolvedPreviousName> dissolvedSearchResults =
-                new DissolvedSearchResults<>(etag, topHit, results, kind);
+        SearchResults<DissolvedPreviousName> dissolvedSearchResults =
+                new SearchResults<>(etag, topHit, results, kind);
         dissolvedSearchResults.setHits(numberOfHits);
 
         return dissolvedSearchResults;

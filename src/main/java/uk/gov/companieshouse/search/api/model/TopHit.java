@@ -12,6 +12,9 @@ public class TopHit {
 
     @JsonProperty("company_status")
     private String companyStatus;
+    
+    @JsonProperty("ordered_alpha_key_with_id")
+    private String orderedAlphaKeyWithId;
 
     @JsonProperty("kind")
     private String kind;
@@ -46,5 +49,13 @@ public class TopHit {
 
     public void setKind(String kind) {
         this.kind = kind;
+    }
+
+    public String getOrderedAlphaKeyWithId() {
+        return orderedAlphaKeyWithId;
+    }
+
+    public void setOrderedAlphaKeyWithId(String orderedAlphaKeyWithId) {
+        this.orderedAlphaKeyWithId = orderedAlphaKeyWithId;
     }
 }

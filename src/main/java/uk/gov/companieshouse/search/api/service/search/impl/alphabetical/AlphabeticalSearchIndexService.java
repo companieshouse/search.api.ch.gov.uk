@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.SearchResults;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
@@ -17,7 +18,7 @@ import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
 public class AlphabeticalSearchIndexService implements SearchIndexService {
 
     @Autowired
-    private SearchRequestService searchRequestService;
+    private SearchRequestService<Company> searchRequestService;
 
     /**
      * {@inheritDoc}
@@ -26,6 +27,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
     public ResponseObject search(String corporateName, String searchBefore, String searchAfter, Integer size,
             String requestId) {
 
+
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, corporateName);
         logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
@@ -33,7 +35,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_AFTER, searchAfter);
         LoggingUtils.logIfNotNull(logMap, LoggingUtils.SIZE, size);
 
-        SearchResults searchResults;
+        SearchResults<Company> searchResults;
 
         try {
             LoggingUtils.getLogger().info("Search started ", logMap);
@@ -44,17 +46,12 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
             return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
 
-        if (searchResults.getResults() != null) {
+        if(searchResults.getItems() != null) {
             LoggingUtils.getLogger().info("Search successful", logMap);
             return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
         }
 
         LoggingUtils.getLogger().info("No results found", logMap);
         return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
-    }
-
-    @Override
-    public ResponseObject search(String corporateName, String requestId) {
-        return search(corporateName, null, null, null, requestId);
     }
 }

@@ -1,32 +1,38 @@
-package uk.gov.companieshouse.search.api.model.esdatamodel.company;
+package uk.gov.companieshouse.search.api.model.esdatamodel;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.Gson;
 
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Items {
+public class BaseCompany {
+    
+    @JsonProperty("company_name")
+    private String companyName;
 
     @JsonProperty("company_number")
     private String companyNumber;
 
     @JsonProperty("company_status")
     private String companyStatus;
-
-    @JsonProperty("corporate_name")
-    private String corporateName;
     
     @JsonProperty("ordered_alpha_key")
     private String orderedAlphaKey;
 
     @JsonProperty("ordered_alpha_key_with_id")
     private String orderedAlphaKeyWithId;
+    
+    @JsonProperty("kind")
+    private String kind;
 
-    @JsonProperty("record_type")
-    private String recordType;
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
 
     public String getCompanyNumber() {
         return companyNumber;
@@ -44,22 +50,6 @@ public class Items {
         this.companyStatus = companyStatus;
     }
 
-    public String getCorporateName() {
-        return corporateName;
-    }
-
-    public void setCorporateName(String corporateName) {
-        this.corporateName = corporateName;
-    }
-
-    public String getRecordType() {
-        return recordType;
-    }
-
-    public void setRecordType(String recordType) {
-        this.recordType = recordType;
-    }
-
     public String getOrderedAlphaKey() {
         return orderedAlphaKey;
     }
@@ -75,9 +65,12 @@ public class Items {
     public void setOrderedAlphaKeyWithId(String orderedAlphaKeyWithId) {
         this.orderedAlphaKeyWithId = orderedAlphaKeyWithId;
     }
+    
+    public String getKind() {
+        return kind;
+    }
 
-    @Override
-    public String toString() {
-        return new Gson().toJson(this);
+    public void setKind(String kind) {
+        this.kind = kind;
     }
 }
