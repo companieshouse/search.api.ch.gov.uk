@@ -53,7 +53,7 @@ public class DissolvedSearchIndexService {
             Integer startIndex) {
         Map<String, Object> logMap = getLogMap(companyName, requestId, searchType);
 
-        SearchResults searchResults;
+        SearchResults<?> searchResults;
         try {
             if (searchType.equals(BEST_MATCH_SEARCH_TYPE)) {
                 searchResults = dissolvedSearchRequestService.getBestMatchSearchResults(companyName, requestId,
