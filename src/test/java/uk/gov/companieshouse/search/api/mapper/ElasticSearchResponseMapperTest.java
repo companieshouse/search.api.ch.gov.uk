@@ -57,7 +57,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful")
     void mapDissolvedResponseTest() {
 
-        SearchHits searchHits = createSearchHits(true, true, true, true);
+        SearchHits searchHits = createSearchHits(true, true, true, true, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -78,10 +78,34 @@ class ElasticSearchResponseMapperTest {
     }
 
     @Test
+    @DisplayName("Map dissolved response no dates present successful")
+    void mapDissolvedResponseNoDatesPresentTest() {
+
+        SearchHits searchHits = createSearchHits(true, true, true, true, false);
+
+        DissolvedCompany dissolvedCompany =
+                elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
+
+        assertEquals(COMPANY_NAME, dissolvedCompany.getCompanyName());
+        assertEquals(COMPANY_NUMBER, dissolvedCompany.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, dissolvedCompany.getCompanyStatus());
+        assertEquals(KIND, dissolvedCompany.getKind());
+        assertNull(dissolvedCompany.getDateOfCessation());
+        assertNull(dissolvedCompany.getDateOfCreation());
+        assertEquals(LOCALITY, dissolvedCompany.getAddress().getLocality());
+        assertEquals(POSTCODE, dissolvedCompany.getAddress().getPostalCode());
+
+        List<PreviousCompanyName> previousCompanyNames = dissolvedCompany.getPreviousCompanyNames();
+        assertEquals(PREVIOUS_COMPANY_NAME, previousCompanyNames.get(0).getName());
+        assertEquals(EFFECTIVE_FROM, previousCompanyNames.get(0).getDateOfNameEffectiveness().toString());
+        assertEquals(CEASED_ON, previousCompanyNames.get(0).getDateOfNameCessation().toString());
+    }
+
+    @Test
     @DisplayName("Map dissolved response successful when no previous names")
     void mapDissolvedResponseTestPreviousNamesNull() {
 
-        SearchHits searchHits = createSearchHits(true, true, true, false);
+        SearchHits searchHits = createSearchHits(true, true, true, false, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -94,7 +118,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no locality")
     void mapDissolvedResponseTestNoLocality() {
 
-        SearchHits searchHits = createSearchHits(true, false, true, false);
+        SearchHits searchHits = createSearchHits(true, false, true, false, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -108,7 +132,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no postcode")
     void mapDissolvedResponseTestNoPostcode() {
 
-        SearchHits searchHits = createSearchHits(true, true, false, false);
+        SearchHits searchHits = createSearchHits(true, true, false, false, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -122,7 +146,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no address")
     void mapDissolvedResponseTestNoAddress() {
 
-        SearchHits searchHits = createSearchHits(false, false, false, false);
+        SearchHits searchHits = createSearchHits(false, false, false, false, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -274,7 +298,8 @@ class ElasticSearchResponseMapperTest {
     private SearchHits createSearchHits(boolean includeAddress,
                                         boolean locality,
                                         boolean postCode,
-                                        boolean includePreviousCompanyNames) {
+                                        boolean includePreviousCompanyNames,
+                                        boolean includeDates) {
         StringBuilder searchHits = new StringBuilder();
         searchHits.append(
                 "{" +
@@ -288,12 +313,16 @@ class ElasticSearchResponseMapperTest {
             searchHits.append(populateAddress(locality, postCode));
         }
         if(includePreviousCompanyNames) {
-            searchHits.append(populatePreviousCompanyNames());
+            searchHits.append(populatePreviousCompanyNames(includeDates));
         }
+        if(includeDates) {
         searchHits.append(
                     "\"date_of_cessation\" : \"19990501\"," +
                     "\"date_of_creation\" : \"19890501\"" +
                 "}");
+        } else {
+            searchHits.append("}");
+        }
         BytesReference source = new BytesArray(searchHits.toString());
         SearchHit hit = new SearchHit( 1 );
         hit.sourceRef( source );
@@ -307,7 +336,7 @@ class ElasticSearchResponseMapperTest {
                                                      boolean includePostCode,
                                                      boolean includePreviousCompanyNames) {
 
-        SearchHits searchHits = createSearchHits(includeAddress, includeLocality, includePostCode, includePreviousCompanyNames);
+        SearchHits searchHits = createSearchHits(includeAddress, includeLocality, includePostCode, includePreviousCompanyNames, true);
         SearchHit searchHit = searchHits.getAt(0);
 
         Map<String, SearchHits> innerHits = new HashMap<>();
@@ -338,16 +367,23 @@ class ElasticSearchResponseMapperTest {
         return address.toString();
     }
 
-    private String populatePreviousCompanyNames() {
-        String previousNames = "\"previous_company_names\" : [" +
+    private String populatePreviousCompanyNames(boolean includeDates) {
+        StringBuilder previousNames = new StringBuilder();
+
+        previousNames.append("\"previous_company_names\" : [" +
                 "{" +
                 "\"name\" : \"TEST COMPANY 2\"," +
                 "\"ordered_alpha_key\": \"ordered_alpha_key\"," +
                 "\"effective_from\" : \"19890101\"," +
                 "\"ceased_on\" : \"19920510\"" +
                 "}" +
-                "],";
-        return previousNames;
+                "]");
+
+        if (includeDates) {
+            previousNames.append(",");
+        }
+
+        return previousNames.toString();
     }
 
     private String createInnerHits() {
