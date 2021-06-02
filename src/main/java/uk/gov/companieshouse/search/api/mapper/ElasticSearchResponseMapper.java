@@ -23,6 +23,8 @@ public class ElasticSearchResponseMapper {
 
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
     private static final String POSTAL_CODE_KEY = "postal_code";
+    private static final String DATE_OF_CESSATION = "date_of_cessation";
+    private static final String DATE_OF_CREATION = "date_of_creation";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
@@ -51,8 +53,13 @@ public class ElasticSearchResponseMapper {
         dissolvedCompany.setCompanyStatus((String) sourceAsMap.get("company_status"));
         dissolvedCompany.setOrderedAlphaKeyWithId((String) sourceAsMap.get("ordered_alpha_key_with_id"));
         dissolvedCompany.setKind(SEARCH_RESULTS_KIND);
-        dissolvedCompany.setDateOfCessation(LocalDate.parse((String) sourceAsMap.get("date_of_cessation"), formatter));
-        dissolvedCompany.setDateOfCreation(LocalDate.parse((String) sourceAsMap.get("date_of_creation"), formatter));
+
+        if (sourceAsMap.containsKey(DATE_OF_CESSATION)) {
+            dissolvedCompany.setDateOfCessation(LocalDate.parse((String) sourceAsMap.get(DATE_OF_CESSATION), formatter));
+        }
+        if (sourceAsMap.containsKey(DATE_OF_CREATION)) {
+            dissolvedCompany.setDateOfCreation(LocalDate.parse((String) sourceAsMap.get(DATE_OF_CREATION), formatter));
+        }
         if(address != null && address.containsKey("locality")) {
             roAddress.setLocality((String) address.get("locality"));
         }
@@ -119,8 +126,8 @@ public class ElasticSearchResponseMapper {
             DissolvedPreviousName previousCompanyName = new DissolvedPreviousName();
             previousCompanyName.setCompanyName((String) sourceAsMap.get("company_name"));
             previousCompanyName.setCompanyNumber((String) sourceAsMap.get("company_number"));
-            previousCompanyName.setDateOfCessation((LocalDate.parse((String) sourceAsMap.get("date_of_cessation"), formatter)));
-            previousCompanyName.setDateOfCreation((LocalDate.parse((String) sourceAsMap.get("date_of_creation"), formatter)));
+            previousCompanyName.setDateOfCessation((LocalDate.parse((String) sourceAsMap.get(DATE_OF_CESSATION), formatter)));
+            previousCompanyName.setDateOfCreation((LocalDate.parse((String) sourceAsMap.get(DATE_OF_CREATION), formatter)));
             previousCompanyName.setKind(SEARCH_RESULTS_KIND);
 
             Address roAddress = new Address();
