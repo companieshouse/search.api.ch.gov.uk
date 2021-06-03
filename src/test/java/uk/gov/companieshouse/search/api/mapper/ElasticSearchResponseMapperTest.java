@@ -354,14 +354,14 @@ class ElasticSearchResponseMapperTest {
     }
 
     private String populateAddress(boolean locality, boolean postCode) {
-        StringBuilder address = new StringBuilder("\"address\" : {");
+        StringBuilder address = new StringBuilder("\"registered_office_address\" : {");
         if(locality) {
             address.append("\"locality\" : \"locality\"");
             if(postCode)
                 address.append(",");
         }
         if(postCode) {
-            address.append("\"postal_code\" : \"AB00 0 AB\"");
+            address.append("\"post_code\" : \"AB00 0 AB\"");
         }
         address.append("},");
         return address.toString();
