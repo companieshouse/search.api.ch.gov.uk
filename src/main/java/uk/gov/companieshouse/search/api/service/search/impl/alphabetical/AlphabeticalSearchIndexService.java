@@ -1,12 +1,21 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.createLoggingMap;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
+
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uk.gov.companieshouse.search.api.exception.SearchException;
-import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
@@ -28,30 +37,30 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
             String requestId) {
 
 
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(LoggingUtils.COMPANY_NAME, corporateName);
-        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
-        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_BEFORE, searchBefore);
-        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_AFTER, searchAfter);
-        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SIZE, size);
+        Map<String, Object> logMap = createLoggingMap(requestId);
+        logMap.put(COMPANY_NAME, corporateName);
+        logMap.put(INDEX, INDEX_ALPHABETICAL);
+        logIfNotNull(logMap, SEARCH_BEFORE, searchBefore);
+        logIfNotNull(logMap, SEARCH_AFTER, searchAfter);
+        logIfNotNull(logMap, SIZE, size);
 
         SearchResults<Company> searchResults;
 
         try {
-            LoggingUtils.getLogger().info("Search started ", logMap);
+            getLogger().info("Search started ", logMap);
             searchResults = searchRequestService.getAlphabeticalSearchResults(corporateName, searchBefore, searchAfter,
                     size, requestId);
         } catch (SearchException e) {
-            LoggingUtils.getLogger().error("SearchException when searching for company", logMap);
+            getLogger().error("SearchException when searching for company", logMap);
             return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
 
         if(searchResults.getItems() != null) {
-            LoggingUtils.getLogger().info("Search successful", logMap);
+            getLogger().info("Search successful", logMap);
             return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
         }
 
-        LoggingUtils.getLogger().info("No results found", logMap);
+        getLogger().info("No results found", logMap);
         return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 }

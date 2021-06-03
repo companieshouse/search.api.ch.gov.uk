@@ -53,7 +53,7 @@ class AlphabeticalSearchControllerTest {
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(NOT_FOUND).build());
 
-        ResponseEntity responseEntity =
+        ResponseEntity<?> responseEntity =
             alphabeticalSearchController.searchByCorporateName("test name", null, null, null, REQUEST_ID);
 
         assertNotNull(responseEntity);
@@ -71,7 +71,7 @@ class AlphabeticalSearchControllerTest {
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
-        ResponseEntity responseEntity =
+        ResponseEntity<?> responseEntity =
             alphabeticalSearchController.searchByCorporateName("test name", null, null, null, REQUEST_ID);
 
         assertNotNull(responseEntity);

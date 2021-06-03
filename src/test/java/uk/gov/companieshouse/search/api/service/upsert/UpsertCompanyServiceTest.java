@@ -62,7 +62,6 @@ class UpsertCompanyServiceTest {
     void testExceptionThrownDuringIndexRequest() throws Exception {
 
         CompanyProfileApi company = createCompany();
-        IndexRequest indexRequest = new IndexRequest("alpha_search");
 
         when(mockUpsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
 
