@@ -40,7 +40,7 @@ class ApiToResponseMapperTest {
         ResponseObject responseObject =
             new ResponseObject(SEARCH_FOUND, new SearchResults());
 
-        ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
+        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
 
         assertNotNull(responseEntity);
         assertNotNull(responseEntity.getBody());
@@ -54,7 +54,7 @@ class ApiToResponseMapperTest {
         ResponseObject responseObject =
             new ResponseObject(SEARCH_NOT_FOUND);
 
-        ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
+        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
 
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
@@ -68,7 +68,7 @@ class ApiToResponseMapperTest {
         ResponseObject responseObject =
             new ResponseObject(DOCUMENT_UPSERTED);
 
-        ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
+        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
 
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
@@ -82,7 +82,7 @@ class ApiToResponseMapperTest {
         ResponseObject responseObject =
             new ResponseObject(UPDATE_REQUEST_ERROR);
 
-        ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
+        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
 
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
@@ -97,7 +97,7 @@ class ApiToResponseMapperTest {
         ResponseObject responseObject =
             new ResponseObject(UPSERT_ERROR);
 
-        ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
+        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
 
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
@@ -111,7 +111,7 @@ class ApiToResponseMapperTest {
         ResponseObject responseObject =
             new ResponseObject(SEARCH_ERROR);
 
-        ResponseEntity responseEntity = apiToResponseMapper.map(responseObject);
+        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
 
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
@@ -125,7 +125,7 @@ class ApiToResponseMapperTest {
         ResponseObject responseObject =
                 new ResponseObject(SEARCH_FOUND, new SearchResults());
 
-        ResponseEntity responseEntity = apiToResponseMapper.mapDissolved(responseObject);
+        ResponseEntity<?> responseEntity = apiToResponseMapper.mapDissolved(responseObject);
 
         assertNotNull(responseEntity);
         assertNotNull(responseEntity.getBody());
@@ -139,7 +139,7 @@ class ApiToResponseMapperTest {
         ResponseObject responseObject =
                 new ResponseObject(SEARCH_NOT_FOUND);
 
-        ResponseEntity responseEntity = apiToResponseMapper.mapDissolved(responseObject);
+        ResponseEntity<?> responseEntity = apiToResponseMapper.mapDissolved(responseObject);
 
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
@@ -153,7 +153,7 @@ class ApiToResponseMapperTest {
         ResponseObject responseObject =
                 new ResponseObject(REQUEST_PARAMETER_ERROR);
 
-        ResponseEntity responseEntity = apiToResponseMapper.mapDissolved(responseObject);
+        ResponseEntity<?> responseEntity = apiToResponseMapper.mapDissolved(responseObject);
 
         assertNotNull(responseEntity);
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
@@ -167,7 +167,7 @@ class ApiToResponseMapperTest {
         ResponseObject responseObject =
                 new ResponseObject(SEARCH_ERROR);
 
-        ResponseEntity responseEntity = apiToResponseMapper.mapDissolved(responseObject);
+        ResponseEntity<?> responseEntity = apiToResponseMapper.mapDissolved(responseObject);
 
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());

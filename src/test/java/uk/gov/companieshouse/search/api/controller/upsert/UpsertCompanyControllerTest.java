@@ -49,7 +49,7 @@ class UpsertCompanyControllerTest {
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(OK).build());
 
-        ResponseEntity responseEntity = upsertCompanyController.upsertCompany(company);
+        ResponseEntity<?> responseEntity = upsertCompanyController.upsertCompany(company);
 
         assertNotNull(responseEntity);
         assertEquals(OK, responseEntity.getStatusCode());
@@ -65,7 +65,7 @@ class UpsertCompanyControllerTest {
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
 
-        ResponseEntity responseEntity = upsertCompanyController.upsertCompany(company);
+        ResponseEntity<?> responseEntity = upsertCompanyController.upsertCompany(company);
 
         assertNotNull(responseEntity);
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
@@ -81,7 +81,7 @@ class UpsertCompanyControllerTest {
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
 
-        ResponseEntity responseEntity = upsertCompanyController.upsertCompany(company);
+        ResponseEntity<?> responseEntity = upsertCompanyController.upsertCompany(company);
 
         assertNotNull(responseEntity);
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
