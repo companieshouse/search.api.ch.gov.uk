@@ -57,7 +57,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful")
     void mapDissolvedResponseTest() {
 
-        SearchHits searchHits = createSearchHits(true, true, true, true, true);
+        SearchHits searchHits = createSearchHits(true, true, true, true, true, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -81,7 +81,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response no dates present successful")
     void mapDissolvedResponseNoDatesPresentTest() {
 
-        SearchHits searchHits = createSearchHits(true, true, true, true, false);
+        SearchHits searchHits = createSearchHits(true, true,  true, true, true, false);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -105,7 +105,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no previous names")
     void mapDissolvedResponseTestPreviousNamesNull() {
 
-        SearchHits searchHits = createSearchHits(true, true, true, false, true);
+        SearchHits searchHits = createSearchHits(true, true, true, true, false, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -115,10 +115,26 @@ class ElasticSearchResponseMapperTest {
     }
 
     @Test
+    @DisplayName("Map dissolved response successful when no address lines")
+    void mapDissolvedResponseTestNoAddressLines() {
+
+        SearchHits searchHits = createSearchHits(true, false, false, true, false, true);
+
+        DissolvedCompany dissolvedCompany =
+                elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
+
+        Address address = dissolvedCompany.getAddress();
+        assertEquals(POSTCODE, address.getPostalCode());
+        assertNull(address.getLocality());
+        assertNull(address.getAddressLine1());
+        assertNull(address.getAddressLine2());
+    }
+
+    @Test
     @DisplayName("Map dissolved response successful when no locality")
     void mapDissolvedResponseTestNoLocality() {
 
-        SearchHits searchHits = createSearchHits(true, false, true, false, true);
+        SearchHits searchHits = createSearchHits(true, true, false, true, false, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -132,7 +148,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no postcode")
     void mapDissolvedResponseTestNoPostcode() {
 
-        SearchHits searchHits = createSearchHits(true, true, false, false, true);
+        SearchHits searchHits = createSearchHits(true, true, true, false, false, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -146,7 +162,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no address")
     void mapDissolvedResponseTestNoAddress() {
 
-        SearchHits searchHits = createSearchHits(false, false, false, false, true);
+        SearchHits searchHits = createSearchHits(false, false,false, false, false, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -243,7 +259,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved previous names successful")
     void mapDissolvedPreviousNames() {
 
-        SearchHits searchHits = createSearchHitsWithInnerHits(true, true, true, false);
+        SearchHits searchHits = createSearchHitsWithInnerHits(true, true, true, true, false);
 
         List<DissolvedPreviousName> previousNames =
                 elasticSearchResponseMapper.mapPreviousNames(searchHits);
@@ -262,7 +278,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved previous names successful no address object")
     void mapDissolvedPreviousNamesNoAddress() {
 
-        SearchHits searchHits = createSearchHitsWithInnerHits(false, false, false, false);
+        SearchHits searchHits = createSearchHitsWithInnerHits(false, false, false, false, false);
 
         List<DissolvedPreviousName> previousNames =
                 elasticSearchResponseMapper.mapPreviousNames(searchHits);
@@ -280,7 +296,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved previous names successful no postal code")
     void mapDissolvedPreviousNamesNoPostalCode() {
 
-        SearchHits searchHits = createSearchHitsWithInnerHits(true, false, false, false);
+        SearchHits searchHits = createSearchHitsWithInnerHits(true, false, false, false, false);
 
         List<DissolvedPreviousName> previousNames =
                 elasticSearchResponseMapper.mapPreviousNames(searchHits);
@@ -296,6 +312,7 @@ class ElasticSearchResponseMapperTest {
     }
 
     private SearchHits createSearchHits(boolean includeAddress,
+                                        boolean address,
                                         boolean locality,
                                         boolean postCode,
                                         boolean includePreviousCompanyNames,
@@ -310,7 +327,7 @@ class ElasticSearchResponseMapperTest {
                         "\"ordered_alpha_key_with_id\": \"ordered_alpha_key_with_id\"," +
                         "\"company_status\" : \"dissolved\",");
         if(includeAddress) {
-            searchHits.append(populateAddress(locality, postCode));
+            searchHits.append(populateAddress(address, locality, postCode));
         }
         if(includePreviousCompanyNames) {
             searchHits.append(populatePreviousCompanyNames(includeDates));
@@ -332,11 +349,12 @@ class ElasticSearchResponseMapperTest {
     }
 
     private SearchHits createSearchHitsWithInnerHits(boolean includeAddress,
+                                                     boolean includeAddressLines,
                                                      boolean includeLocality,
                                                      boolean includePostCode,
                                                      boolean includePreviousCompanyNames) {
 
-        SearchHits searchHits = createSearchHits(includeAddress, includeLocality, includePostCode, includePreviousCompanyNames, true);
+        SearchHits searchHits = createSearchHits(includeAddress, includeAddressLines, includeLocality, includePostCode, includePreviousCompanyNames, true);
         SearchHit searchHit = searchHits.getAt(0);
 
         Map<String, SearchHits> innerHits = new HashMap<>();
@@ -353,18 +371,25 @@ class ElasticSearchResponseMapperTest {
 
     }
 
-    private String populateAddress(boolean locality, boolean postCode) {
-        StringBuilder address = new StringBuilder("\"registered_office_address\" : {");
+    private String populateAddress(boolean address, boolean locality, boolean postCode) {
+        StringBuilder addressJson = new StringBuilder("\"registered_office_address\" : {");
+        if(address) {
+            addressJson.append("\"address_line_1\" : \"addressLine1\",");
+            addressJson.append("\"address_line_2\" : \"addressLine2\"");
+            if(locality || postCode) {
+                addressJson.append(",");
+            }
+        }
         if(locality) {
-            address.append("\"locality\" : \"locality\"");
+            addressJson.append("\"locality\" : \"locality\"");
             if(postCode)
-                address.append(",");
+                addressJson.append(",");
         }
         if(postCode) {
-            address.append("\"post_code\" : \"AB00 0 AB\"");
+            addressJson.append("\"post_code\" : \"AB00 0 AB\"");
         }
-        address.append("},");
-        return address.toString();
+        addressJson.append("},");
+        return addressJson.toString();
     }
 
     private String populatePreviousCompanyNames(boolean includeDates) {
