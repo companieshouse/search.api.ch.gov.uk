@@ -5,6 +5,7 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY_WITH_ID;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
@@ -99,15 +100,16 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 topHitCompany.setKind(company.getKind());
 
                 if ((searchBefore == null && searchAfter == null) || (searchBefore != null && searchAfter != null)) {
-                    getLogger().info("Default search before tophit and after top hit", logMap);
+                    logMap.put(ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
+                    getLogger().info("Default alphabetical search before and after tophit", logMap);
                     results = populateAboveResults(requestId, topHitCompany.getCompanyName(), orderedAlphakeyWithId, size);
                     results.add(company);
                     results.addAll(populateBelowResults(requestId, topHitCompany.getCompanyName(), orderedAlphakeyWithId, size));
                 } else if(searchAfter != null){
-                    getLogger().info("Searching only companies before ordered alpha key with id", logMap);
+                    getLogger().info("Searching alphabetical companies after", logMap);
                     results.addAll(populateBelowResults(requestId, topHitCompany.getCompanyName(), searchAfter, size));
                 } else {
-                    getLogger().info("Searching only companies after ordered alpha key with id", logMap);
+                    getLogger().info("Searching alphabetical companies before", logMap);
                     results.addAll(populateAboveResults(requestId, topHitCompany.getCompanyName(), searchBefore, size));
                 }
             }

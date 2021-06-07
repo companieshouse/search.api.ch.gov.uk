@@ -4,6 +4,7 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_DISSOLVED;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY_WITH_ID;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_TYPE;
@@ -97,16 +98,17 @@ public class DissolvedSearchRequestService {
                 topHit = elasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany);
 
                 if ((searchBefore == null && searchAfter == null) || (searchBefore != null && searchAfter != null)) {
-                    getLogger().info("Default search above and below top hit result", logMap);
+                    logMap.put(ORDERED_ALPHAKEY_WITH_ID, orderedAlphaKeyWithId);
+                    getLogger().info("Default dissolved search before and after tophit", logMap);
                     results = populateAboveResults(requestId, topHit.getCompanyName(), orderedAlphaKeyWithId, size);
                     results.add(topHitCompany);
                     results.addAll(
                             populateBelowResults(requestId, topHit.getCompanyName(), orderedAlphaKeyWithId, size));
                 } else if (searchAfter != null) {
-                    getLogger().info("Adding only results after", logMap);
+                    getLogger().info("Searching dissolved companies after", logMap);
                     results.addAll(populateBelowResults(requestId, topHit.getCompanyName(), searchAfter, size));
                 } else {
-                    getLogger().info("Adding only results before", logMap);
+                    getLogger().info("Searching dissolved companies before", logMap);
                     results.addAll(populateAboveResults(requestId, topHit.getCompanyName(), searchBefore, size));
                 }
             }
