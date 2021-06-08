@@ -22,7 +22,8 @@ import java.util.Map;
 public class ElasticSearchResponseMapper {
 
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
-    private static final String POSTAL_CODE_KEY = "postal_code";
+    private static final String REGISTERED_OFFICE_ADDRESS_KEY = "registered_office_address";
+    private static final String POSTAL_CODE_KEY = "post_code";
     private static final String DATE_OF_CESSATION = "date_of_cessation";
     private static final String DATE_OF_CREATION = "date_of_creation";
 
@@ -30,7 +31,7 @@ public class ElasticSearchResponseMapper {
 
     public DissolvedCompany mapDissolvedResponse(SearchHit hit) {
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-        Map<String, Object> address = (Map<String, Object>) sourceAsMap.get("address");
+        Map<String, Object> address = (Map<String, Object>) sourceAsMap.get(REGISTERED_OFFICE_ADDRESS_KEY);
         List<Object> previousCompanyNamesList = (List<Object>) sourceAsMap.get("previous_company_names");
         DissolvedCompany dissolvedCompany = new DissolvedCompany();
         if(previousCompanyNamesList != null) {
@@ -131,7 +132,7 @@ public class ElasticSearchResponseMapper {
             previousCompanyName.setKind(SEARCH_RESULTS_KIND);
 
             Address roAddress = new Address();
-            Map<String, Object> address = (Map<String, Object>) sourceAsMap.get("address");
+            Map<String, Object> address = (Map<String, Object>) sourceAsMap.get(REGISTERED_OFFICE_ADDRESS_KEY);
 
             if(address != null && address.containsKey(POSTAL_CODE_KEY)) {
                 roAddress.setPostalCode((String) address.get(POSTAL_CODE_KEY));
