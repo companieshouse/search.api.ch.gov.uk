@@ -1,5 +1,15 @@
 package uk.gov.companieshouse.search.api.controller.search;
 
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.createLoggingMap;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
+
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
@@ -35,19 +44,19 @@ public class AlphabeticalSearchController {
 
     @GetMapping("/companies")
     @ResponseBody
-    public ResponseEntity searchByCorporateName(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
+    public ResponseEntity<?> searchByCorporateName(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
                                                 @RequestParam(name = SEARCH_BEFORE_PARAM, required=false) String searchBefore,
                                                 @RequestParam(name = SEARCH_AFTER_PARAM, required=false) String searchAfter,
                                                 @RequestParam(name = SIZE_PARAM, required=false) Integer size,
                                                 @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(LoggingUtils.COMPANY_NAME, companyName);
-        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
-        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_BEFORE, searchBefore);
-        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_AFTER, searchAfter);
-        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SIZE, size);
-        LoggingUtils.getLogger().info("Search request received", logMap);
+        Map<String, Object> logMap = createLoggingMap(requestId);
+        logMap.put(COMPANY_NAME, companyName);
+        logMap.put(INDEX, INDEX_ALPHABETICAL);
+        logIfNotNull(logMap, SEARCH_BEFORE, searchBefore);
+        logIfNotNull(logMap, SEARCH_AFTER, searchAfter);
+        logIfNotNull(logMap, SIZE, size);
+        getLogger().info("Search request received", logMap);
         
         ResponseObject responseObject = searchIndexService
             .search(companyName, searchBefore, searchAfter, size, requestId);

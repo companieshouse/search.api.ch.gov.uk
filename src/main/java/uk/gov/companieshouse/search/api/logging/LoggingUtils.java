@@ -29,6 +29,7 @@ public class LoggingUtils {
     public static final String SEARCH_BEFORE = "search_before";
     public static final String SEARCH_TYPE = "search_type";
     public static final String SIZE = "size";
+    public static final String START_INDEX = "start_index";
     
     private LoggingUtils() throws IllegalAccessException {
         throw new IllegalAccessException("LoggingUtils is not to be instantiated");

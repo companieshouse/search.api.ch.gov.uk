@@ -46,7 +46,6 @@ class DissolvedSearchControllerTest {
     private static final String SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH = "previous-name-dissolved";
     private static final String COMPANY_NUMBER = "00000000";
     private static final Integer START_INDEX = 0;
-    private static final Integer START_INDEX_LESS_THAN_ZERO = -1;
     private static final String SEARCH_BEFORE = null;
     private static final String SEARCH_AFTER = null;
     private static final Integer SIZE = null;
@@ -62,7 +61,7 @@ class DissolvedSearchControllerTest {
         when(mockApiToResponseMapper.mapDissolved(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
-        ResponseEntity responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME,
+        ResponseEntity<?> responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME,
                 SEARCH_TYPE_ALPHABETICAL, SEARCH_BEFORE, SEARCH_AFTER, SIZE, START_INDEX, REQUEST_ID);
 
         assertNotNull(responseEntity);
@@ -80,7 +79,7 @@ class DissolvedSearchControllerTest {
         when(mockApiToResponseMapper.mapDissolved(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
-        ResponseEntity responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH,
+        ResponseEntity<?> responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH,
                 SEARCH_BEFORE, SEARCH_AFTER, SIZE, START_INDEX, REQUEST_ID);
 
         assertNotNull(responseEntity);
@@ -98,7 +97,7 @@ class DissolvedSearchControllerTest {
         when(mockApiToResponseMapper.mapDissolved(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
-        ResponseEntity responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH,
+        ResponseEntity<?> responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH,
                 SEARCH_BEFORE, SEARCH_AFTER, SIZE, null, REQUEST_ID);
 
         assertNotNull(responseEntity);
@@ -116,7 +115,7 @@ class DissolvedSearchControllerTest {
         when(mockApiToResponseMapper.mapDissolved(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
-        ResponseEntity responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH,
+        ResponseEntity<?> responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME, SEARCH_TYPE_BEST_MATCH,
                 SEARCH_BEFORE, SEARCH_AFTER, SIZE, -1, REQUEST_ID);
 
         assertNotNull(responseEntity);
@@ -134,7 +133,7 @@ class DissolvedSearchControllerTest {
         when(mockApiToResponseMapper.mapDissolved(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
-        ResponseEntity responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME,
+        ResponseEntity<?> responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME,
                 SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, SEARCH_BEFORE, SEARCH_AFTER, SIZE, START_INDEX, REQUEST_ID);
 
         assertNotNull(responseEntity);
@@ -148,14 +147,14 @@ class DissolvedSearchControllerTest {
         when(mockApiToResponseMapper.mapDissolved(any())).thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR)
                 .body("Invalid url parameter for search_type, please try 'alphabetical' or 'best-match'"));
 
-        ResponseEntity responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME, "aaa", SEARCH_BEFORE,
+        ResponseEntity<?> responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME, "aaa", SEARCH_BEFORE,
                 SEARCH_AFTER, SIZE, START_INDEX, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     }
 
-    private SearchResults createSearchResults() {
+    private SearchResults<?> createSearchResults() {
         SearchResults<DissolvedCompany> searchResults = new SearchResults<>();
         List<DissolvedCompany> companies = new ArrayList<>();
         DissolvedCompany company = new DissolvedCompany();

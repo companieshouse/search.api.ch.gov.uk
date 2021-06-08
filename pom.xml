@@ -7,7 +7,7 @@
     <artifactId>search.api.ch.gov.uk</artifactId>
     <version>unversioned</version>
     <packaging>jar</packaging>
-    <name>search-api</name>
+    <name>search.api.ch.gov.uk</name>
     <description>Search API to handle requests to Elastic Search data</description>
 
     <parent>

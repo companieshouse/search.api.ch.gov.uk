@@ -1,5 +1,18 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY_WITH_ID;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.createLoggingMap;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,11 +26,10 @@ import org.springframework.stereotype.Service;
 
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
-import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
@@ -39,15 +51,15 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     @Override
     public SearchResults<Company> getAlphabeticalSearchResults(String corporateName, String searchBefore, String searchAfter,
             Integer size, String requestId) throws SearchException {
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(LoggingUtils.COMPANY_NAME, corporateName);
-        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
-        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_BEFORE, searchBefore);
-        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SEARCH_AFTER, searchAfter);
-        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SIZE, size);
+        Map<String, Object> logMap = createLoggingMap(requestId);
+        logMap.put(COMPANY_NAME, corporateName);
+        logMap.put(INDEX, INDEX_ALPHABETICAL);
+        logIfNotNull(logMap, SEARCH_BEFORE, searchBefore);
+        logIfNotNull(logMap, SEARCH_AFTER, searchAfter);
+        logIfNotNull(logMap, SIZE, size);
 
-        LoggingUtils.getLogger().info("Performing search request", logMap);
-        logMap.remove(LoggingUtils.MESSAGE);
+        getLogger().info("Performing search request", logMap);
+        logMap.remove(MESSAGE);
 
         String orderedAlphakey = "";
         TopHit topHitCompany = new TopHit();
@@ -58,22 +70,22 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(corporateName);
         if (alphaKeyResponse != null) {
             orderedAlphakey = alphaKeyResponse.getOrderedAlphaKey();
-            logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphakey);
+            logMap.put(ORDERED_ALPHAKEY, orderedAlphakey);
         }
 
         try {
             SearchHits hits = getSearchHits(orderedAlphakey, requestId);
 
             if (hits.getTotalHits().value == 0) {
-                LoggingUtils.getLogger().info("A result was not found, reducing search term to find result", logMap);
-                logMap.remove(LoggingUtils.MESSAGE);
+                getLogger().info("A result was not found, reducing search term to find result", logMap);
+                logMap.remove(MESSAGE);
 
                 hits = peelbackSearchRequest(hits, orderedAlphakey, requestId);
             }
 
             if (hits.getTotalHits().value > 0) {
-                LoggingUtils.getLogger().info("A result has been found", logMap);
-                logMap.remove(LoggingUtils.MESSAGE);
+                getLogger().info("A result has been found", logMap);
+                logMap.remove(MESSAGE);
 
                 String orderedAlphakeyWithId;
                 SearchHit topHit;
@@ -88,20 +100,21 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 topHitCompany.setKind(company.getKind());
 
                 if ((searchBefore == null && searchAfter == null) || (searchBefore != null && searchAfter != null)) {
-                    LoggingUtils.getLogger().info("Default search before tophit and after top hit", logMap);
+                    logMap.put(ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
+                    getLogger().info("Default alphabetical search before and after tophit", logMap);
                     results = populateAboveResults(requestId, topHitCompany.getCompanyName(), orderedAlphakeyWithId, size);
                     results.add(company);
                     results.addAll(populateBelowResults(requestId, topHitCompany.getCompanyName(), orderedAlphakeyWithId, size));
                 } else if(searchAfter != null){
-                    LoggingUtils.getLogger().info("Searching only companies before ordered alpha key with id", logMap);
+                    getLogger().info("Searching alphabetical companies after", logMap);
                     results.addAll(populateBelowResults(requestId, topHitCompany.getCompanyName(), searchAfter, size));
                 } else {
-                    LoggingUtils.getLogger().info("Searching only companies after ordered alpha key with id", logMap);
+                    getLogger().info("Searching alphabetical companies before", logMap);
                     results.addAll(populateAboveResults(requestId, topHitCompany.getCompanyName(), searchBefore, size));
                 }
             }
         } catch (IOException e) {
-            LoggingUtils.getLogger().error("failed to map highest map to company object", logMap);
+            getLogger().error("failed to map highest map to company object", logMap);
             throw new SearchException("error occurred reading data for highest match from " + "searchHits", e);
         }
         return new SearchResults<>("", topHitCompany, results, kind);
