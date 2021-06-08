@@ -23,6 +23,8 @@ public class ElasticSearchResponseMapper {
 
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
     private static final String REGISTERED_OFFICE_ADDRESS_KEY = "registered_office_address";
+    private static final String ADDRESS_LINE_1 = "address_line_1";
+    private static final String ADDRESS_LINE_2 = "address_line_2";
     private static final String POSTAL_CODE_KEY = "post_code";
     private static final String DATE_OF_CESSATION = "date_of_cessation";
     private static final String DATE_OF_CREATION = "date_of_creation";
@@ -58,12 +60,23 @@ public class ElasticSearchResponseMapper {
         if (sourceAsMap.containsKey(DATE_OF_CESSATION)) {
             dissolvedCompany.setDateOfCessation(LocalDate.parse((String) sourceAsMap.get(DATE_OF_CESSATION), formatter));
         }
+
         if (sourceAsMap.containsKey(DATE_OF_CREATION)) {
             dissolvedCompany.setDateOfCreation(LocalDate.parse((String) sourceAsMap.get(DATE_OF_CREATION), formatter));
         }
+
+        if(address != null && address.containsKey(ADDRESS_LINE_1)) {
+            roAddress.setAddressLine1((String) address.get(ADDRESS_LINE_1));
+        }
+
+        if(address != null && address.containsKey(ADDRESS_LINE_2)) {
+            roAddress.setAddressLine2((String) address.get(ADDRESS_LINE_2));
+        }
+
         if(address != null && address.containsKey("locality")) {
             roAddress.setLocality((String) address.get("locality"));
         }
+
         if(address != null && address.containsKey(POSTAL_CODE_KEY)) {
             roAddress.setPostalCode((String) address.get(POSTAL_CODE_KEY));
         }

@@ -8,11 +8,33 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Address {
 
+    @JsonProperty("address_line_1")
+    private String addressLine1;
+
+    @JsonProperty("address_line_2")
+    private String addressLine2;
+
     @JsonProperty("locality")
     private String locality;
 
     @JsonProperty("postal_code")
     private String postalCode;
+
+    public String getAddressLine1() {
+        return addressLine1;
+    }
+
+    public void setAddressLine1(String addressLine1) {
+        this.addressLine1 = addressLine1;
+    }
+
+    public String getAddressLine2() {
+        return addressLine2;
+    }
+
+    public void setAddressLine2(String addressLine2) {
+        this.addressLine2 = addressLine2;
+    }
 
     public String getLocality() {
         return locality;
