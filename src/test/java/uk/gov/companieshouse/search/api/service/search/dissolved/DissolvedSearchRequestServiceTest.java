@@ -582,7 +582,7 @@ class DissolvedSearchRequestServiceTest {
         Address address = new Address();
         address.setPostalCode(POSTCODE);
         address.setLocality(LOCALITY);
-        dissolvedCompany.setAddress(address);
+        dissolvedCompany.setRegisteredOfficeAddress(address);
 
         List<PreviousCompanyName> previousCompanyNames = new ArrayList<>();
         PreviousCompanyName previousCompanyName = new PreviousCompanyName();
@@ -608,7 +608,7 @@ class DissolvedSearchRequestServiceTest {
         Address address = new Address();
         address.setPostalCode(POSTCODE);
         address.setLocality(LOCALITY);
-        topHit.setAddress(address);
+        topHit.setRegisteredOfficeAddress(address);
 
         List<PreviousCompanyName> previousCompanyNames = new ArrayList<>();
         PreviousCompanyName previousCompanyName = new PreviousCompanyName();

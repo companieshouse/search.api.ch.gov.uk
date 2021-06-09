@@ -40,11 +40,11 @@ public class DissolvedTopHit extends TopHit {
         this.dateOfCreation = dateOfCreation;
     }
 
-    public Address getAddress() {
+    public Address getRegisteredOfficeAddress() {
         return registeredOfficeAddress;
     }
 
-    public void setAddress(Address registeredOfficeAddress) {
+    public void setRegisteredOfficeAddress(Address registeredOfficeAddress) {
         this.registeredOfficeAddress = registeredOfficeAddress;
     }
 
@@ -54,15 +54,5 @@ public class DissolvedTopHit extends TopHit {
 
     public void setPreviousCompanyNames(List<PreviousCompanyName> previousCompanyNames) {
         this.previousCompanyNames = previousCompanyNames;
-    }
-
-    @Override
-    public String toString() {
-        return "DissolvedTopHit{" +
-                "dateOfCessation=" + dateOfCessation +
-                ", dateOfCreation=" + dateOfCreation +
-                ", registeredOfficeAddress=" + registeredOfficeAddress +
-                ", previousCompanyNames=" + previousCompanyNames +
-                '}';
     }
 }

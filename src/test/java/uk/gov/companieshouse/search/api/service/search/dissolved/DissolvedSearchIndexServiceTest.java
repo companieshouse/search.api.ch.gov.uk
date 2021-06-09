@@ -198,7 +198,7 @@ class DissolvedSearchIndexServiceTest {
         dissolvedCompany.setCompanyStatus(COMPANY_STATUS);
         dissolvedCompany.setDateOfCessation(DATE_OF_CESSATION);
         dissolvedCompany.setDateOfCreation(DATE_OF_CREATION);
-        dissolvedCompany.setAddress(address);
+        dissolvedCompany.setRegisteredOfficeAddress(address);
         dissolvedCompany.setPreviousCompanyNames(previousCompanyNames);
         items.add(dissolvedCompany);
         return items;
