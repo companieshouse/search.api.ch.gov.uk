@@ -3,7 +3,6 @@ package uk.gov.companieshouse.search.api.mapper;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Component;
-
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
 import uk.gov.companieshouse.search.api.model.PreviousNamesTopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
@@ -81,7 +80,7 @@ public class ElasticSearchResponseMapper {
             roAddress.setPostalCode((String) address.get(POSTAL_CODE_KEY));
         }
 
-        dissolvedCompany.setAddress(roAddress);
+        dissolvedCompany.setRegisteredOfficeAddress(roAddress);
 
         return dissolvedCompany;
     }
@@ -94,7 +93,7 @@ public class ElasticSearchResponseMapper {
         topHit.setCompanyStatus(dissolvedCompany.getCompanyStatus());
         topHit.setOrderedAlphaKeyWithId(dissolvedCompany.getOrderedAlphaKeyWithId());
         topHit.setKind(dissolvedCompany.getKind());
-        topHit.setAddress(dissolvedCompany.getAddress());
+        topHit.setRegisteredOfficeAddress(dissolvedCompany.getRegisteredOfficeAddress());
         topHit.setDateOfCessation(dissolvedCompany.getDateOfCessation());
         topHit.setDateOfCreation(dissolvedCompany.getDateOfCreation());
 
