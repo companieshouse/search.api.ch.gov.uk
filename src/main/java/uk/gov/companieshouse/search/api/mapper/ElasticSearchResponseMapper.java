@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+
 @Component
 public class ElasticSearchResponseMapper {
 
@@ -82,6 +84,8 @@ public class ElasticSearchResponseMapper {
         }
 
         dissolvedCompany.setAddress(roAddress);
+
+        System.out.println("************" +  dissolvedCompany.toString());
 
         return dissolvedCompany;
     }

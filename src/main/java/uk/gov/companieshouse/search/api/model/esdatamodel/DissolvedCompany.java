@@ -17,8 +17,8 @@ public class DissolvedCompany extends BaseCompany {
     @JsonProperty("date_of_creation")
     private LocalDate dateOfCreation;
 
-    @JsonProperty("address")
-    private Address address;
+    @JsonProperty("registered_office_address")
+    private Address registeredOfficeAddress;
 
     @JsonProperty("previous_company_names")
     private List<PreviousCompanyName> previousCompanyNames;
@@ -40,11 +40,11 @@ public class DissolvedCompany extends BaseCompany {
     }
 
     public Address getAddress() {
-        return address;
+        return registeredOfficeAddress;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAddress(Address registeredOfficeAddress) {
+        this.registeredOfficeAddress = registeredOfficeAddress;
     }
 
     public List<PreviousCompanyName> getPreviousCompanyNames() {
@@ -53,5 +53,15 @@ public class DissolvedCompany extends BaseCompany {
 
     public void setPreviousCompanyNames(List<PreviousCompanyName> previousCompanyNames) {
         this.previousCompanyNames = previousCompanyNames;
+    }
+
+    @Override
+    public String toString() {
+        return "DissolvedCompany{" +
+                "dateOfCessation=" + dateOfCessation +
+                ", dateOfCreation=" + dateOfCreation +
+                ", registeredOfficeAddress=" + registeredOfficeAddress +
+                ", previousCompanyNames=" + previousCompanyNames +
+                '}';
     }
 }
