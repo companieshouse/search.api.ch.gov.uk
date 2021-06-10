@@ -59,7 +59,7 @@ class DissolvedSearchIndexServiceTest {
     @DisplayName("Test dissolved alphabetical search request returns successfully")
     void searchDissolvedAlphabeticalRequestSuccessful() throws Exception {
         when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, SEARCH_BEFORE, SEARCH_AFTER, SIZE,
-                REQUEST_ID)).thenReturn(createSearchResults(true));
+                REQUEST_ID)).thenReturn(createSearchResults(true, false));
         ResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, SEARCH_BEFORE,
                 SEARCH_AFTER, SIZE, REQUEST_ID);
 
@@ -84,9 +84,21 @@ class DissolvedSearchIndexServiceTest {
     @DisplayName("Test dissolved alphabetical search returns no results")
     void searchDissolvedAlphabeticalRequestReturnsNoResults() throws Exception {
         when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID))
-                .thenReturn(createSearchResults(false));
+                .thenReturn(createSearchResults(false, false));
         ResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, SEARCH_BEFORE,
                 SEARCH_AFTER, SIZE, REQUEST_ID);
+
+        assertNotNull(responseObject);
+        assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
+    }
+
+    @Test
+    @DisplayName("Test dissolved alphabetical search returns no results when response object is empty")
+    void emptySearchDissolvedAlphabeticalRequestReturnsNoResults() throws Exception {
+        when(mockDissolvedSearchRequestService.getSearchResults(COMPANY_NAME, null, null, null, REQUEST_ID))
+            .thenReturn(createSearchResults(false, true));
+        ResponseObject responseObject = searchIndexService.searchAlphabetical(COMPANY_NAME, SEARCH_BEFORE,
+            SEARCH_AFTER, SIZE, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
@@ -96,7 +108,7 @@ class DissolvedSearchIndexServiceTest {
     @DisplayName("Test best match dissolved search request returns successfully")
     void searchBestMatchDissolvedRequestSuccessful() throws Exception {
         when(mockDissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID,
-                SEARCH_TYPE_BEST_MATCH, START_INDEX)).thenReturn(createSearchResults(true));
+                SEARCH_TYPE_BEST_MATCH, START_INDEX)).thenReturn(createSearchResults(true, false));
         ResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID,
                 SEARCH_TYPE_BEST_MATCH, START_INDEX);
 
@@ -121,7 +133,7 @@ class DissolvedSearchIndexServiceTest {
     @DisplayName("Test best match dissolved search returns no results")
     void searchBestMatchDissolvedRequestReturnsNoResults() throws Exception {
         when(mockDissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID,
-                SEARCH_TYPE_BEST_MATCH, START_INDEX)).thenReturn(createSearchResults(false));
+                SEARCH_TYPE_BEST_MATCH, START_INDEX)).thenReturn(createSearchResults(false, false));
         ResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID,
                 SEARCH_TYPE_BEST_MATCH, START_INDEX);
 
@@ -134,7 +146,7 @@ class DissolvedSearchIndexServiceTest {
     @DisplayName("Test best match for previous company names on a dissolved search request returns successfully")
     void searchBestMatchPreviousNamesDissolvedRequestSuccessful() throws Exception {
         when(mockDissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID,
-                SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX)).thenReturn(createSearchResults(true));
+                SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX)).thenReturn(createSearchResults(true, false));
         ResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID,
                 SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX);
 
@@ -159,7 +171,7 @@ class DissolvedSearchIndexServiceTest {
     @DisplayName("Test best match for previous company names on a dissolved search returns no results")
     void searchBestMatchPreviousNamesDissolvedRequestReturnsNoResults() throws Exception {
         when(mockDissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID,
-                SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX)).thenReturn(createSearchResults(false));
+                SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX)).thenReturn(createSearchResults(false, false));
         ResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID,
                 SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX);
 
@@ -167,7 +179,19 @@ class DissolvedSearchIndexServiceTest {
         assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
     }
 
-    private SearchResults createSearchResults(boolean isResultsPopulated) {
+    @Test
+    @DisplayName("Test best match for previous company names on a dissolved search returns no results when result is empty")
+    void emptySearchBestMatchPreviousNamesDissolvedRequestReturnsNoResults() throws Exception {
+        when(mockDissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME, REQUEST_ID,
+            SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX)).thenReturn(createSearchResults(false, true));
+        ResponseObject responseObject = searchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID,
+            SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX);
+
+        assertNotNull(responseObject);
+        assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
+    }
+
+    private SearchResults createSearchResults(boolean isResultsPopulated, boolean isItemsEmpty) {
         SearchResults searchResults = new SearchResults();
         TopHit topHit = new TopHit();
         topHit.setCompanyName("companyName");
@@ -176,7 +200,11 @@ class DissolvedSearchIndexServiceTest {
         searchResults.setEtag("etag");
         searchResults.setKind(KIND);
         if (isResultsPopulated) {
-            searchResults.setItems(createItems());
+            if(!isItemsEmpty) {
+                searchResults.setItems(createItems());
+            } else {
+                searchResults.setItems(new ArrayList<DissolvedCompany>());
+            }
         }
         return searchResults;
     }
