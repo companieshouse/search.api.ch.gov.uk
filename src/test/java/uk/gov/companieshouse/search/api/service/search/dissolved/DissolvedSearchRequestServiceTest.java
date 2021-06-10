@@ -635,7 +635,7 @@ class DissolvedSearchRequestServiceTest {
         Address address = new Address();
         address.setPostalCode(POSTCODE);
         address.setLocality(LOCALITY);
-        previousName.setAddress(address);
+        previousName.setRegisteredOfficeAddress(address);
 
         previousNames.add(previousName);
 
@@ -655,7 +655,7 @@ class DissolvedSearchRequestServiceTest {
         Address address = new Address();
         address.setPostalCode(POSTCODE);
         address.setLocality(LOCALITY);
-        topHit.setAddress(address);
+        topHit.setRegisteredOfficeAddress(address);
 
         return topHit;
     }
