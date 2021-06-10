@@ -1,5 +1,17 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import uk.gov.companieshouse.search.api.exception.SearchException;
+import uk.gov.companieshouse.search.api.model.SearchResults;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
+import uk.gov.companieshouse.search.api.model.response.ResponseObject;
+import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
+import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
+import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
+
+import java.util.Map;
+
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
@@ -9,19 +21,6 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.createLoggingMap;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
-
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import uk.gov.companieshouse.search.api.exception.SearchException;
-import uk.gov.companieshouse.search.api.model.SearchResults;
-import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
-import uk.gov.companieshouse.search.api.model.response.ResponseObject;
-import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
-import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
-import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
 
 @Service
 public class AlphabeticalSearchIndexService implements SearchIndexService {
@@ -55,7 +54,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
             return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
         }
 
-        if(searchResults.getItems() != null) {
+        if(searchResults.getItems() != null && !searchResults.getItems().isEmpty()) {
             getLogger().info("Search successful", logMap);
             return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
         }

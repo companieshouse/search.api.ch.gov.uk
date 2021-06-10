@@ -1,12 +1,5 @@
 package uk.gov.companieshouse.search.api.service.search.alphabetical;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,17 +8,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -40,7 +39,7 @@ class AlphabeticalSearchIndexServiceTest {
     private TopHit TOP_HIT;
     private static final String REQUEST_ID = "requestId";
     private static final String CORPORATE_NAME = "corporateName";
-    
+
     @BeforeAll
     void setUp() {
         TOP_HIT = new TopHit();
@@ -51,7 +50,7 @@ class AlphabeticalSearchIndexServiceTest {
     @DisplayName("Test search request returns successfully")
     void searchRequestSuccessful() throws Exception {
         when(mockSearchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID))
-            .thenReturn(createSearchResults(true));
+            .thenReturn(createSearchResults(true, false));
         ResponseObject responseObject = searchIndexService.search(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(responseObject);
@@ -74,20 +73,37 @@ class AlphabeticalSearchIndexServiceTest {
     @DisplayName("Test search returns no results")
     void searchRequestReturnsNoResults() throws Exception {
         when(mockSearchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID))
-            .thenReturn(createSearchResults(false));
+            .thenReturn(createSearchResults(false, false));
         ResponseObject responseObject = searchIndexService.search(CORPORATE_NAME, null, null, null, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
     }
 
-    private SearchResults<Company> createSearchResults(boolean isResultsPopulated) {
+    @Test
+    @DisplayName("Test search returns empty results")
+    void emptySearchRequestReturnsNoResults() throws Exception {
+        when(mockSearchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID))
+            .thenReturn(createSearchResults(false, true));
+        ResponseObject responseObject = searchIndexService.search(CORPORATE_NAME, null, null, null, REQUEST_ID);
+
+        assertNotNull(responseObject);
+        assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
+    }
+
+    private SearchResults<Company> createSearchResults(boolean isResultsPopulated, boolean isItemsEmpty) {
         SearchResults<Company> searchResults = new SearchResults<>();
         searchResults.setKind("alphabetical");
-        searchResults.setTopHit(TOP_HIT);
 
-        if (isResultsPopulated) {
-            searchResults.setItems(createResults());
+        if (!isItemsEmpty) {
+            searchResults.setTopHit(TOP_HIT);
+
+            if (isResultsPopulated) {
+                searchResults.setItems(createResults());
+            }
+        } else {
+            searchResults.setTopHit(null);
+            searchResults.setItems(null);
         }
         return searchResults;
     }
