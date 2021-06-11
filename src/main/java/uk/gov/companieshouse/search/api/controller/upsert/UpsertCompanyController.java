@@ -35,7 +35,7 @@ public class UpsertCompanyController {
     private ApiToResponseMapper apiToResponseMapper;
 
     @PutMapping
-    public ResponseEntity<?> upsertCompany(@PathVariable("company_number") String companyNumber,
+    public ResponseEntity<Object> upsertCompany(@PathVariable("company_number") String companyNumber,
             @Valid @RequestBody CompanyProfileApi company) {
         Map<String, Object> logMap = new HashMap<>();
         logMap.put(COMPANY_NAME, company.getCompanyName());
