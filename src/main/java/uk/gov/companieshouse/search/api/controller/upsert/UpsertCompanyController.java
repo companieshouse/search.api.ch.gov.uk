@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.search.api.controller.upsert;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NUMBER;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.UPSERT_COMPANY_NUMBER;
