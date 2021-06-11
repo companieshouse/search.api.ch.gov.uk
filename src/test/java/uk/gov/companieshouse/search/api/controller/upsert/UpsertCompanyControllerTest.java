@@ -2,7 +2,9 @@ package uk.gov.companieshouse.search.api.controller.upsert;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_UPSERTED;
@@ -16,6 +18,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,6 +43,9 @@ class UpsertCompanyControllerTest {
     @InjectMocks
     private UpsertCompanyController upsertCompanyController;
 
+    @Captor
+    private ArgumentCaptor<ResponseObject> responseObjectCaptor;
+
     @Test
     @DisplayName("Test upsert company is successful")
     void testUpsertSuccessful() {
@@ -46,10 +53,9 @@ class UpsertCompanyControllerTest {
         CompanyProfileApi company = createCompany();
 
         when(mockUpsertCompanyService.upsert(company)).thenReturn(responseObject);
-        when(mockApiToResponseMapper.map(responseObject))
-            .thenReturn(ResponseEntity.status(OK).build());
+        when(mockApiToResponseMapper.map(responseObject)).thenReturn(ResponseEntity.status(OK).build());
 
-        ResponseEntity<?> responseEntity = upsertCompanyController.upsertCompany(company);
+        ResponseEntity<?> responseEntity = upsertCompanyController.upsertCompany(company.getCompanyNumber(), company);
 
         assertNotNull(responseEntity);
         assertEquals(OK, responseEntity.getStatusCode());
@@ -63,9 +69,9 @@ class UpsertCompanyControllerTest {
 
         when(mockUpsertCompanyService.upsert(company)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
-            .thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+                .thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
 
-        ResponseEntity<?> responseEntity = upsertCompanyController.upsertCompany(company);
+        ResponseEntity<?> responseEntity = upsertCompanyController.upsertCompany(company.getCompanyNumber(), company);
 
         assertNotNull(responseEntity);
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
@@ -79,12 +85,59 @@ class UpsertCompanyControllerTest {
 
         when(mockUpsertCompanyService.upsert(company)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
-            .thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
+                .thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
 
-        ResponseEntity<?> responseEntity = upsertCompanyController.upsertCompany(company);
+        ResponseEntity<?> responseEntity = upsertCompanyController.upsertCompany(company.getCompanyNumber(), company);
 
         assertNotNull(responseEntity);
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test upsert returns a HTTP 400 Bad Request if the company number is null")
+    void testUpsertWithNullCompanyNumberReturnsBadRequest() {
+        CompanyProfileApi company = createCompany();
+
+        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+                .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
+
+        ResponseEntity<?> responseEntity = upsertCompanyController.upsertCompany(null, company);
+
+        assertEquals(UPSERT_ERROR, responseObjectCaptor.getValue().getStatus());
+        assertNotNull(responseEntity);
+        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test upsert returns a HTTP 400 Bad Request if the company number does not match the request body")
+    void testUpsertWithDifferentCompanyNumberReturnsBadRequest() {
+        CompanyProfileApi company = createCompany();
+        ResponseObject responseObject = new ResponseObject(UPSERT_ERROR);
+
+        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+                .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
+
+        ResponseEntity<?> responseEntity = upsertCompanyController.upsertCompany("1234567890", company);
+
+        assertEquals(UPSERT_ERROR, responseObjectCaptor.getValue().getStatus());
+        assertNotNull(responseEntity);
+        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test upsert returns a HTTP 400 Bad Request if the company number is an empty string")
+    void testUpsertWithEmptyStringCompanyNumberReturnsBadRequest() {
+        CompanyProfileApi company = createCompany();
+        ResponseObject responseObject = new ResponseObject(UPSERT_ERROR);
+
+        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+                .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
+
+        ResponseEntity<?> responseEntity = upsertCompanyController.upsertCompany("", company);
+
+        assertEquals(UPSERT_ERROR, responseObjectCaptor.getValue().getStatus());
+        assertNotNull(responseEntity);
+        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     private CompanyProfileApi createCompany() {

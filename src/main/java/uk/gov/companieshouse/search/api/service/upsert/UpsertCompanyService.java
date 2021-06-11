@@ -1,5 +1,11 @@
 package uk.gov.companieshouse.search.api.service.upsert;
 
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NUMBER;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
-import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
@@ -34,10 +39,10 @@ public class UpsertCompanyService {
      */
     public ResponseObject upsert(CompanyProfileApi company) {
         Map<String, Object> logMap = new HashMap<>();
-        logMap.put(LoggingUtils.COMPANY_NAME, company.getCompanyName());
-        logMap.put(LoggingUtils.COMPANY_NUMBER, company.getCompanyNumber());
-        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
-        LoggingUtils.getLogger().info("Upserting company underway", logMap);
+        logMap.put(COMPANY_NAME, company.getCompanyName());
+        logMap.put(COMPANY_NUMBER, company.getCompanyNumber());
+        logMap.put(INDEX, INDEX_ALPHABETICAL);
+        getLogger().info("Upserting company underway", logMap);
 
         IndexRequest indexRequest;
         UpdateRequest updateRequest;
@@ -46,18 +51,18 @@ public class UpsertCompanyService {
             indexRequest = upsertRequestService.createIndexRequest(company);
             updateRequest = upsertRequestService.createUpdateRequest(company, indexRequest);
         } catch (UpsertException e) {
-            LoggingUtils.getLogger().error("An error occured attempting upsert the document", logMap);
+            getLogger().error("An error occured attempting upsert the document", logMap);
             return new ResponseObject(ResponseStatus.UPSERT_ERROR);
         }
 
         try {
             restClientService.upsert(updateRequest);
         } catch (IOException e) {
-            LoggingUtils.getLogger().error("IOException when upserting company", logMap);
+            getLogger().error("IOException when upserting company", logMap);
             return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
         }
 
-        LoggingUtils.getLogger().info("Upsert successful for ", logMap);
+        getLogger().info("Upsert successful for ", logMap);
         return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
     }
 }
