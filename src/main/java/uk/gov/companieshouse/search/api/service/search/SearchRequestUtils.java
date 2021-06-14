@@ -14,9 +14,9 @@ public class SearchRequestUtils {
         return (String) sourceAsMap.get(ORDERED_ALPHA_KEY_WITH_ID);
     }
 
-    public static Integer checkResultsSize(Integer size, Integer defaultSize, Integer maxSearchResults) throws SizeException {
+    public static Integer checkResultsSize(Integer size, Integer maxSize) throws SizeException {
 
-        if(size == null || size <= 0 || size > 100) {
+        if(size == null || size <= 0 || size > maxSize) {
             throw new SizeException("Size parameter is less than or equal to 0 or greater than maximum");
         }
         return size;

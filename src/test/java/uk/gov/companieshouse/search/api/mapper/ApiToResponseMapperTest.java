@@ -40,7 +40,7 @@ class ApiToResponseMapperTest {
     @Mock
     private EnvironmentReader mockEnvironmentReader;
 
-    private static final String MAX_SEARCH_RESULTS = "MAX_SEARCH_RESULTS";
+    private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
 
     @Test
     @DisplayName("Test if OK returned")
@@ -190,7 +190,7 @@ class ApiToResponseMapperTest {
         ResponseObject responseObject =
             new ResponseObject(SIZE_PARAMETER_ERROR);
 
-        when(mockEnvironmentReader.getMandatoryInteger(MAX_SEARCH_RESULTS)).thenReturn(50);
+        when(mockEnvironmentReader.getMandatoryInteger(MAX_SIZE_PARAM)).thenReturn(50);
         ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
 
         assertNotNull(responseEntity);

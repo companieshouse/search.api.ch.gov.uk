@@ -18,7 +18,7 @@ public class ApiToResponseMapper {
     @Autowired
     private EnvironmentReader environmentReader;
 
-    private static final String MAX_SEARCH_RESULTS = "MAX_SEARCH_RESULTS";
+    private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
 
     public ResponseEntity<Object> map(ResponseObject responseObject) {
 
@@ -33,7 +33,7 @@ public class ApiToResponseMapper {
                 return ResponseEntity.status(BAD_REQUEST).build();
             case SIZE_PARAMETER_ERROR:
                 return ResponseEntity.status(UNPROCESSABLE_ENTITY)
-                    .body("Invalid size parameter, size must be greater than zero and less than " + environmentReader.getMandatoryInteger(MAX_SEARCH_RESULTS));
+                    .body("Invalid size parameter, size must be greater than zero and less than " + environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
             default:
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
         }

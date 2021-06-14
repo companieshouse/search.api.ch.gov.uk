@@ -52,8 +52,7 @@ class AlphabeticalSearchControllerTest {
 
     private static final String REQUEST_ID = "requestID";
     private static final String COMPANY_NAME = "test name";
-    private static final String DEFAULT_SEARCH_RESULTS = "DEFAULT_SEARCH_RESULTS";
-    private static final String MAX_SEARCH_RESULTS = "MAX_SEARCH_RESULTS";
+    private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
 
     @Test
     @DisplayName("Test search not found")
@@ -65,8 +64,7 @@ class AlphabeticalSearchControllerTest {
         when(mockSearchIndexService.search(COMPANY_NAME, null, null, 20, REQUEST_ID)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(NOT_FOUND).build());
-        doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(DEFAULT_SEARCH_RESULTS);
-        doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SEARCH_RESULTS);
+        doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
 
         ResponseEntity<?> responseEntity =
             alphabeticalSearchController.searchByCorporateName("test name", null, null, 20, REQUEST_ID);
@@ -85,8 +83,7 @@ class AlphabeticalSearchControllerTest {
         when(mockSearchIndexService.search(COMPANY_NAME, null, null, 20, REQUEST_ID)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
-        doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(DEFAULT_SEARCH_RESULTS);
-        doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SEARCH_RESULTS);
+        doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
 
         ResponseEntity<?> responseEntity =
             alphabeticalSearchController.searchByCorporateName("test name", null, null, 20, REQUEST_ID);
@@ -157,8 +154,7 @@ class AlphabeticalSearchControllerTest {
     }
 
     private ResponseEntity<?> getResponseEntity(Integer size) {
-        doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(DEFAULT_SEARCH_RESULTS);
-        doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SEARCH_RESULTS);
+        doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
         when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
             .thenReturn(ResponseEntity.status(UNPROCESSABLE_ENTITY).build());
 
