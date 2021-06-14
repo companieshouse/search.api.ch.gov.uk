@@ -1,15 +1,24 @@
 package uk.gov.companieshouse.search.api.mapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
+
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 @Component
 public class ApiToResponseMapper {
+
+    @Autowired
+    private EnvironmentReader environmentReader;
+
+    private static final String MAX_SEARCH_RESULTS = "MAX_SEARCH_RESULTS";
 
     public ResponseEntity<Object> map(ResponseObject responseObject) {
 
@@ -22,6 +31,9 @@ public class ApiToResponseMapper {
             case UPDATE_REQUEST_ERROR:
             case UPSERT_ERROR:
                 return ResponseEntity.status(BAD_REQUEST).build();
+            case SIZE_PARAMETER_ERROR:
+                return ResponseEntity.status(UNPROCESSABLE_ENTITY)
+                    .body("Invalid size parameter, size must be greater than zero and less than " + environmentReader.getMandatoryInteger(MAX_SEARCH_RESULTS));
             default:
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
         }
