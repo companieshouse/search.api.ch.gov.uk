@@ -53,6 +53,7 @@ class AlphabeticalSearchControllerTest {
     private static final String REQUEST_ID = "requestID";
     private static final String COMPANY_NAME = "test name";
     private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
+    private static final String ALPHABETICAL_SEARCH_RESULT_MAX = "ALPHABETICAL_SEARCH_RESULT_MAX";
 
     @Test
     @DisplayName("Test search not found")
@@ -65,6 +66,7 @@ class AlphabeticalSearchControllerTest {
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(NOT_FOUND).build());
         doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
+        doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(ALPHABETICAL_SEARCH_RESULT_MAX);
 
         ResponseEntity<?> responseEntity =
             alphabeticalSearchController.searchByCorporateName("test name", null, null, 20, REQUEST_ID);
@@ -84,9 +86,31 @@ class AlphabeticalSearchControllerTest {
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
         doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
+        doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(ALPHABETICAL_SEARCH_RESULT_MAX);
 
         ResponseEntity<?> responseEntity =
             alphabeticalSearchController.searchByCorporateName("test name", null, null, 20, REQUEST_ID);
+
+        assertNotNull(responseEntity);
+        assertEquals(FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test search size set to default if size parameter is null")
+    void testNullSizeParameter() {
+
+        ResponseObject responseObject =
+            new ResponseObject(SEARCH_FOUND, createSearchResults());
+
+        doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
+        doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(ALPHABETICAL_SEARCH_RESULT_MAX);
+
+        when(mockSearchIndexService.search(COMPANY_NAME, null, null, 20, REQUEST_ID)).thenReturn(responseObject);
+        when(mockApiToResponseMapper.map(responseObject))
+            .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
+
+        ResponseEntity<?> responseEntity =
+            alphabeticalSearchController.searchByCorporateName("test name", null, null, null, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
@@ -125,17 +149,6 @@ class AlphabeticalSearchControllerTest {
         assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
     }
 
-    @Test
-    @DisplayName("Test search invalid as size parameter is null")
-    void testNullSizeParameter() {
-
-        ResponseEntity responseEntity = getResponseEntity(null);
-
-        assertEquals(SIZE_PARAMETER_ERROR, responseObjectCaptor.getValue().getStatus());
-        assertNotNull(responseEntity);
-        assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-    }
-
     private SearchResults<Company> createSearchResults() {
         SearchResults<Company> searchResults = new SearchResults<>();
         List<Company> companies = new ArrayList<>();
@@ -155,6 +168,7 @@ class AlphabeticalSearchControllerTest {
 
     private ResponseEntity<?> getResponseEntity(Integer size) {
         doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
+        doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(ALPHABETICAL_SEARCH_RESULT_MAX);
         when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
             .thenReturn(ResponseEntity.status(UNPROCESSABLE_ENTITY).build());
 
