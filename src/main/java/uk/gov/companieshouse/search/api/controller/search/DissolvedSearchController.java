@@ -1,17 +1,5 @@
 package uk.gov.companieshouse.search.api.controller.search;
 
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
-
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +9,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
+import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.search.api.exception.SizeException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
+import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchIndexService;
+
+import java.util.Map;
+
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
 
 @RestController
@@ -39,6 +41,11 @@ public class DissolvedSearchController {
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
 
+    @Autowired
+    private EnvironmentReader environmentReader;
+
+    private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
+    private static final String DISSOLVED_SEARCH_RESULT_MAX = "DISSOLVED_SEARCH_RESULT_MAX";
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
     private static final String COMPANY_NAME_QUERY_PARAM = "q";
     private static final String SEARCH_TYPE_QUERY_PARAM = "search_type";
@@ -68,6 +75,16 @@ public class DissolvedSearchController {
         logIfNotNull(logMap, START_INDEX, startIndex);
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
+
+        try {
+            size = SearchRequestUtils.checkResultsSize
+                (size, environmentReader.getMandatoryInteger(DISSOLVED_SEARCH_RESULT_MAX),
+                    environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
+        } catch (SizeException e) {
+            getLogger().info(e.getMessage(), logMap);
+            return apiToResponseMapper
+                .mapDissolved(new ResponseObject(ResponseStatus.SIZE_PARAMETER_ERROR, null));
+        }
 
         if (checkSearchTypeParam(searchType)) {
 

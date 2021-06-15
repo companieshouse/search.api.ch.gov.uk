@@ -195,6 +195,6 @@ class ApiToResponseMapperTest {
 
         assertNotNull(responseEntity);
         assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-        assertEquals("Invalid size parameter, size must be greater than zero and less than 50", responseEntity.getBody());
+        assertEquals("Invalid size parameter, size must be greater than zero and not greater than 50", responseEntity.getBody());
     }
 }
