@@ -49,6 +49,7 @@ public class AlphabeticalSearchController {
     private EnvironmentReader environmentReader;
 
     private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
+    private static final String ALPHABETICAL_SEARCH_RESULT_MAX = "ALPHABETICAL_SEARCH_RESULT_MAX";
 
     @GetMapping("/companies")
     @ResponseBody
@@ -68,7 +69,8 @@ public class AlphabeticalSearchController {
 
         try {
             size = SearchRequestUtils.checkResultsSize
-                (size, environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
+                (size, environmentReader.getMandatoryInteger(ALPHABETICAL_SEARCH_RESULT_MAX),
+                    environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
         } catch (SizeException e) {
             getLogger().info(e.getMessage(), logMap);
             return apiToResponseMapper
