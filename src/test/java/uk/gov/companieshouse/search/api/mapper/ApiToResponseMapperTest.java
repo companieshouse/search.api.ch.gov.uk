@@ -184,8 +184,8 @@ class ApiToResponseMapperTest {
     }
 
     @Test
-    @DisplayName("Test if size parameter is invalid, greater than max size allowed")
-    void testSizeParameterInvalid() {
+    @DisplayName("Test if size parameter is invalid, greater than max size allowed for alphabetical")
+    void testSizeParameterInvalidAlphabetical() {
 
         ResponseObject responseObject =
             new ResponseObject(SIZE_PARAMETER_ERROR);
@@ -197,4 +197,20 @@ class ApiToResponseMapperTest {
         assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
         assertEquals("Invalid size parameter, size must be greater than zero and not greater than 50", responseEntity.getBody());
     }
+
+    @Test
+    @DisplayName("Test if size parameter is invalid, greater than max size allowed for dissolved alphabetical")
+    void testSizeParameterInvalidDissolvedAlphabetical() {
+
+        ResponseObject responseObject =
+            new ResponseObject(SIZE_PARAMETER_ERROR);
+
+        when(mockEnvironmentReader.getMandatoryInteger(MAX_SIZE_PARAM)).thenReturn(50);
+        ResponseEntity<?> responseEntity = apiToResponseMapper.mapDissolved(responseObject);
+
+        assertNotNull(responseEntity);
+        assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
+        assertEquals("Invalid size parameter, size must be greater than zero and not greater than 50", responseEntity.getBody());
+    }
 }
+
