@@ -45,12 +45,15 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final int FALLBACK_QUERY_LIMIT = 25;
 
+    private Integer sizeAbove;
+    private Integer sizeBelow;
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public SearchResults<Company> getAlphabeticalSearchResults(String corporateName, String searchBefore, String searchAfter,
-            Integer size, String requestId) throws SearchException {
+    public SearchResults<Company> getAlphabeticalSearchResults(String corporateName, String searchBefore,
+            String searchAfter, Integer size, String requestId) throws SearchException {
         Map<String, Object> logMap = createLoggingMap(requestId);
         logMap.put(COMPANY_NAME, corporateName);
         logMap.put(INDEX, INDEX_ALPHABETICAL);
@@ -63,7 +66,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
         String orderedAlphakey = "";
         TopHit topHitCompany = new TopHit();
-        
+
         List<Company> results = new ArrayList<>();
         String kind = "search#alphabetical";
 
@@ -100,12 +103,9 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 topHitCompany.setKind(company.getKind());
 
                 if ((searchBefore == null && searchAfter == null) || (searchBefore != null && searchAfter != null)) {
-                    logMap.put(ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
-                    getLogger().info("Default alphabetical search before and after tophit", logMap);
-                    results = populateAboveResults(requestId, topHitCompany.getCompanyName(), orderedAlphakeyWithId, size);
-                    results.add(company);
-                    results.addAll(populateBelowResults(requestId, topHitCompany.getCompanyName(), orderedAlphakeyWithId, size));
-                } else if(searchAfter != null){
+                    results = prepareSearchResultsWithTopHit(size, requestId, logMap, topHitCompany, results,
+                            orderedAlphakeyWithId, company);
+                } else if (searchAfter != null) {
                     getLogger().info("Searching alphabetical companies after", logMap);
                     results.addAll(populateBelowResults(requestId, topHitCompany.getCompanyName(), searchAfter, size));
                 } else {
@@ -118,6 +118,24 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
             throw new SearchException("error occurred reading data for highest match from " + "searchHits", e);
         }
         return new SearchResults<>("", topHitCompany, results, kind);
+    }
+
+    private List<Company> prepareSearchResultsWithTopHit(Integer size, String requestId, Map<String, Object> logMap,
+            TopHit topHitCompany, List<Company> results, String orderedAlphakeyWithId, Company company)
+            throws IOException {
+        checkSize(size);
+        logMap.put(ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
+        getLogger().info("Default alphabetical search before and after tophit", logMap);
+        if (sizeAbove > 0) {
+            results = populateAboveResults(requestId, topHitCompany.getCompanyName(), orderedAlphakeyWithId,
+                    sizeAbove);
+        }
+        results.add(company);
+        if (sizeBelow > 0) {
+            results.addAll(populateBelowResults(requestId, topHitCompany.getCompanyName(),
+                    orderedAlphakeyWithId, sizeBelow));
+        }
+        return results;
     }
 
     public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphakey, String requestId)
@@ -151,6 +169,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
     /**
      * method to populate the entries following the ordered alphakey
+     * 
      * @param requestId
      * @param topHitCompanyName
      * @param orderedAlphakeyWithId
@@ -170,6 +189,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
     /**
      * method to populate the entries before the ordered alphakey
+     * 
      * @param requestId
      * @param topHitCompanyName
      * @param orderedAlphakeyWithId
@@ -181,7 +201,8 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
             Integer size) throws IOException {
         List<Company> results = new ArrayList<>();
         SearchHits hits;
-        hits = alphabeticalSearchRequests.getAboveResultsResponse(requestId, orderedAlphakeyWithId, topHitCompanyName, size);
+        hits = alphabeticalSearchRequests.getAboveResultsResponse(requestId, orderedAlphakeyWithId, topHitCompanyName,
+                size);
         hits.forEach(h -> results.add(getCompany(h)));
 
         Collections.reverse(results);
@@ -214,5 +235,15 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         company.setCompanyType((String) sourceAsMap.get("company_type"));
 
         return company;
+    }
+
+    private void checkSize(Integer size) {
+        if ((size % 2) == 0) {
+            sizeAbove = (size / 2);
+            sizeBelow = (size / 2) - 1;
+        } else {
+            sizeAbove = Math.floorDiv(size, 2);
+            sizeBelow = Math.floorDiv(size, 2);
+        }
     }
 }
