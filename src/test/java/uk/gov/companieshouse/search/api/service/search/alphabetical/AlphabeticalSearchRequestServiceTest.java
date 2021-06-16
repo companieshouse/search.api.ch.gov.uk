@@ -5,6 +5,7 @@ import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -61,17 +62,34 @@ class AlphabeticalSearchRequestServiceTest {
                 .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
-                null)).thenReturn(createSearchHits());
+                10)).thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
-                null)).thenReturn(createSearchHits());
+                9)).thenReturn(createSearchHits());
 
         SearchResults<Company> searchResults =
-            searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID);
+            searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, 20, REQUEST_ID);
 
         assertNotNull(searchResults);
         assertEquals( TOP_HIT, searchResults.getTopHit().getCompanyName());
         assertEquals(3, searchResults.getItems().size());
+    }
+    
+    @Test
+    @DisplayName("Test search request returns results successfully with best match query and a size of 1")
+    void testBestMatchSuccessfulWithSizeOne() throws Exception {
+
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(CORPORATE_NAME)).thenReturn(createAlphaKeyResponse());
+
+        when(mockAlphabeticalSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
+                .thenReturn(createSearchHits());
+
+        SearchResults<Company> searchResults =
+            searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, 1, REQUEST_ID);
+
+        assertNotNull(searchResults);
+        assertEquals( TOP_HIT, searchResults.getTopHit().getCompanyName());
+        assertEquals(1, searchResults.getItems().size());
     }
 
     @Test
@@ -87,13 +105,13 @@ class AlphabeticalSearchRequestServiceTest {
                 .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
-                null)).thenReturn(createSearchHits());
+                10)).thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
-                null)).thenReturn(createSearchHits());
+                9)).thenReturn(createSearchHits());
 
         SearchResults<Company> searchResults =
-            searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID);
+            searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, 20, REQUEST_ID);
 
         assertNotNull(searchResults);
         assertEquals(TOP_HIT, searchResults.getTopHit().getCompanyName());
@@ -116,13 +134,13 @@ class AlphabeticalSearchRequestServiceTest {
                 .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
-                null)).thenReturn(createSearchHits());
+                5)).thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
-                null)).thenReturn(createSearchHits());
+                5)).thenReturn(createSearchHits());
 
         SearchResults<Company> searchResults =
-            searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, null, REQUEST_ID);
+            searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, 11, REQUEST_ID);
 
         assertNotNull(searchResults);
         assertEquals(TOP_HIT, searchResults.getTopHit().getCompanyName());
@@ -205,13 +223,13 @@ class AlphabeticalSearchRequestServiceTest {
                 .thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getAboveResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
-                null)).thenReturn(createSearchHits());
+                10)).thenReturn(createSearchHits());
 
         when(mockAlphabeticalSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, TOP_HIT,
-                null)).thenReturn(createSearchHits());
+                9)).thenReturn(createSearchHits());
 
         SearchResults<Company> searchResults = searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME,
-                SEARCH_BEFORE_VALUE, SEARCH_AFTER_VALUE, null, REQUEST_ID);
+                SEARCH_BEFORE_VALUE, SEARCH_AFTER_VALUE, 20, REQUEST_ID);
 
         assertNotNull(searchResults);
         assertEquals(TOP_HIT, searchResults.getTopHit().getCompanyName());

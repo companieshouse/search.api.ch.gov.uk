@@ -54,6 +54,8 @@ public class DissolvedSearchRequestService {
     private static final int FALLBACK_QUERY_LIMIT = 25;
     private static final String RESULT_FOUND = "A result has been found";
     private static final String SEARCH_HITS = "searchHits";
+    
+    private Integer sizeAbove, sizeBelow;
 
     public SearchResults<DissolvedCompany> getSearchResults(String companyName, String searchBefore, String searchAfter,
             Integer size, String requestId) throws SearchException {
@@ -98,12 +100,17 @@ public class DissolvedSearchRequestService {
                 topHit = elasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany);
 
                 if ((searchBefore == null && searchAfter == null) || (searchBefore != null && searchAfter != null)) {
+                    checkSize(size);
                     logMap.put(ORDERED_ALPHAKEY_WITH_ID, orderedAlphaKeyWithId);
                     getLogger().info("Default dissolved search before and after tophit", logMap);
-                    results = populateAboveResults(requestId, topHit.getCompanyName(), orderedAlphaKeyWithId, size);
+                    if (sizeAbove > 0) {
+                        results = populateAboveResults(requestId, topHit.getCompanyName(), orderedAlphaKeyWithId, sizeAbove);
+                    }
                     results.add(topHitCompany);
-                    results.addAll(
-                            populateBelowResults(requestId, topHit.getCompanyName(), orderedAlphaKeyWithId, size));
+                    if (sizeBelow > 0) {
+                        results.addAll(
+                                populateBelowResults(requestId, topHit.getCompanyName(), orderedAlphaKeyWithId, sizeBelow));
+                    }
                 } else if (searchAfter != null) {
                     getLogger().info("Searching dissolved companies after", logMap);
                     results.addAll(populateBelowResults(requestId, topHit.getCompanyName(), searchAfter, size));
@@ -255,5 +262,15 @@ public class DissolvedSearchRequestService {
         logMap.put(INDEX, INDEX_DISSOLVED);
 
         return logMap;
+    }
+    
+    private void checkSize(Integer size) {
+        if((size % 2) == 0) {
+            sizeAbove = (size / 2);
+            sizeBelow = (size / 2) -1;
+        }else {
+            sizeAbove = Math.floorDiv(size, 2);
+            sizeBelow = Math.floorDiv(size, 2);         
+        }
     }
 }
