@@ -31,11 +31,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
+
+import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.search.api.exception.SizeException;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
+import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
+
 
 @RestController
 @RequestMapping(value = "/alphabetical-search", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -56,13 +61,19 @@ public class AlphabeticalSearchController {
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
 
+    @Autowired
+    private EnvironmentReader environmentReader;
+
+    private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
+    private static final String ALPHABETICAL_SEARCH_RESULT_MAX = "ALPHABETICAL_SEARCH_RESULT_MAX";
+
     @GetMapping("/companies")
     @ResponseBody
     public ResponseEntity<?> searchByCorporateName(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
-                                                @RequestParam(name = SEARCH_BEFORE_PARAM, required=false) String searchBefore,
-                                                @RequestParam(name = SEARCH_AFTER_PARAM, required=false) String searchAfter,
-                                                @RequestParam(name = SIZE_PARAM, required=false) Integer size,
-                                                @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
+                                                   @RequestParam(name = SEARCH_BEFORE_PARAM, required = false) String searchBefore,
+                                                   @RequestParam(name = SEARCH_AFTER_PARAM, required = false) String searchAfter,
+                                                   @RequestParam(name = SIZE_PARAM, required = false) Integer size,
+                                                   @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         Map<String, Object> logMap = createLoggingMap(requestId);
         logMap.put(COMPANY_NAME, companyName);
@@ -71,7 +82,17 @@ public class AlphabeticalSearchController {
         logIfNotNull(logMap, SEARCH_AFTER, searchAfter);
         logIfNotNull(logMap, SIZE, size);
         getLogger().info("Search request received", logMap);
-        
+
+        try {
+            size = SearchRequestUtils.checkResultsSize
+                (size, environmentReader.getMandatoryInteger(ALPHABETICAL_SEARCH_RESULT_MAX),
+                    environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
+        } catch (SizeException e) {
+            getLogger().info(e.getMessage(), logMap);
+            return apiToResponseMapper
+                .map(new ResponseObject(ResponseStatus.SIZE_PARAMETER_ERROR, null));
+        }
+
         ResponseObject responseObject = searchIndexService
             .search(companyName, searchBefore, searchAfter, size, requestId);
 

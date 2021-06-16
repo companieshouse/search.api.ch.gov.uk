@@ -22,8 +22,8 @@ public class DissolvedPreviousName {
     @JsonProperty("kind")
     private String kind;
 
-    @JsonProperty("address")
-    private Address address;
+    @JsonProperty("registered_office_address")
+    private Address registeredOfficeAddress;
 
     @JsonProperty("date_of_cessation")
     private LocalDate dateOfCessation;
@@ -63,12 +63,12 @@ public class DissolvedPreviousName {
         this.kind = kind;
     }
 
-    public Address getAddress() {
-        return address;
+    public Address getRegisteredOfficeAddress() {
+        return registeredOfficeAddress;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setRegisteredOfficeAddress(Address registeredOfficeAddress) {
+        this.registeredOfficeAddress = registeredOfficeAddress;
     }
 
     public LocalDate getDateOfCessation() {

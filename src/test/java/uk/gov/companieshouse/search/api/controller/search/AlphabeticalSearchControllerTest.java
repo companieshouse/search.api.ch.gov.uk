@@ -2,15 +2,18 @@ package uk.gov.companieshouse.search.api.controller.search;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_UPSERTED;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_NOT_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SIZE_PARAMETER_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPDATE_REQUEST_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPSERT_ERROR;
 
@@ -31,6 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
+import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
@@ -54,11 +58,16 @@ class AlphabeticalSearchControllerTest {
     @Captor
     private ArgumentCaptor<ResponseObject> responseObjectCaptor;
 
+    @Mock
+    private EnvironmentReader mockEnvironmentReader;
+
     @InjectMocks
     private AlphabeticalSearchController alphabeticalSearchController;
 
     private static final String REQUEST_ID = "requestID";
     private static final String COMPANY_NAME = "test name";
+    private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
+    private static final String ALPHABETICAL_SEARCH_RESULT_MAX = "ALPHABETICAL_SEARCH_RESULT_MAX";
 
     @Test
     @DisplayName("Test search not found")
@@ -67,12 +76,14 @@ class AlphabeticalSearchControllerTest {
         ResponseObject responseObject =
             new ResponseObject(SEARCH_NOT_FOUND, null);
 
-        when(mockSearchIndexService.search(COMPANY_NAME, null, null, null, REQUEST_ID)).thenReturn(responseObject);
+        when(mockSearchIndexService.search(COMPANY_NAME, null, null, 20, REQUEST_ID)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(NOT_FOUND).build());
+        doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
+        doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(ALPHABETICAL_SEARCH_RESULT_MAX);
 
         ResponseEntity<?> responseEntity =
-            alphabeticalSearchController.searchByCorporateName("test name", null, null, null, REQUEST_ID);
+            alphabeticalSearchController.searchByCorporateName("test name", null, null, 20, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(NOT_FOUND, responseEntity.getStatusCode());
@@ -85,7 +96,30 @@ class AlphabeticalSearchControllerTest {
         ResponseObject responseObject =
             new ResponseObject(SEARCH_FOUND, createSearchResults());
 
-        when(mockSearchIndexService.search(COMPANY_NAME, null, null, null, REQUEST_ID)).thenReturn(responseObject);
+        when(mockSearchIndexService.search(COMPANY_NAME, null, null, 20, REQUEST_ID)).thenReturn(responseObject);
+        when(mockApiToResponseMapper.map(responseObject))
+            .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
+        doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
+        doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(ALPHABETICAL_SEARCH_RESULT_MAX);
+
+        ResponseEntity<?> responseEntity =
+            alphabeticalSearchController.searchByCorporateName("test name", null, null, 20, REQUEST_ID);
+
+        assertNotNull(responseEntity);
+        assertEquals(FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test search size set to default if size parameter is null")
+    void testNullSizeParameter() {
+
+        ResponseObject responseObject =
+            new ResponseObject(SEARCH_FOUND, createSearchResults());
+
+        doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
+        doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(ALPHABETICAL_SEARCH_RESULT_MAX);
+
+        when(mockSearchIndexService.search(COMPANY_NAME, null, null, 20, REQUEST_ID)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
@@ -188,6 +222,39 @@ class AlphabeticalSearchControllerTest {
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
     }
 
+    @Test
+    @DisplayName("Test search invalid as size parameter is greater than max allowed")
+    void testInvalidSizeParameter() {
+
+        ResponseEntity<?> responseEntity = getResponseEntity(101);
+
+        assertEquals(SIZE_PARAMETER_ERROR, responseObjectCaptor.getValue().getStatus());
+        assertNotNull(responseEntity);
+        assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test search invalid as size parameter is less than 0")
+    void testNegativeSizeParameter() {
+
+        ResponseEntity<?> responseEntity = getResponseEntity(-6);
+
+        assertEquals(SIZE_PARAMETER_ERROR, responseObjectCaptor.getValue().getStatus());
+        assertNotNull(responseEntity);
+        assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test search invalid as size parameter is 0")
+    void testZeroSizeParameter() {
+
+        ResponseEntity<?> responseEntity = getResponseEntity(0);
+
+        assertEquals(SIZE_PARAMETER_ERROR, responseObjectCaptor.getValue().getStatus());
+        assertNotNull(responseEntity);
+        assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
+    }
+    
     private CompanyProfileApi createCompany() {
         CompanyProfileApi company = new CompanyProfileApi();
         company.setType("company type");
@@ -217,5 +284,14 @@ class AlphabeticalSearchControllerTest {
         searchResults.setKind("test search type");
 
         return searchResults;
+    }
+
+    private ResponseEntity<?> getResponseEntity(Integer size) {
+        doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
+        doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(ALPHABETICAL_SEARCH_RESULT_MAX);
+        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+            .thenReturn(ResponseEntity.status(UNPROCESSABLE_ENTITY).build());
+
+       return alphabeticalSearchController.searchByCorporateName("test name", null, null, size, REQUEST_ID);
     }
 }

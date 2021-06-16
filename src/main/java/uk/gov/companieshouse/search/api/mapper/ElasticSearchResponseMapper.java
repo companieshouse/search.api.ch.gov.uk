@@ -110,7 +110,7 @@ public class ElasticSearchResponseMapper {
         topHit.setCompanyName(results.get(0).getCompanyName());
         topHit.setCompanyNumber(results.get(0).getCompanyNumber());
         topHit.setKind(results.get(0).getKind());
-        topHit.setAddress(results.get(0).getAddress());
+        topHit.setRegisteredOfficeAddress(results.get(0).getRegisteredOfficeAddress());
         topHit.setDateOfCessation(results.get(0).getDateOfCessation());
         topHit.setDateOfCreation(results.get(0).getDateOfCreation());
 
@@ -152,7 +152,7 @@ public class ElasticSearchResponseMapper {
                 roAddress = null;
             }
 
-            previousCompanyName.setAddress(roAddress);
+            previousCompanyName.setRegisteredOfficeAddress(roAddress);
             previousCompanyName.setPreviousCompanyName((String) nameHit.getSourceAsMap().get("name"));
             results.add(previousCompanyName);
         }

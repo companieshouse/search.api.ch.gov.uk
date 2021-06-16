@@ -222,8 +222,8 @@ class ElasticSearchResponseMapperTest {
         assertEquals(KIND, previousNamesTopHit.getKind());
         assertEquals(DATE_OF_CESSATION, previousNamesTopHit.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousNamesTopHit.getDateOfCreation().toString());
-        assertEquals(LOCALITY, previousNamesTopHit.getAddress().getLocality());
-        assertEquals(POSTCODE, previousNamesTopHit.getAddress().getPostalCode());
+        assertEquals(LOCALITY, previousNamesTopHit.getRegisteredOfficeAddress().getLocality());
+        assertEquals(POSTCODE, previousNamesTopHit.getRegisteredOfficeAddress().getPostalCode());
     }
 
     @Test
@@ -237,7 +237,7 @@ class ElasticSearchResponseMapperTest {
         assertEquals(KIND, previousNamesTopHit.getKind());
         assertEquals(DATE_OF_CESSATION, previousNamesTopHit.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousNamesTopHit.getDateOfCreation().toString());
-        assertNull(previousNamesTopHit.getAddress());
+        assertNull(previousNamesTopHit.getRegisteredOfficeAddress());
     }
 
     @Test
@@ -251,8 +251,8 @@ class ElasticSearchResponseMapperTest {
         assertEquals(KIND, previousNamesTopHit.getKind());
         assertEquals(DATE_OF_CESSATION, previousNamesTopHit.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousNamesTopHit.getDateOfCreation().toString());
-        assertEquals(LOCALITY, previousNamesTopHit.getAddress().getLocality());
-        assertNull(previousNamesTopHit.getAddress().getPostalCode());
+        assertEquals(LOCALITY, previousNamesTopHit.getRegisteredOfficeAddress().getLocality());
+        assertNull(previousNamesTopHit.getRegisteredOfficeAddress().getPostalCode());
     }
 
     @Test
@@ -271,7 +271,7 @@ class ElasticSearchResponseMapperTest {
         assertEquals(KIND, previousName.getKind());
         assertEquals(DATE_OF_CESSATION, previousName.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousName.getDateOfCreation().toString());
-        assertEquals(POSTCODE, previousName.getAddress().getPostalCode());
+        assertEquals(POSTCODE, previousName.getRegisteredOfficeAddress().getPostalCode());
     }
 
     @Test
@@ -308,7 +308,7 @@ class ElasticSearchResponseMapperTest {
         assertEquals(KIND, previousName.getKind());
         assertEquals(DATE_OF_CESSATION, previousName.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousName.getDateOfCreation().toString());
-        assertNull(previousName.getAddress());
+        assertNull(previousName.getRegisteredOfficeAddress());
     }
 
     private SearchHits createSearchHits(boolean includeAddress,
@@ -466,7 +466,7 @@ class ElasticSearchResponseMapperTest {
                 address.setPostalCode(POSTCODE);
             }
             address.setLocality(LOCALITY);
-            previousName.setAddress(address);
+            previousName.setRegisteredOfficeAddress(address);
         }
         previousNames.add(previousName);
 
