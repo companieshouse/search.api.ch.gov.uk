@@ -45,7 +45,8 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final int FALLBACK_QUERY_LIMIT = 25;
 
-    private Integer sizeAbove, sizeBelow;
+    private Integer sizeAbove;
+    private Integer sizeBelow;
 
     /**
      * {@inheritDoc}
@@ -102,18 +103,8 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 topHitCompany.setKind(company.getKind());
 
                 if ((searchBefore == null && searchAfter == null) || (searchBefore != null && searchAfter != null)) {
-                    checkSize(size);
-                    logMap.put(ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
-                    getLogger().info("Default alphabetical search before and after tophit", logMap);
-                    if (sizeAbove > 0) {
-                        results = populateAboveResults(requestId, topHitCompany.getCompanyName(), orderedAlphakeyWithId,
-                                sizeAbove);
-                    }
-                    results.add(company);
-                    if (sizeBelow > 0) {
-                        results.addAll(populateBelowResults(requestId, topHitCompany.getCompanyName(),
-                                orderedAlphakeyWithId, sizeBelow));
-                    }
+                    results = prepareSearchResultsWithTopHit(size, requestId, logMap, topHitCompany, results,
+                            orderedAlphakeyWithId, company);
                 } else if (searchAfter != null) {
                     getLogger().info("Searching alphabetical companies after", logMap);
                     results.addAll(populateBelowResults(requestId, topHitCompany.getCompanyName(), searchAfter, size));
@@ -127,6 +118,24 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
             throw new SearchException("error occurred reading data for highest match from " + "searchHits", e);
         }
         return new SearchResults<>("", topHitCompany, results, kind);
+    }
+
+    private List<Company> prepareSearchResultsWithTopHit(Integer size, String requestId, Map<String, Object> logMap,
+            TopHit topHitCompany, List<Company> results, String orderedAlphakeyWithId, Company company)
+            throws IOException {
+        checkSize(size);
+        logMap.put(ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
+        getLogger().info("Default alphabetical search before and after tophit", logMap);
+        if (sizeAbove > 0) {
+            results = populateAboveResults(requestId, topHitCompany.getCompanyName(), orderedAlphakeyWithId,
+                    sizeAbove);
+        }
+        results.add(company);
+        if (sizeBelow > 0) {
+            results.addAll(populateBelowResults(requestId, topHitCompany.getCompanyName(),
+                    orderedAlphakeyWithId, sizeBelow));
+        }
+        return results;
     }
 
     public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphakey, String requestId)
