@@ -50,6 +50,9 @@ public class ApiToResponseMapper {
             case REQUEST_PARAMETER_ERROR:
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                         .body("Invalid url parameter for search_type, please try 'alphabetical', 'best-match' or 'previous-name-dissolved'");
+            case SIZE_PARAMETER_ERROR:
+                return ResponseEntity.status(UNPROCESSABLE_ENTITY)
+                    .body("Invalid size parameter, size must be greater than zero and and not greater than " + environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
             default:
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
         }
