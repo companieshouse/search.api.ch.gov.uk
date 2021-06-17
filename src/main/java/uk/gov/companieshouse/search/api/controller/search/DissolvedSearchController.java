@@ -1,5 +1,16 @@
 package uk.gov.companieshouse.search.api.controller.search;
 
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
+
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +29,6 @@ import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchIndexService;
 
-import java.util.Map;
-
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
-
 
 @RestController
 @RequestMapping(value = "/dissolved-search", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -45,7 +44,7 @@ public class DissolvedSearchController {
     private EnvironmentReader environmentReader;
 
     private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
-    private static final String DISSOLVED_SEARCH_RESULT_MAX = "DISSOLVED_SEARCH_RESULT_MAX";
+    private static final String DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX = "DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX";
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
     private static final String COMPANY_NAME_QUERY_PARAM = "q";
     private static final String SEARCH_TYPE_QUERY_PARAM = "search_type";
@@ -78,7 +77,7 @@ public class DissolvedSearchController {
 
         try {
             size = SearchRequestUtils.checkResultsSize
-                (size, environmentReader.getMandatoryInteger(DISSOLVED_SEARCH_RESULT_MAX),
+                (size, environmentReader.getMandatoryInteger(DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX),
                     environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
         } catch (SizeException e) {
             getLogger().info(e.getMessage(), logMap);
