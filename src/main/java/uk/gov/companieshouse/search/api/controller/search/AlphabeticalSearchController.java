@@ -1,14 +1,37 @@
 package uk.gov.companieshouse.search.api.controller.search;
 
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NUMBER;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.UPSERT_COMPANY_NUMBER;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.createLoggingMap;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
+
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.exception.SizeException;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
@@ -16,18 +39,8 @@ import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
+import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 
-import java.util.Map;
-
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.createLoggingMap;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
 @RestController
 @RequestMapping(value = "/alphabetical-search", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,6 +54,9 @@ public class AlphabeticalSearchController {
 
     @Autowired
     private AlphabeticalSearchIndexService searchIndexService;
+    
+    @Autowired
+    private UpsertCompanyService upsertCompanyService;
 
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
@@ -80,6 +96,26 @@ public class AlphabeticalSearchController {
         ResponseObject responseObject = searchIndexService
             .search(companyName, searchBefore, searchAfter, size, requestId);
 
+        return apiToResponseMapper.map(responseObject);
+    }
+    
+    @PutMapping("/companies/{company_number}")
+    public ResponseEntity<Object> upsertCompany(@PathVariable("company_number") String companyNumber,
+            @Valid @RequestBody CompanyProfileApi company) {
+        Map<String, Object> logMap = new HashMap<>();
+        logMap.put(COMPANY_NAME, company.getCompanyName());
+        logMap.put(COMPANY_NUMBER, company.getCompanyNumber());
+        logMap.put(UPSERT_COMPANY_NUMBER, companyNumber);
+        getLogger().info("Upserting company", logMap);
+
+        ResponseObject responseObject;
+
+        if (companyNumber == null || companyNumber.isEmpty()
+                || !companyNumber.equalsIgnoreCase(company.getCompanyNumber())) {
+            responseObject = new ResponseObject(ResponseStatus.UPSERT_ERROR);
+        } else {
+            responseObject = upsertCompanyService.upsert(company);
+        }
         return apiToResponseMapper.map(responseObject);
     }
 }
