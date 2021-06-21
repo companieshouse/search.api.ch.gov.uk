@@ -54,14 +54,15 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
     public SearchHits getDissolved(String companyName,
                                    String requestId,
                                    String searchType,
-                                   Integer startIndex) throws IOException {
+                                   Integer startIndex,
+                                   Integer size) throws IOException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(LoggingUtils.COMPANY_NAME, companyName);
         LoggingUtils.getLogger().info("Searching for best dissolved company name " + searchType + " match", logMap);
 
         SearchRequest searchRequest = getBaseSearchRequest(requestId);
 
-        SearchSourceBuilder sourceBuilder = getBaseSourceBuilder(startIndex);
+        SearchSourceBuilder sourceBuilder = getBaseSourceBuilder(startIndex, size);
         if (searchType.equals(BEST_MATCH_SEARCH_TYPE)){
             sourceBuilder.query(searchQueries.createBestMatchQuery(companyName));
         }
@@ -86,9 +87,13 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
         return searchRequest;
     }
 
-    private SearchSourceBuilder getBaseSourceBuilder(Integer startIndex) {
+    private SearchSourceBuilder getBaseSourceBuilder(Integer startIndex, Integer size) {
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-        sourceBuilder.size(Integer.parseInt(environmentReader.getMandatoryString(getResultsSize())));
+        if(size != null) {
+            sourceBuilder.size(size.intValue());
+        } else {
+            sourceBuilder.size(Integer.parseInt(environmentReader.getMandatoryString(getResultsSize())));
+        }
         sourceBuilder.from(startIndex);
 
         return sourceBuilder;

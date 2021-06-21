@@ -139,7 +139,8 @@ public class DissolvedSearchRequestService {
     public SearchResults<DissolvedCompany> getBestMatchSearchResults(String companyName,
                                                             String requestId,
                                                             String searchType,
-                                                            Integer startIndex) throws SearchException {
+                                                            Integer startIndex,
+                                                            Integer size) throws SearchException {
         Map<String, Object> logMap = getLogMap(requestId, companyName);
         logMap.put(START_INDEX, startIndex);
         logMap.put(SEARCH_TYPE, searchType);
@@ -152,7 +153,7 @@ public class DissolvedSearchRequestService {
         long numberOfHits;
 
         try {
-            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType, startIndex);
+            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType, startIndex, size);
             numberOfHits = hits.getTotalHits().value;
 
             if (hits.getTotalHits().value > 0) {
@@ -179,7 +180,8 @@ public class DissolvedSearchRequestService {
     public SearchResults<DissolvedPreviousName> getPreviousNamesResults(String companyName,
                                                                                  String requestId,
                                                                                  String searchType,
-                                                                                 Integer startIndex) throws SearchException {
+                                                                                 Integer startIndex,
+                                                                                 Integer size) throws SearchException {
         Map<String, Object> logMap = getLogMap(requestId, companyName);
         logMap.put(START_INDEX, startIndex);
         logMap.put(SEARCH_TYPE, searchType);
@@ -192,7 +194,7 @@ public class DissolvedSearchRequestService {
         long numberOfHits;
 
         try {
-            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType, startIndex);
+            SearchHits hits  = dissolvedSearchRequests.getDissolved(companyName, requestId, searchType, startIndex, size);
             numberOfHits = hits.getTotalHits().value;
 
             if (hits.getTotalHits().value > 0) {
