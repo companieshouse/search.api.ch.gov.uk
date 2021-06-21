@@ -45,6 +45,7 @@ public class DissolvedSearchController {
 
     private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
     private static final String DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX = "DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX";
+    private static final String DISSOLVED_SEARCH_RESULT_MAX = "DISSOLVED_SEARCH_RESULT_MAX";
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
     private static final String COMPANY_NAME_QUERY_PARAM = "q";
     private static final String SEARCH_TYPE_QUERY_PARAM = "search_type";
@@ -75,19 +76,20 @@ public class DissolvedSearchController {
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
 
-        try {
-            size = SearchRequestUtils.checkResultsSize
-                (size, environmentReader.getMandatoryInteger(DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX),
-                    environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
-        } catch (SizeException e) {
-            getLogger().info(e.getMessage(), logMap);
-            return apiToResponseMapper
-                .mapDissolved(new ResponseObject(ResponseStatus.SIZE_PARAMETER_ERROR, null));
-        }
-
         if (checkSearchTypeParam(searchType)) {
 
             if (searchType.equals(ALPHABETICAL_SEARCH_TYPE)) {
+
+                try {
+                    size = SearchRequestUtils.checkResultsSize
+                            (size, environmentReader.getMandatoryInteger(DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX),
+                                    environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
+                } catch (SizeException e) {
+                    getLogger().info(e.getMessage(), logMap);
+                    return apiToResponseMapper
+                            .mapDissolved(new ResponseObject(ResponseStatus.SIZE_PARAMETER_ERROR, null));
+                }
+
                 ResponseObject responseObject = searchIndexService.searchAlphabetical(companyName,
                         searchBefore, searchAfter, size, requestId);
 
@@ -96,12 +98,16 @@ public class DissolvedSearchController {
 
             if (searchType.equals(BEST_MATCH_SEARCH_TYPE) || searchType.equals(PREVIOUS_NAMES_SEARCH_TYPE)) {
 
+                if (size == null) {
+                    size = environmentReader.getMandatoryInteger(DISSOLVED_SEARCH_RESULT_MAX);
+                }
+
                 if (startIndex == null || startIndex < 0) {
                     startIndex = 0;
                 }
 
                 ResponseObject responseObject = searchIndexService.searchBestMatch(companyName, requestId,
-                        searchType, startIndex);
+                        searchType, startIndex, size);
 
                 return apiToResponseMapper.mapDissolved(responseObject);
             }

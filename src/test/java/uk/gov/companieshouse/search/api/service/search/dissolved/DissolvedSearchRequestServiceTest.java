@@ -1,5 +1,19 @@
 package uk.gov.companieshouse.search.api.service.search.dissolved;
 
+import static org.apache.lucene.search.TotalHits.Relation.EQUAL_TO;
+import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_TO;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.bytes.BytesReference;
@@ -15,9 +29,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
-import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
 import uk.gov.companieshouse.search.api.model.PreviousNamesTopHit;
+import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
@@ -25,21 +39,6 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.previousname
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchRequestService;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import static org.apache.lucene.search.TotalHits.Relation.EQUAL_TO;
-import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_TO;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -373,7 +372,7 @@ class DissolvedSearchRequestServiceTest {
         DissolvedCompany topHitCompany = createDissolvedCompany();
         DissolvedTopHit topHit = createDissolvedTopHit();
 
-        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX))
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX, SIZE))
                 .thenReturn(createSearchHits(true, true, true, true));
 
         when(mockElasticSearchResponseMapper.mapDissolvedResponse(any(SearchHit.class))).thenReturn(topHitCompany);
@@ -381,7 +380,7 @@ class DissolvedSearchRequestServiceTest {
         when(mockElasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany)).thenReturn(topHit);
 
         SearchResults<DissolvedCompany> dissolvedSearchResults = dissolvedSearchRequestService
-                .getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX);
+                .getBestMatchSearchResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX, SIZE);
 
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
         assertEquals(BEST_MATCH_KIND, dissolvedSearchResults.getKind());
@@ -391,11 +390,11 @@ class DissolvedSearchRequestServiceTest {
     @DisplayName("Test get best match search request throws exception")
     void testBestMatchThrowException() throws Exception {
 
-        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX))
+        when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX, SIZE))
                 .thenThrow(IOException.class);
 
         assertThrows(SearchException.class, () -> dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME,
-                REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX));
+                REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX, SIZE));
     }
 
     @Test
@@ -406,14 +405,14 @@ class DissolvedSearchRequestServiceTest {
         PreviousNamesTopHit topHit = createPreviousNamesTopHit();
 
         when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH,
-                START_INDEX)).thenReturn(createSearchHits(true, true, true, true));
+                START_INDEX, SIZE)).thenReturn(createSearchHits(true, true, true, true));
 
         when(mockElasticSearchResponseMapper.mapPreviousNames(any(SearchHits.class))).thenReturn(results);
 
         when(mockElasticSearchResponseMapper.mapPreviousNamesTopHit(results)).thenReturn(topHit);
 
         SearchResults<DissolvedPreviousName> dissolvedSearchResults = dissolvedSearchRequestService
-                .getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX);
+                .getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX, SIZE);
 
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
         assertEquals(PREVIOUS_NAME_KIND, dissolvedSearchResults.getKind());
@@ -424,10 +423,10 @@ class DissolvedSearchRequestServiceTest {
     void testPreviousNamesBestMatchThrowException() throws Exception {
 
         when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH,
-                START_INDEX)).thenThrow(IOException.class);
+                START_INDEX, SIZE)).thenThrow(IOException.class);
 
         assertThrows(SearchException.class, () -> dissolvedSearchRequestService.getPreviousNamesResults(COMPANY_NAME,
-                REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX));
+                REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX, SIZE));
     }
 
     @Test
@@ -435,10 +434,10 @@ class DissolvedSearchRequestServiceTest {
     void testBestMatchPreviousNamesThrowException() throws Exception {
 
         when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH,
-                START_INDEX)).thenThrow(IOException.class);
+                START_INDEX, SIZE)).thenThrow(IOException.class);
 
         assertThrows(SearchException.class, () -> dissolvedSearchRequestService.getBestMatchSearchResults(COMPANY_NAME,
-                REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX));
+                REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX, SIZE));
     }
 
     @Test

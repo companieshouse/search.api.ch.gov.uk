@@ -1,5 +1,11 @@
 package uk.gov.companieshouse.search.api.elasticsearch;
 
+import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_TO;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.action.search.SearchRequest;
@@ -19,13 +25,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.service.rest.impl.DissolvedSearchRestClientService;
-
-import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_TO;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -127,7 +126,7 @@ class DissolvedSearchRequestsTest {
         when(mockSearchRestClient.search(any(SearchRequest.class))).thenReturn(createSearchResponse());
 
         SearchHits searchHits = dissolvedSearchRequests
-            .getDissolved("orderedAlpha", "requestId", "searchType", START_INDEX);
+            .getDissolved("orderedAlpha", "requestId", "searchType", START_INDEX, SIZE);
 
         assertNotNull(searchHits);
         assertEquals(1, searchHits.getTotalHits().value);
@@ -141,7 +140,7 @@ class DissolvedSearchRequestsTest {
         when(mockSearchRestClient.search(any(SearchRequest.class))).thenReturn(createSearchResponse());
 
         SearchHits searchHits = dissolvedSearchRequests
-                .getDissolved("companyName", "requestId", "searchType", START_INDEX);
+                .getDissolved("companyName", "requestId", "searchType", START_INDEX, SIZE);
 
         assertNotNull(searchHits);
         assertEquals(1, searchHits.getTotalHits().value);
