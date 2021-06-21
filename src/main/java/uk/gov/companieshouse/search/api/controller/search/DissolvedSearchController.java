@@ -80,42 +80,63 @@ public class DissolvedSearchController {
 
             if (searchType.equals(ALPHABETICAL_SEARCH_TYPE)) {
 
-                try {
-                    size = SearchRequestUtils.checkResultsSize
-                            (size, environmentReader.getMandatoryInteger(DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX),
-                                    environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
-                } catch (SizeException e) {
-                    getLogger().info(e.getMessage(), logMap);
-                    return apiToResponseMapper
-                            .mapDissolved(new ResponseObject(ResponseStatus.SIZE_PARAMETER_ERROR, null));
-                }
-
-                ResponseObject responseObject = searchIndexService.searchAlphabetical(companyName,
-                        searchBefore, searchAfter, size, requestId);
-
-                return apiToResponseMapper.mapDissolved(responseObject);
+                return getAlphabeticalSearch(companyName, searchBefore, searchAfter, size,
+                        requestId, logMap);
             }
 
             if (searchType.equals(BEST_MATCH_SEARCH_TYPE) || searchType.equals(PREVIOUS_NAMES_SEARCH_TYPE)) {
 
-                if (size == null) {
-                    size = environmentReader.getMandatoryInteger(DISSOLVED_SEARCH_RESULT_MAX);
-                }
-
-                if (startIndex == null || startIndex < 0) {
-                    startIndex = 0;
-                }
-
-                ResponseObject responseObject = searchIndexService.searchBestMatch(companyName, requestId,
-                        searchType, startIndex, size);
-
-                return apiToResponseMapper.mapDissolved(responseObject);
+                return getBestMatchOrPreviousNamesSearch(companyName, searchType, size, startIndex,
+                        requestId);
             }
         }
         LoggingUtils.getLogger().error("The search_type parameter is incorrect, please try either "
                 + "'alphabetical', 'best-match' or 'previous-name-dissolved': ", logMap);
         return apiToResponseMapper
                 .mapDissolved(new ResponseObject(ResponseStatus.REQUEST_PARAMETER_ERROR, null));
+    }
+
+    private ResponseEntity<Object> getBestMatchOrPreviousNamesSearch(
+            @RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
+            @RequestParam(name = SEARCH_TYPE_QUERY_PARAM) String searchType,
+            @RequestParam(name = SIZE_PARAM, required = false) Integer size,
+            @RequestParam(name = START_INDEX_QUERY_PARAM, required = false) Integer startIndex,
+            @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
+        if (size == null) {
+            size = environmentReader.getMandatoryInteger(DISSOLVED_SEARCH_RESULT_MAX);
+        }
+
+        if (startIndex == null || startIndex < 0) {
+            startIndex = 0;
+        }
+
+        ResponseObject responseObject = searchIndexService.searchBestMatch(companyName, requestId,
+                searchType, startIndex, size);
+
+        return apiToResponseMapper.mapDissolved(responseObject);
+    }
+
+    private ResponseEntity<Object> getAlphabeticalSearch(
+            @RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
+            @RequestParam(name = SEARCH_BEFORE_PARAM, required = false) String searchBefore,
+            @RequestParam(name = SEARCH_AFTER_PARAM, required = false) String searchAfter,
+            @RequestParam(name = SIZE_PARAM, required = false) Integer size,
+            @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId,
+            Map<String, Object> logMap) {
+        try {
+            size = SearchRequestUtils.checkResultsSize
+                    (size, environmentReader.getMandatoryInteger(DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX),
+                            environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
+        } catch (SizeException e) {
+            getLogger().info(e.getMessage(), logMap);
+            return apiToResponseMapper
+                    .mapDissolved(new ResponseObject(ResponseStatus.SIZE_PARAMETER_ERROR, null));
+        }
+
+        ResponseObject responseObject = searchIndexService.searchAlphabetical(companyName,
+                searchBefore, searchAfter, size, requestId);
+
+        return apiToResponseMapper.mapDissolved(responseObject);
     }
 
     private boolean checkSearchTypeParam(String searchType) {
