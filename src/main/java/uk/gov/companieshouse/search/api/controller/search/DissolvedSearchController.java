@@ -78,6 +78,19 @@ public class DissolvedSearchController {
 
         if (checkSearchTypeParam(searchType)) {
 
+            int defaultSize = searchType.equals(ALPHABETICAL_SEARCH_TYPE) ?
+                    environmentReader.getMandatoryInteger(DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX) :
+                    environmentReader.getMandatoryInteger(DISSOLVED_SEARCH_RESULT_MAX);
+
+            try {
+                size = SearchRequestUtils.checkResultsSize
+                        (size, defaultSize, environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
+            } catch (SizeException e) {
+                getLogger().info(e.getMessage(), logMap);
+                return apiToResponseMapper
+                        .mapDissolved(new ResponseObject(ResponseStatus.SIZE_PARAMETER_ERROR, null));
+            }
+
             if (searchType.equals(ALPHABETICAL_SEARCH_TYPE)) {
 
                 return getAlphabeticalSearch(companyName, searchBefore, searchAfter, size,
@@ -99,12 +112,9 @@ public class DissolvedSearchController {
     private ResponseEntity<Object> getBestMatchOrPreviousNamesSearch(
             @RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
             @RequestParam(name = SEARCH_TYPE_QUERY_PARAM) String searchType,
-            @RequestParam(name = SIZE_PARAM, required = false) Integer size,
+            Integer size,
             @RequestParam(name = START_INDEX_QUERY_PARAM, required = false) Integer startIndex,
             @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
-        if (size == null) {
-            size = environmentReader.getMandatoryInteger(DISSOLVED_SEARCH_RESULT_MAX);
-        }
 
         if (startIndex == null || startIndex < 0) {
             startIndex = 0;
@@ -120,18 +130,9 @@ public class DissolvedSearchController {
             @RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
             @RequestParam(name = SEARCH_BEFORE_PARAM, required = false) String searchBefore,
             @RequestParam(name = SEARCH_AFTER_PARAM, required = false) String searchAfter,
-            @RequestParam(name = SIZE_PARAM, required = false) Integer size,
+            Integer size,
             @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId,
             Map<String, Object> logMap) {
-        try {
-            size = SearchRequestUtils.checkResultsSize
-                    (size, environmentReader.getMandatoryInteger(DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX),
-                            environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
-        } catch (SizeException e) {
-            getLogger().info(e.getMessage(), logMap);
-            return apiToResponseMapper
-                    .mapDissolved(new ResponseObject(ResponseStatus.SIZE_PARAMETER_ERROR, null));
-        }
 
         ResponseObject responseObject = searchIndexService.searchAlphabetical(companyName,
                 searchBefore, searchAfter, size, requestId);
