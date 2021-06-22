@@ -190,6 +190,7 @@ public class DissolvedSearchRequestService {
         String etag = GenerateEtagUtil.generateEtag();
         PreviousNamesTopHit topHit = new PreviousNamesTopHit();
         List<DissolvedPreviousName> results = new ArrayList<>();
+        List<DissolvedPreviousName> resizedResults = new ArrayList<>();
         String kind = "search#previous-name-dissolved";
         long numberOfHits;
 
@@ -203,6 +204,8 @@ public class DissolvedSearchRequestService {
                 results = elasticSearchResponseMapper.mapPreviousNames(hits);
                 topHit = elasticSearchResponseMapper.mapPreviousNamesTopHit(results);
 
+                int finalSize = results.size() < size ? results.size() : size;
+                resizedResults = results.subList(0, finalSize);
             }
         } catch (IOException e) {
             getLogger().error("failed to get previous names for dissolved company", logMap);
@@ -210,7 +213,7 @@ public class DissolvedSearchRequestService {
         }
 
         SearchResults<DissolvedPreviousName> dissolvedSearchResults =
-                new SearchResults<>(etag, topHit, results, kind);
+                new SearchResults<>(etag, topHit, resizedResults, kind);
         dissolvedSearchResults.setHits(numberOfHits);
 
         return dissolvedSearchResults;
