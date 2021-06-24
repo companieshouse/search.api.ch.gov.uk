@@ -16,9 +16,6 @@ public class BaseCompany {
 
     @JsonProperty("company_status")
     private String companyStatus;
-    
-    @JsonProperty("ordered_alpha_key")
-    private String orderedAlphaKey;
 
     @JsonProperty("ordered_alpha_key_with_id")
     private String orderedAlphaKeyWithId;
@@ -48,14 +45,6 @@ public class BaseCompany {
 
     public void setCompanyStatus(String companyStatus) {
         this.companyStatus = companyStatus;
-    }
-
-    public String getOrderedAlphaKey() {
-        return orderedAlphaKey;
-    }
-
-    public void setOrderedAlphaKey(String orderedAlphaKey) {
-        this.orderedAlphaKey = orderedAlphaKey;
     }
 
     public String getOrderedAlphaKeyWithId() {
