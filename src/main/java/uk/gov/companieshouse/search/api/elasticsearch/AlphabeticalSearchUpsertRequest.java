@@ -1,12 +1,11 @@
 package uk.gov.companieshouse.search.api.elasticsearch;
 
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+
+import java.io.IOException;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
-
-import java.io.IOException;
-
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 @Component
 public class AlphabeticalSearchUpsertRequest {

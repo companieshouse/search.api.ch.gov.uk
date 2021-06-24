@@ -225,7 +225,6 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         company.setCompanyName((String) (items.get("corporate_name")));
         company.setCompanyNumber((String) (items.get("company_number")));
         company.setCompanyStatus((String) (items.get("company_status")));
-        company.setOrderedAlphaKey((String) items.get("ordered_alpha_key"));
         company.setOrderedAlphaKeyWithId((String) sourceAsMap.get(ORDERED_ALPHA_KEY_WITH_ID));
         company.setKind((String) sourceAsMap.get("kind"));
 
