@@ -174,7 +174,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved top hit successful")
     void mapDissolvedTopHitSuccessful() {
 
-        DissolvedTopHit topHit = elasticSearchResponseMapper.mapDissolvedTopHit(createDissolvedCompany(true, true));
+        DissolvedTopHit topHit = elasticSearchResponseMapper.mapDissolvedTopHit(createDissolvedCompany(true, true, true));
 
         assertEquals(COMPANY_NAME, topHit.getCompanyName());
         assertEquals(COMPANY_NUMBER, topHit.getCompanyNumber());
@@ -189,13 +189,18 @@ class ElasticSearchResponseMapperTest {
         assertEquals(PREVIOUS_COMPANY_NAME, previousCompanyNames.get(0).getName());
         assertEquals(EFFECTIVE_FROM, previousCompanyNames.get(0).getDateOfNameEffectiveness().toString());
         assertEquals(CEASED_ON, previousCompanyNames.get(0).getDateOfNameCessation().toString());
+
+        PreviousCompanyName matchedPreviousCompanyNames = topHit.getMatchedPreviousCompanyName();
+        assertEquals(PREVIOUS_COMPANY_NAME, matchedPreviousCompanyNames.getName());
+        assertEquals(EFFECTIVE_FROM, matchedPreviousCompanyNames.getDateOfNameEffectiveness().toString());
+        assertEquals(CEASED_ON, matchedPreviousCompanyNames.getDateOfNameCessation().toString());
     }
 
     @Test
     @DisplayName("Map dissolved top hit successful no previous names")
     void mapDissolvedTopHitSuccessfulNoPreviousNames() {
 
-        DissolvedTopHit topHit = elasticSearchResponseMapper.mapDissolvedTopHit(createDissolvedCompany(false, true));
+        DissolvedTopHit topHit = elasticSearchResponseMapper.mapDissolvedTopHit(createDissolvedCompany(false, true, false));
 
         assertEquals(COMPANY_NAME, topHit.getCompanyName());
         assertEquals(COMPANY_NUMBER, topHit.getCompanyNumber());
@@ -210,10 +215,33 @@ class ElasticSearchResponseMapperTest {
     }
 
     @Test
+    @DisplayName("Map dissolved top hit successful no matching previous name")
+    void mapDissolvedTopHitNoMatchingPreviousName() {
+
+        DissolvedTopHit previousNamesTopHit = elasticSearchResponseMapper.mapDissolvedTopHit(createDissolvedCompany(true, true, false));
+
+        assertEquals(COMPANY_NAME, previousNamesTopHit.getCompanyName());
+        assertEquals(COMPANY_NUMBER, previousNamesTopHit.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, previousNamesTopHit.getCompanyStatus());
+        assertEquals(KIND, previousNamesTopHit.getKind());
+        assertEquals(DATE_OF_CESSATION, previousNamesTopHit.getDateOfCessation().toString());
+        assertEquals(DATE_OF_CREATION, previousNamesTopHit.getDateOfCreation().toString());
+        assertEquals(LOCALITY, previousNamesTopHit.getRegisteredOfficeAddress().getLocality());
+        assertEquals(POSTCODE, previousNamesTopHit.getRegisteredOfficeAddress().getPostalCode());
+
+        List<PreviousCompanyName> previousCompanyNames = previousNamesTopHit.getPreviousCompanyNames();
+        assertEquals(PREVIOUS_COMPANY_NAME, previousCompanyNames.get(0).getName());
+        assertEquals(EFFECTIVE_FROM, previousCompanyNames.get(0).getDateOfNameEffectiveness().toString());
+        assertEquals(CEASED_ON, previousCompanyNames.get(0).getDateOfNameCessation().toString());
+
+        assertNull(previousNamesTopHit.getMatchedPreviousCompanyName());
+    }
+
+    @Test
     @DisplayName("Map dissolved top hit successful no address")
     void mapDissolvedTopHitNoAddress() {
 
-        DissolvedTopHit previousNamesTopHit = elasticSearchResponseMapper.mapDissolvedTopHit(createDissolvedCompany(false, false));
+        DissolvedTopHit previousNamesTopHit = elasticSearchResponseMapper.mapDissolvedTopHit(createDissolvedCompany(false, false, false));
 
         assertEquals(COMPANY_NAME, previousNamesTopHit.getCompanyName());
         assertEquals(COMPANY_NUMBER, previousNamesTopHit.getCompanyNumber());
@@ -227,7 +255,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved previous names successful")
     void mapDissolvedPreviousNames() {
 
-        SearchHits searchHits = createSearchHitsWithInnerHits(true, true, true, true, false);
+        SearchHits searchHits = createSearchHitsWithInnerHits(true, true, true, true, true);
 
         List<DissolvedCompany> previousNames =
                 elasticSearchResponseMapper.mapPreviousNames(searchHits);
@@ -274,6 +302,24 @@ class ElasticSearchResponseMapperTest {
         assertEquals(DATE_OF_CESSATION, previousName.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousName.getDateOfCreation().toString());
         assertNull(previousName.getRegisteredOfficeAddress().getPostalCode());
+    }
+
+    @Test
+    @DisplayName("Map dissolved previous names successful no postal code")
+    void mapDissolvedPreviousNamesNoPreviousNames() {
+
+        SearchHits searchHits = createSearchHitsWithInnerHits(true, true, true, true, false);
+
+        List<DissolvedCompany> previousNames =
+                elasticSearchResponseMapper.mapPreviousNames(searchHits);
+
+        DissolvedCompany previousName = previousNames.get(0);
+        assertEquals(COMPANY_NAME, previousName.getCompanyName());
+        assertEquals(COMPANY_NUMBER, previousName.getCompanyNumber());
+        assertEquals(KIND, previousName.getKind());
+        assertEquals(DATE_OF_CESSATION, previousName.getDateOfCessation().toString());
+        assertEquals(DATE_OF_CREATION, previousName.getDateOfCreation().toString());
+        assertNull(previousName.getPreviousCompanyNames());
     }
 
     private SearchHits createSearchHits(boolean includeAddress,
@@ -387,7 +433,7 @@ class ElasticSearchResponseMapperTest {
         return innerHits;
     }
 
-    private DissolvedCompany createDissolvedCompany(boolean includePreviousName, boolean includeAddress) {
+    private DissolvedCompany createDissolvedCompany(boolean includePreviousName, boolean includeAddress, boolean includeMatchedPreviousName) {
         DissolvedCompany dissolvedCompany = new DissolvedCompany();
         dissolvedCompany.setCompanyName(COMPANY_NAME);
         dissolvedCompany.setCompanyNumber(COMPANY_NUMBER);
@@ -414,6 +460,15 @@ class ElasticSearchResponseMapperTest {
 
             previousCompanyNames.add(previousCompanyName);
             dissolvedCompany.setPreviousCompanyNames(previousCompanyNames);
+        }
+
+        if (includeMatchedPreviousName) {
+            PreviousCompanyName previousCompanyName = new PreviousCompanyName();
+            previousCompanyName.setName(PREVIOUS_COMPANY_NAME);
+            previousCompanyName.setDateOfNameCessation(LocalDate.parse("19920510", formatter));
+            previousCompanyName.setDateOfNameEffectiveness(LocalDate.parse("19890101", formatter));
+
+            dissolvedCompany.setMatchedPreviousCompanyName(previousCompanyName);
         }
 
         return dissolvedCompany;
