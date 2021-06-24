@@ -22,6 +22,7 @@ public class ElasticSearchResponseMapper {
     private static final String COMPANY_NAME_KEY = "company_name";
     private static final String COMPANY_NUMBER_KEY = "company_number";
     private static final String COMPANY_STATUS_KEY = "company_status";
+    private static final String ORDERED_ALPHAKEY_WITH_ID_KEY = "ordered_alpha_key_with_id";
     private static final String REGISTERED_OFFICE_ADDRESS_KEY = "registered_office_address";
     private static final String ADDRESS_LINE_1 = "address_line_1";
     private static final String ADDRESS_LINE_2 = "address_line_2";
@@ -30,6 +31,9 @@ public class ElasticSearchResponseMapper {
     private static final String DATE_OF_CESSATION = "date_of_cessation";
     private static final String DATE_OF_CREATION = "date_of_creation";
     private static final String PREVIOUS_COMPANY_NAMES_KEY = "previous_company_names";
+    private static final String PREVIOUS_COMPANY_NAME_KEY = "name";
+    private static final String CEASED_ON_KEY = "ceased_on";
+    private static final String EFFECTIVE_FROM_KEY = "effective_from";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
@@ -39,22 +43,13 @@ public class ElasticSearchResponseMapper {
         List<Object> previousCompanyNamesList = (List<Object>) sourceAsMap.get(PREVIOUS_COMPANY_NAMES_KEY);
         DissolvedCompany dissolvedCompany = new DissolvedCompany();
         if(previousCompanyNamesList != null) {
-            List<PreviousCompanyName> previousCompanyNames = new ArrayList<>();
-            for(Object o : previousCompanyNamesList){
-                Map<String, Object> companyNames = (Map<String, Object>) o;
-                PreviousCompanyName companyName = new PreviousCompanyName();
-                companyName.setName((String) companyNames.get("name"));
-                companyName.setDateOfNameCessation(LocalDate.parse((String) companyNames.get("ceased_on"),formatter));
-                companyName.setDateOfNameEffectiveness(LocalDate.parse((String) companyNames.get("effective_from"),formatter));
-                previousCompanyNames.add(companyName);
-            }
-            dissolvedCompany.setPreviousCompanyNames(previousCompanyNames);
+            dissolvedCompany.setPreviousCompanyNames(mapPreviousCompanyNames(previousCompanyNamesList));
         }
 
         dissolvedCompany.setCompanyName((String) sourceAsMap.get(COMPANY_NAME_KEY));
         dissolvedCompany.setCompanyNumber((String) sourceAsMap.get(COMPANY_NUMBER_KEY));
         dissolvedCompany.setCompanyStatus((String) sourceAsMap.get(COMPANY_STATUS_KEY));
-        dissolvedCompany.setOrderedAlphaKeyWithId((String) sourceAsMap.get("ordered_alpha_key_with_id"));
+        dissolvedCompany.setOrderedAlphaKeyWithId((String) sourceAsMap.get(ORDERED_ALPHAKEY_WITH_ID_KEY));
         dissolvedCompany.setKind(SEARCH_RESULTS_KIND);
 
         if (sourceAsMap.containsKey(DATE_OF_CESSATION)) {
@@ -65,7 +60,7 @@ public class ElasticSearchResponseMapper {
             dissolvedCompany.setDateOfCreation(LocalDate.parse((String) sourceAsMap.get(DATE_OF_CREATION), formatter));
         }
 
-        Address roAddress = setRegisteredOfficeAddressFields(addressToMap);
+        Address roAddress = mapRegisteredOfficeAddressFields(addressToMap);
         dissolvedCompany.setRegisteredOfficeAddress(roAddress);
 
         return dissolvedCompany;
@@ -87,17 +82,9 @@ public class ElasticSearchResponseMapper {
             topHit.setPreviousCompanyNames(dissolvedCompany.getPreviousCompanyNames());
         }
 
-        return topHit;
-    }
-
-    public DissolvedTopHit mapPreviousNamesTopHit(List<DissolvedCompany> results) {
-        DissolvedTopHit topHit = new DissolvedTopHit();
-        topHit.setCompanyName(results.get(0).getCompanyName());
-        topHit.setCompanyNumber(results.get(0).getCompanyNumber());
-        topHit.setKind(results.get(0).getKind());
-        topHit.setRegisteredOfficeAddress(results.get(0).getRegisteredOfficeAddress());
-        topHit.setDateOfCessation(results.get(0).getDateOfCessation());
-        topHit.setDateOfCreation(results.get(0).getDateOfCreation());
+        if (dissolvedCompany.getMatchedPreviousCompanyName() != null) {
+            topHit.setMatchedPreviousCompanyName(dissolvedCompany.getMatchedPreviousCompanyName());
+        }
 
         return topHit;
     }
@@ -114,29 +101,46 @@ public class ElasticSearchResponseMapper {
     private void mapPreviousName(SearchHit hit, List<DissolvedCompany> results) {
         // company details at dissolution in the main hit
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-        // previous name details in the inner hits
+
+        // companies full list of previous names
+        List<Object> previousCompanyNamesList = (List<Object>) sourceAsMap.get(PREVIOUS_COMPANY_NAMES_KEY);
+
+        // previous name match details in the inner hits
         Map<String, SearchHits> innerHits = hit.getInnerHits();
 
         // get the previous name details element from the inner hits
         SearchHits previousNames = innerHits.get(PREVIOUS_COMPANY_NAMES_KEY);
         
         for(SearchHit nameHit : previousNames.getHits()) {
-            DissolvedCompany previousCompanyName = new DissolvedCompany();
-            previousCompanyName.setCompanyName((String) sourceAsMap.get(COMPANY_NAME_KEY));
-            previousCompanyName.setCompanyNumber((String) sourceAsMap.get(COMPANY_NUMBER_KEY));
-            previousCompanyName.setDateOfCessation((LocalDate.parse((String) sourceAsMap.get(DATE_OF_CESSATION), formatter)));
-            previousCompanyName.setDateOfCreation((LocalDate.parse((String) sourceAsMap.get(DATE_OF_CREATION), formatter)));
-            previousCompanyName.setKind(SEARCH_RESULTS_KIND);
+            DissolvedCompany dissolvedCompany = new DissolvedCompany();
+            dissolvedCompany.setCompanyName((String) sourceAsMap.get(COMPANY_NAME_KEY));
+            dissolvedCompany.setCompanyNumber((String) sourceAsMap.get(COMPANY_NUMBER_KEY));
+            dissolvedCompany.setDateOfCessation((LocalDate.parse((String) sourceAsMap.get(DATE_OF_CESSATION), formatter)));
+            dissolvedCompany.setDateOfCreation((LocalDate.parse((String) sourceAsMap.get(DATE_OF_CREATION), formatter)));
+            dissolvedCompany.setKind(SEARCH_RESULTS_KIND);
 
             Map<String, Object> addressToMap = (Map<String, Object>) sourceAsMap.get(REGISTERED_OFFICE_ADDRESS_KEY);
-            Address registeredOfficeAddress = setRegisteredOfficeAddressFields(addressToMap);
+            Address registeredOfficeAddress = mapRegisteredOfficeAddressFields(addressToMap);
 
-            previousCompanyName.setRegisteredOfficeAddress(registeredOfficeAddress);
-            results.add(previousCompanyName);
+            if(previousCompanyNamesList != null) {
+                dissolvedCompany.setPreviousCompanyNames(mapPreviousCompanyNames(previousCompanyNamesList));
+            }
+
+            PreviousCompanyName previousCompanyName = new PreviousCompanyName();
+            previousCompanyName.setName((String) nameHit.getSourceAsMap().get(PREVIOUS_COMPANY_NAME_KEY));
+            previousCompanyName.setDateOfNameCessation(
+                    LocalDate.parse((String) nameHit.getSourceAsMap().get(CEASED_ON_KEY), formatter));
+            previousCompanyName.setDateOfNameEffectiveness(
+                    LocalDate.parse((String) nameHit.getSourceAsMap().get(EFFECTIVE_FROM_KEY), formatter));
+
+            dissolvedCompany.setMatchedPreviousCompanyName(previousCompanyName);
+
+            dissolvedCompany.setRegisteredOfficeAddress(registeredOfficeAddress);
+            results.add(dissolvedCompany);
         }
     }
 
-    private Address setRegisteredOfficeAddressFields(Map<String, Object> addressToMap) {
+    private Address mapRegisteredOfficeAddressFields(Map<String, Object> addressToMap) {
         if (addressToMap != null) {
             Address registeredOfficeAddress = new Address();
 
@@ -160,5 +164,18 @@ public class ElasticSearchResponseMapper {
         } else {
             return null;
         }
+    }
+
+    private List<PreviousCompanyName> mapPreviousCompanyNames(List<Object> previousCompanyNamesList) {
+        List<PreviousCompanyName> previousCompanyNames = new ArrayList<>();
+        for(Object o : previousCompanyNamesList){
+            Map<String, Object> companyNames = (Map<String, Object>) o;
+            PreviousCompanyName companyName = new PreviousCompanyName();
+            companyName.setName((String) companyNames.get(PREVIOUS_COMPANY_NAME_KEY));
+            companyName.setDateOfNameCessation(LocalDate.parse((String) companyNames.get(CEASED_ON_KEY),formatter));
+            companyName.setDateOfNameEffectiveness(LocalDate.parse((String) companyNames.get(EFFECTIVE_FROM_KEY),formatter));
+            previousCompanyNames.add(companyName);
+        }
+        return previousCompanyNames;
     }
 }

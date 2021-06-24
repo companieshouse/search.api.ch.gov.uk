@@ -24,6 +24,9 @@ public class DissolvedTopHit extends TopHit {
     @JsonProperty("previous_company_names")
     private List<PreviousCompanyName> previousCompanyNames;
 
+    @JsonProperty("matched_previous_company_name")
+    private PreviousCompanyName matchedPreviousCompanyName;
+
     public LocalDate getDateOfCessation() {
         return dateOfCessation;
     }
@@ -54,5 +57,13 @@ public class DissolvedTopHit extends TopHit {
 
     public void setPreviousCompanyNames(List<PreviousCompanyName> previousCompanyNames) {
         this.previousCompanyNames = previousCompanyNames;
+    }
+
+    public PreviousCompanyName getMatchedPreviousCompanyName() {
+        return matchedPreviousCompanyName;
+    }
+
+    public void setMatchedPreviousCompanyName(PreviousCompanyName matchedPreviousCompanyName) {
+        this.matchedPreviousCompanyName = matchedPreviousCompanyName;
     }
 }

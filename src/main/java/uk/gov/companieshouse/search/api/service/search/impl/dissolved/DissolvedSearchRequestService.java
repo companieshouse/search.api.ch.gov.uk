@@ -200,7 +200,7 @@ public class DissolvedSearchRequestService {
                 getLogger().info(RESULT_FOUND, logMap);
 
                 results = elasticSearchResponseMapper.mapPreviousNames(hits);
-                topHit = elasticSearchResponseMapper.mapPreviousNamesTopHit(results);
+                topHit = elasticSearchResponseMapper.mapDissolvedTopHit(results.get(0));
 
                 int finalSize = results.size() < size ? results.size() : size;
                 resizedResults = results.subList(0, finalSize);
