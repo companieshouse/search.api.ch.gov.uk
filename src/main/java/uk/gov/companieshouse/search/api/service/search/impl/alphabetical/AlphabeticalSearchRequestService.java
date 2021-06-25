@@ -44,6 +44,8 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final int FALLBACK_QUERY_LIMIT = 25;
+    private static final String TOP_LEVEL_ALPHABETICAL_KIND = "search#alphabeticalSearch";
+    private static final String ALPHABETICAL_KIND = "searchresults#alphabeticalSearch";
 
     private Integer sizeAbove;
     private Integer sizeBelow;
@@ -68,7 +70,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         TopHit topHitCompany = new TopHit();
 
         List<Company> results = new ArrayList<>();
-        String kind = "search#alphabetical";
+        String kind = TOP_LEVEL_ALPHABETICAL_KIND;
 
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(corporateName);
         if (alphaKeyResponse != null) {
@@ -100,7 +102,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 topHitCompany.setCompanyNumber(company.getCompanyNumber());
                 topHitCompany.setCompanyStatus(company.getCompanyStatus());
                 topHitCompany.setOrderedAlphaKeyWithId(company.getOrderedAlphaKeyWithId());
-                topHitCompany.setKind(company.getKind());
+                topHitCompany.setKind(ALPHABETICAL_KIND);
 
                 if ((searchBefore == null && searchAfter == null) || (searchBefore != null && searchAfter != null)) {
                     results = prepareSearchResultsWithTopHit(size, requestId, logMap, topHitCompany, results,
@@ -226,7 +228,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         company.setCompanyNumber((String) (items.get("company_number")));
         company.setCompanyStatus((String) (items.get("company_status")));
         company.setOrderedAlphaKeyWithId((String) sourceAsMap.get(ORDERED_ALPHA_KEY_WITH_ID));
-        company.setKind((String) sourceAsMap.get("kind"));
+        company.setKind(ALPHABETICAL_KIND);
 
         companyLinks.setSelf((String) (links.get("self")));
         company.setLinks(companyLinks);
