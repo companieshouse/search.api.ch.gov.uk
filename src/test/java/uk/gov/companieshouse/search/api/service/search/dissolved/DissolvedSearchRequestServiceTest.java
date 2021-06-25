@@ -30,12 +30,10 @@ import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
-import uk.gov.companieshouse.search.api.model.PreviousNamesTopHit;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
 import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.previousnames.DissolvedPreviousName;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchRequestService;
@@ -401,17 +399,18 @@ class DissolvedSearchRequestServiceTest {
     @DisplayName("Test previous names best match search results successful")
     void testPreviousNamesBestMatchSuccessful() throws Exception {
 
-        List<DissolvedPreviousName> results = createPreviousCompanyNames();
-        PreviousNamesTopHit topHit = createPreviousNamesTopHit();
+        List<DissolvedCompany> results = new ArrayList<>();
+        results.add(createDissolvedCompany());
+        DissolvedTopHit topHit = createDissolvedTopHit();
 
         when(mockDissolvedSearchRequests.getDissolved(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH,
                 START_INDEX, SIZE)).thenReturn(createSearchHits(true, true, true, true));
 
         when(mockElasticSearchResponseMapper.mapPreviousNames(any(SearchHits.class))).thenReturn(results);
 
-        when(mockElasticSearchResponseMapper.mapPreviousNamesTopHit(results)).thenReturn(topHit);
+        when(mockElasticSearchResponseMapper.mapDissolvedTopHit(results.get(0))).thenReturn(topHit);
 
-        SearchResults<DissolvedPreviousName> dissolvedSearchResults = dissolvedSearchRequestService
+        SearchResults<DissolvedCompany> dissolvedSearchResults = dissolvedSearchRequestService
                 .getPreviousNamesResults(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH, START_INDEX, SIZE);
 
         assertEquals(COMPANY_NAME, dissolvedSearchResults.getTopHit().getCompanyName());
@@ -645,43 +644,4 @@ class DissolvedSearchRequestServiceTest {
 
         return topHit;
     }
-
-    private List<DissolvedPreviousName> createPreviousCompanyNames() {
-        List<DissolvedPreviousName> previousNames = new ArrayList<>();
-        DissolvedPreviousName previousName = new DissolvedPreviousName();
-        previousName.setPreviousCompanyName(PREVIOUS_COMPANY_NAME);
-        previousName.setCompanyName(COMPANY_NAME);
-        previousName.setCompanyNumber(COMPANY_NUMBER);
-        previousName.setKind(KIND);
-        previousName.setDateOfCessation(LocalDate.parse("19990501", formatter));
-        previousName.setDateOfCreation(LocalDate.parse("19890501", formatter));
-
-        Address address = new Address();
-        address.setPostalCode(POSTCODE);
-        address.setLocality(LOCALITY);
-        previousName.setRegisteredOfficeAddress(address);
-
-        previousNames.add(previousName);
-
-        return previousNames;
-    }
-
-    private PreviousNamesTopHit createPreviousNamesTopHit() {
-        PreviousNamesTopHit topHit = new PreviousNamesTopHit();
-        topHit.setPreviousCompanyName(PREVIOUS_COMPANY_NAME);
-        topHit.setCompanyName(COMPANY_NAME);
-        topHit.setCompanyNumber(COMPANY_NUMBER);
-        topHit.setCompanyStatus(COMPANY_STATUS);
-        topHit.setKind(KIND);
-        topHit.setDateOfCessation(LocalDate.parse("19990501", formatter));
-        topHit.setDateOfCreation(LocalDate.parse("19890501", formatter));
-
-        Address address = new Address();
-        address.setPostalCode(POSTCODE);
-        address.setLocality(LOCALITY);
-        topHit.setRegisteredOfficeAddress(address);
-
-        return topHit;
-    }
-
 }

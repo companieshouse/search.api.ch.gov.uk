@@ -30,10 +30,8 @@ import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
 import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
-import uk.gov.companieshouse.search.api.model.PreviousNamesTopHit;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
-import uk.gov.companieshouse.search.api.model.esdatamodel.dissolved.previousnames.DissolvedPreviousName;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
@@ -177,7 +175,7 @@ public class DissolvedSearchRequestService {
         return dissolvedSearchResults;
     }
 
-    public SearchResults<DissolvedPreviousName> getPreviousNamesResults(String companyName,
+    public SearchResults<DissolvedCompany> getPreviousNamesResults(String companyName,
                                                                                  String requestId,
                                                                                  String searchType,
                                                                                  Integer startIndex,
@@ -188,9 +186,9 @@ public class DissolvedSearchRequestService {
         getLogger().info("getting dissolved " + searchType + " search results", logMap);
 
         String etag = GenerateEtagUtil.generateEtag();
-        PreviousNamesTopHit topHit = new PreviousNamesTopHit();
-        List<DissolvedPreviousName> results = new ArrayList<>();
-        List<DissolvedPreviousName> resizedResults = new ArrayList<>();
+        DissolvedTopHit topHit = new DissolvedTopHit();
+        List<DissolvedCompany> results = new ArrayList<>();
+        List<DissolvedCompany> resizedResults = new ArrayList<>();
         String kind = "search#previous-name-dissolved";
         long numberOfHits;
 
@@ -202,7 +200,7 @@ public class DissolvedSearchRequestService {
                 getLogger().info(RESULT_FOUND, logMap);
 
                 results = elasticSearchResponseMapper.mapPreviousNames(hits);
-                topHit = elasticSearchResponseMapper.mapPreviousNamesTopHit(results);
+                topHit = elasticSearchResponseMapper.mapDissolvedTopHit(results.get(0));
 
                 int finalSize = results.size() < size ? results.size() : size;
                 resizedResults = results.subList(0, finalSize);
@@ -212,7 +210,7 @@ public class DissolvedSearchRequestService {
             throw new SearchException("error occurred reading data for previous names from " + SEARCH_HITS, e);
         }
 
-        SearchResults<DissolvedPreviousName> dissolvedSearchResults =
+        SearchResults<DissolvedCompany> dissolvedSearchResults =
                 new SearchResults<>(etag, topHit, resizedResults, kind);
         dissolvedSearchResults.setHits(numberOfHits);
 
