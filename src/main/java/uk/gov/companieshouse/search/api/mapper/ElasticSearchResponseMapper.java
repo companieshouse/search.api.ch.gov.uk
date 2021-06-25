@@ -179,9 +179,12 @@ public class ElasticSearchResponseMapper {
     }
 
     private boolean isROABeforeOrEqualToTwentyYears(LocalDate dateOfCessation) {
-        LocalDate currentDate = LocalDate.now();
-        LocalDate dateTwentyYearsInPast = LocalDate.from(currentDate.minusYears(20));
+        if (dateOfCessation != null) {
+            LocalDate currentDate = LocalDate.now();
+            LocalDate dateTwentyYearsInPast = LocalDate.from(currentDate.minusYears(20));
 
-        return dateOfCessation.isAfter(dateTwentyYearsInPast);
+            return dateOfCessation.isAfter(dateTwentyYearsInPast);
+        }
+        return false;
     }
 }
