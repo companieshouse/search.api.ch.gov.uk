@@ -115,6 +115,7 @@ public class ElasticSearchResponseMapper {
             DissolvedCompany dissolvedCompany = new DissolvedCompany();
             dissolvedCompany.setCompanyName((String) sourceAsMap.get(COMPANY_NAME_KEY));
             dissolvedCompany.setCompanyNumber((String) sourceAsMap.get(COMPANY_NUMBER_KEY));
+            dissolvedCompany.setCompanyStatus((String) sourceAsMap.get(COMPANY_STATUS_KEY));
             dissolvedCompany.setDateOfCessation((LocalDate.parse((String) sourceAsMap.get(DATE_OF_CESSATION), formatter)));
             dissolvedCompany.setDateOfCreation((LocalDate.parse((String) sourceAsMap.get(DATE_OF_CREATION), formatter)));
             dissolvedCompany.setKind(SEARCH_RESULTS_KIND);

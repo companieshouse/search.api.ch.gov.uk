@@ -286,6 +286,7 @@ class ElasticSearchResponseMapperTest {
         DissolvedCompany previousName = previousNames.get(0);
         assertEquals(COMPANY_NAME, previousName.getCompanyName());
         assertEquals(COMPANY_NUMBER, previousName.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, previousName.getCompanyStatus());
         assertEquals(KIND, previousName.getKind());
         assertEquals(DATE_OF_CESSATION, previousName.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousName.getDateOfCreation().toString());
