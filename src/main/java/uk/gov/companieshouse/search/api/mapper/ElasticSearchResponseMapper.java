@@ -60,7 +60,7 @@ public class ElasticSearchResponseMapper {
             dissolvedCompany.setDateOfCreation(LocalDate.parse((String) sourceAsMap.get(DATE_OF_CREATION), formatter));
         }
 
-        Address roAddress = mapRegisteredOfficeAddressFields(addressToMap);
+        Address roAddress = mapRegisteredOfficeAddressFields(addressToMap, dissolvedCompany.getDateOfCessation());
         dissolvedCompany.setRegisteredOfficeAddress(roAddress);
 
         return dissolvedCompany;
@@ -115,12 +115,13 @@ public class ElasticSearchResponseMapper {
             DissolvedCompany dissolvedCompany = new DissolvedCompany();
             dissolvedCompany.setCompanyName((String) sourceAsMap.get(COMPANY_NAME_KEY));
             dissolvedCompany.setCompanyNumber((String) sourceAsMap.get(COMPANY_NUMBER_KEY));
+            dissolvedCompany.setCompanyStatus((String) sourceAsMap.get(COMPANY_STATUS_KEY));
             dissolvedCompany.setDateOfCessation((LocalDate.parse((String) sourceAsMap.get(DATE_OF_CESSATION), formatter)));
             dissolvedCompany.setDateOfCreation((LocalDate.parse((String) sourceAsMap.get(DATE_OF_CREATION), formatter)));
             dissolvedCompany.setKind(SEARCH_RESULTS_KIND);
 
             Map<String, Object> addressToMap = (Map<String, Object>) sourceAsMap.get(REGISTERED_OFFICE_ADDRESS_KEY);
-            Address registeredOfficeAddress = mapRegisteredOfficeAddressFields(addressToMap);
+            Address registeredOfficeAddress = mapRegisteredOfficeAddressFields(addressToMap, dissolvedCompany.getDateOfCessation());
 
             if(previousCompanyNamesList != null) {
                 dissolvedCompany.setPreviousCompanyNames(mapPreviousCompanyNames(previousCompanyNamesList));
@@ -140,8 +141,8 @@ public class ElasticSearchResponseMapper {
         }
     }
 
-    private Address mapRegisteredOfficeAddressFields(Map<String, Object> addressToMap) {
-        if (addressToMap != null) {
+    private Address mapRegisteredOfficeAddressFields(Map<String, Object> addressToMap, LocalDate dateOfCessation) {
+        if (addressToMap != null && isROABeforeOrEqualToTwentyYears(dateOfCessation)) {
             Address registeredOfficeAddress = new Address();
 
             if(addressToMap.containsKey(ADDRESS_LINE_1)) {
@@ -161,9 +162,8 @@ public class ElasticSearchResponseMapper {
             }
 
             return registeredOfficeAddress;
-        } else {
-            return null;
         }
+        return null;
     }
 
     private List<PreviousCompanyName> mapPreviousCompanyNames(List<Object> previousCompanyNamesList) {
@@ -177,5 +177,15 @@ public class ElasticSearchResponseMapper {
             previousCompanyNames.add(companyName);
         }
         return previousCompanyNames;
+    }
+
+    private boolean isROABeforeOrEqualToTwentyYears(LocalDate dateOfCessation) {
+        if (dateOfCessation != null) {
+            LocalDate currentDate = LocalDate.now();
+            LocalDate dateTwentyYearsInPast = LocalDate.from(currentDate.minusYears(20));
+
+            return dateOfCessation.isAfter(dateTwentyYearsInPast);
+        }
+        return false;
     }
 }

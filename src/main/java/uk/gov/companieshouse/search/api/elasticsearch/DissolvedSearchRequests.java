@@ -67,7 +67,7 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
             sourceBuilder.query(searchQueries.createBestMatchQuery(companyName));
         }
         else {
-            String[] includes = {"company_name", "company_number", "date_of_creation",
+            String[] includes = {"company_name", "company_number", "company_status", "date_of_creation",
                     "date_of_cessation", "registered_office_address", "previous_company_names"};
 
             sourceBuilder.fetchSource(new FetchSourceContext(true, includes, null));
