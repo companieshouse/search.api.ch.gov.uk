@@ -17,7 +17,7 @@ import static uk.gov.companieshouse.search.util.EricHeaderHelper.ERIC_IDENTITY_T
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class EricHeaderHelperTest {
+class EricHeaderHelperTest {
 
     @Mock
     private HttpServletRequest request;

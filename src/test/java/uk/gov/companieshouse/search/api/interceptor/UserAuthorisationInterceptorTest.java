@@ -22,7 +22,7 @@ import static uk.gov.companieshouse.search.util.EricHeaderHelper.ERIC_IDENTITY_T
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class UserAuthorisationInterceptorTest {
+class UserAuthorisationInterceptorTest {
 
     @InjectMocks
     private UserAuthorisationInterceptor userAuthorisationInterceptor;
@@ -55,7 +55,7 @@ public class UserAuthorisationInterceptorTest {
 
     @Test
     @DisplayName("Does not Authorise if PUT and unrecognised identity type")
-    public void willNotAuthoriseIfRequestIsPostAndUnrecognisedIdentity() {
+    void willNotAuthoriseIfRequestIsPostAndUnrecognisedIdentity() {
         when(request.getHeader(ERIC_IDENTITY_TYPE)).thenReturn(INVALID_IDENTITY_TYPE_VALUE);
         assertFalse(userAuthorisationInterceptor.preHandle(request, response, null));
     }

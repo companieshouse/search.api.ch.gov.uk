@@ -19,6 +19,7 @@ import uk.gov.companieshouse.search.util.EricHeaderHelper;
 @Component
 public class UserAuthorisationInterceptor extends HandlerInterceptorAdapter {
 
+    @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         final String identityType = EricHeaderHelper.getIdentityType(request);
         boolean isApiKeyRequest = identityType.equals(EricHeaderHelper.API_KEY_IDENTITY_TYPE);
