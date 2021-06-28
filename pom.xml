@@ -29,7 +29,7 @@
         <spring-data-elasticsearch.version>3.2.0.RELEASE</spring-data-elasticsearch.version>
 
         <!-- Docker -->
-        <jib-maven-plugin.version>2.7.0</jib-maven-plugin.version>
+        <jib-maven-plugin.version>3.1.1</jib-maven-plugin.version>
 
         <!-- JUnit Testing -->
         <junit-jupiter-engine.version>5.2.0</junit-jupiter-engine.version>
