@@ -37,7 +37,7 @@ public class UserAuthorisationInterceptor extends HandlerInterceptorAdapter {
         Map<String, Object> logMap = new HashMap<>();
         logMap.put(REQUEST_ID_LOG_KEY, request.getHeader(REQUEST_ID_HEADER_NAME));
         if(AuthorisationUtil.hasInternalUserRole(request) && PUT.matches(request.getMethod())) {
-            getLogger().info("internal API is permitted to view the resource", logMap);
+            getLogger().info("internal API is permitted to update the resource", logMap);
             return true;
         } else {
             logMap.put(STATUS_LOG_KEY, UNAUTHORIZED);
