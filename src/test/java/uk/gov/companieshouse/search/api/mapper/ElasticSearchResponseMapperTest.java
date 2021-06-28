@@ -40,7 +40,8 @@ class ElasticSearchResponseMapperTest {
     private static final String COMPANY_NUMBER = "00000000";
     private static final String COMPANY_STATUS = "dissolved";
     private static final String KIND = "searchresults#dissolvedCompany";
-    private static final String DATE_OF_CESSATION = "1999-05-01";
+    private static final String DATE_OF_CESSATION = "2010-05-01";
+    private static final String DATE_OF_CESSATION_POST_20_YEARS = "1991-05-01";
     private static final String DATE_OF_CREATION = "1989-05-01";
     private static final String LOCALITY = "locality";
     private static final String POSTCODE = "AB00 0 AB";
@@ -56,7 +57,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful")
     void mapDissolvedResponseTest() {
 
-        SearchHits searchHits = createSearchHits(true, true, true, true, true, true);
+        SearchHits searchHits = createSearchHits(true, true, true, true, true, true, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -77,10 +78,34 @@ class ElasticSearchResponseMapperTest {
     }
 
     @Test
+    @DisplayName("Map dissolved response successful date of cessation greater than 20 years old")
+    void mapDissolvedResponseCessationGreaterThan20Test() {
+
+        SearchHits searchHits = createSearchHits(true, true, true, true, true, true, false);
+
+        DissolvedCompany dissolvedCompany =
+                elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
+
+        assertEquals(COMPANY_NAME, dissolvedCompany.getCompanyName());
+        assertEquals(COMPANY_NUMBER, dissolvedCompany.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, dissolvedCompany.getCompanyStatus());
+        assertEquals(KIND, dissolvedCompany.getKind());
+        assertEquals(DATE_OF_CESSATION_POST_20_YEARS, dissolvedCompany.getDateOfCessation().toString());
+        assertEquals(DATE_OF_CREATION, dissolvedCompany.getDateOfCreation().toString());
+
+        assertNull(dissolvedCompany.getRegisteredOfficeAddress());
+
+        List<PreviousCompanyName> previousCompanyNames = dissolvedCompany.getPreviousCompanyNames();
+        assertEquals(PREVIOUS_COMPANY_NAME, previousCompanyNames.get(0).getName());
+        assertEquals(EFFECTIVE_FROM, previousCompanyNames.get(0).getDateOfNameEffectiveness().toString());
+        assertEquals(CEASED_ON, previousCompanyNames.get(0).getDateOfNameCessation().toString());
+    }
+
+    @Test
     @DisplayName("Map dissolved response no dates present successful")
     void mapDissolvedResponseNoDatesPresentTest() {
 
-        SearchHits searchHits = createSearchHits(true, true,  true, true, true, false);
+        SearchHits searchHits = createSearchHits(true, true,  true, true, true, false, false);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -91,8 +116,6 @@ class ElasticSearchResponseMapperTest {
         assertEquals(KIND, dissolvedCompany.getKind());
         assertNull(dissolvedCompany.getDateOfCessation());
         assertNull(dissolvedCompany.getDateOfCreation());
-        assertEquals(LOCALITY, dissolvedCompany.getRegisteredOfficeAddress().getLocality());
-        assertEquals(POSTCODE, dissolvedCompany.getRegisteredOfficeAddress().getPostalCode());
 
         List<PreviousCompanyName> previousCompanyNames = dissolvedCompany.getPreviousCompanyNames();
         assertEquals(PREVIOUS_COMPANY_NAME, previousCompanyNames.get(0).getName());
@@ -104,7 +127,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no previous names")
     void mapDissolvedResponseTestPreviousNamesNull() {
 
-        SearchHits searchHits = createSearchHits(true, true, true, true, false, true);
+        SearchHits searchHits = createSearchHits(true, true, true, true, false, true, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -117,7 +140,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no address lines")
     void mapDissolvedResponseTestNoAddressLines() {
 
-        SearchHits searchHits = createSearchHits(true, false, false, true, false, true);
+        SearchHits searchHits = createSearchHits(true, false, false, true, false, true, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -133,7 +156,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no locality")
     void mapDissolvedResponseTestNoLocality() {
 
-        SearchHits searchHits = createSearchHits(true, true, false, true, false, true);
+        SearchHits searchHits = createSearchHits(true, true, false, true, false, true, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -147,7 +170,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no postcode")
     void mapDissolvedResponseTestNoPostcode() {
 
-        SearchHits searchHits = createSearchHits(true, true, true, false, false, true);
+        SearchHits searchHits = createSearchHits(true, true, true, false, false, true, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -161,7 +184,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no address")
     void mapDissolvedResponseTestNoAddress() {
 
-        SearchHits searchHits = createSearchHits(false, false,false, false, false, true);
+        SearchHits searchHits = createSearchHits(false, false,false, false, false, true, true);
 
         DissolvedCompany dissolvedCompany =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -263,6 +286,7 @@ class ElasticSearchResponseMapperTest {
         DissolvedCompany previousName = previousNames.get(0);
         assertEquals(COMPANY_NAME, previousName.getCompanyName());
         assertEquals(COMPANY_NUMBER, previousName.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, previousName.getCompanyStatus());
         assertEquals(KIND, previousName.getKind());
         assertEquals(DATE_OF_CESSATION, previousName.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousName.getDateOfCreation().toString());
@@ -327,7 +351,8 @@ class ElasticSearchResponseMapperTest {
                                         boolean locality,
                                         boolean postCode,
                                         boolean includePreviousCompanyNames,
-                                        boolean includeDates) {
+                                        boolean includeDates,
+                                        boolean pre20Years) {
         StringBuilder searchHits = new StringBuilder();
         searchHits.append(
                 "{" +
@@ -344,10 +369,17 @@ class ElasticSearchResponseMapperTest {
             searchHits.append(populatePreviousCompanyNames(includeDates));
         }
         if(includeDates) {
-        searchHits.append(
-                    "\"date_of_cessation\" : \"19990501\"," +
+            if (pre20Years) {
+                searchHits.append(
+                    "\"date_of_cessation\" : \"20100501\"," +
                     "\"date_of_creation\" : \"19890501\"" +
-                "}");
+                    "}");
+            } else {
+                searchHits.append(
+                    "\"date_of_cessation\" : \"19910501\"," +
+                    "\"date_of_creation\" : \"19890501\"" +
+                    "}");
+            }
         } else {
             searchHits.append("}");
         }
@@ -365,7 +397,7 @@ class ElasticSearchResponseMapperTest {
                                                      boolean includePostCode,
                                                      boolean includePreviousCompanyNames) {
 
-        SearchHits searchHits = createSearchHits(includeAddress, includeAddressLines, includeLocality, includePostCode, includePreviousCompanyNames, true);
+        SearchHits searchHits = createSearchHits(includeAddress, includeAddressLines, includeLocality, includePostCode, includePreviousCompanyNames, true, true);
         SearchHit searchHit = searchHits.getAt(0);
 
         Map<String, SearchHits> innerHits = new HashMap<>();
@@ -439,7 +471,7 @@ class ElasticSearchResponseMapperTest {
         dissolvedCompany.setCompanyNumber(COMPANY_NUMBER);
         dissolvedCompany.setCompanyStatus(COMPANY_STATUS);
         dissolvedCompany.setKind(KIND);
-        dissolvedCompany.setDateOfCessation(LocalDate.parse("19990501", formatter));
+        dissolvedCompany.setDateOfCessation(LocalDate.parse("20100501", formatter));
         dissolvedCompany.setDateOfCreation(LocalDate.parse("19890501", formatter));
 
         if (includeAddress) {
