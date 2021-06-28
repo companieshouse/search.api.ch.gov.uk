@@ -31,6 +31,7 @@ public class UserAuthorisationInterceptor extends HandlerInterceptorAdapter {
         response.setStatus(UNAUTHORIZED.value());
         return false;
     }
+
     private boolean validateAPI(HttpServletRequest request, HttpServletResponse response){
         Map<String, Object> logMap = new HashMap<>();
         logMap.put(REQUEST_ID_LOG_KEY, request.getHeader(REQUEST_ID_HEADER_NAME));

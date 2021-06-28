@@ -5,8 +5,6 @@ import org.apache.commons.lang.StringUtils;
 
 public class EricHeaderHelper {
     public static final String API_KEY_IDENTITY_TYPE        = "key";
-
-
     public static final String ERIC_IDENTITY                = "ERIC-Identity";
     public static final String ERIC_IDENTITY_TYPE           = "ERIC-Identity-Type";
 
