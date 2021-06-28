@@ -33,7 +33,8 @@ public class UserAuthorisationInterceptorTest {
     @Mock
     private HttpServletResponse response;
 
-    public static final String ERIC_IDENTITY_TYPE_API_KEY_VALUE = "key";
+    private static final String ERIC_IDENTITY_TYPE_API_KEY_VALUE = "key";
+    private static final String INVALID_IDENTITY_TYPE_VALUE = "test";
 
     @Test
     @DisplayName("Does not Authorise an external API key is used")
@@ -44,11 +45,18 @@ public class UserAuthorisationInterceptorTest {
 
     @Test
     @DisplayName("Authorise if PUT and an internal API key is used")
-    public void willAuthoriseIfRequestIsPutAndInternalAPIKey() {
+    void willAuthoriseIfRequestIsPutAndInternalAPIKey() {
         when(request.getMethod()).thenReturn(HttpMethod.PUT.toString());
         doReturn("request-id").when(request).getHeader("X-Request-ID");
         doReturn(ERIC_IDENTITY_TYPE_API_KEY_VALUE).when(request).getHeader(ERIC_IDENTITY_TYPE);
         doReturn(SecurityConstants.INTERNAL_USER_ROLE).when(request).getHeader(EricConstants.ERIC_AUTHORISED_KEY_ROLES);
         assertTrue(userAuthorisationInterceptor.preHandle(request, response, null));
+    }
+
+    @Test
+    @DisplayName("Does not Authorise if PUT and unrecognised identity type")
+    public void willNotAuthoriseIfRequestIsPostAndUnrecognisedIdentity() {
+        when(request.getHeader(ERIC_IDENTITY_TYPE)).thenReturn(INVALID_IDENTITY_TYPE_VALUE);
+        assertFalse(userAuthorisationInterceptor.preHandle(request, response, null));
     }
 }
