@@ -23,6 +23,7 @@
         <api-sdk-java.version>4.2.0</api-sdk-java.version>
         <start-class>uk.gov.companieshouse.search.api.SearchApiApplication</start-class>
         <api-helper-java.version>1.1.0-rc1</api-helper-java.version>
+        <api-security-java.version>0.3.4</api-security-java.version>
 
         <!-- Elastic Search -->
         <elasticsearch.version>7.4.0</elasticsearch.version>
@@ -98,6 +99,12 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-elasticsearch</artifactId>
             <version>${spring-data-elasticsearch.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.gov.companieshouse</groupId>
+            <artifactId>api-security-java</artifactId>
+            <version>${api-security-java.version}</version>
         </dependency>
 
         <dependency>

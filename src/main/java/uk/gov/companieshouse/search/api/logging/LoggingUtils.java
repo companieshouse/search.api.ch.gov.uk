@@ -1,12 +1,11 @@
 package uk.gov.companieshouse.search.api.logging;
 
-import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.logging.LoggerFactory;
+import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
+import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
 
 public class LoggingUtils {
 
@@ -31,6 +30,10 @@ public class LoggingUtils {
     public static final String SEARCH_TYPE = "search_type";
     public static final String SIZE = "size";
     public static final String START_INDEX = "start_index";
+
+    public static final String REQUEST_ID_LOG_KEY = "request_id";
+    public static final String STATUS_LOG_KEY = "status";
+    public static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
     
     private LoggingUtils() throws IllegalAccessException {
         throw new IllegalAccessException("LoggingUtils is not to be instantiated");
