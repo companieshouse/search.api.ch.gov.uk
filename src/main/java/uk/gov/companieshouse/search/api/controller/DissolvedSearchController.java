@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.controller.search;
+package uk.gov.companieshouse.search.api.controller;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;

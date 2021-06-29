@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.util;
+package uk.gov.companieshouse.search.api.util;
 
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;

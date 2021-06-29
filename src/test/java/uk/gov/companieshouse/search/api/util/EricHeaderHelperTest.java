@@ -5,15 +5,14 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.companieshouse.search.util.EricHeaderHelper;
 
 import javax.servlet.http.HttpServletRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
-import static uk.gov.companieshouse.search.util.EricHeaderHelper.ERIC_IDENTITY;
-import static uk.gov.companieshouse.search.util.EricHeaderHelper.ERIC_IDENTITY_TYPE;
+import static uk.gov.companieshouse.search.api.util.EricHeaderHelper.ERIC_IDENTITY;
+import static uk.gov.companieshouse.search.api.util.EricHeaderHelper.ERIC_IDENTITY_TYPE;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

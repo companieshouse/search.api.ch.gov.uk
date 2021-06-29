@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
-import static uk.gov.companieshouse.search.util.EricHeaderHelper.ERIC_IDENTITY_TYPE;
+import static uk.gov.companieshouse.search.api.util.EricHeaderHelper.ERIC_IDENTITY_TYPE;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
