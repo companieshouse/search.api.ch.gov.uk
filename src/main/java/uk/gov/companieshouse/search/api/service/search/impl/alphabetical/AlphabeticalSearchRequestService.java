@@ -44,8 +44,8 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final int FALLBACK_QUERY_LIMIT = 25;
-    private static final String TOP_LEVEL_ALPHABETICAL_KIND = "search#alphabeticalSearch";
-    private static final String ALPHABETICAL_KIND = "searchresults#alphabeticalSearch";
+    private static final String TOP_LEVEL_ALPHABETICAL_KIND = "search#alphabetical-search";
+    private static final String ALPHABETICAL_KIND = "searchresults#alphabetical-search";
 
     private Integer sizeAbove;
     private Integer sizeBelow;

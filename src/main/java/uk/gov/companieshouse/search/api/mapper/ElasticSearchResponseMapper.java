@@ -18,7 +18,7 @@ import java.util.Map;
 @Component
 public class ElasticSearchResponseMapper {
 
-    private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
+    private static final String SEARCH_RESULTS_KIND = "searchresults#dissolved-company";
     private static final String COMPANY_NAME_KEY = "company_name";
     private static final String COMPANY_NUMBER_KEY = "company_number";
     private static final String COMPANY_STATUS_KEY = "company_status";

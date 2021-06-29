@@ -39,7 +39,7 @@ class ElasticSearchResponseMapperTest {
     private static final String COMPANY_NAME = "TEST COMPANY";
     private static final String COMPANY_NUMBER = "00000000";
     private static final String COMPANY_STATUS = "dissolved";
-    private static final String KIND = "searchresults#dissolvedCompany";
+    private static final String KIND = "searchresults#dissolved-company";
     private static final String DATE_OF_CESSATION = "2010-05-01";
     private static final String DATE_OF_CESSATION_POST_20_YEARS = "1991-05-01";
     private static final String DATE_OF_CREATION = "1989-05-01";
