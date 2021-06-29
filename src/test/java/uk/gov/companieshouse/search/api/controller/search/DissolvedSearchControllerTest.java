@@ -27,7 +27,7 @@ import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchIndexService;
 
@@ -235,9 +235,9 @@ class DissolvedSearchControllerTest {
     }
 
     private SearchResults<?> createSearchResults() {
-        SearchResults<DissolvedCompany> searchResults = new SearchResults<>();
-        List<DissolvedCompany> companies = new ArrayList<>();
-        DissolvedCompany company = new DissolvedCompany();
+        SearchResults<Company> searchResults = new SearchResults<>();
+        List<Company> companies = new ArrayList<>();
+        Company company = new Company();
 
         company.setCompanyNumber(COMPANY_NUMBER);
         company.setCompanyName(COMPANY_NAME);

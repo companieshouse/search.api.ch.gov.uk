@@ -3,9 +3,9 @@ package uk.gov.companieshouse.search.api.mapper;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Component;
-import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
+import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
-import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
 
 import java.time.LocalDate;
@@ -37,11 +37,11 @@ public class ElasticSearchResponseMapper {
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
-    public DissolvedCompany mapDissolvedResponse(SearchHit hit) {
+    public Company mapDissolvedResponse(SearchHit hit) {
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
         Map<String, Object> addressToMap = (Map<String, Object>) sourceAsMap.get(REGISTERED_OFFICE_ADDRESS_KEY);
         List<Object> previousCompanyNamesList = (List<Object>) sourceAsMap.get(PREVIOUS_COMPANY_NAMES_KEY);
-        DissolvedCompany dissolvedCompany = new DissolvedCompany();
+        Company dissolvedCompany = new Company();
         if(previousCompanyNamesList != null) {
             dissolvedCompany.setPreviousCompanyNames(mapPreviousCompanyNames(previousCompanyNamesList));
         }
@@ -66,8 +66,8 @@ public class ElasticSearchResponseMapper {
         return dissolvedCompany;
     }
 
-    public DissolvedTopHit mapDissolvedTopHit(DissolvedCompany dissolvedCompany) {
-        DissolvedTopHit topHit = new DissolvedTopHit();
+    public TopHit mapDissolvedTopHit(Company dissolvedCompany) {
+        TopHit topHit = new TopHit();
 
         topHit.setCompanyName(dissolvedCompany.getCompanyName());
         topHit.setCompanyNumber(dissolvedCompany.getCompanyNumber());
@@ -89,16 +89,16 @@ public class ElasticSearchResponseMapper {
         return topHit;
     }
 
-    public List<DissolvedCompany> mapPreviousNames(SearchHits hits) {
+    public List<Company> mapPreviousNames(SearchHits hits) {
 
-        List<DissolvedCompany> results = new ArrayList<>();
+        List<Company> results = new ArrayList<>();
 
         hits.forEach(h -> mapPreviousName(h, results));
 
         return results;
     }
 
-    private void mapPreviousName(SearchHit hit, List<DissolvedCompany> results) {
+    private void mapPreviousName(SearchHit hit, List<Company> results) {
         // company details at dissolution in the main hit
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
 
@@ -112,7 +112,7 @@ public class ElasticSearchResponseMapper {
         SearchHits previousNames = innerHits.get(PREVIOUS_COMPANY_NAMES_KEY);
         
         for(SearchHit nameHit : previousNames.getHits()) {
-            DissolvedCompany dissolvedCompany = new DissolvedCompany();
+            Company dissolvedCompany = new Company();
             dissolvedCompany.setCompanyName((String) sourceAsMap.get(COMPANY_NAME_KEY));
             dissolvedCompany.setCompanyNumber((String) sourceAsMap.get(COMPANY_NUMBER_KEY));
             dissolvedCompany.setCompanyStatus((String) sourceAsMap.get(COMPANY_STATUS_KEY));
