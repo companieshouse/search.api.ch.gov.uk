@@ -94,7 +94,7 @@ public class DissolvedSearchController {
             if (searchType.equals(ALPHABETICAL_SEARCH_TYPE)) {
 
                 return getAlphabeticalSearch(companyName, searchBefore, searchAfter, size,
-                        requestId, logMap);
+                        requestId);
             }
 
             if (searchType.equals(BEST_MATCH_SEARCH_TYPE) || searchType.equals(PREVIOUS_NAMES_SEARCH_TYPE)) {
@@ -131,8 +131,7 @@ public class DissolvedSearchController {
             @RequestParam(name = SEARCH_BEFORE_PARAM, required = false) String searchBefore,
             @RequestParam(name = SEARCH_AFTER_PARAM, required = false) String searchAfter,
             Integer size,
-            @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId,
-            Map<String, Object> logMap) {
+            @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         ResponseObject responseObject = searchIndexService.searchAlphabetical(companyName,
                 searchBefore, searchAfter, size, requestId);
