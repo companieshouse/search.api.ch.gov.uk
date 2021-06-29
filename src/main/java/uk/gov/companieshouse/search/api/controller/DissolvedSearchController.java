@@ -88,7 +88,7 @@ public class DissolvedSearchController {
             } catch (SizeException e) {
                 getLogger().info(e.getMessage(), logMap);
                 return apiToResponseMapper
-                        .mapDissolved(new ResponseObject(ResponseStatus.SIZE_PARAMETER_ERROR, null));
+                        .map(new ResponseObject(ResponseStatus.SIZE_PARAMETER_ERROR, null));
             }
 
             if (searchType.equals(ALPHABETICAL_SEARCH_TYPE)) {
@@ -106,7 +106,7 @@ public class DissolvedSearchController {
         LoggingUtils.getLogger().error("The search_type parameter is incorrect, please try either "
                 + "'alphabetical', 'best-match' or 'previous-name-dissolved': ", logMap);
         return apiToResponseMapper
-                .mapDissolved(new ResponseObject(ResponseStatus.REQUEST_PARAMETER_ERROR, null));
+                .map(new ResponseObject(ResponseStatus.REQUEST_PARAMETER_ERROR, null));
     }
 
     private ResponseEntity<Object> getBestMatchOrPreviousNamesSearch(
@@ -123,7 +123,7 @@ public class DissolvedSearchController {
         ResponseObject responseObject = searchIndexService.searchBestMatch(companyName, requestId,
                 searchType, startIndex, size);
 
-        return apiToResponseMapper.mapDissolved(responseObject);
+        return apiToResponseMapper.map(responseObject);
     }
 
     private ResponseEntity<Object> getAlphabeticalSearch(
@@ -137,7 +137,7 @@ public class DissolvedSearchController {
         ResponseObject responseObject = searchIndexService.searchAlphabetical(companyName,
                 searchBefore, searchAfter, size, requestId);
 
-        return apiToResponseMapper.mapDissolved(responseObject);
+        return apiToResponseMapper.map(responseObject);
     }
 
     private boolean checkSearchTypeParam(String searchType) {

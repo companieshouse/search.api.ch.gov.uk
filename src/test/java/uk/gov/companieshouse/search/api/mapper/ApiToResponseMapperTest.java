@@ -57,20 +57,6 @@ class ApiToResponseMapperTest {
     }
 
     @Test
-    @DisplayName("Test if Not Found returned")
-    void testNotFoundReturned() {
-
-        ResponseObject responseObject =
-            new ResponseObject(SEARCH_NOT_FOUND);
-
-        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
-
-        assertNotNull(responseEntity);
-        assertNull(responseEntity.getBody());
-        assertEquals(NOT_FOUND, responseEntity.getStatusCode());
-    }
-
-    @Test
     @DisplayName("Test if OK returned")
     void testOKReturned() {
 
@@ -82,6 +68,20 @@ class ApiToResponseMapperTest {
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
         assertEquals(OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test if Not Found returned")
+    void testNotFoundReturned() {
+
+        ResponseObject responseObject =
+                new ResponseObject(SEARCH_NOT_FOUND);
+
+        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
+
+        assertNotNull(responseEntity);
+        assertNull(responseEntity.getBody());
+        assertEquals(NOT_FOUND, responseEntity.getStatusCode());
     }
 
     @Test
@@ -114,6 +114,35 @@ class ApiToResponseMapperTest {
     }
 
     @Test
+    @DisplayName("Test if Request Parameter Error returned")
+    void testRequestParamErrorReturned() {
+
+        ResponseObject responseObject =
+                new ResponseObject(REQUEST_PARAMETER_ERROR);
+
+        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
+
+        assertNotNull(responseEntity);
+        assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+        assertEquals("Invalid url parameter for search_type, please try 'alphabetical', 'best-match' or 'previous-name-dissolved'", responseEntity.getBody());
+    }
+
+    @Test
+    @DisplayName("Test if size parameter is invalid, greater than max size allowed")
+    void testSizeParameterInvalidAlphabetical() {
+
+        ResponseObject responseObject =
+                new ResponseObject(SIZE_PARAMETER_ERROR);
+
+        when(mockEnvironmentReader.getMandatoryInteger(MAX_SIZE_PARAM)).thenReturn(50);
+        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
+
+        assertNotNull(responseEntity);
+        assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
+        assertEquals("Invalid size parameter, size must be greater than zero and not greater than 50", responseEntity.getBody());
+    }
+
+    @Test
     @DisplayName("Test if Internal Server Error returned")
     void testInternalServerErrorReturned() {
 
@@ -125,92 +154,6 @@ class ApiToResponseMapperTest {
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
-    }
-
-    @Test
-    @DisplayName("Test if Search found returned for dissolved company")
-    void testFoundReturnedDissolved() {
-
-        ResponseObject responseObject =
-                new ResponseObject(SEARCH_FOUND, new SearchResults());
-
-        ResponseEntity<?> responseEntity = apiToResponseMapper.mapDissolved(responseObject);
-
-        assertNotNull(responseEntity);
-        assertNotNull(responseEntity.getBody());
-        assertEquals(OK, responseEntity.getStatusCode());
-    }
-
-    @Test
-    @DisplayName("Test if Not Found returned for dissolved company")
-    void testNotFoundReturnedDissolved() {
-
-        ResponseObject responseObject =
-                new ResponseObject(SEARCH_NOT_FOUND);
-
-        ResponseEntity<?> responseEntity = apiToResponseMapper.mapDissolved(responseObject);
-
-        assertNotNull(responseEntity);
-        assertNull(responseEntity.getBody());
-        assertEquals(NOT_FOUND, responseEntity.getStatusCode());
-    }
-
-    @Test
-    @DisplayName("Test if Request Parameter Error returned for dissolved company")
-    void testRequestParamErrorReturnedDissolved() {
-
-        ResponseObject responseObject =
-                new ResponseObject(REQUEST_PARAMETER_ERROR);
-
-        ResponseEntity<?> responseEntity = apiToResponseMapper.mapDissolved(responseObject);
-
-        assertNotNull(responseEntity);
-        assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
-        assertEquals("Invalid url parameter for search_type, please try 'alphabetical', 'best-match' or 'previous-name-dissolved'", responseEntity.getBody());
-    }
-
-    @Test
-    @DisplayName("Test if Internal Server Error returned for dissolved company")
-    void testInternalServerErrorReturnedDissolved() {
-
-        ResponseObject responseObject =
-                new ResponseObject(SEARCH_ERROR);
-
-        ResponseEntity<?> responseEntity = apiToResponseMapper.mapDissolved(responseObject);
-
-        assertNotNull(responseEntity);
-        assertNull(responseEntity.getBody());
-        assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
-    }
-
-    @Test
-    @DisplayName("Test if size parameter is invalid, greater than max size allowed for alphabetical")
-    void testSizeParameterInvalidAlphabetical() {
-
-        ResponseObject responseObject =
-            new ResponseObject(SIZE_PARAMETER_ERROR);
-
-        when(mockEnvironmentReader.getMandatoryInteger(MAX_SIZE_PARAM)).thenReturn(50);
-        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
-
-        assertNotNull(responseEntity);
-        assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-        assertEquals("Invalid size parameter, size must be greater than zero and not greater than 50", responseEntity.getBody());
-    }
-
-    @Test
-    @DisplayName("Test if size parameter is invalid, greater than max size allowed for dissolved alphabetical")
-    void testSizeParameterInvalidDissolvedAlphabetical() {
-
-        ResponseObject responseObject =
-            new ResponseObject(SIZE_PARAMETER_ERROR);
-
-        when(mockEnvironmentReader.getMandatoryInteger(MAX_SIZE_PARAM)).thenReturn(50);
-        ResponseEntity<?> responseEntity = apiToResponseMapper.mapDissolved(responseObject);
-
-        assertNotNull(responseEntity);
-        assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-        assertEquals("Invalid size parameter, size must be greater than zero and not greater than 50", responseEntity.getBody());
     }
 }
 
