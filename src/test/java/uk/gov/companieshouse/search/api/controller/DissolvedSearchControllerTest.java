@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.controller.search;
+package uk.gov.companieshouse.search.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -11,8 +11,6 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SIZE_PARAMETER_ERROR;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -27,9 +25,12 @@ import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchIndexService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -72,7 +73,7 @@ class DissolvedSearchControllerTest {
 
         when(mockSearchIndexService.searchAlphabetical(COMPANY_NAME, SEARCH_BEFORE, SEARCH_AFTER, SIZE, REQUEST_ID))
                 .thenReturn(responseObject);
-        when(mockApiToResponseMapper.mapDissolved(responseObject))
+        when(mockApiToResponseMapper.map(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
         doReturn(100).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
         doReturn(40).when(mockEnvironmentReader).getMandatoryInteger(DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX);
@@ -92,7 +93,7 @@ class DissolvedSearchControllerTest {
 
         when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX, SIZE))
                 .thenReturn(responseObject);
-        when(mockApiToResponseMapper.mapDissolved(responseObject))
+        when(mockApiToResponseMapper.map(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
         doReturn(100).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
         doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(DISSOLVED_SEARCH_RESULT_MAX);
@@ -112,7 +113,7 @@ class DissolvedSearchControllerTest {
 
         when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX, SIZE))
                 .thenReturn(responseObject);
-        when(mockApiToResponseMapper.mapDissolved(responseObject))
+        when(mockApiToResponseMapper.map(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
         doReturn(100).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
         doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(DISSOLVED_SEARCH_RESULT_MAX);
@@ -132,7 +133,7 @@ class DissolvedSearchControllerTest {
 
         when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_BEST_MATCH, START_INDEX, SIZE))
                 .thenReturn(responseObject);
-        when(mockApiToResponseMapper.mapDissolved(responseObject))
+        when(mockApiToResponseMapper.map(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
         doReturn(100).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
         doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(DISSOLVED_SEARCH_RESULT_MAX);
@@ -152,7 +153,7 @@ class DissolvedSearchControllerTest {
 
         when(mockSearchIndexService.searchBestMatch(COMPANY_NAME, REQUEST_ID, SEARCH_TYPE_PREVIOUS_NAME_BEST_MATCH,
                 START_INDEX, SIZE)).thenReturn(responseObject);
-        when(mockApiToResponseMapper.mapDissolved(responseObject))
+        when(mockApiToResponseMapper.map(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
         doReturn(100).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
         doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(DISSOLVED_SEARCH_RESULT_MAX);
@@ -168,7 +169,7 @@ class DissolvedSearchControllerTest {
     @DisplayName("Test incorrect search_type parameter returns correct response")
     void testIncorrectSearchTypeParameter() {
 
-        when(mockApiToResponseMapper.mapDissolved(any())).thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR)
+        when(mockApiToResponseMapper.map(any())).thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR)
                 .body("Invalid url parameter for search_type, please try 'alphabetical' or 'best-match'"));
 
         ResponseEntity<?> responseEntity = dissolvedSearchController.searchCompanies(COMPANY_NAME, "aaa", SEARCH_BEFORE,
@@ -189,7 +190,7 @@ class DissolvedSearchControllerTest {
 
         when(mockSearchIndexService.searchAlphabetical(COMPANY_NAME, SEARCH_BEFORE, SEARCH_AFTER, 40, REQUEST_ID))
             .thenReturn(responseObject);
-        when(mockApiToResponseMapper.mapDissolved(responseObject))
+        when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
 
@@ -235,9 +236,9 @@ class DissolvedSearchControllerTest {
     }
 
     private SearchResults<?> createSearchResults() {
-        SearchResults<DissolvedCompany> searchResults = new SearchResults<>();
-        List<DissolvedCompany> companies = new ArrayList<>();
-        DissolvedCompany company = new DissolvedCompany();
+        SearchResults<Company> searchResults = new SearchResults<>();
+        List<Company> companies = new ArrayList<>();
+        Company company = new Company();
 
         company.setCompanyNumber(COMPANY_NUMBER);
         company.setCompanyName(COMPANY_NAME);
@@ -259,7 +260,7 @@ class DissolvedSearchControllerTest {
         doReturn(50).when(mockEnvironmentReader).getMandatoryInteger(MAX_SIZE_PARAM);
         doReturn(40).when(mockEnvironmentReader).getMandatoryInteger(DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX);
 
-        when(mockApiToResponseMapper.mapDissolved(responseObjectCaptor.capture()))
+        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
             .thenReturn(ResponseEntity.status(UNPROCESSABLE_ENTITY).build());
 
         return dissolvedSearchController.searchCompanies("test name", "alphabetical", null, null, size, null, REQUEST_ID);

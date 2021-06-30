@@ -3,9 +3,10 @@ package uk.gov.companieshouse.search.api.mapper;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Component;
-import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
+import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
-import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
 
 import java.time.LocalDate;
@@ -18,10 +19,15 @@ import java.util.Map;
 @Component
 public class ElasticSearchResponseMapper {
 
-    private static final String SEARCH_RESULTS_KIND = "searchresults#dissolvedCompany";
+    private static final String SEARCH_RESULTS_KIND = "searchresults#dissolved-company";
     private static final String COMPANY_NAME_KEY = "company_name";
+    private static final String CORPORATE_NAME_KEY = "corporate_name";
     private static final String COMPANY_NUMBER_KEY = "company_number";
     private static final String COMPANY_STATUS_KEY = "company_status";
+    private static final String COMPANY_TYPE_KEY = "company_type";
+    private static final String ITEMS_KEY = "items";
+    private static final String LINKS_KEY = "links";
+    private static final String SELF_KEY = "self";
     private static final String ORDERED_ALPHAKEY_WITH_ID_KEY = "ordered_alpha_key_with_id";
     private static final String REGISTERED_OFFICE_ADDRESS_KEY = "registered_office_address";
     private static final String ADDRESS_LINE_1 = "address_line_1";
@@ -34,40 +40,27 @@ public class ElasticSearchResponseMapper {
     private static final String PREVIOUS_COMPANY_NAME_KEY = "name";
     private static final String CEASED_ON_KEY = "ceased_on";
     private static final String EFFECTIVE_FROM_KEY = "effective_from";
+    private static final String ALPHABETICAL_KIND = "searchresults#alphabetical-search";
+    private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
-    public DissolvedCompany mapDissolvedResponse(SearchHit hit) {
-        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-        Map<String, Object> addressToMap = (Map<String, Object>) sourceAsMap.get(REGISTERED_OFFICE_ADDRESS_KEY);
-        List<Object> previousCompanyNamesList = (List<Object>) sourceAsMap.get(PREVIOUS_COMPANY_NAMES_KEY);
-        DissolvedCompany dissolvedCompany = new DissolvedCompany();
-        if(previousCompanyNamesList != null) {
-            dissolvedCompany.setPreviousCompanyNames(mapPreviousCompanyNames(previousCompanyNamesList));
-        }
+    public TopHit mapAlphabeticalTopHit(Company company) {
+        TopHit topHit = new TopHit();
 
-        dissolvedCompany.setCompanyName((String) sourceAsMap.get(COMPANY_NAME_KEY));
-        dissolvedCompany.setCompanyNumber((String) sourceAsMap.get(COMPANY_NUMBER_KEY));
-        dissolvedCompany.setCompanyStatus((String) sourceAsMap.get(COMPANY_STATUS_KEY));
-        dissolvedCompany.setOrderedAlphaKeyWithId((String) sourceAsMap.get(ORDERED_ALPHAKEY_WITH_ID_KEY));
-        dissolvedCompany.setKind(SEARCH_RESULTS_KIND);
+        topHit.setCompanyName(company.getCompanyName());
+        topHit.setCompanyNumber(company.getCompanyNumber());
+        topHit.setCompanyStatus(company.getCompanyStatus());
+        topHit.setCompanyType(company.getCompanyType());
+        topHit.setLinks(company.getLinks());
+        topHit.setOrderedAlphaKeyWithId(company.getOrderedAlphaKeyWithId());
+        topHit.setKind(ALPHABETICAL_KIND);
 
-        if (sourceAsMap.containsKey(DATE_OF_CESSATION)) {
-            dissolvedCompany.setDateOfCessation(LocalDate.parse((String) sourceAsMap.get(DATE_OF_CESSATION), formatter));
-        }
-
-        if (sourceAsMap.containsKey(DATE_OF_CREATION)) {
-            dissolvedCompany.setDateOfCreation(LocalDate.parse((String) sourceAsMap.get(DATE_OF_CREATION), formatter));
-        }
-
-        Address roAddress = mapRegisteredOfficeAddressFields(addressToMap, dissolvedCompany.getDateOfCessation());
-        dissolvedCompany.setRegisteredOfficeAddress(roAddress);
-
-        return dissolvedCompany;
+        return topHit;
     }
 
-    public DissolvedTopHit mapDissolvedTopHit(DissolvedCompany dissolvedCompany) {
-        DissolvedTopHit topHit = new DissolvedTopHit();
+    public TopHit mapDissolvedTopHit(Company dissolvedCompany) {
+        TopHit topHit = new TopHit();
 
         topHit.setCompanyName(dissolvedCompany.getCompanyName());
         topHit.setCompanyNumber(dissolvedCompany.getCompanyNumber());
@@ -89,16 +82,68 @@ public class ElasticSearchResponseMapper {
         return topHit;
     }
 
-    public List<DissolvedCompany> mapPreviousNames(SearchHits hits) {
+    public Company mapAlphabeticalResponse(SearchHit hit) {
+        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+        Map<String, Object> items = (Map<String, Object>) sourceAsMap.get(ITEMS_KEY);
+        Map<String, Object> links = (Map<String, Object>) sourceAsMap.get(LINKS_KEY);
 
-        List<DissolvedCompany> results = new ArrayList<>();
+        Company company = new Company();
+        Links companyLinks = new Links();
+
+        company.setCompanyName((String) (items.get(CORPORATE_NAME_KEY)));
+        company.setCompanyNumber((String) (items.get(COMPANY_NUMBER_KEY)));
+        company.setCompanyStatus((String) (items.get(COMPANY_STATUS_KEY)));
+        company.setOrderedAlphaKeyWithId((String) sourceAsMap.get(ORDERED_ALPHA_KEY_WITH_ID));
+        company.setKind(ALPHABETICAL_KIND);
+
+        companyLinks.setCompanyProfile((String) (links.get(SELF_KEY)));
+        company.setLinks(companyLinks);
+
+        company.setCompanyType((String) sourceAsMap.get(COMPANY_TYPE_KEY));
+
+        return company;
+    }
+
+    public Company mapDissolvedResponse(SearchHit hit) {
+        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+        Map<String, Object> addressToMap = (Map<String, Object>) sourceAsMap.get(REGISTERED_OFFICE_ADDRESS_KEY);
+        List<Object> previousCompanyNamesList = (List<Object>) sourceAsMap.get(PREVIOUS_COMPANY_NAMES_KEY);
+        Company dissolvedCompany = new Company();
+        if(previousCompanyNamesList != null) {
+            dissolvedCompany.setPreviousCompanyNames(mapPreviousCompanyNames(previousCompanyNamesList));
+        }
+
+        dissolvedCompany.setCompanyName((String) sourceAsMap.get(COMPANY_NAME_KEY));
+        dissolvedCompany.setCompanyNumber((String) sourceAsMap.get(COMPANY_NUMBER_KEY));
+        String companyStatus = (String) sourceAsMap.get(COMPANY_STATUS_KEY);
+        dissolvedCompany.setCompanyStatus(companyStatus.toLowerCase());
+        dissolvedCompany.setOrderedAlphaKeyWithId((String) sourceAsMap.get(ORDERED_ALPHAKEY_WITH_ID_KEY));
+        dissolvedCompany.setKind(SEARCH_RESULTS_KIND);
+
+        if (sourceAsMap.containsKey(DATE_OF_CESSATION)) {
+            dissolvedCompany.setDateOfCessation(LocalDate.parse((String) sourceAsMap.get(DATE_OF_CESSATION), formatter));
+        }
+
+        if (sourceAsMap.containsKey(DATE_OF_CREATION)) {
+            dissolvedCompany.setDateOfCreation(LocalDate.parse((String) sourceAsMap.get(DATE_OF_CREATION), formatter));
+        }
+
+        Address roAddress = mapRegisteredOfficeAddressFields(addressToMap, dissolvedCompany.getDateOfCessation());
+        dissolvedCompany.setRegisteredOfficeAddress(roAddress);
+
+        return dissolvedCompany;
+    }
+
+    public List<Company> mapPreviousNames(SearchHits hits) {
+
+        List<Company> results = new ArrayList<>();
 
         hits.forEach(h -> mapPreviousName(h, results));
 
         return results;
     }
 
-    private void mapPreviousName(SearchHit hit, List<DissolvedCompany> results) {
+    private void mapPreviousName(SearchHit hit, List<Company> results) {
         // company details at dissolution in the main hit
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
 
@@ -112,10 +157,11 @@ public class ElasticSearchResponseMapper {
         SearchHits previousNames = innerHits.get(PREVIOUS_COMPANY_NAMES_KEY);
         
         for(SearchHit nameHit : previousNames.getHits()) {
-            DissolvedCompany dissolvedCompany = new DissolvedCompany();
+            Company dissolvedCompany = new Company();
             dissolvedCompany.setCompanyName((String) sourceAsMap.get(COMPANY_NAME_KEY));
             dissolvedCompany.setCompanyNumber((String) sourceAsMap.get(COMPANY_NUMBER_KEY));
-            dissolvedCompany.setCompanyStatus((String) sourceAsMap.get(COMPANY_STATUS_KEY));
+            String companyStatus = (String) sourceAsMap.get(COMPANY_STATUS_KEY);
+            dissolvedCompany.setCompanyStatus(companyStatus.toLowerCase());
             dissolvedCompany.setDateOfCessation((LocalDate.parse((String) sourceAsMap.get(DATE_OF_CESSATION), formatter)));
             dissolvedCompany.setDateOfCreation((LocalDate.parse((String) sourceAsMap.get(DATE_OF_CREATION), formatter)));
             dissolvedCompany.setKind(SEARCH_RESULTS_KIND);

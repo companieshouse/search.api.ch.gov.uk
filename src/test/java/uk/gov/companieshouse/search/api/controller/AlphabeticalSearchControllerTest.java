@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.controller.search;
+package uk.gov.companieshouse.search.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -35,6 +35,7 @@ import org.springframework.http.ResponseEntity;
 
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.search.api.controller.AlphabeticalSearchController;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;

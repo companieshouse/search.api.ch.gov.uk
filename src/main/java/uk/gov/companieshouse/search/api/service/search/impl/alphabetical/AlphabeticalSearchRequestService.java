@@ -13,39 +13,41 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.createLoggin
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
+import uk.gov.companieshouse.search.api.exception.SearchException;
+import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
+import uk.gov.companieshouse.search.api.model.SearchResults;
+import uk.gov.companieshouse.search.api.model.TopHit;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
+import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
+import uk.gov.companieshouse.search.api.service.AlphaKeyService;
+import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
-import uk.gov.companieshouse.search.api.exception.SearchException;
-import uk.gov.companieshouse.search.api.model.SearchResults;
-import uk.gov.companieshouse.search.api.model.TopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
-import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
-import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
-import uk.gov.companieshouse.search.api.service.AlphaKeyService;
-import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
-
 @Service
 public class AlphabeticalSearchRequestService implements SearchRequestService {
 
     @Autowired
     private AlphaKeyService alphaKeyService;
+
     @Autowired
     private AlphabeticalSearchRequests alphabeticalSearchRequests;
 
+    @Autowired
+    private ElasticSearchResponseMapper elasticSearchResponseMapper;
+
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final int FALLBACK_QUERY_LIMIT = 25;
-    private static final String TOP_LEVEL_ALPHABETICAL_KIND = "search#alphabeticalSearch";
-    private static final String ALPHABETICAL_KIND = "searchresults#alphabeticalSearch";
+    private static final String TOP_LEVEL_ALPHABETICAL_KIND = "search#alphabetical-search";
 
     private Integer sizeAbove;
     private Integer sizeBelow;
@@ -97,12 +99,8 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
                 orderedAlphakeyWithId = getOrderedAlphaKeyWithId(hits.getHits()[0]);
                 topHit = hits.getHits()[0];
 
-                Company company = getCompany(topHit);
-                topHitCompany.setCompanyName(company.getCompanyName());
-                topHitCompany.setCompanyNumber(company.getCompanyNumber());
-                topHitCompany.setCompanyStatus(company.getCompanyStatus());
-                topHitCompany.setOrderedAlphaKeyWithId(company.getOrderedAlphaKeyWithId());
-                topHitCompany.setKind(ALPHABETICAL_KIND);
+                Company company = elasticSearchResponseMapper.mapAlphabeticalResponse(topHit);
+                topHitCompany = elasticSearchResponseMapper.mapAlphabeticalTopHit(company);
 
                 if ((searchBefore == null && searchAfter == null) || (searchBefore != null && searchAfter != null)) {
                     results = prepareSearchResultsWithTopHit(size, requestId, logMap, topHitCompany, results,
@@ -185,7 +183,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         SearchHits hits;
         hits = alphabeticalSearchRequests.getDescendingResultsResponse(requestId, orderedAlphakeyWithId,
                 topHitCompanyName, size);
-        hits.forEach(h -> results.add(getCompany(h)));
+        hits.forEach(h -> results.add(elasticSearchResponseMapper.mapAlphabeticalResponse(h)));
         return results;
     }
 
@@ -205,7 +203,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         SearchHits hits;
         hits = alphabeticalSearchRequests.getAboveResultsResponse(requestId, orderedAlphakeyWithId, topHitCompanyName,
                 size);
-        hits.forEach(h -> results.add(getCompany(h)));
+        hits.forEach(h -> results.add(elasticSearchResponseMapper.mapAlphabeticalResponse(h)));
 
         Collections.reverse(results);
         return results;
@@ -214,28 +212,6 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     private String getOrderedAlphaKeyWithId(SearchHit hit) {
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
         return (String) sourceAsMap.get(ORDERED_ALPHA_KEY_WITH_ID);
-    }
-
-    private Company getCompany(SearchHit hit) {
-        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-        Map<String, Object> items = (Map<String, Object>) sourceAsMap.get("items");
-        Map<String, Object> links = (Map<String, Object>) sourceAsMap.get("links");
-
-        Company company = new Company();
-        Links companyLinks = new Links();
-
-        company.setCompanyName((String) (items.get("corporate_name")));
-        company.setCompanyNumber((String) (items.get("company_number")));
-        company.setCompanyStatus((String) (items.get("company_status")));
-        company.setOrderedAlphaKeyWithId((String) sourceAsMap.get(ORDERED_ALPHA_KEY_WITH_ID));
-        company.setKind(ALPHABETICAL_KIND);
-
-        companyLinks.setSelf((String) (links.get("self")));
-        company.setLinks(companyLinks);
-
-        company.setCompanyType((String) sourceAsMap.get("company_type"));
-
-        return company;
     }
 
     private void checkSize(Integer size) {

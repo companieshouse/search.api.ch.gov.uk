@@ -118,7 +118,7 @@ class AlphabeticalSearchIndexServiceTest {
         company.setCompanyNumber("companyNumber");
         company.setRecordType("recordType");
 
-        links.setSelf("self");
+        links.setCompanyProfile("self");
 
         //company.setId("id");
         company.setCompanyType("companyType");

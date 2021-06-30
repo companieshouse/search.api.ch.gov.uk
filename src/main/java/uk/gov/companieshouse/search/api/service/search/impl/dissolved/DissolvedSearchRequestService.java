@@ -13,28 +13,27 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import uk.gov.companieshouse.GenerateEtagUtil;
 import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
-import uk.gov.companieshouse.search.api.model.DissolvedTopHit;
 import uk.gov.companieshouse.search.api.model.SearchResults;
-import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
+import uk.gov.companieshouse.search.api.model.TopHit;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class DissolvedSearchRequestService {
@@ -56,8 +55,8 @@ public class DissolvedSearchRequestService {
     private Integer sizeAbove;
     private Integer sizeBelow;
 
-    public SearchResults<DissolvedCompany> getSearchResults(String companyName, String searchBefore, String searchAfter,
-            Integer size, String requestId) throws SearchException {
+    public SearchResults<Company> getSearchResults(String companyName, String searchBefore, String searchAfter,
+                                                   Integer size, String requestId) throws SearchException {
         Map<String, Object> logMap = getLogMap(requestId, companyName);
         logIfNotNull(logMap, SEARCH_BEFORE, searchBefore);
         logIfNotNull(logMap, SEARCH_AFTER, searchAfter);
@@ -66,8 +65,8 @@ public class DissolvedSearchRequestService {
         logMap.remove(MESSAGE);
 
         String orderedAlphaKey = "";
-        List<DissolvedCompany> results = new ArrayList<>();
-        DissolvedTopHit topHit = new DissolvedTopHit();
+        List<Company> results = new ArrayList<>();
+        TopHit topHit = new TopHit();
         String etag = GenerateEtagUtil.generateEtag();
         String kind = TOP_KIND;
 
@@ -94,7 +93,7 @@ public class DissolvedSearchRequestService {
                 orderedAlphaKeyWithId = SearchRequestUtils.getOrderedAlphaKeyWithId(hits.getHits()[0]);
                 bestMatch = hits.getHits()[0];
 
-                DissolvedCompany topHitCompany = elasticSearchResponseMapper.mapDissolvedResponse(bestMatch);
+                Company topHitCompany = elasticSearchResponseMapper.mapDissolvedResponse(bestMatch);
 
                 topHit = elasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany);
 
@@ -117,9 +116,9 @@ public class DissolvedSearchRequestService {
         return new SearchResults<>(etag, topHit, results, kind);
     }
 
-    private List<DissolvedCompany> prepareSearchResultsWithTopHit(Integer size, String requestId,
-            Map<String, Object> logMap, List<DissolvedCompany> results, DissolvedTopHit topHit,
-            String orderedAlphaKeyWithId, DissolvedCompany topHitCompany) throws IOException {
+    private List<Company> prepareSearchResultsWithTopHit(Integer size, String requestId,
+            Map<String, Object> logMap, List<Company> results, TopHit topHit,
+            String orderedAlphaKeyWithId, Company topHitCompany) throws IOException {
         checkSize(size);
         logMap.put(ORDERED_ALPHAKEY_WITH_ID, orderedAlphaKeyWithId);
         getLogger().info("Default dissolved search before and after tophit", logMap);
@@ -134,7 +133,7 @@ public class DissolvedSearchRequestService {
         return results;
     }
 
-    public SearchResults<DissolvedCompany> getBestMatchSearchResults(String companyName,
+    public SearchResults<Company> getBestMatchSearchResults(String companyName,
                                                             String requestId,
                                                             String searchType,
                                                             Integer startIndex,
@@ -145,8 +144,8 @@ public class DissolvedSearchRequestService {
         getLogger().info("getting dissolved " + searchType + " search results", logMap);
 
         String etag = GenerateEtagUtil.generateEtag();
-        DissolvedTopHit topHit = new DissolvedTopHit();
-        List<DissolvedCompany> results = new ArrayList<>();
+        TopHit topHit = new TopHit();
+        List<Company> results = new ArrayList<>();
         String kind = "search#dissolved";
         long numberOfHits;
 
@@ -157,7 +156,7 @@ public class DissolvedSearchRequestService {
             if (hits.getTotalHits().value > 0) {
                 getLogger().info(RESULT_FOUND, logMap);
 
-                DissolvedCompany topHitCompany = elasticSearchResponseMapper.mapDissolvedResponse(hits.getHits()[0]);
+                Company topHitCompany = elasticSearchResponseMapper.mapDissolvedResponse(hits.getHits()[0]);
 
                 topHit = elasticSearchResponseMapper.mapDissolvedTopHit(topHitCompany);
 
@@ -168,14 +167,14 @@ public class DissolvedSearchRequestService {
             throw new SearchException("error occurred reading data for best match from " + SEARCH_HITS, e);
         }
 
-        SearchResults<DissolvedCompany> dissolvedSearchResults =
+        SearchResults<Company> dissolvedSearchResults =
                 new SearchResults<>(etag, topHit, results, kind);
         dissolvedSearchResults.setHits(numberOfHits);
 
         return dissolvedSearchResults;
     }
 
-    public SearchResults<DissolvedCompany> getPreviousNamesResults(String companyName,
+    public SearchResults<Company> getPreviousNamesResults(String companyName,
                                                                                  String requestId,
                                                                                  String searchType,
                                                                                  Integer startIndex,
@@ -186,9 +185,9 @@ public class DissolvedSearchRequestService {
         getLogger().info("getting dissolved " + searchType + " search results", logMap);
 
         String etag = GenerateEtagUtil.generateEtag();
-        DissolvedTopHit topHit = new DissolvedTopHit();
-        List<DissolvedCompany> results = new ArrayList<>();
-        List<DissolvedCompany> resizedResults = new ArrayList<>();
+        TopHit topHit = new TopHit();
+        List<Company> results = new ArrayList<>();
+        List<Company> resizedResults = new ArrayList<>();
         String kind = "search#previous-name-dissolved";
         long numberOfHits;
 
@@ -210,7 +209,7 @@ public class DissolvedSearchRequestService {
             throw new SearchException("error occurred reading data for previous names from " + SEARCH_HITS, e);
         }
 
-        SearchResults<DissolvedCompany> dissolvedSearchResults =
+        SearchResults<Company> dissolvedSearchResults =
                 new SearchResults<>(etag, topHit, resizedResults, kind);
         dissolvedSearchResults.setHits(numberOfHits);
 
@@ -246,9 +245,9 @@ public class DissolvedSearchRequestService {
         return hits;
     }
 
-    private List<DissolvedCompany> populateBelowResults(String requestId, String topHitCompanyName,
+    private List<Company> populateBelowResults(String requestId, String topHitCompanyName,
             String orderedAlphaKeyWithId, Integer size) throws IOException {
-        List<DissolvedCompany> results = new ArrayList<>();
+        List<Company> results = new ArrayList<>();
         SearchHits hits;
         hits = dissolvedSearchRequests.getDescendingResultsResponse(requestId, orderedAlphaKeyWithId, topHitCompanyName,
                 size);
@@ -256,9 +255,9 @@ public class DissolvedSearchRequestService {
         return results;
     }
 
-    private List<DissolvedCompany> populateAboveResults(String requestId, String topHitCompanyName,
+    private List<Company> populateAboveResults(String requestId, String topHitCompanyName,
             String orderedAlphaKeyWithId, Integer size) throws IOException {
-        List<DissolvedCompany> results = new ArrayList<>();
+        List<Company> results = new ArrayList<>();
         SearchHits hits;
         hits = dissolvedSearchRequests.getAboveResultsResponse(requestId, orderedAlphaKeyWithId, topHitCompanyName,
                 size);

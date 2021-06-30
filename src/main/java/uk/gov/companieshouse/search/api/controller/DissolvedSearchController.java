@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.controller.search;
+package uk.gov.companieshouse.search.api.controller;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
@@ -88,13 +88,13 @@ public class DissolvedSearchController {
             } catch (SizeException e) {
                 getLogger().info(e.getMessage(), logMap);
                 return apiToResponseMapper
-                        .mapDissolved(new ResponseObject(ResponseStatus.SIZE_PARAMETER_ERROR, null));
+                        .map(new ResponseObject(ResponseStatus.SIZE_PARAMETER_ERROR, null));
             }
 
             if (searchType.equals(ALPHABETICAL_SEARCH_TYPE)) {
 
                 return getAlphabeticalSearch(companyName, searchBefore, searchAfter, size,
-                        requestId, logMap);
+                        requestId);
             }
 
             if (searchType.equals(BEST_MATCH_SEARCH_TYPE) || searchType.equals(PREVIOUS_NAMES_SEARCH_TYPE)) {
@@ -106,7 +106,7 @@ public class DissolvedSearchController {
         LoggingUtils.getLogger().error("The search_type parameter is incorrect, please try either "
                 + "'alphabetical', 'best-match' or 'previous-name-dissolved': ", logMap);
         return apiToResponseMapper
-                .mapDissolved(new ResponseObject(ResponseStatus.REQUEST_PARAMETER_ERROR, null));
+                .map(new ResponseObject(ResponseStatus.REQUEST_PARAMETER_ERROR, null));
     }
 
     private ResponseEntity<Object> getBestMatchOrPreviousNamesSearch(
@@ -123,7 +123,7 @@ public class DissolvedSearchController {
         ResponseObject responseObject = searchIndexService.searchBestMatch(companyName, requestId,
                 searchType, startIndex, size);
 
-        return apiToResponseMapper.mapDissolved(responseObject);
+        return apiToResponseMapper.map(responseObject);
     }
 
     private ResponseEntity<Object> getAlphabeticalSearch(
@@ -131,13 +131,12 @@ public class DissolvedSearchController {
             @RequestParam(name = SEARCH_BEFORE_PARAM, required = false) String searchBefore,
             @RequestParam(name = SEARCH_AFTER_PARAM, required = false) String searchAfter,
             Integer size,
-            @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId,
-            Map<String, Object> logMap) {
+            @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         ResponseObject responseObject = searchIndexService.searchAlphabetical(companyName,
                 searchBefore, searchAfter, size, requestId);
 
-        return apiToResponseMapper.mapDissolved(responseObject);
+        return apiToResponseMapper.map(responseObject);
     }
 
     private boolean checkSearchTypeParam(String searchType) {

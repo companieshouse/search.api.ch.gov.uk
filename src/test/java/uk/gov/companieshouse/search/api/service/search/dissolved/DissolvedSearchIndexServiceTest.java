@@ -18,7 +18,7 @@ import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
-import uk.gov.companieshouse.search.api.model.esdatamodel.DissolvedCompany;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
@@ -202,15 +202,15 @@ class DissolvedSearchIndexServiceTest {
             if(!isItemsEmpty) {
                 searchResults.setItems(createItems());
             } else {
-                searchResults.setItems(new ArrayList<DissolvedCompany>());
+                searchResults.setItems(new ArrayList<Company>());
             }
         }
         return searchResults;
     }
 
-    private List<DissolvedCompany> createItems() {
-        List<DissolvedCompany> items = new ArrayList<>();
-        DissolvedCompany dissolvedCompany = new DissolvedCompany();
+    private List<Company> createItems() {
+        List<Company> items = new ArrayList<>();
+        Company dissolvedCompany = new Company();
         Address address = new Address();
         address.setLocality(LOCALITY);
         address.setPostalCode(POSTAL_CODE);

@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.controller.search;
+package uk.gov.companieshouse.search.api.controller;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NUMBER;
@@ -69,7 +69,7 @@ public class AlphabeticalSearchController {
 
     @GetMapping("/companies")
     @ResponseBody
-    public ResponseEntity<?> searchByCorporateName(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
+    public ResponseEntity<Object> searchByCorporateName(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
                                                    @RequestParam(name = SEARCH_BEFORE_PARAM, required = false) String searchBefore,
                                                    @RequestParam(name = SEARCH_AFTER_PARAM, required = false) String searchAfter,
                                                    @RequestParam(name = SIZE_PARAM, required = false) Integer size,

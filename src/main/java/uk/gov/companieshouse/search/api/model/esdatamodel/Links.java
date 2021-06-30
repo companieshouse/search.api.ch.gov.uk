@@ -10,15 +10,15 @@ import com.google.gson.Gson;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Links {
 
-    @JsonProperty("self")
-    private String self;
+    @JsonProperty("company_profile")
+    private String companyProfile;
 
-    public String getSelf() {
-        return self;
+    public String getCompanyProfile() {
+        return companyProfile;
     }
 
-    public void setSelf(String self) {
-        this.self = self;
+    public void setCompanyProfile(String companyProfile) {
+        this.companyProfile = companyProfile;
     }
 
     @Override

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import uk.gov.companieshouse.api.util.security.AuthorisationUtil;
-import uk.gov.companieshouse.search.util.EricHeaderHelper;
+import uk.gov.companieshouse.search.api.util.EricHeaderHelper;
 
 @Component
 public class UserAuthorisationInterceptor extends HandlerInterceptorAdapter {
