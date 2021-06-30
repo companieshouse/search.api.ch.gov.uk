@@ -1,5 +1,18 @@
 package uk.gov.companieshouse.search.api.service.search.impl.dissolved;
 
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_DISSOLVED;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY_WITH_ID;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_TYPE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
+
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,19 +34,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_DISSOLVED;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY_WITH_ID;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_TYPE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
 @Service
 public class DissolvedSearchRequestService {

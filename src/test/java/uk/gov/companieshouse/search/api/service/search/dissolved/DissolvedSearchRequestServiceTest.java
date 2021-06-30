@@ -594,18 +594,18 @@ class DissolvedSearchRequestServiceTest {
     }
 
     private Company createCompany() {
-        Company Company = new Company();
-        Company.setCompanyName(COMPANY_NAME);
-        Company.setCompanyNumber(COMPANY_NUMBER);
-        Company.setCompanyStatus(COMPANY_STATUS);
-        Company.setKind(KIND);
-        Company.setDateOfCessation(LocalDate.parse("19990501", formatter));
-        Company.setDateOfCreation(LocalDate.parse("19890501", formatter));
+        Company company = new Company();
+        company.setCompanyName(COMPANY_NAME);
+        company.setCompanyNumber(COMPANY_NUMBER);
+        company.setCompanyStatus(COMPANY_STATUS);
+        company.setKind(KIND);
+        company.setDateOfCessation(LocalDate.parse("19990501", formatter));
+        company.setDateOfCreation(LocalDate.parse("19890501", formatter));
 
         Address address = new Address();
         address.setPostalCode(POSTCODE);
         address.setLocality(LOCALITY);
-        Company.setRegisteredOfficeAddress(address);
+        company.setRegisteredOfficeAddress(address);
 
         List<PreviousCompanyName> previousCompanyNames = new ArrayList<>();
         PreviousCompanyName previousCompanyName = new PreviousCompanyName();
@@ -614,9 +614,9 @@ class DissolvedSearchRequestServiceTest {
         previousCompanyName.setDateOfNameEffectiveness(LocalDate.parse("19890101", formatter));
 
         previousCompanyNames.add(previousCompanyName);
-        Company.setPreviousCompanyNames(previousCompanyNames);
+        company.setPreviousCompanyNames(previousCompanyNames);
 
-        return Company;
+        return company;
     }
 
     private TopHit createTopHit() {
