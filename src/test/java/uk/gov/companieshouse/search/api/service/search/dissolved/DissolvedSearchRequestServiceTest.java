@@ -59,7 +59,7 @@ class DissolvedSearchRequestServiceTest {
     private static final String COMPANY_NAME = "TEST COMPANY";
     private static final String COMPANY_NUMBER = "00000000";
     private static final String COMPANY_STATUS = "dissolved";
-    private static final String KIND = "searchresults#Company";
+    private static final String KIND = "searchresults#dissolved-company";
     private static final String LOCALITY = "locality";
     private static final String POSTCODE = "AB00 0 AB";
     private static final String PREVIOUS_COMPANY_NAME = "TEST COMPANY 2";
