@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
 
 import java.time.LocalDate;
@@ -39,6 +40,9 @@ class ElasticSearchResponseMapperTest {
     private static final String COMPANY_NAME = "TEST COMPANY";
     private static final String COMPANY_NUMBER = "00000000";
     private static final String COMPANY_STATUS = "dissolved";
+    private static final String COMPANY_STATUS_ACTIVE = "active";
+    private static final String COMPANY_TYPE = "ltd";
+    private static final String COMPANY_PROFILE_LINK = "/company/00000000";
     private static final String KIND = "searchresults#dissolved-company";
     private static final String DATE_OF_CESSATION = "2010-05-01";
     private static final String DATE_OF_CESSATION_POST_20_YEARS = "1991-05-01";
@@ -50,8 +54,26 @@ class ElasticSearchResponseMapperTest {
     private static final String ADDRESS_LINE_2 = "TEST TOWN";
     private static final String EFFECTIVE_FROM = "1989-01-01";
     private static final String CEASED_ON = "1992-05-10";
+    private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
+
+    @Test
+    @DisplayName("Map alphabetical response successful")
+    void mapAlphabeticalResponseTest() {
+
+        SearchHits searchHits = createAlphabeticalSearchHits();
+
+        Company company =
+                elasticSearchResponseMapper.mapAlphabeticalResponse(searchHits.getAt(0));
+
+        assertEquals(COMPANY_NAME, company.getCompanyName());
+        assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
+        assertEquals(COMPANY_STATUS_ACTIVE, company.getCompanyStatus());
+        assertEquals(COMPANY_TYPE, company.getCompanyType());
+        assertEquals(ORDERED_ALPHA_KEY_WITH_ID, company.getOrderedAlphaKeyWithId());
+        assertEquals(COMPANY_PROFILE_LINK, company.getLinks().getCompanyProfile());
+    }
 
     @Test
     @DisplayName("Map dissolved response successful")
@@ -105,7 +127,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response no dates present successful")
     void mapDissolvedResponseNoDatesPresentTest() {
 
-        SearchHits searchHits = createSearchHits(true, true,  true, true, true, false, false);
+        SearchHits searchHits = createSearchHits(true, true, true, true, true, false, false);
 
         Company company =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -184,13 +206,27 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no address")
     void mapDissolvedResponseTestNoAddress() {
 
-        SearchHits searchHits = createSearchHits(false, false,false, false, false, true, true);
+        SearchHits searchHits = createSearchHits(false, false, false, false, false, true, true);
 
         Company company =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
 
         Address address = company.getRegisteredOfficeAddress();
         assertNull(address);
+    }
+
+    @Test
+    @DisplayName("Map alphabetical top hit successful")
+    void mapAlphabeticalTopHitSuccessful() {
+
+        TopHit topHit = elasticSearchResponseMapper.mapAlphabeticalTopHit(createAlphabeticalCompany());
+
+        assertEquals(COMPANY_NAME, topHit.getCompanyName());
+        assertEquals(COMPANY_NUMBER, topHit.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, topHit.getCompanyStatus());
+        assertEquals(COMPANY_TYPE, topHit.getCompanyType());
+        assertEquals(ORDERED_ALPHA_KEY_WITH_ID, topHit.getOrderedAlphaKeyWithId());
+        assertEquals(COMPANY_PROFILE_LINK, topHit.getLinks().getCompanyProfile());
     }
 
     @Test
@@ -362,33 +398,33 @@ class ElasticSearchResponseMapperTest {
                         "\"ordered_alpha_key\": \"ordered_alpha_key\"," +
                         "\"ordered_alpha_key_with_id\": \"ordered_alpha_key_with_id\"," +
                         "\"company_status\" : \"dissolved\",");
-        if(includeAddress) {
+        if (includeAddress) {
             searchHits.append(populateAddress(address, locality, postCode));
         }
-        if(includePreviousCompanyNames) {
+        if (includePreviousCompanyNames) {
             searchHits.append(populatePreviousCompanyNames(includeDates));
         }
-        if(includeDates) {
+        if (includeDates) {
             if (pre20Years) {
                 searchHits.append(
-                    "\"date_of_cessation\" : \"20100501\"," +
-                    "\"date_of_creation\" : \"19890501\"" +
-                    "}");
+                        "\"date_of_cessation\" : \"20100501\"," +
+                                "\"date_of_creation\" : \"19890501\"" +
+                                "}");
             } else {
                 searchHits.append(
-                    "\"date_of_cessation\" : \"19910501\"," +
-                    "\"date_of_creation\" : \"19890501\"" +
-                    "}");
+                        "\"date_of_cessation\" : \"19910501\"," +
+                                "\"date_of_creation\" : \"19890501\"" +
+                                "}");
             }
         } else {
             searchHits.append("}");
         }
         BytesReference source = new BytesArray(searchHits.toString());
-        SearchHit hit = new SearchHit( 1 );
-        hit.sourceRef( source );
+        SearchHit hit = new SearchHit(1);
+        hit.sourceRef(source);
 
         TotalHits totalHits = new TotalHits(1, GREATER_THAN_OR_EQUAL_TO);
-        return new SearchHits( new SearchHit[] { hit }, totalHits, 10 );
+        return new SearchHits(new SearchHit[]{hit}, totalHits, 10);
     }
 
     private SearchHits createSearchHitsWithInnerHits(boolean includeAddress,
@@ -416,19 +452,19 @@ class ElasticSearchResponseMapperTest {
 
     private String populateAddress(boolean address, boolean locality, boolean postCode) {
         StringBuilder addressJson = new StringBuilder("\"registered_office_address\" : {");
-        if(address) {
+        if (address) {
             addressJson.append("\"address_line_1\" : \"addressLine1\",");
             addressJson.append("\"address_line_2\" : \"addressLine2\"");
-            if(locality || postCode) {
+            if (locality || postCode) {
                 addressJson.append(",");
             }
         }
-        if(locality) {
+        if (locality) {
             addressJson.append("\"locality\" : \"locality\"");
-            if(postCode)
+            if (postCode)
                 addressJson.append(",");
         }
-        if(postCode) {
+        if (postCode) {
             addressJson.append("\"post_code\" : \"AB00 0 AB\"");
         }
         addressJson.append("},");
@@ -455,7 +491,7 @@ class ElasticSearchResponseMapperTest {
     }
 
     private String createInnerHits() {
-        String innerHits ="{" +
+        String innerHits = "{" +
                 "\"ordered_alpha_key\" : \"PREVIOUSNAME\"," +
                 "\"effective_from\" : \"19980309\"," +
                 "\"ceased_on\" : \"19990428\"," +
@@ -463,6 +499,17 @@ class ElasticSearchResponseMapperTest {
                 "}";
 
         return innerHits;
+    }
+
+    private SearchHits createAlphabeticalSearchHits() {
+        BytesReference source = new BytesArray("{" + "\"ID\": \"id\"," + "\"company_type\": \"ltd\","
+                + "\"ordered_alpha_key_with_id\": \"ordered_alpha_key_with_id\"," + "\"items\" : {"
+                + "\"company_number\" : \"00000000\"," + "\"company_status\" : \"active\","
+                + "\"corporate_name\" : \"TEST COMPANY\"" + "}," + "\"links\" : {" + "\"self\" : \"/company/00000000\"" + "}" + "}");
+        SearchHit hit = new SearchHit(1);
+        hit.sourceRef(source);
+        TotalHits totalHits = new TotalHits(1, GREATER_THAN_OR_EQUAL_TO);
+        return new SearchHits(new SearchHit[] { hit }, totalHits, 10);
     }
 
     private Company createCompany(boolean includePreviousName, boolean includeAddress, boolean includeMatchedPreviousName) {
@@ -502,6 +549,22 @@ class ElasticSearchResponseMapperTest {
 
             company.setMatchedPreviousCompanyName(previousCompanyName);
         }
+
+        return company;
+    }
+
+    private Company createAlphabeticalCompany() {
+        Company company = new Company();
+        company.setCompanyName(COMPANY_NAME);
+        company.setCompanyNumber(COMPANY_NUMBER);
+        company.setCompanyStatus(COMPANY_STATUS);
+        company.setCompanyType(COMPANY_TYPE);
+        company.setOrderedAlphaKeyWithId(ORDERED_ALPHA_KEY_WITH_ID);
+        company.setKind(KIND);
+
+        Links links = new Links();
+        links.setCompanyProfile(COMPANY_PROFILE_LINK);
+        company.setLinks(links);
 
         return company;
     }
