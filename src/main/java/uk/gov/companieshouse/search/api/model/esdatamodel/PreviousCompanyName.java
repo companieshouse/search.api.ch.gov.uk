@@ -17,6 +17,9 @@ public class PreviousCompanyName {
 
     @JsonProperty("name")
     private String name;
+    
+    @JsonProperty("company_number")
+    private String companyNumber;
 
     public LocalDate getDateOfNameCessation() {
         return dateOfNameCessation;
@@ -40,5 +43,13 @@ public class PreviousCompanyName {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCompanyNumber() {
+        return companyNumber;
+    }
+
+    public void setCompanyNumber(String companyNumber) {
+        this.companyNumber = companyNumber;
     }
 }

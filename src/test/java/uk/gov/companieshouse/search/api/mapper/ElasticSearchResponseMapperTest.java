@@ -118,9 +118,7 @@ class ElasticSearchResponseMapperTest {
         assertNull(company.getRegisteredOfficeAddress());
 
         List<PreviousCompanyName> previousCompanyNames = company.getPreviousCompanyNames();
-        assertEquals(PREVIOUS_COMPANY_NAME, previousCompanyNames.get(0).getName());
-        assertEquals(EFFECTIVE_FROM, previousCompanyNames.get(0).getDateOfNameEffectiveness().toString());
-        assertEquals(CEASED_ON, previousCompanyNames.get(0).getDateOfNameCessation().toString());
+        assertPreviousCompanyName(previousCompanyNames);
     }
 
     @Test
@@ -140,9 +138,7 @@ class ElasticSearchResponseMapperTest {
         assertNull(company.getDateOfCreation());
 
         List<PreviousCompanyName> previousCompanyNames = company.getPreviousCompanyNames();
-        assertEquals(PREVIOUS_COMPANY_NAME, previousCompanyNames.get(0).getName());
-        assertEquals(EFFECTIVE_FROM, previousCompanyNames.get(0).getDateOfNameEffectiveness().toString());
-        assertEquals(CEASED_ON, previousCompanyNames.get(0).getDateOfNameCessation().toString());
+        assertPreviousCompanyName(previousCompanyNames);
     }
 
     @Test
@@ -245,14 +241,13 @@ class ElasticSearchResponseMapperTest {
         assertEquals(POSTCODE, topHit.getRegisteredOfficeAddress().getPostalCode());
 
         List<PreviousCompanyName> previousCompanyNames = topHit.getPreviousCompanyNames();
-        assertEquals(PREVIOUS_COMPANY_NAME, previousCompanyNames.get(0).getName());
-        assertEquals(EFFECTIVE_FROM, previousCompanyNames.get(0).getDateOfNameEffectiveness().toString());
-        assertEquals(CEASED_ON, previousCompanyNames.get(0).getDateOfNameCessation().toString());
+        assertPreviousCompanyName(previousCompanyNames);
 
         PreviousCompanyName matchedPreviousCompanyNames = topHit.getMatchedPreviousCompanyName();
         assertEquals(PREVIOUS_COMPANY_NAME, matchedPreviousCompanyNames.getName());
         assertEquals(EFFECTIVE_FROM, matchedPreviousCompanyNames.getDateOfNameEffectiveness().toString());
         assertEquals(CEASED_ON, matchedPreviousCompanyNames.getDateOfNameCessation().toString());
+        assertEquals(COMPANY_NUMBER, matchedPreviousCompanyNames.getCompanyNumber());
     }
 
     @Test
@@ -289,11 +284,16 @@ class ElasticSearchResponseMapperTest {
         assertEquals(POSTCODE, previousNamesTopHit.getRegisteredOfficeAddress().getPostalCode());
 
         List<PreviousCompanyName> previousCompanyNames = previousNamesTopHit.getPreviousCompanyNames();
+        assertPreviousCompanyName(previousCompanyNames);
+
+        assertNull(previousNamesTopHit.getMatchedPreviousCompanyName());
+    }
+
+    private void assertPreviousCompanyName(List<PreviousCompanyName> previousCompanyNames) {
         assertEquals(PREVIOUS_COMPANY_NAME, previousCompanyNames.get(0).getName());
         assertEquals(EFFECTIVE_FROM, previousCompanyNames.get(0).getDateOfNameEffectiveness().toString());
         assertEquals(CEASED_ON, previousCompanyNames.get(0).getDateOfNameCessation().toString());
-
-        assertNull(previousNamesTopHit.getMatchedPreviousCompanyName());
+        assertEquals(COMPANY_NUMBER, previousCompanyNames.get(0).getCompanyNumber());
     }
 
     @Test
@@ -479,7 +479,8 @@ class ElasticSearchResponseMapperTest {
                 "\"name\" : \"TEST COMPANY 2\"," +
                 "\"ordered_alpha_key\": \"ordered_alpha_key\"," +
                 "\"effective_from\" : \"19890101\"," +
-                "\"ceased_on\" : \"19920510\"" +
+                "\"ceased_on\" : \"19920510\"," +
+                "\"company_number\" : \"00000000\"" +
                 "}" +
                 "]");
 
@@ -495,7 +496,8 @@ class ElasticSearchResponseMapperTest {
                 "\"ordered_alpha_key\" : \"PREVIOUSNAME\"," +
                 "\"effective_from\" : \"19980309\"," +
                 "\"ceased_on\" : \"19990428\"," +
-                "\"name\" : \"PREVIOUS NAME LIMITED\"" +
+                "\"name\" : \"PREVIOUS NAME LIMITED\"," +
+                "\"company_number\" : \"00000000\"" +
                 "}";
 
         return innerHits;
@@ -536,6 +538,7 @@ class ElasticSearchResponseMapperTest {
             previousCompanyName.setName(PREVIOUS_COMPANY_NAME);
             previousCompanyName.setDateOfNameCessation(LocalDate.parse("19920510", formatter));
             previousCompanyName.setDateOfNameEffectiveness(LocalDate.parse("19890101", formatter));
+            previousCompanyName.setCompanyNumber(COMPANY_NUMBER);
 
             previousCompanyNames.add(previousCompanyName);
             company.setPreviousCompanyNames(previousCompanyNames);
@@ -546,6 +549,7 @@ class ElasticSearchResponseMapperTest {
             previousCompanyName.setName(PREVIOUS_COMPANY_NAME);
             previousCompanyName.setDateOfNameCessation(LocalDate.parse("19920510", formatter));
             previousCompanyName.setDateOfNameEffectiveness(LocalDate.parse("19890101", formatter));
+            previousCompanyName.setCompanyNumber(COMPANY_NUMBER);
 
             company.setMatchedPreviousCompanyName(previousCompanyName);
         }

@@ -179,6 +179,7 @@ public class ElasticSearchResponseMapper {
                     LocalDate.parse((String) nameHit.getSourceAsMap().get(CEASED_ON_KEY), formatter));
             previousCompanyName.setDateOfNameEffectiveness(
                     LocalDate.parse((String) nameHit.getSourceAsMap().get(EFFECTIVE_FROM_KEY), formatter));
+            previousCompanyName.setCompanyNumber((String) sourceAsMap.get(COMPANY_NUMBER_KEY));
 
             dissolvedCompany.setMatchedPreviousCompanyName(previousCompanyName);
 
@@ -220,6 +221,7 @@ public class ElasticSearchResponseMapper {
             companyName.setName((String) companyNames.get(PREVIOUS_COMPANY_NAME_KEY));
             companyName.setDateOfNameCessation(LocalDate.parse((String) companyNames.get(CEASED_ON_KEY),formatter));
             companyName.setDateOfNameEffectiveness(LocalDate.parse((String) companyNames.get(EFFECTIVE_FROM_KEY),formatter));
+            companyName.setCompanyNumber((String) companyNames.get(COMPANY_NUMBER_KEY));
             previousCompanyNames.add(companyName);
         }
         return previousCompanyNames;
