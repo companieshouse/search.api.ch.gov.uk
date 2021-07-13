@@ -16,13 +16,14 @@ public class EnhancedSearchRequestService {
 
     public SearchResults<Company> getSearchResults() {
 
-        List<Company> results = new ArrayList<>();
-        TopHit topHit = new TopHit();
         String etag = GenerateEtagUtil.generateEtag();
         String kind = "enhanced-search";
-        Company dummyResult = new Company();
-        Links links = new Links();
         LocalDate date = LocalDate.of(1999,04,11);
+
+        List<Company> results = new ArrayList<>();
+
+        TopHit topHit = new TopHit();
+        topHit.setCompanyName("test company");
 
         Address address = new Address();
         address.setAddressLine1("ADDRESS_LINE_1");
@@ -30,8 +31,10 @@ public class EnhancedSearchRequestService {
         address.setPostalCode("POSTCODE");
         address.setLocality("LOCALITY");
 
+        Links links = new Links();
         links.setCompanyProfile("COMPANY_PROFILE_LINK");
 
+        Company dummyResult = new Company();
         dummyResult.setCompanyName("Test company");
         dummyResult.setCompanyNumber("00000000");
         dummyResult.setCompanyStatus("active");
