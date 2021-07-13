@@ -25,7 +25,7 @@ import uk.gov.companieshouse.search.api.service.search.impl.enhanced.EnhancedSea
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class EnhancedSearchControllerTest {
+class EnhancedSearchControllerTest {
 
     @Mock
     EnhancedSearchIndexService mockSearchIndexService;

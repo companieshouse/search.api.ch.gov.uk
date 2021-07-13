@@ -21,9 +21,6 @@ public class EnhancedSearchController {
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
 
-    private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
-    private static final String COMPANY_NAME_QUERY_PARAM = "q";
-
     @GetMapping("/companies")
     @ResponseBody
     public ResponseEntity<Object> search() {
