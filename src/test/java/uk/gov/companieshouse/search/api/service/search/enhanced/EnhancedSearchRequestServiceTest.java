@@ -15,7 +15,7 @@ import uk.gov.companieshouse.search.api.service.search.impl.enhanced.EnhancedSea
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class EnhancedSearchRequestServiceTest {
+class EnhancedSearchRequestServiceTest {
 
     @InjectMocks
     private EnhancedSearchRequestService searchRequestService;
@@ -28,7 +28,7 @@ public class EnhancedSearchRequestServiceTest {
                 searchRequestService.getSearchResults();
 
         assertNotNull(searchResults);
-        assertEquals( "test company", searchResults.getTopHit().getCompanyName());
+        assertEquals("test company", searchResults.getTopHit().getCompanyName());
         assertEquals("enhanced-search", searchResults.getKind());
     }
 
