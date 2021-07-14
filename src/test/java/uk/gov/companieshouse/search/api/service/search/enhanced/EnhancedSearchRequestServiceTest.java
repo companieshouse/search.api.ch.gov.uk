@@ -20,15 +20,17 @@ class EnhancedSearchRequestServiceTest {
     @InjectMocks
     private EnhancedSearchRequestService searchRequestService;
 
+    private static final String COMPANY_NAME = "test company";
+
     @Test
     @DisplayName("Test enhanced search returns results successfully")
     void testEnhancedSearch() {
 
         SearchResults<Company> searchResults =
-                searchRequestService.getSearchResults();
+                searchRequestService.getSearchResults(COMPANY_NAME);
 
         assertNotNull(searchResults);
-        assertEquals("test company", searchResults.getTopHit().getCompanyName());
+        assertEquals(COMPANY_NAME, searchResults.getTopHit().getCompanyName());
         assertEquals("enhanced-search", searchResults.getKind());
     }
 

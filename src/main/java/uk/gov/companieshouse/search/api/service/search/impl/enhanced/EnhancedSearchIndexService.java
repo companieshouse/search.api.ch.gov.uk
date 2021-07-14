@@ -21,13 +21,13 @@ public class EnhancedSearchIndexService {
 
     private static final String ENHANCED_SEARCH = "Enhanced search: ";
 
-    public ResponseObject searchEnhanced() {
+    public ResponseObject searchEnhanced(String companyName) {
 
         SearchResults<Company> searchResults;
 
-        searchResults = enhancedSearchRequestService.getSearchResults();
+        searchResults = enhancedSearchRequestService.getSearchResults(companyName);
 
-        LOG.info(ENHANCED_SEARCH + "successful for: TEST");
+        LOG.info(ENHANCED_SEARCH + "successful for: " + companyName);
         return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
     }
 }

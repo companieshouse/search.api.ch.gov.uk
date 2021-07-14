@@ -31,12 +31,14 @@ class EnhancedSearchIndexServiceTest {
     @Mock
     private EnhancedSearchRequestService mockEnhancedSearchRequestService;
 
+    private static final String COMPANY_NAME = "test company";
+
     @Test
     @DisplayName("Test enhanced search request returns successfully")
     void searchRequestSuccessful() throws Exception {
-        when(mockEnhancedSearchRequestService.getSearchResults())
+        when(mockEnhancedSearchRequestService.getSearchResults(COMPANY_NAME))
                 .thenReturn(createSearchResults(true, false));;
-        ResponseObject responseObject = searchIndexService.searchEnhanced();
+        ResponseObject responseObject = searchIndexService.searchEnhanced(COMPANY_NAME);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_FOUND, responseObject.getStatus());

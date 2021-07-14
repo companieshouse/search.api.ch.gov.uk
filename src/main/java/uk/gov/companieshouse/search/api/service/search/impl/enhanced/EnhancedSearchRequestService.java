@@ -14,7 +14,7 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 @Service
 public class EnhancedSearchRequestService {
 
-    public SearchResults<Company> getSearchResults() {
+    public SearchResults<Company> getSearchResults(String companyName) {
 
         String etag = GenerateEtagUtil.generateEtag();
         String kind = "enhanced-search";
@@ -23,7 +23,7 @@ public class EnhancedSearchRequestService {
         List<Company> results = new ArrayList<>();
 
         TopHit topHit = new TopHit();
-        topHit.setCompanyName("test company");
+        topHit.setCompanyName(companyName);
 
         Address address = new Address();
         address.setAddressLine1("ADDRESS_LINE_1");
@@ -35,7 +35,7 @@ public class EnhancedSearchRequestService {
         links.setCompanyProfile("COMPANY_PROFILE_LINK");
 
         Company dummyResult = new Company();
-        dummyResult.setCompanyName("Test company");
+        dummyResult.setCompanyName(companyName);
         dummyResult.setCompanyNumber("00000000");
         dummyResult.setCompanyStatus("active");
         dummyResult.setCompanyType("ltd");

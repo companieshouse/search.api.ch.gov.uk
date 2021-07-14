@@ -20,6 +20,7 @@ public class LoggingUtils {
     public static final String INDEX = "index_name";
     public static final String INDEX_ALPHABETICAL = "alphabetical_search_index";
     public static final String INDEX_DISSOLVED = "dissolved_search_index";
+    public static final String ENHANCED_SEARCH_INDEX = "enhanced_search_index";
     public static final String MESSAGE = "message";
     public static final String ORDERED_ALPHAKEY = "ordered_alphakey";
     public static final String ORDERED_ALPHAKEY_WITH_ID = "ordered_alphakey_with_id";

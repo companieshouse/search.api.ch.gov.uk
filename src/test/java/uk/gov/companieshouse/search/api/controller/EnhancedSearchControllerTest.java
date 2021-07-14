@@ -38,6 +38,7 @@ class EnhancedSearchControllerTest {
 
     private static final String COMPANY_NAME = "test company";
     private static final String COMPANY_NUMBER = "00000000";
+    private static final String REQUEST_ID = "requestID";
 
     @Test
     @DisplayName("Test search found")
@@ -46,12 +47,12 @@ class EnhancedSearchControllerTest {
         ResponseObject responseObject =
                 new ResponseObject(SEARCH_FOUND, createSearchResults());
 
-        when(mockSearchIndexService.searchEnhanced()).thenReturn(responseObject);
+        when(mockSearchIndexService.searchEnhanced(COMPANY_NAME)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity<?> responseEntity =
-                enhancedSearchController.search();
+                enhancedSearchController.search(COMPANY_NAME, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
