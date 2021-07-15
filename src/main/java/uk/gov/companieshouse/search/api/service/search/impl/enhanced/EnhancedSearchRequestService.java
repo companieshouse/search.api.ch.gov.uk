@@ -1,56 +1,76 @@
 package uk.gov.companieshouse.search.api.service.search.impl.enhanced;
 
-import java.time.LocalDate;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ENHANCED_SEARCH_INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.elasticsearch.search.SearchHits;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.GenerateEtagUtil;
+import uk.gov.companieshouse.search.api.elasticsearch.EnhancedSearchRequests;
+import uk.gov.companieshouse.search.api.exception.SearchException;
+import uk.gov.companieshouse.search.api.logging.LoggingUtils;
+import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
+import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
-import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 
 @Service
 public class EnhancedSearchRequestService {
 
-    public SearchResults<Company> getSearchResults(String companyName) {
+    @Autowired
+    private EnhancedSearchRequests enhancedSearchRequests;
+
+    @Autowired
+    private ElasticSearchResponseMapper elasticSearchResponseMapper;
+
+
+    private static final String RESULT_FOUND = "A result has been found";
+
+    public SearchResults<Company> getSearchResults(EnhancedSearchQueryParams queryParams, String requestId) throws SearchException {
+
+        Map<String, Object> logMap = getLogMap(requestId, queryParams.getCompanyName());
+        getLogger().info("Getting enhanced search results", logMap);
+        logMap.remove(MESSAGE);
 
         String etag = GenerateEtagUtil.generateEtag();
-        String kind = "enhanced-search";
-        LocalDate date = LocalDate.of(1999,04,11);
-
-        List<Company> results = new ArrayList<>();
-
         TopHit topHit = new TopHit();
-        topHit.setCompanyName(companyName);
+        List<Company> results = new ArrayList<>();
+        String kind = "search#enhanced-search";
 
-        Address address = new Address();
-        address.setAddressLine1("ADDRESS_LINE_1");
-        address.setAddressLine2("ADDRESS_LINE_2");
-        address.setPostalCode("POSTCODE");
-        address.setLocality("LOCALITY");
+        try {
+            SearchHits hits = enhancedSearchRequests.getCompanies(queryParams, requestId);
 
-        Links links = new Links();
-        links.setCompanyProfile("COMPANY_PROFILE_LINK");
+            if (hits.getTotalHits().value > 0) {
+                getLogger().info(RESULT_FOUND, logMap);
 
-        Company dummyResult = new Company();
-        dummyResult.setCompanyName(companyName);
-        dummyResult.setCompanyNumber("00000000");
-        dummyResult.setCompanyStatus("active");
-        dummyResult.setCompanyType("ltd");
-        dummyResult.setOrderedAlphaKeyWithId("company00000000");
-        dummyResult.setDateOfCessation(date);
-        dummyResult.setDateOfCreation(date);
-        dummyResult.setKind("kind");
-        dummyResult.setRecordType("record type");
-        dummyResult.setLinks(links);
-        dummyResult.setRegisteredOfficeAddress(address);
-        dummyResult.setPreviousCompanyNames(null);
-        dummyResult.setMatchedPreviousCompanyName(null);
+                Company topHitCompany = elasticSearchResponseMapper
+                        .mapEnhancedSearchResponse(hits.getHits()[0]);
 
-        results.add(dummyResult);
+                topHit = elasticSearchResponseMapper.mapEnhancedTopHit(topHitCompany);
+
+                hits.forEach(h -> results.add(elasticSearchResponseMapper.mapEnhancedSearchResponse(h)));
+            }
+        } catch (IOException e) {
+            getLogger().error("failed to return a company using enhanced search", logMap);
+            throw new SearchException("error occurred reading data from the search hits", e);
+        }
 
         return new SearchResults<>(etag, topHit, results, kind);
+    }
+
+    private Map<String, Object> getLogMap(String requestId, String companyName) {
+        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logMap.put(INDEX, ENHANCED_SEARCH_INDEX);
+
+        return logMap;
     }
 }

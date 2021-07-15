@@ -21,13 +21,14 @@ class EnhancedSearchRequestServiceTest {
     private EnhancedSearchRequestService searchRequestService;
 
     private static final String COMPANY_NAME = "test company";
+    private static final String REQUEST_ID = "123456789";
 
     @Test
     @DisplayName("Test enhanced search returns results successfully")
-    void testEnhancedSearch() {
+    void testEnhancedSearch() throws Exception{
 
         SearchResults<Company> searchResults =
-                searchRequestService.getSearchResults(COMPANY_NAME);
+                searchRequestService.getSearchResults(COMPANY_NAME, REQUEST_ID);
 
         assertNotNull(searchResults);
         assertEquals(COMPANY_NAME, searchResults.getTopHit().getCompanyName());

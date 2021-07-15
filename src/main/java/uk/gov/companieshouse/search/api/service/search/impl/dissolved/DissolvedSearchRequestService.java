@@ -175,10 +175,10 @@ public class DissolvedSearchRequestService {
     }
 
     public SearchResults<Company> getPreviousNamesResults(String companyName,
-                                                                                 String requestId,
-                                                                                 String searchType,
-                                                                                 Integer startIndex,
-                                                                                 Integer size) throws SearchException {
+                                                          String requestId,
+                                                          String searchType,
+                                                          Integer startIndex,
+                                                          Integer size) throws SearchException {
         Map<String, Object> logMap = getLogMap(requestId, companyName);
         logMap.put(START_INDEX, startIndex);
         logMap.put(SEARCH_TYPE, searchType);
