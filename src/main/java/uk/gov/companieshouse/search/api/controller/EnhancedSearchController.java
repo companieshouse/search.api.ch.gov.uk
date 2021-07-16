@@ -2,8 +2,10 @@ package uk.gov.companieshouse.search.api.controller;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.LOCATION;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,28 +35,32 @@ public class EnhancedSearchController {
 
     private static final String COMPANY_NAME_QUERY_PARAM = "company_name";
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
+    private static final String LOCATION_QUERY_PARAM = "location";
 
     @GetMapping("/companies")
     @ResponseBody
     public ResponseEntity<Object> search(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
+            @RequestParam(name = LOCATION_QUERY_PARAM, required = false) String location,
             @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(COMPANY_NAME, companyName);
+        logIfNotNull(logMap, LOCATION, location);
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
 
-        EnhancedSearchQueryParams enhancedSearchQueryParams = mapEnhancedQueryParameters(companyName);
+        EnhancedSearchQueryParams enhancedSearchQueryParams = mapEnhancedQueryParameters(companyName, location);
 
         ResponseObject responseObject = searchIndexService.searchEnhanced(enhancedSearchQueryParams, requestId);
 
         return apiToResponseMapper.map(responseObject);
     }
 
-    private EnhancedSearchQueryParams mapEnhancedQueryParameters(String companyName) {
+    private EnhancedSearchQueryParams mapEnhancedQueryParameters(String companyName, String location) {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(companyName);
+        enhancedSearchQueryParams.setLocation(location);
 
         return enhancedSearchQueryParams;
     }

@@ -1,9 +1,12 @@
 package uk.gov.companieshouse.search.api.service.search.impl.enhanced;
 
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ENHANCED_SEARCH_INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.LOCATION;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +40,7 @@ public class EnhancedSearchRequestService {
 
     public SearchResults<Company> getSearchResults(EnhancedSearchQueryParams queryParams, String requestId) throws SearchException {
 
-        Map<String, Object> logMap = getLogMap(requestId, queryParams.getCompanyName());
+        Map<String, Object> logMap = getLogMap(requestId, queryParams);
         getLogger().info("Getting enhanced search results", logMap);
         logMap.remove(MESSAGE);
 
@@ -67,8 +70,10 @@ public class EnhancedSearchRequestService {
         return new SearchResults<>(etag, topHit, results, kind);
     }
 
-    private Map<String, Object> getLogMap(String requestId, String companyName) {
+    private Map<String, Object> getLogMap(String requestId, EnhancedSearchQueryParams queryParams) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logMap.put(COMPANY_NAME, queryParams.getCompanyName());
+        logIfNotNull(logMap, LOCATION, queryParams.getLocation());
         logMap.put(INDEX, ENHANCED_SEARCH_INDEX);
 
         return logMap;

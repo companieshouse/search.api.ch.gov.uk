@@ -31,6 +31,7 @@ public class LoggingUtils {
     public static final String SEARCH_TYPE = "search_type";
     public static final String SIZE = "size";
     public static final String START_INDEX = "start_index";
+    public static final String LOCATION = "location";
 
     public static final String REQUEST_ID_LOG_KEY = "request_id";
     public static final String STATUS_LOG_KEY = "status";
