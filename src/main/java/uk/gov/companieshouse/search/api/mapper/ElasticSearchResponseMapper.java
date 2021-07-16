@@ -19,29 +19,36 @@ import java.util.Map;
 @Component
 public class ElasticSearchResponseMapper {
 
-    private static final String SEARCH_RESULTS_KIND = "searchresults#dissolved-company";
     private static final String COMPANY_NAME_KEY = "company_name";
     private static final String CORPORATE_NAME_KEY = "corporate_name";
     private static final String COMPANY_NUMBER_KEY = "company_number";
     private static final String COMPANY_STATUS_KEY = "company_status";
     private static final String COMPANY_TYPE_KEY = "company_type";
+    private static final String CURRENT_COMPANY_KEY = "current_company";
     private static final String ITEMS_KEY = "items";
     private static final String LINKS_KEY = "links";
     private static final String SELF_KEY = "self";
     private static final String ORDERED_ALPHAKEY_WITH_ID_KEY = "ordered_alpha_key_with_id";
     private static final String REGISTERED_OFFICE_ADDRESS_KEY = "registered_office_address";
+    private static final String ADDRESS_KEY = "address";
     private static final String ADDRESS_LINE_1 = "address_line_1";
     private static final String ADDRESS_LINE_2 = "address_line_2";
-    private static final String POSTAL_CODE_KEY = "post_code";
+    private static final String POST_CODE_KEY = "post_code";
+    private static final String POSTAL_CODE_KEY = "postal_code";
     private static final String LOCALITY_KEY = "locality";
+    private static final String PREMISES_KEY = "premises";
+    private static final String REGION_KEY = "region";
+    private static final String COUNTRY_KEY = "country";
     private static final String DATE_OF_CESSATION = "date_of_cessation";
     private static final String DATE_OF_CREATION = "date_of_creation";
     private static final String PREVIOUS_COMPANY_NAMES_KEY = "previous_company_names";
     private static final String PREVIOUS_COMPANY_NAME_KEY = "name";
     private static final String CEASED_ON_KEY = "ceased_on";
     private static final String EFFECTIVE_FROM_KEY = "effective_from";
-    private static final String ALPHABETICAL_KIND = "searchresults#alphabetical-search";
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
+    private static final String SEARCH_RESULTS_KIND = "searchresults#dissolved-company";
+    private static final String SEARCH_RESULTS_ALPHABETICAL_KIND = "searchresults#alphabetical-search";
+    private static final String SEARCH_RESULTS_COMPANY_KIND = "search-results#company";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
@@ -54,7 +61,7 @@ public class ElasticSearchResponseMapper {
         topHit.setCompanyType(company.getCompanyType());
         topHit.setLinks(company.getLinks());
         topHit.setOrderedAlphaKeyWithId(company.getOrderedAlphaKeyWithId());
-        topHit.setKind(ALPHABETICAL_KIND);
+        topHit.setKind(SEARCH_RESULTS_ALPHABETICAL_KIND);
 
         return topHit;
     }
@@ -82,6 +89,22 @@ public class ElasticSearchResponseMapper {
         return topHit;
     }
 
+    public TopHit mapEnhancedTopHit(Company enhancedCompany) {
+        TopHit topHit = new TopHit();
+
+        topHit.setCompanyName(enhancedCompany.getCompanyName());
+        topHit.setCompanyNumber(enhancedCompany.getCompanyNumber());
+        topHit.setCompanyStatus(enhancedCompany.getCompanyStatus());
+        topHit.setCompanyType(enhancedCompany.getCompanyType());
+        topHit.setKind(enhancedCompany.getKind());
+        topHit.setRegisteredOfficeAddress(enhancedCompany.getRegisteredOfficeAddress());
+        topHit.setDateOfCessation(enhancedCompany.getDateOfCessation());
+        topHit.setDateOfCreation(enhancedCompany.getDateOfCreation());
+        topHit.setLinks(enhancedCompany.getLinks());
+
+        return topHit;
+    }
+
     public Company mapAlphabeticalResponse(SearchHit hit) {
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
         Map<String, Object> items = (Map<String, Object>) sourceAsMap.get(ITEMS_KEY);
@@ -94,7 +117,7 @@ public class ElasticSearchResponseMapper {
         company.setCompanyNumber((String) (items.get(COMPANY_NUMBER_KEY)));
         company.setCompanyStatus((String) (items.get(COMPANY_STATUS_KEY)));
         company.setOrderedAlphaKeyWithId((String) sourceAsMap.get(ORDERED_ALPHA_KEY_WITH_ID));
-        company.setKind(ALPHABETICAL_KIND);
+        company.setKind(SEARCH_RESULTS_ALPHABETICAL_KIND);
 
         companyLinks.setCompanyProfile((String) (links.get(SELF_KEY)));
         company.setLinks(companyLinks);
@@ -128,10 +151,48 @@ public class ElasticSearchResponseMapper {
             dissolvedCompany.setDateOfCreation(LocalDate.parse((String) sourceAsMap.get(DATE_OF_CREATION), formatter));
         }
 
-        Address roAddress = mapRegisteredOfficeAddressFields(addressToMap, dissolvedCompany.getDateOfCessation());
+        Address roAddress = null;
+        if (addressToMap != null && isROABeforeOrEqualToTwentyYears(dissolvedCompany.getDateOfCessation())) {
+            roAddress = mapRegisteredOfficeAddressFields(addressToMap);
+        }
+
         dissolvedCompany.setRegisteredOfficeAddress(roAddress);
 
         return dissolvedCompany;
+    }
+
+    public Company mapEnhancedSearchResponse(SearchHit hit) {
+        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+        Map<String, Object> currentCompanyMap = (Map<String, Object>) sourceAsMap.get(CURRENT_COMPANY_KEY);
+        Map<String, Object> linksMap = (Map<String, Object>) sourceAsMap.get(LINKS_KEY);
+        Map<String, Object> addressToMap = (Map<String, Object>) currentCompanyMap.get(ADDRESS_KEY);
+        Company enhancedCompany = new Company();
+
+        enhancedCompany.setCompanyName((String) currentCompanyMap.get(CORPORATE_NAME_KEY));
+        enhancedCompany.setCompanyNumber((String) currentCompanyMap.get(COMPANY_NUMBER_KEY));
+        enhancedCompany.setCompanyStatus((String) currentCompanyMap.get(COMPANY_STATUS_KEY));
+        enhancedCompany.setCompanyType((String) sourceAsMap.get(COMPANY_TYPE_KEY));
+        enhancedCompany.setKind(SEARCH_RESULTS_COMPANY_KIND);
+
+        if (currentCompanyMap.containsKey(DATE_OF_CESSATION)) {
+            enhancedCompany.setDateOfCessation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CESSATION)));
+        }
+
+        if (currentCompanyMap.containsKey(DATE_OF_CREATION)) {
+            enhancedCompany.setDateOfCreation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CREATION)));
+        }
+
+        Address roAddress = null;
+        if (addressToMap != null) {
+            roAddress = mapRegisteredOfficeAddressFields(addressToMap);
+        }
+        enhancedCompany.setRegisteredOfficeAddress(roAddress);
+
+        Links links = new Links();
+        links.setCompanyProfile((String) (linksMap.get(SELF_KEY)));
+        enhancedCompany.setLinks(links);
+
+        return enhancedCompany;
     }
 
     public List<Company> mapPreviousNames(SearchHits hits) {
@@ -167,7 +228,11 @@ public class ElasticSearchResponseMapper {
             dissolvedCompany.setKind(SEARCH_RESULTS_KIND);
 
             Map<String, Object> addressToMap = (Map<String, Object>) sourceAsMap.get(REGISTERED_OFFICE_ADDRESS_KEY);
-            Address registeredOfficeAddress = mapRegisteredOfficeAddressFields(addressToMap, dissolvedCompany.getDateOfCessation());
+
+            Address registeredOfficeAddress = null;
+            if (addressToMap != null && isROABeforeOrEqualToTwentyYears(dissolvedCompany.getDateOfCessation())) {
+                registeredOfficeAddress = mapRegisteredOfficeAddressFields(addressToMap);
+            }
 
             if(previousCompanyNamesList != null) {
                 dissolvedCompany.setPreviousCompanyNames(mapPreviousCompanyNames(previousCompanyNamesList));
@@ -188,8 +253,7 @@ public class ElasticSearchResponseMapper {
         }
     }
 
-    private Address mapRegisteredOfficeAddressFields(Map<String, Object> addressToMap, LocalDate dateOfCessation) {
-        if (addressToMap != null && isROABeforeOrEqualToTwentyYears(dateOfCessation)) {
+    private Address mapRegisteredOfficeAddressFields(Map<String, Object> addressToMap) {
             Address registeredOfficeAddress = new Address();
 
             if(addressToMap.containsKey(ADDRESS_LINE_1)) {
@@ -204,13 +268,27 @@ public class ElasticSearchResponseMapper {
                 registeredOfficeAddress.setPostalCode((String) addressToMap.get(POSTAL_CODE_KEY));
             }
 
+            if(addressToMap.containsKey(POST_CODE_KEY)) {
+                registeredOfficeAddress.setPostalCode((String) addressToMap.get(POST_CODE_KEY));
+            }
+
             if(addressToMap.containsKey(LOCALITY_KEY)) {
                 registeredOfficeAddress.setLocality((String) addressToMap.get(LOCALITY_KEY));
             }
 
+            if(addressToMap.containsKey(PREMISES_KEY)) {
+                registeredOfficeAddress.setPremises((String) addressToMap.get(PREMISES_KEY));
+            }
+
+            if(addressToMap.containsKey(REGION_KEY)) {
+                registeredOfficeAddress.setRegion((String) addressToMap.get(REGION_KEY));
+            }
+
+            if(addressToMap.containsKey(COUNTRY_KEY)) {
+                registeredOfficeAddress.setCountry((String) addressToMap.get(COUNTRY_KEY));
+            }
+
             return registeredOfficeAddress;
-        }
-        return null;
     }
 
     private List<PreviousCompanyName> mapPreviousCompanyNames(List<Object> previousCompanyNamesList) {

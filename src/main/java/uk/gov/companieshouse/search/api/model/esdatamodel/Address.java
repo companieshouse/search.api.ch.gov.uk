@@ -20,6 +20,15 @@ public class Address {
     @JsonProperty("postal_code")
     private String postalCode;
 
+    @JsonProperty("premises")
+    private String premises;
+
+    @JsonProperty("region")
+    private String region;
+
+    @JsonProperty("country")
+    private String country;
+
     public String getAddressLine1() {
         return addressLine1;
     }
@@ -50,5 +59,29 @@ public class Address {
 
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
+    }
+
+    public String getPremises() {
+        return premises;
+    }
+
+    public void setPremises(String premises) {
+        this.premises = premises;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

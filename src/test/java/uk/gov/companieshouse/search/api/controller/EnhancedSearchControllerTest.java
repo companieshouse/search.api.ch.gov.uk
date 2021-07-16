@@ -2,6 +2,8 @@ package uk.gov.companieshouse.search.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.FOUND;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
@@ -17,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
+import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
@@ -47,7 +50,10 @@ class EnhancedSearchControllerTest {
         ResponseObject responseObject =
                 new ResponseObject(SEARCH_FOUND, createSearchResults());
 
-        when(mockSearchIndexService.searchEnhanced(COMPANY_NAME)).thenReturn(responseObject);
+        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
+        enhancedSearchQueryParams.setCompanyName(COMPANY_NAME);
+
+        when(mockSearchIndexService.searchEnhanced(any(), anyString())).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 

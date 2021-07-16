@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
+import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.search.impl.enhanced.EnhancedSearchIndexService;
 
@@ -30,7 +31,7 @@ public class EnhancedSearchController {
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
 
-    private static final String COMPANY_NAME_QUERY_PARAM = "q";
+    private static final String COMPANY_NAME_QUERY_PARAM = "company_name";
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
 
     @GetMapping("/companies")
@@ -43,8 +44,18 @@ public class EnhancedSearchController {
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
 
-        ResponseObject responseObject = searchIndexService.searchEnhanced(companyName);
+        EnhancedSearchQueryParams enhancedSearchQueryParams = mapEnhancedQueryParameters(companyName);
+
+        ResponseObject responseObject = searchIndexService.searchEnhanced(enhancedSearchQueryParams, requestId);
 
         return apiToResponseMapper.map(responseObject);
+    }
+
+    private EnhancedSearchQueryParams mapEnhancedQueryParameters(String companyName) {
+
+        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
+        enhancedSearchQueryParams.setCompanyName(companyName);
+
+        return enhancedSearchQueryParams;
     }
 }
