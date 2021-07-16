@@ -42,6 +42,7 @@ class EnhancedSearchControllerTest {
     private static final String COMPANY_NAME = "test company";
     private static final String COMPANY_NUMBER = "00000000";
     private static final String REQUEST_ID = "requestID";
+    private static final String LOCATION = "location";
 
     @Test
     @DisplayName("Test search found")
@@ -58,7 +59,7 @@ class EnhancedSearchControllerTest {
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity<?> responseEntity =
-                enhancedSearchController.search(COMPANY_NAME, REQUEST_ID);
+                enhancedSearchController.search(COMPANY_NAME, LOCATION, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
