@@ -15,6 +15,7 @@ import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED
 import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_POST_20_YEARS;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_RESPONSE;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_RESPONSE_DISSOLVED_COMPANY;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_RESPONSE_MISSING_FIELDS;
 
 import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.common.bytes.BytesArray;
@@ -420,6 +421,21 @@ class ElasticSearchResponseMapperTest {
         assertEquals(DATE_OF_CREATION, company.getDateOfCreation().toString());
         assertEquals(LOCALITY, company.getRegisteredOfficeAddress().getLocality());
         assertEquals(POSTCODE, company.getRegisteredOfficeAddress().getPostalCode());
+    }
+
+    @Test
+    @DisplayName("Map enhanced response successful with missing fields")
+    void mapEnhancedResponseSuccessfulMissingFields() {
+
+        SearchHits searchHits = createHits(ENHANCED_RESPONSE_MISSING_FIELDS);
+
+        Company company =
+                elasticSearchResponseMapper.mapEnhancedSearchResponse(searchHits.getAt(0));
+
+        assertEquals(COMPANY_NAME, company.getCompanyName());
+        assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, company.getCompanyStatus());
+        assertEquals(COMPANY_KIND, company.getKind());
     }
 
     @Test

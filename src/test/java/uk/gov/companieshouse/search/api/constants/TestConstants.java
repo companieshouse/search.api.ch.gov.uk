@@ -267,4 +267,18 @@ public static final String ENHANCED_RESPONSE_DISSOLVED_COMPANY =
             "}," +
             "\"company_type\" : \"ltd\"" +
         "}";
+
+public static final String ENHANCED_RESPONSE_MISSING_FIELDS =
+        "{" +
+            "\"current_company\" : {" +
+                "\"company_number\" : \"00000000\"," +
+                "\"corporate_name\" : \"TEST COMPANY\"," +
+                "\"company_status\" : \"dissolved\"," +
+                "\"date_of_cessation\" : \"2010-05-01\"" +
+            "}," +
+            "\"links\" : {" +
+                "\"self\" : \"/company/00000000\"" +
+            "}," +
+            "\"company_type\" : \"ltd\"" +
+        "}";
 }
