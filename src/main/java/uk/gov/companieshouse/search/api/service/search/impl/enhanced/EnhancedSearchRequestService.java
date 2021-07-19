@@ -73,7 +73,7 @@ public class EnhancedSearchRequestService {
 
     private Map<String, Object> getLogMap(String requestId, EnhancedSearchQueryParams queryParams) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(COMPANY_NAME, queryParams.getCompanyName());
+        logIfNotNull(logMap, COMPANY_NAME, queryParams.getCompanyName());
         logIfNotNull(logMap, LOCATION, queryParams.getLocation());
         logMap.put(INDEX, ENHANCED_SEARCH_INDEX);
 

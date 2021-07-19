@@ -38,6 +38,8 @@ public class EnhancedSearchRequests {
 
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
+        sourceBuilder.size(20);
+
         searchRequest.source(sourceBuilder.query(enhancedSearchQueries.buildEnhancedSearchQuery(queryParams)));
 
         SearchResponse searchResponse = restClientService.search(searchRequest);

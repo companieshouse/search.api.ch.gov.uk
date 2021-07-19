@@ -39,11 +39,11 @@ public class EnhancedSearchController {
 
     @GetMapping("/companies")
     @ResponseBody
-    public ResponseEntity<Object> search(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
+    public ResponseEntity<Object> search(@RequestParam(name = COMPANY_NAME_QUERY_PARAM, required = false) String companyName,
             @RequestParam(name = LOCATION_QUERY_PARAM, required = false) String location,
             @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(COMPANY_NAME, companyName);
+        logIfNotNull(logMap, COMPANY_NAME, companyName);
         logIfNotNull(logMap, LOCATION, location);
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("Search request received", logMap);
