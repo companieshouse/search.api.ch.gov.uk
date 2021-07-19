@@ -61,8 +61,7 @@ class EnhancedSearchRequestsTest {
     }
 
     private SearchResponse createSearchResponse() {
-        BytesReference source = new BytesArray(
-                "{test}");
+        BytesReference source = new BytesArray("{test}");
         SearchHit hit = new SearchHit(1);
         hit.sourceRef(source);
         TotalHits totalHits = new TotalHits(1, GREATER_THAN_OR_EQUAL_TO);
