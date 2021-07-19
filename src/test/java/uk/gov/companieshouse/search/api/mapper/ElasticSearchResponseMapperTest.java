@@ -1,5 +1,22 @@
 package uk.gov.companieshouse.search.api.mapper;
 
+import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_TO;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.ALPHABETICAL_RESPONSE;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_INNER_HITS;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_NO_ADDRESS_LINES;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_NO_DATES;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_NO_LOCALITY;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_NO_POSTCODE;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_NO_PREVIOUS_NAME;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_NO_ROA;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_POST_20_YEARS;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_RESPONSE;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_RESPONSE_DISSOLVED_COMPANY;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_RESPONSE_MISSING_FIELDS;
+
 import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.bytes.BytesReference;
@@ -11,7 +28,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
@@ -25,10 +41,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_TO;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -44,6 +56,7 @@ class ElasticSearchResponseMapperTest {
     private static final String COMPANY_TYPE = "ltd";
     private static final String COMPANY_PROFILE_LINK = "/company/00000000";
     private static final String KIND = "searchresults#dissolved-company";
+    private static final String COMPANY_KIND = "search-results#company";
     private static final String DATE_OF_CESSATION = "2010-05-01";
     private static final String DATE_OF_CESSATION_POST_20_YEARS = "1991-05-01";
     private static final String DATE_OF_CREATION = "1989-05-01";
@@ -62,7 +75,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map alphabetical response successful")
     void mapAlphabeticalResponseTest() {
 
-        SearchHits searchHits = createAlphabeticalSearchHits();
+        SearchHits searchHits = createHits(ALPHABETICAL_RESPONSE);
 
         Company company =
                 elasticSearchResponseMapper.mapAlphabeticalResponse(searchHits.getAt(0));
@@ -79,7 +92,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful")
     void mapDissolvedResponseTest() {
 
-        SearchHits searchHits = createSearchHits(true, true, true, true, true, true, true);
+        SearchHits searchHits = createHits(DISSOLVED_RESPONSE);
 
         Company company =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -103,7 +116,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful date of cessation greater than 20 years old")
     void mapDissolvedResponseCessationGreaterThan20Test() {
 
-        SearchHits searchHits = createSearchHits(true, true, true, true, true, true, false);
+        SearchHits searchHits = createHits(DISSOLVED_RESPONSE_POST_20_YEARS);
 
         Company company =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -125,7 +138,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response no dates present successful")
     void mapDissolvedResponseNoDatesPresentTest() {
 
-        SearchHits searchHits = createSearchHits(true, true, true, true, true, false, false);
+        SearchHits searchHits = createHits(DISSOLVED_RESPONSE_NO_DATES);
 
         Company company =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -145,7 +158,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no previous names")
     void mapDissolvedResponseTestPreviousNamesNull() {
 
-        SearchHits searchHits = createSearchHits(true, true, true, true, false, true, true);
+        SearchHits searchHits = createHits(DISSOLVED_RESPONSE_NO_PREVIOUS_NAME);
 
         Company company =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -158,14 +171,14 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no address lines")
     void mapDissolvedResponseTestNoAddressLines() {
 
-        SearchHits searchHits = createSearchHits(true, false, false, true, false, true, true);
+        SearchHits searchHits = createHits(DISSOLVED_RESPONSE_NO_ADDRESS_LINES);
 
         Company company =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
 
         Address address = company.getRegisteredOfficeAddress();
         assertEquals(POSTCODE, address.getPostalCode());
-        assertNull(address.getLocality());
+        assertEquals(LOCALITY, address.getLocality());
         assertNull(address.getAddressLine1());
         assertNull(address.getAddressLine2());
     }
@@ -174,7 +187,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no locality")
     void mapDissolvedResponseTestNoLocality() {
 
-        SearchHits searchHits = createSearchHits(true, true, false, true, false, true, true);
+        SearchHits searchHits = createHits(DISSOLVED_RESPONSE_NO_LOCALITY);
 
         Company company =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -188,7 +201,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no postcode")
     void mapDissolvedResponseTestNoPostcode() {
 
-        SearchHits searchHits = createSearchHits(true, true, true, false, false, true, true);
+        SearchHits searchHits = createHits(DISSOLVED_RESPONSE_NO_POSTCODE);
 
         Company company =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -202,7 +215,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved response successful when no address")
     void mapDissolvedResponseTestNoAddress() {
 
-        SearchHits searchHits = createSearchHits(false, false, false, false, false, true, true);
+        SearchHits searchHits = createHits(DISSOLVED_RESPONSE_NO_ROA);
 
         Company company =
                 elasticSearchResponseMapper.mapDissolvedResponse(searchHits.getAt(0));
@@ -222,6 +235,23 @@ class ElasticSearchResponseMapperTest {
         assertEquals(COMPANY_STATUS, topHit.getCompanyStatus());
         assertEquals(COMPANY_TYPE, topHit.getCompanyType());
         assertEquals(ORDERED_ALPHA_KEY_WITH_ID, topHit.getOrderedAlphaKeyWithId());
+        assertEquals(COMPANY_PROFILE_LINK, topHit.getLinks().getCompanyProfile());
+    }
+
+    @Test
+    @DisplayName("Map enhanced top hit successful")
+    void mapEmhancedTopHitSuccessful() {
+
+        TopHit topHit = elasticSearchResponseMapper.mapEnhancedTopHit(createEnhancedCompany());
+
+        assertEquals(COMPANY_NAME, topHit.getCompanyName());
+        assertEquals(COMPANY_NUMBER, topHit.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, topHit.getCompanyStatus());
+        assertEquals(COMPANY_TYPE, topHit.getCompanyType());
+        assertEquals(KIND, topHit.getKind());
+        assertEquals(DATE_OF_CESSATION, topHit.getDateOfCessation().toString());
+        assertEquals(DATE_OF_CREATION, topHit.getDateOfCreation().toString());
+
         assertEquals(COMPANY_PROFILE_LINK, topHit.getLinks().getCompanyProfile());
     }
 
@@ -289,13 +319,6 @@ class ElasticSearchResponseMapperTest {
         assertNull(previousNamesTopHit.getMatchedPreviousCompanyName());
     }
 
-    private void assertPreviousCompanyName(List<PreviousCompanyName> previousCompanyNames) {
-        assertEquals(PREVIOUS_COMPANY_NAME, previousCompanyNames.get(0).getName());
-        assertEquals(EFFECTIVE_FROM, previousCompanyNames.get(0).getDateOfNameEffectiveness().toString());
-        assertEquals(CEASED_ON, previousCompanyNames.get(0).getDateOfNameCessation().toString());
-        assertEquals(COMPANY_NUMBER, previousCompanyNames.get(0).getCompanyNumber());
-    }
-
     @Test
     @DisplayName("Map dissolved top hit successful no address")
     void mapTopHitNoAddress() {
@@ -314,7 +337,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved previous names successful")
     void mapDissolvedPreviousNames() {
 
-        SearchHits searchHits = createSearchHitsWithInnerHits(true, true, true, true, true);
+        SearchHits searchHits = createSearchHitsWithInnerHits(DISSOLVED_RESPONSE);
 
         List<Company> previousNames =
                 elasticSearchResponseMapper.mapPreviousNames(searchHits);
@@ -333,7 +356,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved previous names successful no address object")
     void mapDissolvedPreviousNamesNoAddress() {
 
-        SearchHits searchHits = createSearchHitsWithInnerHits(false, false, false, false, false);
+        SearchHits searchHits = createSearchHitsWithInnerHits(DISSOLVED_RESPONSE_NO_ROA);
 
         List<Company> previousNames =
                 elasticSearchResponseMapper.mapPreviousNames(searchHits);
@@ -350,7 +373,7 @@ class ElasticSearchResponseMapperTest {
     @DisplayName("Map dissolved previous names successful no postal code")
     void mapDissolvedPreviousNamesNoPostalCode() {
 
-        SearchHits searchHits = createSearchHitsWithInnerHits(true, true, false, false, false);
+        SearchHits searchHits = createSearchHitsWithInnerHits(DISSOLVED_RESPONSE_NO_POSTCODE);
 
         List<Company> previousNames =
                 elasticSearchResponseMapper.mapPreviousNames(searchHits);
@@ -365,10 +388,10 @@ class ElasticSearchResponseMapperTest {
     }
 
     @Test
-    @DisplayName("Map dissolved previous names successful no postal code")
+    @DisplayName("Map dissolved previous names successful no previous names")
     void mapDissolvedPreviousNamesNoPreviousNames() {
 
-        SearchHits searchHits = createSearchHitsWithInnerHits(true, true, true, true, false);
+        SearchHits searchHits = createSearchHitsWithInnerHits(DISSOLVED_RESPONSE_NO_PREVIOUS_NAME);
 
         List<Company> previousNames =
                 elasticSearchResponseMapper.mapPreviousNames(searchHits);
@@ -382,44 +405,60 @@ class ElasticSearchResponseMapperTest {
         assertNull(previousName.getPreviousCompanyNames());
     }
 
-    private SearchHits createSearchHits(boolean includeAddress,
-                                        boolean address,
-                                        boolean locality,
-                                        boolean postCode,
-                                        boolean includePreviousCompanyNames,
-                                        boolean includeDates,
-                                        boolean pre20Years) {
-        StringBuilder searchHits = new StringBuilder();
-        searchHits.append(
-                "{" +
-                        "\"company_number\" : \"00000000\"," +
-                        "\"company_name\" : \"TEST COMPANY\"," +
-                        "\"alpha_key\": \"alpha_key\"," +
-                        "\"ordered_alpha_key\": \"ordered_alpha_key\"," +
-                        "\"ordered_alpha_key_with_id\": \"ordered_alpha_key_with_id\"," +
-                        "\"company_status\" : \"dissolved\",");
-        if (includeAddress) {
-            searchHits.append(populateAddress(address, locality, postCode));
-        }
-        if (includePreviousCompanyNames) {
-            searchHits.append(populatePreviousCompanyNames(includeDates));
-        }
-        if (includeDates) {
-            if (pre20Years) {
-                searchHits.append(
-                        "\"date_of_cessation\" : \"20100501\"," +
-                                "\"date_of_creation\" : \"19890501\"" +
-                                "}");
-            } else {
-                searchHits.append(
-                        "\"date_of_cessation\" : \"19910501\"," +
-                                "\"date_of_creation\" : \"19890501\"" +
-                                "}");
-            }
-        } else {
-            searchHits.append("}");
-        }
-        BytesReference source = new BytesArray(searchHits.toString());
+    @Test
+    @DisplayName("Map enhanced response successful for active company")
+    void mapEnhancedResponseSuccessfulActiveTest() {
+
+        SearchHits searchHits = createHits(ENHANCED_RESPONSE);
+
+        Company company =
+                elasticSearchResponseMapper.mapEnhancedSearchResponse(searchHits.getAt(0));
+
+        assertEquals(COMPANY_NAME, company.getCompanyName());
+        assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
+        assertEquals(COMPANY_STATUS_ACTIVE, company.getCompanyStatus());
+        assertEquals(COMPANY_KIND, company.getKind());
+        assertEquals(DATE_OF_CREATION, company.getDateOfCreation().toString());
+        assertEquals(LOCALITY, company.getRegisteredOfficeAddress().getLocality());
+        assertEquals(POSTCODE, company.getRegisteredOfficeAddress().getPostalCode());
+    }
+
+    @Test
+    @DisplayName("Map enhanced response successful with missing fields")
+    void mapEnhancedResponseSuccessfulMissingFields() {
+
+        SearchHits searchHits = createHits(ENHANCED_RESPONSE_MISSING_FIELDS);
+
+        Company company =
+                elasticSearchResponseMapper.mapEnhancedSearchResponse(searchHits.getAt(0));
+
+        assertEquals(COMPANY_NAME, company.getCompanyName());
+        assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, company.getCompanyStatus());
+        assertEquals(COMPANY_KIND, company.getKind());
+    }
+
+    @Test
+    @DisplayName("Map enhanced response successful for dissolved company")
+    void mapEnhancedResponseSuccessfulDissolvedTest() {
+
+        SearchHits searchHits = createHits(ENHANCED_RESPONSE_DISSOLVED_COMPANY);
+
+        Company company =
+                elasticSearchResponseMapper.mapEnhancedSearchResponse(searchHits.getAt(0));
+
+        assertEquals(COMPANY_NAME, company.getCompanyName());
+        assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, company.getCompanyStatus());
+        assertEquals(COMPANY_KIND, company.getKind());
+        assertEquals(DATE_OF_CREATION, company.getDateOfCreation().toString());
+        assertEquals(LOCALITY, company.getRegisteredOfficeAddress().getLocality());
+        assertEquals(POSTCODE, company.getRegisteredOfficeAddress().getPostalCode());
+    }
+
+    private SearchHits createHits(String json) {
+
+        BytesReference source = new BytesArray(json);
         SearchHit hit = new SearchHit(1);
         hit.sourceRef(source);
 
@@ -427,18 +466,21 @@ class ElasticSearchResponseMapperTest {
         return new SearchHits(new SearchHit[]{hit}, totalHits, 10);
     }
 
-    private SearchHits createSearchHitsWithInnerHits(boolean includeAddress,
-                                                     boolean includeAddressLines,
-                                                     boolean includeLocality,
-                                                     boolean includePostCode,
-                                                     boolean includePreviousCompanyNames) {
+    private void assertPreviousCompanyName(List<PreviousCompanyName> previousCompanyNames) {
+        assertEquals(PREVIOUS_COMPANY_NAME, previousCompanyNames.get(0).getName());
+        assertEquals(EFFECTIVE_FROM, previousCompanyNames.get(0).getDateOfNameEffectiveness().toString());
+        assertEquals(CEASED_ON, previousCompanyNames.get(0).getDateOfNameCessation().toString());
+        assertEquals(COMPANY_NUMBER, previousCompanyNames.get(0).getCompanyNumber());
+    }
 
-        SearchHits searchHits = createSearchHits(includeAddress, includeAddressLines, includeLocality, includePostCode, includePreviousCompanyNames, true, true);
+    private SearchHits createSearchHitsWithInnerHits(String json) {
+
+        SearchHits searchHits = createHits(json);
         SearchHit searchHit = searchHits.getAt(0);
 
         Map<String, SearchHits> innerHits = new HashMap<>();
 
-        BytesReference source = new BytesArray(createInnerHits());
+        BytesReference source = new BytesArray(DISSOLVED_INNER_HITS);
         SearchHit innerHit = new SearchHit(100);
         innerHit.sourceRef(source);
 
@@ -448,70 +490,6 @@ class ElasticSearchResponseMapperTest {
 
         return searchHits;
 
-    }
-
-    private String populateAddress(boolean address, boolean locality, boolean postCode) {
-        StringBuilder addressJson = new StringBuilder("\"registered_office_address\" : {");
-        if (address) {
-            addressJson.append("\"address_line_1\" : \"addressLine1\",");
-            addressJson.append("\"address_line_2\" : \"addressLine2\"");
-            if (locality || postCode) {
-                addressJson.append(",");
-            }
-        }
-        if (locality) {
-            addressJson.append("\"locality\" : \"locality\"");
-            if (postCode)
-                addressJson.append(",");
-        }
-        if (postCode) {
-            addressJson.append("\"post_code\" : \"AB00 0 AB\"");
-        }
-        addressJson.append("},");
-        return addressJson.toString();
-    }
-
-    private String populatePreviousCompanyNames(boolean includeDates) {
-        StringBuilder previousNames = new StringBuilder();
-
-        previousNames.append("\"previous_company_names\" : [" +
-                "{" +
-                "\"name\" : \"TEST COMPANY 2\"," +
-                "\"ordered_alpha_key\": \"ordered_alpha_key\"," +
-                "\"effective_from\" : \"19890101\"," +
-                "\"ceased_on\" : \"19920510\"," +
-                "\"company_number\" : \"00000000\"" +
-                "}" +
-                "]");
-
-        if (includeDates) {
-            previousNames.append(",");
-        }
-
-        return previousNames.toString();
-    }
-
-    private String createInnerHits() {
-        String innerHits = "{" +
-                "\"ordered_alpha_key\" : \"PREVIOUSNAME\"," +
-                "\"effective_from\" : \"19980309\"," +
-                "\"ceased_on\" : \"19990428\"," +
-                "\"name\" : \"PREVIOUS NAME LIMITED\"," +
-                "\"company_number\" : \"00000000\"" +
-                "}";
-
-        return innerHits;
-    }
-
-    private SearchHits createAlphabeticalSearchHits() {
-        BytesReference source = new BytesArray("{" + "\"ID\": \"id\"," + "\"company_type\": \"ltd\","
-                + "\"ordered_alpha_key_with_id\": \"ordered_alpha_key_with_id\"," + "\"items\" : {"
-                + "\"company_number\" : \"00000000\"," + "\"company_status\" : \"active\","
-                + "\"corporate_name\" : \"TEST COMPANY\"" + "}," + "\"links\" : {" + "\"self\" : \"/company/00000000\"" + "}" + "}");
-        SearchHit hit = new SearchHit(1);
-        hit.sourceRef(source);
-        TotalHits totalHits = new TotalHits(1, GREATER_THAN_OR_EQUAL_TO);
-        return new SearchHits(new SearchHit[] { hit }, totalHits, 10);
     }
 
     private Company createCompany(boolean includePreviousName, boolean includeAddress, boolean includeMatchedPreviousName) {
@@ -565,6 +543,31 @@ class ElasticSearchResponseMapperTest {
         company.setCompanyType(COMPANY_TYPE);
         company.setOrderedAlphaKeyWithId(ORDERED_ALPHA_KEY_WITH_ID);
         company.setKind(KIND);
+
+        Links links = new Links();
+        links.setCompanyProfile(COMPANY_PROFILE_LINK);
+        company.setLinks(links);
+
+        return company;
+    }
+
+    private Company createEnhancedCompany() {
+        Company company = new Company();
+        company.setCompanyName(COMPANY_NAME);
+        company.setCompanyNumber(COMPANY_NUMBER);
+        company.setCompanyStatus(COMPANY_STATUS);
+        company.setCompanyType(COMPANY_TYPE);
+        company.setKind(KIND);
+
+        company.setDateOfCessation(LocalDate.parse("20100501", formatter));
+        company.setDateOfCreation(LocalDate.parse("19890501", formatter));
+
+        Address address = new Address();
+        address.setAddressLine1(ADDRESS_LINE_1);
+        address.setAddressLine2(ADDRESS_LINE_2);
+        address.setPostalCode(POSTCODE);
+        address.setLocality(LOCALITY);
+        company.setRegisteredOfficeAddress(address);
 
         Links links = new Links();
         links.setCompanyProfile(COMPANY_PROFILE_LINK);
