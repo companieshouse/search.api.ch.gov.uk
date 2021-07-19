@@ -57,7 +57,7 @@ public class EnhancedSearchIndexService {
 
     private Map<String, Object> getLogMap(EnhancedSearchQueryParams queryParams, String requestId) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(COMPANY_NAME, queryParams.getCompanyName());
+        logIfNotNull(logMap, COMPANY_NAME, queryParams.getCompanyName());
         logIfNotNull(logMap, LOCATION, queryParams.getLocation());
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("enhanced search filters", logMap);
