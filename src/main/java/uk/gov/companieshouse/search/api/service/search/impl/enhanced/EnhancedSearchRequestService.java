@@ -37,7 +37,7 @@ public class EnhancedSearchRequestService {
 
     public SearchResults<Company> getSearchResults(EnhancedSearchQueryParams queryParams, String requestId) throws SearchException {
 
-        Map<String, Object> logMap = getLogMap(requestId, queryParams.getCompanyName());
+        Map<String, Object> logMap = getLogMap(requestId);
         getLogger().info("Getting enhanced search results", logMap);
         logMap.remove(MESSAGE);
 
@@ -67,7 +67,7 @@ public class EnhancedSearchRequestService {
         return new SearchResults<>(etag, topHit, results, kind);
     }
 
-    private Map<String, Object> getLogMap(String requestId, String companyName) {
+    private Map<String, Object> getLogMap(String requestId) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logMap.put(INDEX, ENHANCED_SEARCH_INDEX);
 
