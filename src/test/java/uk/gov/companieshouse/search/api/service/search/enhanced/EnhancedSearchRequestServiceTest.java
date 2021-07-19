@@ -1,8 +1,10 @@
 package uk.gov.companieshouse.search.api.service.search.enhanced;
 
+import static org.apache.lucene.search.TotalHits.Relation.EQUAL_TO;
 import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_TO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
@@ -73,6 +75,23 @@ class EnhancedSearchRequestServiceTest {
     }
 
     @Test
+    @DisplayName("Test enhanced search returns no results")
+    void testEnhancedSearchNoResults() throws Exception{
+
+        Company company = createCompany();
+
+        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
+
+        when(mockEnhancedSearchRequests.getCompanies(enhancedSearchQueryParams, REQUEST_ID)).thenReturn(createEmptySearchHits());
+
+        SearchResults<Company> searchResults =
+                searchRequestService.getSearchResults(enhancedSearchQueryParams, REQUEST_ID);
+
+        assertNotNull(searchResults);
+        assertNotNull(searchResults.getItems());
+    }
+
+    @Test
     @DisplayName("Test search request throws exception")
     void testThrowException() throws Exception {
 
@@ -95,6 +114,11 @@ class EnhancedSearchRequestServiceTest {
         hit.sourceRef(source);
         TotalHits totalHits = new TotalHits(1, GREATER_THAN_OR_EQUAL_TO);
         return new SearchHits(new SearchHit[] { hit }, totalHits, 10);
+    }
+
+    private SearchHits createEmptySearchHits() {
+        TotalHits totalHits = new TotalHits(0, EQUAL_TO);
+        return new SearchHits(new SearchHit[] {}, totalHits, 0);
     }
 
     private Company createCompany() {

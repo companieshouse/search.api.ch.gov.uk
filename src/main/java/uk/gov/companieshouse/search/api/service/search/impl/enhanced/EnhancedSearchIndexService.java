@@ -5,6 +5,9 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.LOCATION;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.NO_RESULTS_FOUND;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.STANDARD_ERROR_MESSAGE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SUCCESSFUL_SEARCH;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
@@ -28,10 +31,6 @@ public class EnhancedSearchIndexService {
     private EnhancedSearchRequestService enhancedSearchRequestService;
 
     private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
-
-    private static final String SUCCESSFUL_SEARCH = "Enhanced search successful";
-    private static final String STANDARD_ERROR_MESSAGE = "An error occurred while enhanced searching for a company";
-    private static final String NO_RESULTS_FOUND = "No results were returned while enhanced searching for a company";
 
     public ResponseObject searchEnhanced(EnhancedSearchQueryParams queryParams, String requestId) {
 

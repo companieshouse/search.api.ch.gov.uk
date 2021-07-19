@@ -41,6 +41,7 @@ public class EnhancedSearchRequestService {
     public SearchResults<Company> getSearchResults(EnhancedSearchQueryParams queryParams, String requestId) throws SearchException {
 
         Map<String, Object> logMap = getLogMap(requestId, queryParams);
+
         getLogger().info("Getting enhanced search results", logMap);
         logMap.remove(MESSAGE);
 
