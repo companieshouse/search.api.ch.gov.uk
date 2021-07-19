@@ -13,6 +13,8 @@ import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED
 import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_NO_PREVIOUS_NAME;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_NO_ROA;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_POST_20_YEARS;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_RESPONSE;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_RESPONSE_DISSOLVED_COMPANY;
 
 import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.common.bytes.BytesArray;
@@ -53,6 +55,7 @@ class ElasticSearchResponseMapperTest {
     private static final String COMPANY_TYPE = "ltd";
     private static final String COMPANY_PROFILE_LINK = "/company/00000000";
     private static final String KIND = "searchresults#dissolved-company";
+    private static final String COMPANY_KIND = "search-results#company";
     private static final String DATE_OF_CESSATION = "2010-05-01";
     private static final String DATE_OF_CESSATION_POST_20_YEARS = "1991-05-01";
     private static final String DATE_OF_CREATION = "1989-05-01";
@@ -399,6 +402,42 @@ class ElasticSearchResponseMapperTest {
         assertEquals(DATE_OF_CESSATION, previousName.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, previousName.getDateOfCreation().toString());
         assertNull(previousName.getPreviousCompanyNames());
+    }
+
+    @Test
+    @DisplayName("Map enhanced response successful for active company")
+    void mapEnhancedResponseSuccessfulActiveTest() {
+
+        SearchHits searchHits = createHits(ENHANCED_RESPONSE);
+
+        Company company =
+                elasticSearchResponseMapper.mapEnhancedSearchResponse(searchHits.getAt(0));
+
+        assertEquals(COMPANY_NAME, company.getCompanyName());
+        assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
+        assertEquals(COMPANY_STATUS_ACTIVE, company.getCompanyStatus());
+        assertEquals(COMPANY_KIND, company.getKind());
+        assertEquals(DATE_OF_CREATION, company.getDateOfCreation().toString());
+        assertEquals(LOCALITY, company.getRegisteredOfficeAddress().getLocality());
+        assertEquals(POSTCODE, company.getRegisteredOfficeAddress().getPostalCode());
+    }
+
+    @Test
+    @DisplayName("Map enhanced response successful for dissolved company")
+    void mapEnhancedResponseSuccessfulDissolvedTest() {
+
+        SearchHits searchHits = createHits(ENHANCED_RESPONSE_DISSOLVED_COMPANY);
+
+        Company company =
+                elasticSearchResponseMapper.mapEnhancedSearchResponse(searchHits.getAt(0));
+
+        assertEquals(COMPANY_NAME, company.getCompanyName());
+        assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, company.getCompanyStatus());
+        assertEquals(COMPANY_KIND, company.getKind());
+        assertEquals(DATE_OF_CREATION, company.getDateOfCreation().toString());
+        assertEquals(LOCALITY, company.getRegisteredOfficeAddress().getLocality());
+        assertEquals(POSTCODE, company.getRegisteredOfficeAddress().getPostalCode());
     }
 
     private SearchHits createHits(String json) {

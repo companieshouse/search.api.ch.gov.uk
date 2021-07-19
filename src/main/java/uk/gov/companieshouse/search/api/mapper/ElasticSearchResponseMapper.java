@@ -51,6 +51,7 @@ public class ElasticSearchResponseMapper {
     private static final String SEARCH_RESULTS_COMPANY_KIND = "search-results#company";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
+    DateTimeFormatter enhancedFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 
     public TopHit mapAlphabeticalTopHit(Company company) {
         TopHit topHit = new TopHit();
@@ -175,11 +176,11 @@ public class ElasticSearchResponseMapper {
         enhancedCompany.setKind(SEARCH_RESULTS_COMPANY_KIND);
 
         if (currentCompanyMap.containsKey(DATE_OF_CESSATION)) {
-            enhancedCompany.setDateOfCessation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CESSATION)));
+            enhancedCompany.setDateOfCessation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CESSATION), enhancedFormatter));
         }
 
         if (currentCompanyMap.containsKey(DATE_OF_CREATION)) {
-            enhancedCompany.setDateOfCreation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CREATION)));
+            enhancedCompany.setDateOfCreation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CREATION), enhancedFormatter));
         }
 
         Address roAddress = null;
