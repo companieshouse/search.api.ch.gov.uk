@@ -9,6 +9,7 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull
 
 import java.time.LocalDate;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -46,7 +47,7 @@ public class EnhancedSearchController {
     public ResponseEntity<Object> search(@RequestParam(name = COMPANY_NAME_QUERY_PARAM, required = false) String companyName,
                                          @RequestParam(name = LOCATION_QUERY_PARAM, required = false) String location,
                                          @RequestParam(name = INCORPORATED_FROM, required = false)
-                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate incorporatedFrom,
+                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate incorporatedFrom,
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
