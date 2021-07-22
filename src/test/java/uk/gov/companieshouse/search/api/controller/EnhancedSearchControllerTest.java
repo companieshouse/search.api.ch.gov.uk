@@ -8,8 +8,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.FOUND;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -26,6 +24,10 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.search.impl.enhanced.EnhancedSearchIndexService;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EnhancedSearchControllerTest {
@@ -41,9 +43,9 @@ class EnhancedSearchControllerTest {
 
     private static final String COMPANY_NAME = "test company";
     private static final String COMPANY_NUMBER = "00000000";
-    private static final String REQUEST_ID = "requestID";
     private static final String LOCATION = "location";
-
+    private static final LocalDate INCORPORATED_FROM = LocalDate.of(2000, 1, 1);
+    private static final String REQUEST_ID = "requestID";
     @Test
     @DisplayName("Test search found")
     void testSearchFound() {
@@ -59,7 +61,7 @@ class EnhancedSearchControllerTest {
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity<?> responseEntity =
-                enhancedSearchController.search(COMPANY_NAME, LOCATION, REQUEST_ID);
+                enhancedSearchController.search(COMPANY_NAME, LOCATION, INCORPORATED_FROM, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());

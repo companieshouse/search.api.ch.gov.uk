@@ -10,14 +10,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
 
+import java.time.LocalDate;
+
 class EnhancedSearchQueriesTest {
 
     private EnhancedSearchQueries enhancedSearchQueries = new EnhancedSearchQueries();
 
     private static final String COMPANY_NAME = "TEST COMPANY";
-    private static final String COMPANY_NAME_MUST_CONTAIN_FIELD = "current_company.corporate_name";
     private static final String LOCATION = "TEST LOCATION";
+    private static final LocalDate INCORPORATED_FROM = LocalDate.of(2000, 1, 1);
+
+    private static final String COMPANY_NAME_MUST_CONTAIN_FIELD = "current_company.corporate_name";
     private static final String LOCATION_MATCH_FIELD = "current_company.full_address";
+    private static final String INCORPORATION_DATE_MATCH_FIELD = "current_company.date_of_creation";
 
     @Test
     @DisplayName("Create company name must contain query")
@@ -45,6 +50,20 @@ class EnhancedSearchQueriesTest {
         assertNotNull(queryBuilder);
         assertTrue(queryBuilder.toString().contains(LOCATION_MATCH_FIELD));
         assertTrue(queryBuilder.toString().contains(LOCATION));
+    }
+
+    @Test
+    @DisplayName("Create incorporated from match query")
+    void incorporatedFromFromQuery() {
+        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
+        enhancedSearchQueryParams.setIncorporatedFrom(INCORPORATED_FROM);
+
+        QueryBuilder queryBuilder =
+                enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+
+        assertNotNull(queryBuilder);
+        assertTrue(queryBuilder.toString().contains(INCORPORATION_DATE_MATCH_FIELD));
+        assertTrue(queryBuilder.toString().contains(INCORPORATED_FROM.toString()));
     }
 
     @Test
