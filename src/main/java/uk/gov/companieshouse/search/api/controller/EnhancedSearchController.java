@@ -7,8 +7,10 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
+import java.time.LocalDate;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,14 +36,19 @@ public class EnhancedSearchController {
     private ApiToResponseMapper apiToResponseMapper;
 
     private static final String COMPANY_NAME_QUERY_PARAM = "company_name";
-    private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
     private static final String LOCATION_QUERY_PARAM = "location";
+    private static final String INCORPORATED_FROM = "incorporated_from";
+
+    private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
 
     @GetMapping("/companies")
     @ResponseBody
     public ResponseEntity<Object> search(@RequestParam(name = COMPANY_NAME_QUERY_PARAM, required = false) String companyName,
-            @RequestParam(name = LOCATION_QUERY_PARAM, required = false) String location,
-            @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
+                                         @RequestParam(name = LOCATION_QUERY_PARAM, required = false) String location,
+                                         @RequestParam(name = INCORPORATED_FROM, required = false)
+                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate incorporatedFrom,
+                                         @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
+
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logIfNotNull(logMap, COMPANY_NAME, companyName);
         logIfNotNull(logMap, LOCATION, location);
@@ -49,18 +56,21 @@ public class EnhancedSearchController {
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
 
-        EnhancedSearchQueryParams enhancedSearchQueryParams = mapEnhancedQueryParameters(companyName, location);
+        EnhancedSearchQueryParams enhancedSearchQueryParams = mapEnhancedQueryParameters(companyName, location, incorporatedFrom);
 
         ResponseObject responseObject = searchIndexService.searchEnhanced(enhancedSearchQueryParams, requestId);
 
         return apiToResponseMapper.map(responseObject);
     }
 
-    private EnhancedSearchQueryParams mapEnhancedQueryParameters(String companyName, String location) {
+    private EnhancedSearchQueryParams mapEnhancedQueryParameters(String companyName,
+                                                                 String location,
+                                                                 LocalDate incorporatedFrom) {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(companyName);
         enhancedSearchQueryParams.setLocation(location);
+        enhancedSearchQueryParams.setIncorporatedFrom(incorporatedFrom);
 
         return enhancedSearchQueryParams;
     }
