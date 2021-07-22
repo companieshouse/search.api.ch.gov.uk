@@ -45,6 +45,7 @@ class EnhancedSearchControllerTest {
     private static final String COMPANY_NUMBER = "00000000";
     private static final String LOCATION = "location";
     private static final LocalDate INCORPORATED_FROM = LocalDate.of(2000, 1, 1);
+    private static final LocalDate INCORPORATED_TO = LocalDate.of(2002, 2, 2);
     private static final String REQUEST_ID = "requestID";
     @Test
     @DisplayName("Test search found")
@@ -61,7 +62,7 @@ class EnhancedSearchControllerTest {
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity<?> responseEntity =
-                enhancedSearchController.search(COMPANY_NAME, LOCATION, INCORPORATED_FROM, REQUEST_ID);
+                enhancedSearchController.search(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());

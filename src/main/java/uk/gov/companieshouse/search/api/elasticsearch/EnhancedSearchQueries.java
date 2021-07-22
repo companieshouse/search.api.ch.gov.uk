@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.search.api.elasticsearch;
 
+import java.time.LocalDate;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -7,8 +8,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
-
-import java.time.LocalDate;
 
 @Component
 public class EnhancedSearchQueries {
@@ -32,18 +31,24 @@ public class EnhancedSearchQueries {
 
         addRangeQueryDates(boolQueryBuilder,
                 queryParams.getIncorporatedFrom(),
+                queryParams.getIncorporatedTo(),
                 "current_company.date_of_creation");
 
         return boolQueryBuilder;
     }
 
-    private void addRangeQueryDates(BoolQueryBuilder boolQueryBuilder, LocalDate from, String fieldName) {
-        if (from == null) {
+    private void addRangeQueryDates(BoolQueryBuilder boolQueryBuilder, LocalDate from, LocalDate to,  String fieldName) {
+        if (from == null && to == null) {
             return;
         }
         RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery(fieldName);
 
-        rangeQueryBuilder.gte(from.toString());
+        if (from != null) {
+            rangeQueryBuilder.gte(from.toString());
+        }
+        if (to != null) {
+            rangeQueryBuilder.lte(to.toString());
+        }
 
         boolQueryBuilder.filter(rangeQueryBuilder);
     }

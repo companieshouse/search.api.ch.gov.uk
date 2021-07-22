@@ -10,6 +10,8 @@ public class EnhancedSearchQueryParams {
 
     private LocalDate incorporatedFrom;
 
+    private LocalDate incorporatedTo;
+
     public String getCompanyName() {
         return companyName;
     }
@@ -32,5 +34,13 @@ public class EnhancedSearchQueryParams {
 
     public void setIncorporatedFrom(LocalDate incorporatedFrom) {
         this.incorporatedFrom = incorporatedFrom;
+    }
+
+    public LocalDate getIncorporatedTo() {
+        return incorporatedTo;
+    }
+
+    public void setIncorporatedTo(LocalDate incorporatedTo) {
+        this.incorporatedTo = incorporatedTo;
     }
 }
