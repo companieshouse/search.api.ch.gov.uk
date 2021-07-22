@@ -2,6 +2,8 @@ package uk.gov.companieshouse.search.api.service.search.impl.enhanced;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ENHANCED_SEARCH_INDEX;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INCORPORATED_FROM;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INCORPORATED_TO;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.LOCATION;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
@@ -75,6 +77,8 @@ public class EnhancedSearchRequestService {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logIfNotNull(logMap, COMPANY_NAME, queryParams.getCompanyName());
         logIfNotNull(logMap, LOCATION, queryParams.getLocation());
+        logIfNotNull(logMap, INCORPORATED_FROM, queryParams.getIncorporatedFrom());
+        logIfNotNull(logMap, INCORPORATED_TO, queryParams.getIncorporatedTo());
         logMap.put(INDEX, ENHANCED_SEARCH_INDEX);
 
         return logMap;

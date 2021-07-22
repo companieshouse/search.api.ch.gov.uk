@@ -1,6 +1,8 @@
 package uk.gov.companieshouse.search.api.controller;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INCORPORATED_FROM;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INCORPORATED_TO;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.LOCATION;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
@@ -38,26 +40,30 @@ public class EnhancedSearchController {
 
     private static final String COMPANY_NAME_QUERY_PARAM = "company_name";
     private static final String LOCATION_QUERY_PARAM = "location";
-    private static final String INCORPORATED_FROM = "incorporated_from";
-
+    private static final String INCORPORATED_FROM_QUERY_PARAMETER = "incorporated_from";
+    private static final String INCORPORATED_TO_QUERY_PARAMETER = "incorporated_to";
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
 
     @GetMapping("/companies")
     @ResponseBody
     public ResponseEntity<Object> search(@RequestParam(name = COMPANY_NAME_QUERY_PARAM, required = false) String companyName,
                                          @RequestParam(name = LOCATION_QUERY_PARAM, required = false) String location,
-                                         @RequestParam(name = INCORPORATED_FROM, required = false)
+                                         @RequestParam(name = INCORPORATED_FROM_QUERY_PARAMETER, required = false)
                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate incorporatedFrom,
+                                         @RequestParam(name = INCORPORATED_TO_QUERY_PARAMETER, required = false)
+                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate incorporatedTo,
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logIfNotNull(logMap, COMPANY_NAME, companyName);
         logIfNotNull(logMap, LOCATION, location);
+        logIfNotNull(logMap, INCORPORATED_FROM, incorporatedFrom);
+        logIfNotNull(logMap, INCORPORATED_TO, incorporatedTo);
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
 
-        EnhancedSearchQueryParams enhancedSearchQueryParams = mapEnhancedQueryParameters(companyName, location, incorporatedFrom);
+        EnhancedSearchQueryParams enhancedSearchQueryParams = mapEnhancedQueryParameters(companyName, location, incorporatedFrom, incorporatedTo);
 
         ResponseObject responseObject = searchIndexService.searchEnhanced(enhancedSearchQueryParams, requestId);
 
@@ -66,12 +72,14 @@ public class EnhancedSearchController {
 
     private EnhancedSearchQueryParams mapEnhancedQueryParameters(String companyName,
                                                                  String location,
-                                                                 LocalDate incorporatedFrom) {
+                                                                 LocalDate incorporatedFrom,
+                                                                 LocalDate incorporatedTo) {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(companyName);
         enhancedSearchQueryParams.setLocation(location);
         enhancedSearchQueryParams.setIncorporatedFrom(incorporatedFrom);
+        enhancedSearchQueryParams.setIncorporatedTo(incorporatedTo);
 
         return enhancedSearchQueryParams;
     }

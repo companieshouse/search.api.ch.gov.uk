@@ -19,7 +19,7 @@ class EnhancedSearchQueriesTest {
     private static final String COMPANY_NAME = "TEST COMPANY";
     private static final String LOCATION = "TEST LOCATION";
     private static final LocalDate INCORPORATED_FROM = LocalDate.of(2000, 1, 1);
-
+    private static final LocalDate INCORPORATED_TO = LocalDate.of(2002, 2, 2);
     private static final String COMPANY_NAME_MUST_CONTAIN_FIELD = "current_company.corporate_name";
     private static final String LOCATION_MATCH_FIELD = "current_company.full_address";
     private static final String INCORPORATION_DATE_MATCH_FIELD = "current_company.date_of_creation";
@@ -54,7 +54,7 @@ class EnhancedSearchQueriesTest {
 
     @Test
     @DisplayName("Create incorporated from match query")
-    void incorporatedFromFromQuery() {
+    void incorporatedFromQuery() {
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setIncorporatedFrom(INCORPORATED_FROM);
 
@@ -64,6 +64,20 @@ class EnhancedSearchQueriesTest {
         assertNotNull(queryBuilder);
         assertTrue(queryBuilder.toString().contains(INCORPORATION_DATE_MATCH_FIELD));
         assertTrue(queryBuilder.toString().contains(INCORPORATED_FROM.toString()));
+    }
+
+    @Test
+    @DisplayName("Create incorporated to match query")
+    void incorporatedToQuery() {
+        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
+        enhancedSearchQueryParams.setIncorporatedTo(INCORPORATED_TO);
+
+        QueryBuilder queryBuilder =
+                enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+
+        assertNotNull(queryBuilder);
+        assertTrue(queryBuilder.toString().contains(INCORPORATION_DATE_MATCH_FIELD));
+        assertTrue(queryBuilder.toString().contains(INCORPORATED_TO.toString()));
     }
 
     @Test
