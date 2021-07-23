@@ -27,7 +27,6 @@ import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.impl.enhanced.EnhancedSearchIndexService;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 @RestController

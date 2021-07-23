@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.search.api.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +38,20 @@ class EnhancedQueryParamMapperTest {
         assertEquals(LOCATION, enhancedSearchQueryParams.getLocation());
         assertEquals(INCORPORATED_FROM_MAPPED, enhancedSearchQueryParams.getIncorporatedFrom());
         assertEquals(INCORPORATED_TO_MAPPED, enhancedSearchQueryParams.getIncorporatedTo());
+    }
+
+    @Test
+    @DisplayName("Test params mapped successfully no dates")
+    void testMapParamsSuccessfulNoDates() throws Exception {
+
+        EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
+        EnhancedSearchQueryParams enhancedSearchQueryParams =
+                enhancedQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, null, null);
+
+        assertEquals(COMPANY_NAME, enhancedSearchQueryParams.getCompanyName());
+        assertEquals(LOCATION, enhancedSearchQueryParams.getLocation());
+        assertNull(enhancedSearchQueryParams.getIncorporatedFrom());
+        assertNull(enhancedSearchQueryParams.getIncorporatedTo());
     }
 
     @Test
