@@ -17,6 +17,14 @@ import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_
 import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_RESPONSE_DISSOLVED_COMPANY;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_RESPONSE_MISSING_FIELDS;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.bytes.BytesReference;
@@ -33,14 +41,6 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -68,6 +68,8 @@ class ElasticSearchResponseMapperTest {
     private static final String EFFECTIVE_FROM = "1989-01-01";
     private static final String CEASED_ON = "1992-05-10";
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
+    private static final String SIC_CODES = "99960";
+    private static final List<String> SIC_CODES_LIST = Arrays.asList(SIC_CODES);
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
@@ -251,7 +253,7 @@ class ElasticSearchResponseMapperTest {
         assertEquals(KIND, topHit.getKind());
         assertEquals(DATE_OF_CESSATION, topHit.getDateOfCessation().toString());
         assertEquals(DATE_OF_CREATION, topHit.getDateOfCreation().toString());
-
+        assertEquals(SIC_CODES_LIST, topHit.getSicCodes());
         assertEquals(COMPANY_PROFILE_LINK, topHit.getLinks().getCompanyProfile());
     }
 
@@ -421,6 +423,7 @@ class ElasticSearchResponseMapperTest {
         assertEquals(DATE_OF_CREATION, company.getDateOfCreation().toString());
         assertEquals(LOCALITY, company.getRegisteredOfficeAddress().getLocality());
         assertEquals(POSTCODE, company.getRegisteredOfficeAddress().getPostalCode());
+        assertEquals(SIC_CODES_LIST, company.getSicCodes());
     }
 
     @Test
@@ -436,6 +439,7 @@ class ElasticSearchResponseMapperTest {
         assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
         assertEquals(COMPANY_STATUS, company.getCompanyStatus());
         assertEquals(COMPANY_KIND, company.getKind());
+        assertEquals(SIC_CODES_LIST, company.getSicCodes());
     }
 
     @Test
@@ -454,6 +458,7 @@ class ElasticSearchResponseMapperTest {
         assertEquals(DATE_OF_CREATION, company.getDateOfCreation().toString());
         assertEquals(LOCALITY, company.getRegisteredOfficeAddress().getLocality());
         assertEquals(POSTCODE, company.getRegisteredOfficeAddress().getPostalCode());
+        assertEquals(SIC_CODES_LIST, company.getSicCodes());
     }
 
     private SearchHits createHits(String json) {
@@ -500,6 +505,7 @@ class ElasticSearchResponseMapperTest {
         company.setKind(KIND);
         company.setDateOfCessation(LocalDate.parse("20100501", formatter));
         company.setDateOfCreation(LocalDate.parse("19890501", formatter));
+        company.setSicCodes(SIC_CODES_LIST);
 
         if (includeAddress) {
             Address address = new Address();
@@ -557,6 +563,7 @@ class ElasticSearchResponseMapperTest {
         company.setCompanyNumber(COMPANY_NUMBER);
         company.setCompanyStatus(COMPANY_STATUS);
         company.setCompanyType(COMPANY_TYPE);
+        company.setSicCodes(SIC_CODES_LIST);
         company.setKind(KIND);
 
         company.setDateOfCessation(LocalDate.parse("20100501", formatter));

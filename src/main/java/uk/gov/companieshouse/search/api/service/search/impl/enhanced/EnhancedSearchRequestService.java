@@ -7,6 +7,7 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INCORPORATED
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.LOCATION;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIC_CODES;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
@@ -79,6 +80,7 @@ public class EnhancedSearchRequestService {
         logIfNotNull(logMap, LOCATION, queryParams.getLocation());
         logIfNotNull(logMap, INCORPORATED_FROM, queryParams.getIncorporatedFrom());
         logIfNotNull(logMap, INCORPORATED_TO, queryParams.getIncorporatedTo());
+        logIfNotNull(logMap, SIC_CODES, queryParams.getSicCodes());
         logMap.put(INDEX, ENHANCED_SEARCH_INDEX);
 
         return logMap;

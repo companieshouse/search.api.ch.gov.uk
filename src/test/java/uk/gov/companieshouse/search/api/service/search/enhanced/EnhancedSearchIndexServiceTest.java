@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,8 @@ class EnhancedSearchIndexServiceTest {
     private EnhancedSearchRequestService mockEnhancedSearchRequestService;
 
     private static final String COMPANY_NAME = "test company";
+    private static final String SIC_CODES = "99960";
+    private static final List<String> SIC_CODES_LIST = Arrays.asList(SIC_CODES);
     private static final String REQUEST_ID = "requestId";
 
     @Test
@@ -44,6 +47,7 @@ class EnhancedSearchIndexServiceTest {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(COMPANY_NAME);
+        enhancedSearchQueryParams.setSicCodes(SIC_CODES);
 
         when(mockEnhancedSearchRequestService.getSearchResults(enhancedSearchQueryParams, "request id"))
                 .thenReturn(createSearchResults(true, false));;
@@ -109,6 +113,7 @@ class EnhancedSearchIndexServiceTest {
         company.setCompanyStatus("companyStatus");
         company.setCompanyNumber("companyNumber");
         company.setRecordType("recordType");
+        company.setSicCodes(SIC_CODES_LIST);
 
         links.setCompanyProfile("self");
 

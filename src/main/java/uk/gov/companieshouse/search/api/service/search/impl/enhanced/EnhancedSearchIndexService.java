@@ -8,6 +8,7 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.LOCATION;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.NO_RESULTS_FOUND;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIC_CODES;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.STANDARD_ERROR_MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SUCCESSFUL_SEARCH;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
@@ -63,6 +64,7 @@ public class EnhancedSearchIndexService {
         logIfNotNull(logMap, LOCATION, queryParams.getLocation());
         logIfNotNull(logMap, INCORPORATED_FROM, queryParams.getIncorporatedFrom());
         logIfNotNull(logMap, INCORPORATED_TO, queryParams.getIncorporatedTo());
+        logIfNotNull(logMap, SIC_CODES, queryParams.getSicCodes());
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("enhanced search filters", logMap);
 

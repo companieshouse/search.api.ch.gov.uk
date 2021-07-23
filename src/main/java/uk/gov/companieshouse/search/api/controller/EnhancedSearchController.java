@@ -6,6 +6,7 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INCORPORATED
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.LOCATION;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIC_CODES;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
@@ -42,6 +43,7 @@ public class EnhancedSearchController {
     private static final String LOCATION_QUERY_PARAM = "location";
     private static final String INCORPORATED_FROM_QUERY_PARAMETER = "incorporated_from";
     private static final String INCORPORATED_TO_QUERY_PARAMETER = "incorporated_to";
+    private static final String SIC_CODE_QUERY_PARAMETER = "sic_codes";
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
 
     @GetMapping("/companies")
@@ -52,6 +54,7 @@ public class EnhancedSearchController {
                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate incorporatedFrom,
                                          @RequestParam(name = INCORPORATED_TO_QUERY_PARAMETER, required = false)
                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate incorporatedTo,
+                                         @RequestParam(name = SIC_CODE_QUERY_PARAMETER, required = false) String sicCodes,
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
@@ -59,11 +62,12 @@ public class EnhancedSearchController {
         logIfNotNull(logMap, LOCATION, location);
         logIfNotNull(logMap, INCORPORATED_FROM, incorporatedFrom);
         logIfNotNull(logMap, INCORPORATED_TO, incorporatedTo);
+        logIfNotNull(logMap, SIC_CODES, sicCodes);
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
 
-        EnhancedSearchQueryParams enhancedSearchQueryParams = mapEnhancedQueryParameters(companyName, location, incorporatedFrom, incorporatedTo);
+        EnhancedSearchQueryParams enhancedSearchQueryParams = mapEnhancedQueryParameters(companyName, location, incorporatedFrom, incorporatedTo, sicCodes);
 
         ResponseObject responseObject = searchIndexService.searchEnhanced(enhancedSearchQueryParams, requestId);
 
@@ -73,13 +77,15 @@ public class EnhancedSearchController {
     private EnhancedSearchQueryParams mapEnhancedQueryParameters(String companyName,
                                                                  String location,
                                                                  LocalDate incorporatedFrom,
-                                                                 LocalDate incorporatedTo) {
+                                                                 LocalDate incorporatedTo,
+                                                                 String sicCodes) {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(companyName);
         enhancedSearchQueryParams.setLocation(location);
         enhancedSearchQueryParams.setIncorporatedFrom(incorporatedFrom);
         enhancedSearchQueryParams.setIncorporatedTo(incorporatedTo);
+        enhancedSearchQueryParams.setSicCodes(sicCodes);
 
         return enhancedSearchQueryParams;
     }

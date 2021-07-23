@@ -53,6 +53,9 @@ public class TopHit {
     @JsonProperty("matched_previous_company_name")
     private PreviousCompanyName matchedPreviousCompanyName;
 
+    @JsonProperty("sic_codes")
+    private List<String> sicCodes;
+
     public String getCompanyName() {
         return companyName;
     }
@@ -155,5 +158,13 @@ public class TopHit {
 
     public void setMatchedPreviousCompanyName(PreviousCompanyName matchedPreviousCompanyName) {
         this.matchedPreviousCompanyName = matchedPreviousCompanyName;
+    }
+
+    public List<String> getSicCodes() {
+        return sicCodes;
+    }
+
+    public void setSicCodes(List<String> sicCodes) {
+        this.sicCodes = sicCodes;
     }
 }

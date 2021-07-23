@@ -25,6 +25,7 @@ public class ElasticSearchResponseMapper {
     private static final String COMPANY_STATUS_KEY = "company_status";
     private static final String COMPANY_TYPE_KEY = "company_type";
     private static final String CURRENT_COMPANY_KEY = "current_company";
+    private static final String SIC_CODES_KEY = "sic_codes";
     private static final String ITEMS_KEY = "items";
     private static final String LINKS_KEY = "links";
     private static final String SELF_KEY = "self";
@@ -101,6 +102,7 @@ public class ElasticSearchResponseMapper {
         topHit.setRegisteredOfficeAddress(enhancedCompany.getRegisteredOfficeAddress());
         topHit.setDateOfCessation(enhancedCompany.getDateOfCessation());
         topHit.setDateOfCreation(enhancedCompany.getDateOfCreation());
+        topHit.setSicCodes(enhancedCompany.getSicCodes());
         topHit.setLinks(enhancedCompany.getLinks());
 
         return topHit;
@@ -181,6 +183,10 @@ public class ElasticSearchResponseMapper {
 
         if (currentCompanyMap.containsKey(DATE_OF_CREATION)) {
             enhancedCompany.setDateOfCreation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CREATION), enhancedFormatter));
+        }
+
+        if (currentCompanyMap.containsKey(SIC_CODES_KEY)) {
+            enhancedCompany.setSicCodes((List<String>) currentCompanyMap.get(SIC_CODES_KEY));
         }
 
         Address roAddress = null;
