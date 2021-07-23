@@ -125,7 +125,7 @@ class ApiToResponseMapperTest {
 
         assertNotNull(responseEntity);
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("Date provide is either invalid, empty or in the incorrect format, please use the format of 'yyyy-mm-dd' e.g '2000-12-20'", responseEntity.getBody());
+        assertEquals("Date provided is either invalid, empty or in the incorrect format, please use the format of 'yyyy-mm-dd' e.g '2000-12-20'", responseEntity.getBody());
     }
 
     @Test
