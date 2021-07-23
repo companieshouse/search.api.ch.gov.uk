@@ -10,11 +10,7 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIC_CODES;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
-import java.time.LocalDate;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,15 +19,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.companieshouse.search.api.exception.DateFormatException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
+import uk.gov.companieshouse.search.api.mapper.EnhancedQueryParamMapper;
 import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
+import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.impl.enhanced.EnhancedSearchIndexService;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/enhanced-search", produces = MediaType.APPLICATION_JSON_VALUE)
 public class EnhancedSearchController {
+
+    @Autowired
+    private EnhancedQueryParamMapper queryParamMapper;
 
     @Autowired
     private EnhancedSearchIndexService searchIndexService;
@@ -50,10 +54,8 @@ public class EnhancedSearchController {
     @ResponseBody
     public ResponseEntity<Object> search(@RequestParam(name = COMPANY_NAME_QUERY_PARAM, required = false) String companyName,
                                          @RequestParam(name = LOCATION_QUERY_PARAM, required = false) String location,
-                                         @RequestParam(name = INCORPORATED_FROM_QUERY_PARAMETER, required = false)
-                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate incorporatedFrom,
-                                         @RequestParam(name = INCORPORATED_TO_QUERY_PARAMETER, required = false)
-                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate incorporatedTo,
+                                         @RequestParam(name = INCORPORATED_FROM_QUERY_PARAMETER, required = false) String incorporatedFrom,
+                                         @RequestParam(name = INCORPORATED_TO_QUERY_PARAMETER, required = false) String incorporatedTo,
                                          @RequestParam(name = SIC_CODE_QUERY_PARAMETER, required = false) String sicCodes,
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
@@ -67,26 +69,15 @@ public class EnhancedSearchController {
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
 
-        EnhancedSearchQueryParams enhancedSearchQueryParams = mapEnhancedQueryParameters(companyName, location, incorporatedFrom, incorporatedTo, sicCodes);
+        EnhancedSearchQueryParams enhancedSearchQueryParams;
+        try {
+            enhancedSearchQueryParams = queryParamMapper.mapEnhancedQueryParameters(companyName, location, incorporatedFrom, incorporatedTo, sicCodes);
+        } catch (DateFormatException dfe) {
+           return apiToResponseMapper.map(new ResponseObject(ResponseStatus.DATE_FORMAT_ERROR, null));
+        }
 
         ResponseObject responseObject = searchIndexService.searchEnhanced(enhancedSearchQueryParams, requestId);
 
         return apiToResponseMapper.map(responseObject);
-    }
-
-    private EnhancedSearchQueryParams mapEnhancedQueryParameters(String companyName,
-                                                                 String location,
-                                                                 LocalDate incorporatedFrom,
-                                                                 LocalDate incorporatedTo,
-                                                                 String sicCodes) {
-
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyName(companyName);
-        enhancedSearchQueryParams.setLocation(location);
-        enhancedSearchQueryParams.setIncorporatedFrom(incorporatedFrom);
-        enhancedSearchQueryParams.setIncorporatedTo(incorporatedTo);
-        enhancedSearchQueryParams.setSicCodes(sicCodes);
-
-        return enhancedSearchQueryParams;
     }
 }

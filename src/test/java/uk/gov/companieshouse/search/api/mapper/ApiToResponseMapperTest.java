@@ -21,6 +21,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DATE_FORMAT_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_UPSERTED;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.REQUEST_PARAMETER_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_ERROR;
@@ -111,6 +112,20 @@ class ApiToResponseMapperTest {
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test if Bad Request returned on date format error")
+    void testBadRequestOnDateFormatErrorReturned() {
+
+        ResponseObject responseObject =
+                new ResponseObject(DATE_FORMAT_ERROR);
+
+        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
+
+        assertNotNull(responseEntity);
+        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Date provided is either invalid, empty or in the incorrect format, please use the format of 'yyyy-mm-dd' e.g '2000-12-20'", responseEntity.getBody());
     }
 
     @Test

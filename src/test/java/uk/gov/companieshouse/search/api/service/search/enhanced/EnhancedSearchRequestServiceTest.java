@@ -32,6 +32,8 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 import uk.gov.companieshouse.search.api.service.search.impl.enhanced.EnhancedSearchRequestService;
 
+import java.io.IOException;
+
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EnhancedSearchRequestServiceTest {
