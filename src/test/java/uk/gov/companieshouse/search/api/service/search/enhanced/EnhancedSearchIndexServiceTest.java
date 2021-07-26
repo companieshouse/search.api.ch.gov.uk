@@ -38,7 +38,7 @@ class EnhancedSearchIndexServiceTest {
 
     private static final String COMPANY_NAME = "test company";
     private static final String SIC_CODES = "99960";
-    private static final List<String> SIC_CODES_LIST = Arrays.asList(SIC_CODES);
+    private static final List<String> SIC_CODES_LIST = Arrays.asList(SIC_CODES, "0000000");
     private static final String REQUEST_ID = "requestId";
 
     @Test
@@ -47,7 +47,7 @@ class EnhancedSearchIndexServiceTest {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(COMPANY_NAME);
-        enhancedSearchQueryParams.setSicCodes(SIC_CODES);
+        enhancedSearchQueryParams.setSicCodes(SIC_CODES_LIST);
 
         when(mockEnhancedSearchRequestService.getSearchResults(enhancedSearchQueryParams, "request id"))
                 .thenReturn(createSearchResults(true, false));;
