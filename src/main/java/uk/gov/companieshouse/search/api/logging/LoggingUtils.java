@@ -37,7 +37,7 @@ public class LoggingUtils {
     public static final String NO_RESULTS_FOUND = "No results were returned while enhanced searching for a company";
     public static final String INCORPORATED_FROM = "incorporated_from";
     public static final String INCORPORATED_TO = "incorporated_to";
-    public static final String SIC_CODES = "SIC codes";
+    public static final String SIC_CODES = "sic_codes";
 
     public static final String REQUEST_ID_LOG_KEY = "request_id";
     public static final String STATUS_LOG_KEY = "status";
