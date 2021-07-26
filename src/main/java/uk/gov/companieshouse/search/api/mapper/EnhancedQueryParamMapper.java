@@ -53,10 +53,10 @@ public class EnhancedQueryParamMapper {
             List<String> mappedCompanyStatusList = new ArrayList<>();
 
             for (String status: companyStatusList) {
-                if (companyStatuses.contains(status)) {
+                if (companyStatuses.contains(status.toLowerCase())) {
                     mappedCompanyStatusList.add(status);
                 } else {
-                    throw new MappingException("failed to map value for company status:" + status);
+                    throw new MappingException("failed to map value for company status: " + status);
                 }
             }
             enhancedSearchQueryParams.setCompanyStatusList(mappedCompanyStatusList);

@@ -29,6 +29,11 @@ public class EnhancedSearchQueries {
             boolQueryBuilder.filter(queryBuilder);
         }
 
+        if (queryParams.getCompanyStatusList() != null) {
+            boolQueryBuilder.filter(QueryBuilders.termsQuery("current_company.company_status.keyword",
+                queryParams.getCompanyStatusList()));
+        }
+
         addRangeQueryDates(boolQueryBuilder,
                 queryParams.getIncorporatedFrom(),
                 queryParams.getIncorporatedTo(),
