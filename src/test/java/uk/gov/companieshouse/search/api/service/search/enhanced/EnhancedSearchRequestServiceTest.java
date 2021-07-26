@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.bytes.BytesReference;
@@ -46,12 +49,13 @@ class EnhancedSearchRequestServiceTest {
 
     private static final String COMPANY_NAME = "test company";
     private static final String REQUEST_ID = "123456789";
-    private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final String COMPANY_NUMBER = "00000000";
     private static final String COMPANY_STATUS = "dissolved";
     private static final String COMPANY_TYPE = "ltd";
     private static final String COMPANY_PROFILE_LINK = "/company/00000000";
     private static final String KIND = "searchresults#enhanced-search-company";
+    private static final String SIC_CODES = "99960";
+    private static final List<String> SIC_CODES_LIST = Arrays.asList(SIC_CODES);
 
     @Test
     @DisplayName("Test enhanced search returns results successfully")
@@ -71,6 +75,7 @@ class EnhancedSearchRequestServiceTest {
 
         assertNotNull(searchResults);
         assertEquals(COMPANY_NAME, searchResults.getTopHit().getCompanyName());
+        assertEquals(SIC_CODES_LIST, searchResults.getTopHit().getSicCodes());
         assertEquals("search#enhanced-search", searchResults.getKind());
     }
 
@@ -106,10 +111,31 @@ class EnhancedSearchRequestServiceTest {
     }
 
     private SearchHits createSearchHits() {
-        BytesReference source = new BytesArray("{" + "\"ID\": \"id\"," + "\"company_type\": \"ltd\","
-                + "\"ordered_alpha_key_with_id\": \"ordered_alpha_key_with_id\"," + "\"items\" : {"
-                + "\"company_number\" : \"00000000\"," + "\"company_status\" : \"active\","
-                + "\"corporate_name\" : \"TEST COMPANY\"" + "}," + "\"links\" : {" + "\"self\" : \"/company/00000000\"" + "}" + "}");
+        BytesReference source = new BytesArray(
+                "{" + "\"company_type\": \"ltd\","
+                    + "\"kind\": \"kind\","
+                    + "\"current_company\" : {"
+                        + "\"sic_codes\" : ["
+                            + "\"99960\""
+                        + "],"
+                        + "\"company_number\" : \"00000000\","
+                        + "\"address\" : {"
+                            + "\"premises\" : \"premises\""
+                            + "\"address_line_1\" : \"address line 1\""
+                            + "\"address_line_2\" : \"address line 2\""
+                            + "\"locality\" : \"locality\""
+                            + "\"postal_code\" : \"postal code\""
+                            + "\"region\" : \"region\""
+                        + "},"
+                        + "\"date_of_creation\" : \"19890501\""
+                        + "\"company_status\" : \"active\","
+                        + "\"corporate_name\" : \"TEST COMPANY\""
+
+                    + "},"
+                    + "\"links\" : {"
+                        + "\"self\" : \"/company/00000000\""
+                    + "}"
+                + "}");
         SearchHit hit = new SearchHit(1);
         hit.sourceRef(source);
         TotalHits totalHits = new TotalHits(1, GREATER_THAN_OR_EQUAL_TO);
@@ -127,7 +153,7 @@ class EnhancedSearchRequestServiceTest {
         company.setCompanyNumber(COMPANY_NUMBER);
         company.setCompanyStatus(COMPANY_STATUS);
         company.setCompanyType(COMPANY_TYPE);
-        company.setOrderedAlphaKeyWithId(ORDERED_ALPHA_KEY_WITH_ID);
+        company.setSicCodes(SIC_CODES_LIST);
         company.setKind(KIND);
 
         Links links = new Links();
@@ -143,7 +169,7 @@ class EnhancedSearchRequestServiceTest {
         topHit.setCompanyNumber(COMPANY_NUMBER);
         topHit.setCompanyStatus(COMPANY_STATUS);
         topHit.setCompanyType(COMPANY_TYPE);
-        topHit.setOrderedAlphaKeyWithId(ORDERED_ALPHA_KEY_WITH_ID);
+        topHit.setSicCodes(SIC_CODES_LIST);
         topHit.setKind(KIND);
 
         Links links = new Links();

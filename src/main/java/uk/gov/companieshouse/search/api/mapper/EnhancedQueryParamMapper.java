@@ -12,7 +12,8 @@ public class EnhancedQueryParamMapper {
     public EnhancedSearchQueryParams mapEnhancedQueryParameters(String companyName,
                                                                  String location,
                                                                  String incorporatedFrom,
-                                                                 String incorporatedTo) throws DateFormatException {
+                                                                 String incorporatedTo,
+                                                                 String sicCodes) throws DateFormatException {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(companyName);
@@ -28,6 +29,8 @@ public class EnhancedQueryParamMapper {
         } catch (Exception e) {
             throw new DateFormatException("error occured setting date field");
         }
+
+        enhancedSearchQueryParams.setSicCodes(sicCodes);
 
         return enhancedSearchQueryParams;
     }

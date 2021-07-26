@@ -6,6 +6,7 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INCORPORATED
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.LOCATION;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIC_CODES;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
@@ -46,6 +47,7 @@ public class EnhancedSearchController {
     private static final String LOCATION_QUERY_PARAM = "location";
     private static final String INCORPORATED_FROM_QUERY_PARAMETER = "incorporated_from";
     private static final String INCORPORATED_TO_QUERY_PARAMETER = "incorporated_to";
+    private static final String SIC_CODE_QUERY_PARAMETER = "sic_codes";
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
 
     @GetMapping("/companies")
@@ -54,6 +56,7 @@ public class EnhancedSearchController {
                                          @RequestParam(name = LOCATION_QUERY_PARAM, required = false) String location,
                                          @RequestParam(name = INCORPORATED_FROM_QUERY_PARAMETER, required = false) String incorporatedFrom,
                                          @RequestParam(name = INCORPORATED_TO_QUERY_PARAMETER, required = false) String incorporatedTo,
+                                         @RequestParam(name = SIC_CODE_QUERY_PARAMETER, required = false) String sicCodes,
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
@@ -61,13 +64,14 @@ public class EnhancedSearchController {
         logIfNotNull(logMap, LOCATION, location);
         logIfNotNull(logMap, INCORPORATED_FROM, incorporatedFrom);
         logIfNotNull(logMap, INCORPORATED_TO, incorporatedTo);
+        logIfNotNull(logMap, SIC_CODES, sicCodes);
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
 
         EnhancedSearchQueryParams enhancedSearchQueryParams;
         try {
-            enhancedSearchQueryParams = queryParamMapper.mapEnhancedQueryParameters(companyName, location, incorporatedFrom, incorporatedTo);
+            enhancedSearchQueryParams = queryParamMapper.mapEnhancedQueryParameters(companyName, location, incorporatedFrom, incorporatedTo, sicCodes);
         } catch (DateFormatException dfe) {
            return apiToResponseMapper.map(new ResponseObject(ResponseStatus.DATE_FORMAT_ERROR, null));
         }

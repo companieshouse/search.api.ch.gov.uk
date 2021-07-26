@@ -12,6 +12,8 @@ public class EnhancedSearchQueryParams {
 
     private LocalDate incorporatedTo;
 
+    private String sicCodes;
+
     public String getCompanyName() {
         return companyName;
     }
@@ -42,5 +44,13 @@ public class EnhancedSearchQueryParams {
 
     public void setIncorporatedTo(LocalDate incorporatedTo) {
         this.incorporatedTo = incorporatedTo;
+    }
+
+    public String getSicCodes() {
+        return sicCodes;
+    }
+
+    public void setSicCodes(String sicCodes) {
+        this.sicCodes = sicCodes;
     }
 }

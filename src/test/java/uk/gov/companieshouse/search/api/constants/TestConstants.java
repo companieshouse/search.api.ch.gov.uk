@@ -227,6 +227,9 @@ public static final String ENHANCED_RESPONSE =
                 "\"company_number\" : \"00000000\"," +
                 "\"corporate_name\" : \"TEST COMPANY\"," +
                 "\"company_status\" : \"active\"," +
+                "\"sic_codes\" : [" +
+                    "\"99960\"" +
+                "]," +
                 "\"address\" : {" +
                     "\"address_line_1\" : \"addressLine1\"," +
                     "\"address_line_2\" : \"addressLine2\"," +
@@ -250,6 +253,9 @@ public static final String ENHANCED_RESPONSE_DISSOLVED_COMPANY =
                 "\"company_number\" : \"00000000\"," +
                 "\"corporate_name\" : \"TEST COMPANY\"," +
                 "\"company_status\" : \"dissolved\"," +
+                "\"sic_codes\" : [" +
+                    "\"99960\"" +
+                "]," +
                 "\"address\" : {" +
                     "\"address_line_1\" : \"addressLine1\"," +
                     "\"address_line_2\" : \"addressLine2\"," +

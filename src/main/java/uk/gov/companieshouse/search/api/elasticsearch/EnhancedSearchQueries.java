@@ -34,6 +34,14 @@ public class EnhancedSearchQueries {
                 queryParams.getIncorporatedTo(),
                 "current_company.date_of_creation");
 
+        if (queryParams.getSicCodes() != null) {
+
+            queryBuilder = QueryBuilders.termQuery("current_company.sic_codes",
+                    queryParams.getSicCodes());
+
+            boolQueryBuilder.filter(queryBuilder);
+        }
+
         return boolQueryBuilder;
     }
 
