@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -25,6 +27,7 @@ class EnhancedQueryParamMapperTest {
     private static final LocalDate INCORPORATED_TO_MAPPED = LocalDate.of(2002, 2, 2);
     private static final String BAD_DATE_FORMAT = "20010101";
     private static final String SIC_CODES = "99960";
+    private static final List<String> SIC_CODES_LIST = Arrays.asList(SIC_CODES);
 
     @Test
     @DisplayName("Test params mapped successfully")
@@ -32,13 +35,13 @@ class EnhancedQueryParamMapperTest {
 
         EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
         EnhancedSearchQueryParams enhancedSearchQueryParams =
-                enhancedQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, SIC_CODES);
+                enhancedQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, SIC_CODES_LIST);
 
         assertEquals(COMPANY_NAME, enhancedSearchQueryParams.getCompanyName());
         assertEquals(LOCATION, enhancedSearchQueryParams.getLocation());
         assertEquals(INCORPORATED_FROM_MAPPED, enhancedSearchQueryParams.getIncorporatedFrom());
         assertEquals(INCORPORATED_TO_MAPPED, enhancedSearchQueryParams.getIncorporatedTo());
-        assertEquals(SIC_CODES, enhancedSearchQueryParams.getSicCodes());
+        assertEquals(SIC_CODES_LIST, enhancedSearchQueryParams.getSicCodes());
     }
 
     @Test
@@ -62,7 +65,7 @@ class EnhancedQueryParamMapperTest {
         EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
 
         assertThrows(DateFormatException.class, () -> {
-                enhancedQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, BAD_DATE_FORMAT, BAD_DATE_FORMAT, SIC_CODES);
+                enhancedQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, BAD_DATE_FORMAT, BAD_DATE_FORMAT, SIC_CODES_LIST);
         });
     }
 }

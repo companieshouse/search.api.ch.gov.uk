@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +22,7 @@ class EnhancedSearchQueriesTest {
     private static final LocalDate INCORPORATED_FROM = LocalDate.of(2000, 1, 1);
     private static final LocalDate INCORPORATED_TO = LocalDate.of(2002, 2, 2);
     private static final String SIC_CODES = "99960";
+    private static final List<String> SIC_CODES_LIST = Arrays.asList(SIC_CODES);
     private static final String COMPANY_NAME_MUST_CONTAIN_FIELD = "current_company.corporate_name";
     private static final String LOCATION_MATCH_FIELD = "current_company.full_address";
     private static final String INCORPORATION_DATE_MATCH_FIELD = "current_company.date_of_creation";
@@ -85,7 +88,7 @@ class EnhancedSearchQueriesTest {
     @DisplayName("Create sic codes match query")
     void sicCodesMatchQuery() {
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setSicCodes(SIC_CODES);
+        enhancedSearchQueryParams.setSicCodes(SIC_CODES_LIST);
 
         QueryBuilder queryBuilder =
                 enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);

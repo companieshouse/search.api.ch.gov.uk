@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.search.api.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class EnhancedSearchQueryParams {
 
@@ -12,7 +13,7 @@ public class EnhancedSearchQueryParams {
 
     private LocalDate incorporatedTo;
 
-    private String sicCodes;
+    private List<String> sicCodes;
 
     public String getCompanyName() {
         return companyName;
@@ -46,11 +47,11 @@ public class EnhancedSearchQueryParams {
         this.incorporatedTo = incorporatedTo;
     }
 
-    public String getSicCodes() {
+    public List<String> getSicCodes() {
         return sicCodes;
     }
 
-    public void setSicCodes(String sicCodes) {
+    public void setSicCodes(List<String> sicCodes) {
         this.sicCodes = sicCodes;
     }
 }

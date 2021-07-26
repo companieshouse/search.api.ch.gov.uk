@@ -1,10 +1,10 @@
 package uk.gov.companieshouse.search.api.mapper;
 
+import java.time.LocalDate;
+import java.util.List;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.search.api.exception.DateFormatException;
 import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
-
-import java.time.LocalDate;
 
 @Component
 public class EnhancedQueryParamMapper {
@@ -13,7 +13,7 @@ public class EnhancedQueryParamMapper {
                                                                  String location,
                                                                  String incorporatedFrom,
                                                                  String incorporatedTo,
-                                                                 String sicCodes) throws DateFormatException {
+                                                                 List<String> sicCodes) throws DateFormatException {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(companyName);
