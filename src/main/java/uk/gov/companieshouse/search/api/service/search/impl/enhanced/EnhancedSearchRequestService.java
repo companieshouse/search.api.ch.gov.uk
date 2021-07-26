@@ -1,28 +1,19 @@
 package uk.gov.companieshouse.search.api.service.search.impl.enhanced;
 
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ENHANCED_SEARCH_INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INCORPORATED_FROM;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INCORPORATED_TO;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.LOCATION;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIC_CODES;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogMap;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.GenerateEtagUtil;
 import uk.gov.companieshouse.search.api.elasticsearch.EnhancedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
-import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
 import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.SearchResults;
@@ -43,7 +34,7 @@ public class EnhancedSearchRequestService {
 
     public SearchResults<Company> getSearchResults(EnhancedSearchQueryParams queryParams, String requestId) throws SearchException {
 
-        Map<String, Object> logMap = getLogMap(requestId, queryParams);
+        Map<String, Object> logMap = getLogMap(queryParams, requestId);
 
         getLogger().info("Getting enhanced search results", logMap);
         logMap.remove(MESSAGE);
@@ -72,17 +63,5 @@ public class EnhancedSearchRequestService {
         }
 
         return new SearchResults<>(etag, topHit, results, kind);
-    }
-
-    private Map<String, Object> getLogMap(String requestId, EnhancedSearchQueryParams queryParams) {
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logIfNotNull(logMap, COMPANY_NAME, queryParams.getCompanyName());
-        logIfNotNull(logMap, LOCATION, queryParams.getLocation());
-        logIfNotNull(logMap, INCORPORATED_FROM, queryParams.getIncorporatedFrom());
-        logIfNotNull(logMap, INCORPORATED_TO, queryParams.getIncorporatedTo());
-        logIfNotNull(logMap, SIC_CODES, queryParams.getSicCodes());
-        logMap.put(INDEX, ENHANCED_SEARCH_INDEX);
-
-        return logMap;
     }
 }

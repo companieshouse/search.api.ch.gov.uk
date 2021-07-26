@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
+import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
 
 public class LoggingUtils {
 
@@ -63,4 +64,16 @@ public class LoggingUtils {
         }
     }
 
+    public static Map<String, Object> getLogMap(EnhancedSearchQueryParams queryParams, String requestId) {
+        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logIfNotNull(logMap, COMPANY_NAME, queryParams.getCompanyName());
+        logIfNotNull(logMap, LOCATION, queryParams.getLocation());
+        logIfNotNull(logMap, INCORPORATED_FROM, queryParams.getIncorporatedFrom());
+        logIfNotNull(logMap, INCORPORATED_TO, queryParams.getIncorporatedTo());
+        logIfNotNull(logMap, SIC_CODES, queryParams.getSicCodes());
+        logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
+        getLogger().info("enhanced search filters", logMap);
+
+        return logMap;
+    }
 }
