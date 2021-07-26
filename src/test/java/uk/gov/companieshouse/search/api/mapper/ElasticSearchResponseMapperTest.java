@@ -439,7 +439,6 @@ class ElasticSearchResponseMapperTest {
         assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
         assertEquals(COMPANY_STATUS, company.getCompanyStatus());
         assertEquals(COMPANY_KIND, company.getKind());
-        assertEquals(SIC_CODES_LIST, company.getSicCodes());
     }
 
     @Test
