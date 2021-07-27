@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class EnhancedQueryParamMapper {
 
-    private static final List<String> companyStatuses = Arrays.asList(
+    private static final List<String> acceptedCompanyStatus = Arrays.asList(
         "active",
         "dissolved",
         "open",
@@ -25,6 +25,43 @@ public class EnhancedQueryParamMapper {
         "liquidation",
         "insolvency-proceedings",
         "voluntary-arrangement"
+    );
+
+    private static final List<String> acceptedCompanyTypes = Arrays.asList(
+        "private-unlimited",
+        "ltd",
+        "plc",
+        "old-public-company",
+        "private-limited-guarant-nsc-limited-exemption",
+        "limited-partnership",
+        "private-limited-guarant-nsc",
+        "converted-or-closed",
+        "private-unlimited-nsc",
+        "private-limited-shares-section-30-exemption",
+        "protected-cell-company",
+        "assurance-company",
+        "oversea-company",
+        "eeig",
+        "icvc-securities",
+        "icvc-warrant",
+        "icvc-umbrella",
+        "registered-society-non-jurisdictional",
+        "industrial-and-provident-society",
+        "northern-ireland",
+        "northern-ireland-other",
+        "llp",
+        "royal-charter",
+        "investment-company-with-variable-capital",
+        "unregistered-company",
+        "other",
+        "european-public-limited-liability-company-se",
+        "uk-establishment",
+        "scottish-partnership",
+        "charitable-incorporated-organisation",
+        "scottish-charitable-incorporated-organisation",
+        "further-education-or-sixth-form-college-corporation",
+        "community-interest-company",
+        "private-fund-limited-partnership"
     );
 
     public EnhancedSearchQueryParams mapEnhancedQueryParameters(String companyName,
@@ -53,7 +90,7 @@ public class EnhancedQueryParamMapper {
             List<String> mappedCompanyStatusList = new ArrayList<>();
 
             for (String status: companyStatusList) {
-                if (companyStatuses.contains(status.toLowerCase())) {
+                if (acceptedCompanyStatus.contains(status.toLowerCase())) {
                     mappedCompanyStatusList.add(status);
                 } else {
                     throw new MappingException("failed to map value for company status: " + status);
