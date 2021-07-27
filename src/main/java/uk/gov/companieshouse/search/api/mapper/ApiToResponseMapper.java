@@ -34,6 +34,9 @@ public class ApiToResponseMapper {
             case DATE_FORMAT_ERROR:
                 return ResponseEntity.status(BAD_REQUEST)
                         .body("Date provided is either invalid, empty or in the incorrect format, please use the format of 'yyyy-mm-dd' e.g '2000-12-20'");
+            case MAPPING_ERROR:
+                return ResponseEntity.status(BAD_REQUEST)
+                    .body("Error attempting to map request parameter values, please check the values of fields such as 'company_status' contain accurate values");
             case REQUEST_PARAMETER_ERROR:
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                         .body("Invalid url parameter for search_type, please try 'alphabetical', 'best-match' or 'previous-name-dissolved'");

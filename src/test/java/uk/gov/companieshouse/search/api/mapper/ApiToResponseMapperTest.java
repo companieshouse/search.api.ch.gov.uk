@@ -23,6 +23,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DATE_FORMAT_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_UPSERTED;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.MAPPING_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.REQUEST_PARAMETER_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
@@ -125,7 +126,25 @@ class ApiToResponseMapperTest {
 
         assertNotNull(responseEntity);
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("Date provided is either invalid, empty or in the incorrect format, please use the format of 'yyyy-mm-dd' e.g '2000-12-20'", responseEntity.getBody());
+        assertEquals("Date provided is either invalid, empty or in the incorrect format," +
+                " please use the format of 'yyyy-mm-dd' e.g '2000-12-20'",
+            responseEntity.getBody());
+    }
+
+    @Test
+    @DisplayName("Test if Bad Request returned on mapping error")
+    void testBadRequestOnMappingErrorReturned() {
+
+        ResponseObject responseObject =
+            new ResponseObject(MAPPING_ERROR);
+
+        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
+
+        assertNotNull(responseEntity);
+        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Error attempting to map request parameter values," +
+                " please check the values of fields such as 'company_status' contain accurate values",
+            responseEntity.getBody());
     }
 
     @Test
@@ -139,7 +158,9 @@ class ApiToResponseMapperTest {
 
         assertNotNull(responseEntity);
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
-        assertEquals("Invalid url parameter for search_type, please try 'alphabetical', 'best-match' or 'previous-name-dissolved'", responseEntity.getBody());
+        assertEquals("Invalid url parameter for search_type," +
+                " please try 'alphabetical', 'best-match' or 'previous-name-dissolved'",
+            responseEntity.getBody());
     }
 
     @Test
@@ -154,7 +175,8 @@ class ApiToResponseMapperTest {
 
         assertNotNull(responseEntity);
         assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
-        assertEquals("Invalid size parameter, size must be greater than zero and not greater than 50", responseEntity.getBody());
+        assertEquals("Invalid size parameter, size must be greater than zero and not greater than 50",
+            responseEntity.getBody());
     }
 
     @Test

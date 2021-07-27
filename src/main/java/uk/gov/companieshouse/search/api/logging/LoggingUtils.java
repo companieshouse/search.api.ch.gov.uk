@@ -15,6 +15,7 @@ public class LoggingUtils {
     public static final String ALPHABETICAL_SEARCH = "alphabetical";
     public static final String COMPANY_NAME = "company_name";
     public static final String COMPANY_NUMBER = "company_number";
+    public static final String COMPANY_STATUS = "company_status";
     public static final String DISSOLVED_SEARCH_ALPHABETICAL = "dissolved - alphabetical";
     public static final String DISSOLVED_SEARCH_BEST_MATCH = "dissolved - best match";
     public static final String DISSOLVED_SEARCH_PREVIOUS_NAMES_BEST_MATCH = "dissolved - previous names best match";
@@ -70,6 +71,7 @@ public class LoggingUtils {
         logIfNotNull(logMap, LOCATION, queryParams.getLocation());
         logIfNotNull(logMap, INCORPORATED_FROM, queryParams.getIncorporatedFrom());
         logIfNotNull(logMap, INCORPORATED_TO, queryParams.getIncorporatedTo());
+        logIfNotNull(logMap, COMPANY_STATUS, queryParams.getCompanyStatusList());
         logIfNotNull(logMap, SIC_CODES, queryParams.getSicCodes());
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("enhanced search filters", logMap);
