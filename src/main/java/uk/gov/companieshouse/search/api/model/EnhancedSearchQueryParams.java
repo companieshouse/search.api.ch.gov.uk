@@ -17,6 +17,8 @@ public class EnhancedSearchQueryParams {
 
     private List<String> sicCodes;
 
+    private List<String> companyTypeList;
+
     public String getCompanyName() {
         return companyName;
     }
@@ -63,5 +65,13 @@ public class EnhancedSearchQueryParams {
 
     public void setSicCodes(List<String> sicCodes) {
         this.sicCodes = sicCodes;
+    }
+
+    public List<String> getCompanyTypeList() {
+        return companyTypeList;
+    }
+
+    public void setCompanyTypeList(List<String> companyTypeList) {
+        this.companyTypeList = companyTypeList;
     }
 }

@@ -12,13 +12,11 @@ public class LoggingUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
 
-    public static final String ALPHABETICAL_SEARCH = "alphabetical";
     public static final String COMPANY_NAME = "company_name";
     public static final String COMPANY_NUMBER = "company_number";
     public static final String COMPANY_STATUS = "company_status";
+    public static final String COMPANY_TYPE = "company_type";
     public static final String DISSOLVED_SEARCH_ALPHABETICAL = "dissolved - alphabetical";
-    public static final String DISSOLVED_SEARCH_BEST_MATCH = "dissolved - best match";
-    public static final String DISSOLVED_SEARCH_PREVIOUS_NAMES_BEST_MATCH = "dissolved - previous names best match";
     public static final String INDEX = "index_name";
     public static final String INDEX_ALPHABETICAL = "alphabetical_search_index";
     public static final String INDEX_DISSOLVED = "dissolved_search_index";
@@ -73,6 +71,7 @@ public class LoggingUtils {
         logIfNotNull(logMap, INCORPORATED_TO, queryParams.getIncorporatedTo());
         logIfNotNull(logMap, COMPANY_STATUS, queryParams.getCompanyStatusList());
         logIfNotNull(logMap, SIC_CODES, queryParams.getSicCodes());
+        logIfNotNull(logMap, COMPANY_TYPE, queryParams.getCompanyTypeList());
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("enhanced search filters", logMap);
 
