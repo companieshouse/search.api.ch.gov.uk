@@ -41,7 +41,7 @@ public class EnhancedSearchQueries {
 
         if (queryParams.getSicCodes() != null) {
 
-            queryBuilder = QueryBuilders.termQuery("current_company.sic_codes",
+            queryBuilder = QueryBuilders.termsQuery("current_company.sic_codes",
                     queryParams.getSicCodes());
 
             boolQueryBuilder.filter(queryBuilder);

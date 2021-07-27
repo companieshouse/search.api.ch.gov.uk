@@ -32,7 +32,7 @@ public class EnhancedQueryParamMapper {
                                                                 String incorporatedFrom,
                                                                 String incorporatedTo,
                                                                 List<String> companyStatusList,
-                                                                String sicCodes) throws DateFormatException, MappingException {
+                                                                List<String> sicCodes) throws DateFormatException, MappingException {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(companyName);

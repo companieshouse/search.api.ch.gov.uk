@@ -9,9 +9,6 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FOUND;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -30,6 +27,10 @@ import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.search.impl.enhanced.EnhancedSearchIndexService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -67,16 +68,16 @@ class EnhancedSearchControllerTest {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(COMPANY_NAME);
-        enhancedSearchQueryParams.setSicCodes(SIC_CODES);
+        enhancedSearchQueryParams.setSicCodes(SIC_CODES_LIST);
 
-        when(mockQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES))
+        when(mockQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST))
                 .thenReturn(enhancedSearchQueryParams);
         when(mockSearchIndexService.searchEnhanced(any(), anyString())).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
                 .thenReturn(ResponseEntity.status(FOUND).body(responseObject.getData()));
 
         ResponseEntity<?> responseEntity =
-                enhancedSearchController.search(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES, REQUEST_ID);
+                enhancedSearchController.search(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
@@ -89,13 +90,13 @@ class EnhancedSearchControllerTest {
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(COMPANY_NAME);
 
-        when(mockQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES))
+        when(mockQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST))
                 .thenThrow(DateFormatException.class);
         when(mockApiToResponseMapper.map(any()))
                 .thenReturn(ResponseEntity.status(BAD_REQUEST).body("Date format exception"));
 
         ResponseEntity<?> responseEntity =
-                enhancedSearchController.search(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES, REQUEST_ID);
+                enhancedSearchController.search(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
@@ -108,13 +109,13 @@ class EnhancedSearchControllerTest {
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(COMPANY_NAME);
 
-        when(mockQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES))
+        when(mockQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST))
             .thenThrow(MappingException.class);
         when(mockApiToResponseMapper.map(any()))
             .thenReturn(ResponseEntity.status(BAD_REQUEST).body("Mapping exception"));
 
         ResponseEntity<?> responseEntity =
-            enhancedSearchController.search(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES, REQUEST_ID);
+            enhancedSearchController.search(COMPANY_NAME, LOCATION, INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());

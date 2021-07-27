@@ -61,7 +61,7 @@ public class EnhancedSearchController {
                                          @RequestParam(name = INCORPORATED_FROM_QUERY_PARAMETER, required = false) String incorporatedFrom,
                                          @RequestParam(name = INCORPORATED_TO_QUERY_PARAMETER, required = false) String incorporatedTo,
                                          @RequestParam(name = COMPANY_STATUS_QUERY_PARAMETER, required = false) List<String> companyStatusList,
-                                         @RequestParam(name = SIC_CODE_QUERY_PARAMETER, required = false) String sicCodes,
+                                         @RequestParam(name = SIC_CODE_QUERY_PARAMETER, required = false) List<String> sicCodes,
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
