@@ -44,7 +44,7 @@ public class EnhancedQueryParamMapper {
         "protected-cell-company",
         "assurance-company",
         "oversea-company",
-        "eeig",
+        "eeig-establishment",
         "icvc-securities",
         "icvc-warrant",
         "icvc-umbrella",
@@ -58,13 +58,14 @@ public class EnhancedQueryParamMapper {
         "unregistered-company",
         "other",
         "european-public-limited-liability-company-se",
+        "united-kingdom-societas",
         "uk-establishment",
         "scottish-partnership",
         "charitable-incorporated-organisation",
         "scottish-charitable-incorporated-organisation",
         "further-education-or-sixth-form-college-corporation",
-        "community-interest-company",
-        "private-fund-limited-partnership"
+        "eeig",
+        "ukeig"
     );
 
     public EnhancedSearchQueryParams mapEnhancedQueryParameters(String companyName,
