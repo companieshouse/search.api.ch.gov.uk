@@ -3,6 +3,8 @@ package uk.gov.companieshouse.search.api.controller;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_STATUS;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_TYPE;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.DISSOLVED_FROM;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.DISSOLVED_TO;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INCORPORATED_FROM;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INCORPORATED_TO;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
@@ -54,6 +56,8 @@ public class EnhancedSearchController {
     private static final String COMPANY_STATUS_QUERY_PARAMETER = "company_status";
     private static final String SIC_CODE_QUERY_PARAMETER = "sic_codes";
     private static final String COMPANY_TYPE_QUERY_PARAMETER = "company_type";
+    private static final String DISSOLVED_FROM_QUERY_PARAMETER = "dissolved_from";
+    private static final String DISSOLVED_TO_QUERY_PARAMETER = "dissolved_to";
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
 
     @GetMapping("/companies")
@@ -65,6 +69,8 @@ public class EnhancedSearchController {
                                          @RequestParam(name = COMPANY_STATUS_QUERY_PARAMETER, required = false) List<String> companyStatusList,
                                          @RequestParam(name = SIC_CODE_QUERY_PARAMETER, required = false) List<String> sicCodes,
                                          @RequestParam(name = COMPANY_TYPE_QUERY_PARAMETER, required = false) List<String> companyTypeList,
+                                         @RequestParam(name = DISSOLVED_FROM_QUERY_PARAMETER, required = false) String dissolvedFrom,
+                                         @RequestParam(name = DISSOLVED_TO_QUERY_PARAMETER, required = false) String dissolvedTo,
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
@@ -75,6 +81,8 @@ public class EnhancedSearchController {
         logIfNotNull(logMap, COMPANY_STATUS, companyStatusList);
         logIfNotNull(logMap, SIC_CODES, sicCodes);
         logIfNotNull(logMap, COMPANY_TYPE, companyTypeList);
+        logIfNotNull(logMap, DISSOLVED_FROM, dissolvedFrom);
+        logIfNotNull(logMap, DISSOLVED_TO, dissolvedTo);
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
@@ -83,7 +91,7 @@ public class EnhancedSearchController {
         try {
             enhancedSearchQueryParams = queryParamMapper
                 .mapEnhancedQueryParameters(companyName, location, incorporatedFrom,
-                    incorporatedTo, companyStatusList, sicCodes, companyTypeList);
+                    incorporatedTo, companyStatusList, sicCodes, companyTypeList, dissolvedFrom, dissolvedTo);
         } catch (DateFormatException dfe) {
            return apiToResponseMapper.map(new ResponseObject(ResponseStatus.DATE_FORMAT_ERROR, null));
         } catch (MappingException me) {
