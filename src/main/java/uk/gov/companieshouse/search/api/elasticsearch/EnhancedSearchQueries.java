@@ -47,6 +47,10 @@ public class EnhancedSearchQueries {
             boolQueryBuilder.filter(queryBuilder);
         }
 
+        if (queryParams.getCompanyTypeList() != null) {
+            boolQueryBuilder.filter(QueryBuilders.termsQuery("company_type", queryParams.getCompanyTypeList()));
+        }
+
         return boolQueryBuilder;
     }
 

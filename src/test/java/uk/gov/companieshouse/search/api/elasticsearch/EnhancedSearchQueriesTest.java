@@ -20,17 +20,23 @@ class EnhancedSearchQueriesTest {
 
     private static final String COMPANY_NAME = "TEST COMPANY";
     private static final String LOCATION = "TEST LOCATION";
+    private static final String ACTIVE_COMPANY_STATUS = "active";
+    private static final String SIC_CODES = "99960";
+    private static final String LTD_COMPANY_TYPE = "ltd";
+    private static final String PLC_COMPANY_TYPE = "plc";
     private static final LocalDate INCORPORATED_FROM = LocalDate.of(2000, 1, 1);
     private static final LocalDate INCORPORATED_TO = LocalDate.of(2002, 2, 2);
-    private static final String ACTIVE_COMPANY_STATUS = "active";
     private static final List<String> COMPANY_STATUS_LIST = Arrays.asList(ACTIVE_COMPANY_STATUS);
-    private static final String SIC_CODES = "99960";
     private static final List<String> SIC_CODES_LIST = Arrays.asList(SIC_CODES);
+    private static final List<String> COMPANY_TYPES_LIST = Arrays.asList(LTD_COMPANY_TYPE, PLC_COMPANY_TYPE);
+
+    // Elastic search fields
     private static final String COMPANY_NAME_MUST_CONTAIN_FIELD = "current_company.corporate_name";
     private static final String LOCATION_MATCH_FIELD = "current_company.full_address";
     private static final String INCORPORATION_DATE_MATCH_FIELD = "current_company.date_of_creation";
     private static final String COMPANY_STATUS_MATCH_FIELD = "current_company.company_status.keyword";
     private static final String SIC_CODES_MATCH_FIELD = "current_company.sic_codes";
+    private static final String COMPANY_TYPE_MATCH_FIELD = "company_type";
 
     @Test
     @DisplayName("Create company name must contain query")
@@ -89,7 +95,7 @@ class EnhancedSearchQueriesTest {
     }
 
     @Test
-    @DisplayName("Create company status to match query")
+    @DisplayName("Create company status match query")
     void companyStatusQuery() {
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyStatusList(COMPANY_STATUS_LIST);
@@ -114,6 +120,21 @@ class EnhancedSearchQueriesTest {
         assertNotNull(queryBuilder);
         assertTrue(queryBuilder.toString().contains(SIC_CODES_MATCH_FIELD));
         assertTrue(queryBuilder.toString().contains(SIC_CODES));
+    }
+
+    @Test
+    @DisplayName("Create company type match query")
+    void companyTypeQuery() {
+        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
+        enhancedSearchQueryParams.setCompanyTypeList(COMPANY_TYPES_LIST);
+
+        QueryBuilder queryBuilder =
+            enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+
+        assertNotNull(queryBuilder);
+        assertTrue(queryBuilder.toString().contains(COMPANY_TYPE_MATCH_FIELD));
+        assertTrue(queryBuilder.toString().contains(LTD_COMPANY_TYPE));
+        assertTrue(queryBuilder.toString().contains(PLC_COMPANY_TYPE));
     }
 
     @Test

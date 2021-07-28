@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.search.api.service.search.impl.enhanced;
 
-import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.NO_RESULTS_FOUND;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.STANDARD_ERROR_MESSAGE;
@@ -8,11 +7,8 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SUCCESSFUL_S
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogMap;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.companieshouse.logging.Logger;
-import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.SearchResults;
@@ -20,13 +16,13 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 
+import java.util.Map;
+
 @Service
 public class EnhancedSearchIndexService {
 
     @Autowired
     private EnhancedSearchRequestService enhancedSearchRequestService;
-
-    private static final Logger LOG = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
 
     public ResponseObject searchEnhanced(EnhancedSearchQueryParams queryParams, String requestId) {
 

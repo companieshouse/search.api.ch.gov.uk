@@ -33,16 +33,20 @@ public class ApiToResponseMapper {
                 return ResponseEntity.status(BAD_REQUEST).build();
             case DATE_FORMAT_ERROR:
                 return ResponseEntity.status(BAD_REQUEST)
-                        .body("Date provided is either invalid, empty or in the incorrect format, please use the format of 'yyyy-mm-dd' e.g '2000-12-20'");
+                        .body("Date provided is either invalid, empty or in the incorrect format, " +
+                            "please use the format of 'yyyy-mm-dd' e.g '2000-12-20'");
             case MAPPING_ERROR:
                 return ResponseEntity.status(BAD_REQUEST)
-                    .body("Error attempting to map request parameter values, please check the values of fields such as 'company_status' contain accurate values");
+                    .body("Error attempting to map request parameter values, please check the values of fields " +
+                        "'company_status' or 'company_type' contain accurate values");
             case REQUEST_PARAMETER_ERROR:
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR)
-                        .body("Invalid url parameter for search_type, please try 'alphabetical', 'best-match' or 'previous-name-dissolved'");
+                        .body("Invalid url parameter for search_type, " +
+                            "please try 'alphabetical', 'best-match' or 'previous-name-dissolved'");
             case SIZE_PARAMETER_ERROR:
                 return ResponseEntity.status(UNPROCESSABLE_ENTITY)
-                    .body("Invalid size parameter, size must be greater than zero and not greater than " + environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
+                    .body("Invalid size parameter, size must be greater than zero and not greater than "
+                        + environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
             default:
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR).build();
         }
