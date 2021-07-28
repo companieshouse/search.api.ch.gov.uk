@@ -143,7 +143,7 @@ class ApiToResponseMapperTest {
         assertNotNull(responseEntity);
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
         assertEquals("Error attempting to map request parameter values, please check the values of fields " +
-                "'company_status' or `company_type` contain accurate values",
+                "'company_status' or 'company_type' contain accurate values",
             responseEntity.getBody());
     }
 
