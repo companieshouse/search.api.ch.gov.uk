@@ -47,7 +47,7 @@ public class EnhancedSearchController {
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
 
-    private static final String COMPANY_NAME_QUERY_PARAM = "company_name";
+    private static final String COMPANY_NAME_QUERY_PARAM = "company_name_includes";
     private static final String LOCATION_QUERY_PARAM = "location";
     private static final String INCORPORATED_FROM_QUERY_PARAMETER = "incorporated_from";
     private static final String INCORPORATED_TO_QUERY_PARAMETER = "incorporated_to";
