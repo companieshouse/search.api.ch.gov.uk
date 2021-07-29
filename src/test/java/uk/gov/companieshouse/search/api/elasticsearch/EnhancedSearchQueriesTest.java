@@ -27,6 +27,8 @@ class EnhancedSearchQueriesTest {
     private static final String COMPANY_NAME_EXCLUDES = "test name excludes";
     private static final LocalDate INCORPORATED_FROM = LocalDate.of(2000, 1, 1);
     private static final LocalDate INCORPORATED_TO = LocalDate.of(2002, 2, 2);
+    private static final LocalDate DISSOLVED_FROM = LocalDate.of(2017, 1, 1);
+    private static final LocalDate DISSOLVED_TO = LocalDate.of(2018, 2, 2);
     private static final List<String> COMPANY_STATUS_LIST = Arrays.asList(ACTIVE_COMPANY_STATUS);
     private static final List<String> SIC_CODES_LIST = Arrays.asList(SIC_CODES);
     private static final List<String> COMPANY_TYPES_LIST = Arrays.asList(LTD_COMPANY_TYPE, PLC_COMPANY_TYPE);
@@ -35,6 +37,7 @@ class EnhancedSearchQueriesTest {
     private static final String COMPANY_NAME_MUST_CONTAIN_FIELD = "current_company.corporate_name";
     private static final String LOCATION_MATCH_FIELD = "current_company.full_address";
     private static final String INCORPORATION_DATE_MATCH_FIELD = "current_company.date_of_creation";
+    private static final String DISSOLVED_DATE_MATCH_FIELD = "current_company.date_of_cessation";
     private static final String COMPANY_STATUS_MATCH_FIELD = "current_company.company_status.keyword";
     private static final String SIC_CODES_MATCH_FIELD = "current_company.sic_codes";
     private static final String COMPANY_TYPE_MATCH_FIELD = "company_type";
@@ -93,6 +96,34 @@ class EnhancedSearchQueriesTest {
         assertNotNull(queryBuilder);
         assertTrue(queryBuilder.toString().contains(INCORPORATION_DATE_MATCH_FIELD));
         assertTrue(queryBuilder.toString().contains(INCORPORATED_TO.toString()));
+    }
+
+    @Test
+    @DisplayName("Create dissolved from match query")
+    void dissolvedFromQuery() {
+        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
+        enhancedSearchQueryParams.setDissolvedFrom(DISSOLVED_FROM);
+
+        QueryBuilder queryBuilder =
+            enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+
+        assertNotNull(queryBuilder);
+        assertTrue(queryBuilder.toString().contains(DISSOLVED_DATE_MATCH_FIELD));
+        assertTrue(queryBuilder.toString().contains(DISSOLVED_FROM.toString()));
+    }
+
+    @Test
+    @DisplayName("Create dissolved to match query")
+    void dissolvedToQuery() {
+        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
+        enhancedSearchQueryParams.setDissolvedFrom(DISSOLVED_TO);
+
+        QueryBuilder queryBuilder =
+            enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+
+        assertNotNull(queryBuilder);
+        assertTrue(queryBuilder.toString().contains(DISSOLVED_DATE_MATCH_FIELD));
+        assertTrue(queryBuilder.toString().contains(DISSOLVED_TO.toString()));
     }
 
     @Test

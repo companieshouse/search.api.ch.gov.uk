@@ -53,6 +53,8 @@ class EnhancedSearchControllerTest {
     private static final String LOCATION = "location";
     private static final String INCORPORATED_FROM = "2000-1-1";
     private static final String INCORPORATED_TO = "2002-2-2";
+    private static final String DISSOLVED_FROM = "2017-1-1";
+    private static final String DISSOLVED_TO = "2018-2-2";
     private static final String ACTIVE_COMPANY_STATUS = "active";
     private static final String SIC_CODES = "99960";
     private static final String LTD_COMPANY_TYPE = "ltd";
@@ -76,7 +78,7 @@ class EnhancedSearchControllerTest {
         enhancedSearchQueryParams.setSicCodes(SIC_CODES_LIST);
 
         when(mockQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM,
-            INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, COMPANY_NAME_EXCLUDES))
+            INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES))
                 .thenReturn(enhancedSearchQueryParams);
         when(mockSearchIndexService.searchEnhanced(any(), anyString())).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
@@ -84,7 +86,8 @@ class EnhancedSearchControllerTest {
 
         ResponseEntity<?> responseEntity =
                 enhancedSearchController.search(COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM, INCORPORATED_TO,
-                    COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, COMPANY_NAME_EXCLUDES, REQUEST_ID);
+                    COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES,
+                    REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
@@ -98,14 +101,15 @@ class EnhancedSearchControllerTest {
         enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME_INCLUDES);
 
         when(mockQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM,
-            INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, COMPANY_NAME_EXCLUDES))
+            INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES))
                 .thenThrow(DateFormatException.class);
         when(mockApiToResponseMapper.map(any()))
                 .thenReturn(ResponseEntity.status(BAD_REQUEST).body("Date format exception"));
 
         ResponseEntity<?> responseEntity =
                 enhancedSearchController.search(COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM, INCORPORATED_TO,
-                    COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, COMPANY_NAME_EXCLUDES, REQUEST_ID);
+                    COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES,
+                    REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
@@ -119,14 +123,14 @@ class EnhancedSearchControllerTest {
         enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME_INCLUDES);
 
         when(mockQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM,
-            INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, COMPANY_NAME_EXCLUDES))
+            INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES))
             .thenThrow(MappingException.class);
         when(mockApiToResponseMapper.map(any()))
             .thenReturn(ResponseEntity.status(BAD_REQUEST).body("Mapping exception"));
 
         ResponseEntity<?> responseEntity =
             enhancedSearchController.search(COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM, INCORPORATED_TO,
-                COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, COMPANY_NAME_EXCLUDES, REQUEST_ID);
+                COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
