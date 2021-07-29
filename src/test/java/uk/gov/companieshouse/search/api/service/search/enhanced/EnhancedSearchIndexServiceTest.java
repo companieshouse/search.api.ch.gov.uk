@@ -46,7 +46,7 @@ class EnhancedSearchIndexServiceTest {
     void searchRequestSuccessful() throws Exception {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyName(COMPANY_NAME);
+        enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
         enhancedSearchQueryParams.setSicCodes(SIC_CODES_LIST);
 
         when(mockEnhancedSearchRequestService.getSearchResults(enhancedSearchQueryParams, "request id"))
@@ -62,7 +62,7 @@ class EnhancedSearchIndexServiceTest {
     void searchRequestReturnsError() throws Exception {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyName(COMPANY_NAME);
+        enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
 
         when(mockEnhancedSearchRequestService.getSearchResults(any(), anyString()))
                 .thenThrow(SearchException.class);
@@ -77,7 +77,7 @@ class EnhancedSearchIndexServiceTest {
     @DisplayName("Test search returns no results")
     void searchRequestReturnsNoResults() throws Exception {
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyName(COMPANY_NAME);
+        enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
 
         when(mockEnhancedSearchRequestService.getSearchResults(any(), anyString()))
                 .thenReturn(createSearchResults(false, false));

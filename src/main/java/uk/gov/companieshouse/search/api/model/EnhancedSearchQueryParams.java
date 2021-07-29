@@ -5,7 +5,7 @@ import java.util.List;
 
 public class EnhancedSearchQueryParams {
 
-    private String companyName;
+    private String companyNameIncludes;
 
     private String location;
 
@@ -21,12 +21,12 @@ public class EnhancedSearchQueryParams {
 
     private String companyNameExcludes;
 
-    public String getCompanyName() {
-        return companyName;
+    public String getCompanyNameIncludes() {
+        return companyNameIncludes;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setCompanyNameIncludes(String companyNameIncludes) {
+        this.companyNameIncludes = companyNameIncludes;
     }
 
     public String getLocation() {

@@ -32,8 +32,6 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 import uk.gov.companieshouse.search.api.service.search.impl.enhanced.EnhancedSearchRequestService;
 
-import java.io.IOException;
-
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EnhancedSearchRequestServiceTest {
@@ -64,7 +62,7 @@ class EnhancedSearchRequestServiceTest {
         Company company = createCompany();
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyName(COMPANY_NAME);
+        enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
 
         when(mockEnhancedSearchRequests.getCompanies(enhancedSearchQueryParams, REQUEST_ID)).thenReturn(createSearchHits());
         when(mockElasticSearchResponseMapper.mapEnhancedSearchResponse(createSearchHits().getAt(0))).thenReturn(company);
@@ -101,7 +99,7 @@ class EnhancedSearchRequestServiceTest {
     void testThrowException() throws Exception {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyName(COMPANY_NAME);
+        enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
 
         when(mockEnhancedSearchRequests.getCompanies(enhancedSearchQueryParams, REQUEST_ID)).
                 thenThrow(IOException.class);

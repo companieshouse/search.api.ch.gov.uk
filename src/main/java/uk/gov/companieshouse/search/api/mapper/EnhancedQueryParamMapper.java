@@ -68,7 +68,7 @@ public class EnhancedQueryParamMapper {
         "ukeig"
     );
 
-    public EnhancedSearchQueryParams mapEnhancedQueryParameters(String companyName,
+    public EnhancedSearchQueryParams mapEnhancedQueryParameters(String companyNameIncludes,
                                                                 String location,
                                                                 String incorporatedFrom,
                                                                 String incorporatedTo,
@@ -78,7 +78,7 @@ public class EnhancedQueryParamMapper {
                                                                 String companyNameExcludes) throws DateFormatException, MappingException {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyName(companyName);
+        enhancedSearchQueryParams.setCompanyNameIncludes(companyNameIncludes);
         enhancedSearchQueryParams.setLocation(location);
         enhancedSearchQueryParams.setSicCodes(sicCodes);
         enhancedSearchQueryParams.setCompanyNameExcludes(companyNameExcludes);

@@ -17,9 +17,9 @@ public class EnhancedSearchQueries {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         QueryBuilder queryBuilder;
 
-        if (queryParams.getCompanyName() != null) {
+        if (queryParams.getCompanyNameIncludes() != null) {
             boolQueryBuilder.filter(
-                    QueryBuilders.matchQuery("current_company.corporate_name", queryParams.getCompanyName()));
+                    QueryBuilders.matchQuery("current_company.corporate_name", queryParams.getCompanyNameIncludes()));
         }
 
         if (queryParams.getLocation() != null) {
