@@ -31,6 +31,7 @@ class EnhancedQueryParamMapperTest {
     private static final String SIC_CODES = "99960";
     private static final String LTD_COMPANY_TYPE = "ltd";
     private static final String PLC_COMPANY_TYPE = "plc";
+    private static final String COMPANY_NAME_EXCLUDES = "test name excludes";
     private static final LocalDate INCORPORATED_FROM_MAPPED = LocalDate.of(2000, 1, 1);
     private static final LocalDate INCORPORATED_TO_MAPPED = LocalDate.of(2002, 2, 2);
     private static final List<String> COMPANY_STATUS_LIST = Arrays.asList(ACTIVE_COMPANY_STATUS);
@@ -45,7 +46,7 @@ class EnhancedQueryParamMapperTest {
         EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
         EnhancedSearchQueryParams enhancedSearchQueryParams =
             enhancedQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, INCORPORATED_FROM,
-                INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST);
+                INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, COMPANY_NAME_EXCLUDES);
 
         assertEquals(COMPANY_NAME, enhancedSearchQueryParams.getCompanyName());
         assertEquals(LOCATION, enhancedSearchQueryParams.getLocation());
@@ -62,7 +63,7 @@ class EnhancedQueryParamMapperTest {
         EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
         EnhancedSearchQueryParams enhancedSearchQueryParams =
             enhancedQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, null,
-                null, null, null, null);
+                null, null, null, null, null);
 
         assertEquals(COMPANY_NAME, enhancedSearchQueryParams.getCompanyName());
         assertEquals(LOCATION, enhancedSearchQueryParams.getLocation());
@@ -78,7 +79,7 @@ class EnhancedQueryParamMapperTest {
 
         assertThrows(DateFormatException.class, () -> {
             enhancedQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, BAD_DATE_FORMAT,
-                BAD_DATE_FORMAT, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST);
+                BAD_DATE_FORMAT, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, COMPANY_NAME_EXCLUDES);
         });
     }
 
@@ -90,7 +91,7 @@ class EnhancedQueryParamMapperTest {
 
         assertThrows(MappingException.class, () -> {
             enhancedQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, INCORPORATED_FROM,
-                INCORPORATED_TO, BAD_COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST);
+                INCORPORATED_TO, BAD_COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, COMPANY_NAME_EXCLUDES);
         });
     }
 }

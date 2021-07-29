@@ -19,6 +19,8 @@ public class EnhancedSearchQueryParams {
 
     private List<String> companyTypeList;
 
+    private String companyNameExcludes;
+
     public String getCompanyName() {
         return companyName;
     }
@@ -73,5 +75,13 @@ public class EnhancedSearchQueryParams {
 
     public void setCompanyTypeList(List<String> companyTypeList) {
         this.companyTypeList = companyTypeList;
+    }
+
+    public String getCompanyNameExcludes() {
+        return companyNameExcludes;
+    }
+
+    public void setCompanyNameExcludes(String companyNameExcludes) {
+        this.companyNameExcludes = companyNameExcludes;
     }
 }

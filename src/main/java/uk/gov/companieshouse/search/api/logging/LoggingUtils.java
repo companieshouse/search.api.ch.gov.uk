@@ -38,6 +38,7 @@ public class LoggingUtils {
     public static final String INCORPORATED_FROM = "incorporated_from";
     public static final String INCORPORATED_TO = "incorporated_to";
     public static final String SIC_CODES = "sic_codes";
+    public static final String COMPANY_NAME_EXCLUDES = "company_name_excludes";
 
     public static final String REQUEST_ID_LOG_KEY = "request_id";
     public static final String STATUS_LOG_KEY = "status";
@@ -72,6 +73,7 @@ public class LoggingUtils {
         logIfNotNull(logMap, COMPANY_STATUS, queryParams.getCompanyStatusList());
         logIfNotNull(logMap, SIC_CODES, queryParams.getSicCodes());
         logIfNotNull(logMap, COMPANY_TYPE, queryParams.getCompanyTypeList());
+        logIfNotNull(logMap, COMPANY_NAME_EXCLUDES, queryParams.getCompanyNameExcludes());
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("enhanced search filters", logMap);
 

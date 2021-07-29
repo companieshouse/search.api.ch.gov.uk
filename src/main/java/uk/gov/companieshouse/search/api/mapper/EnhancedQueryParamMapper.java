@@ -74,12 +74,14 @@ public class EnhancedQueryParamMapper {
                                                                 String incorporatedTo,
                                                                 List<String> companyStatusList,
                                                                 List<String> sicCodes,
-                                                                List<String> companyTypeList) throws DateFormatException, MappingException {
+                                                                List<String> companyTypeList,
+                                                                String companyNameExcludes) throws DateFormatException, MappingException {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(companyName);
         enhancedSearchQueryParams.setLocation(location);
         enhancedSearchQueryParams.setSicCodes(sicCodes);
+        enhancedSearchQueryParams.setCompanyNameExcludes(companyNameExcludes);
 
         try {
             if (incorporatedFrom != null) {
