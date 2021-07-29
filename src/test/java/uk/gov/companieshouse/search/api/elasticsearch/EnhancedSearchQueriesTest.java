@@ -43,7 +43,7 @@ class EnhancedSearchQueriesTest {
     @DisplayName("Create company name must contain query")
     void companyNameMustContainQuery() {
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyName(COMPANY_NAME);
+        enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
 
         BoolQueryBuilder boolQueryBuilder =
                 enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);

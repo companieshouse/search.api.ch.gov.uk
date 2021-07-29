@@ -12,7 +12,7 @@ public class LoggingUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(APPLICATION_NAME_SPACE);
 
-    public static final String COMPANY_NAME = "company_name";
+    public static final String COMPANY_NAME = "company_name_includes";
     public static final String COMPANY_NUMBER = "company_number";
     public static final String COMPANY_STATUS = "company_status";
     public static final String COMPANY_TYPE = "company_type";
@@ -68,7 +68,7 @@ public class LoggingUtils {
 
     public static Map<String, Object> getLogMap(EnhancedSearchQueryParams queryParams, String requestId) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logIfNotNull(logMap, COMPANY_NAME, queryParams.getCompanyName());
+        logIfNotNull(logMap, COMPANY_NAME, queryParams.getCompanyNameIncludes());
         logIfNotNull(logMap, LOCATION, queryParams.getLocation());
         logIfNotNull(logMap, INCORPORATED_FROM, queryParams.getIncorporatedFrom());
         logIfNotNull(logMap, INCORPORATED_TO, queryParams.getIncorporatedTo());
