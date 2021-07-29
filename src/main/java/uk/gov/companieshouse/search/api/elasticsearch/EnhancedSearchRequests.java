@@ -34,7 +34,6 @@ public class EnhancedSearchRequests {
 
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.indices(environmentReader.getMandatoryString(INDEX));
-        searchRequest.preference(requestId);
 
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
