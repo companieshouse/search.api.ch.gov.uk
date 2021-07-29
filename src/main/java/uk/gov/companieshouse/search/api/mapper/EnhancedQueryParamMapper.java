@@ -76,13 +76,15 @@ public class EnhancedQueryParamMapper {
                                                                 List<String> sicCodes,
                                                                 List<String> companyTypeList,
                                                                 String dissolvedFrom,
-                                                                String dissolvedTo) throws DateFormatException, MappingException {
+                                                                String dissolvedTo,
+                                                                String companyNameExcludes) throws DateFormatException, MappingException {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyName(companyName);
         enhancedSearchQueryParams.setLocation(location);
         enhancedSearchQueryParams.setSicCodes(sicCodes);
         mapDates(enhancedSearchQueryParams, incorporatedFrom, incorporatedTo, dissolvedFrom, dissolvedTo);
+        enhancedSearchQueryParams.setCompanyNameExcludes(companyNameExcludes);
 
         if (companyStatusList != null) {
             enhancedSearchQueryParams.setCompanyStatusList(

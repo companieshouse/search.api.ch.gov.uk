@@ -51,6 +51,14 @@ public class EnhancedSearchQueries {
             boolQueryBuilder.filter(QueryBuilders.termsQuery("company_type", queryParams.getCompanyTypeList()));
         }
 
+        if (queryParams.getCompanyNameExcludes() != null) {
+            queryBuilder = QueryBuilders.matchQuery("current_company.corporate_name",
+                    queryParams.getCompanyNameExcludes())
+                    .operator(Operator.OR);
+
+            boolQueryBuilder.mustNot(queryBuilder);
+        }
+
         return boolQueryBuilder;
     }
 

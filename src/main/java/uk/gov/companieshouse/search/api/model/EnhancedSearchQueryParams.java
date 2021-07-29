@@ -23,6 +23,8 @@ public class EnhancedSearchQueryParams {
 
     private LocalDate dissolvedTo;
 
+    private String companyNameExcludes;
+
     public String getCompanyName() {
         return companyName;
     }
@@ -93,5 +95,13 @@ public class EnhancedSearchQueryParams {
 
     public void setDissolvedTo(LocalDate dissolvedTo) {
         this.dissolvedTo = dissolvedTo;
+    }
+
+    public String getCompanyNameExcludes() {
+        return companyNameExcludes;
+    }
+
+    public void setCompanyNameExcludes(String companyNameExcludes) {
+        this.companyNameExcludes = companyNameExcludes;
     }
 }

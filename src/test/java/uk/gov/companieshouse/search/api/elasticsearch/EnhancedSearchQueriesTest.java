@@ -24,6 +24,7 @@ class EnhancedSearchQueriesTest {
     private static final String SIC_CODES = "99960";
     private static final String LTD_COMPANY_TYPE = "ltd";
     private static final String PLC_COMPANY_TYPE = "plc";
+    private static final String COMPANY_NAME_EXCLUDES = "test name excludes";
     private static final LocalDate INCORPORATED_FROM = LocalDate.of(2000, 1, 1);
     private static final LocalDate INCORPORATED_TO = LocalDate.of(2002, 2, 2);
     private static final List<String> COMPANY_STATUS_LIST = Arrays.asList(ACTIVE_COMPANY_STATUS);
@@ -135,6 +136,19 @@ class EnhancedSearchQueriesTest {
         assertTrue(queryBuilder.toString().contains(COMPANY_TYPE_MATCH_FIELD));
         assertTrue(queryBuilder.toString().contains(LTD_COMPANY_TYPE));
         assertTrue(queryBuilder.toString().contains(PLC_COMPANY_TYPE));
+    }
+
+    @Test
+    @DisplayName("Create company name excludes query")
+    void companyNameExcludesQuery() {
+        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
+        enhancedSearchQueryParams.setCompanyNameExcludes(COMPANY_NAME_EXCLUDES);
+
+        BoolQueryBuilder boolQueryBuilder =
+                enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+
+        assertNotNull(boolQueryBuilder);
+        assertTrue(boolQueryBuilder.toString().contains(COMPANY_NAME_EXCLUDES));
     }
 
     @Test

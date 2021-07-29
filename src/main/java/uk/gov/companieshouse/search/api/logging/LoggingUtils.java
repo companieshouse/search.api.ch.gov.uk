@@ -40,6 +40,7 @@ public class LoggingUtils {
     public static final String DISSOLVED_FROM = "dissolved_from";
     public static final String DISSOLVED_TO = "dissolved_to";
     public static final String SIC_CODES = "sic_codes";
+    public static final String COMPANY_NAME_EXCLUDES = "company_name_excludes";
 
     public static final String REQUEST_ID_LOG_KEY = "request_id";
     public static final String STATUS_LOG_KEY = "status";
@@ -76,6 +77,7 @@ public class LoggingUtils {
         logIfNotNull(logMap, COMPANY_TYPE, queryParams.getCompanyTypeList());
         logIfNotNull(logMap, DISSOLVED_FROM, queryParams.getDissolvedFrom());
         logIfNotNull(logMap, DISSOLVED_TO, queryParams.getDissolvedTo());
+        logIfNotNull(logMap, COMPANY_NAME_EXCLUDES, queryParams.getCompanyNameExcludes());
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("enhanced search filters", logMap);
 
