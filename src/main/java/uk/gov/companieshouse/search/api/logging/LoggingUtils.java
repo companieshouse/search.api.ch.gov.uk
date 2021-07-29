@@ -37,6 +37,8 @@ public class LoggingUtils {
     public static final String NO_RESULTS_FOUND = "No results were returned while enhanced searching for a company";
     public static final String INCORPORATED_FROM = "incorporated_from";
     public static final String INCORPORATED_TO = "incorporated_to";
+    public static final String DISSOLVED_FROM = "dissolved_from";
+    public static final String DISSOLVED_TO = "dissolved_to";
     public static final String SIC_CODES = "sic_codes";
     public static final String COMPANY_NAME_EXCLUDES = "company_name_excludes";
 
@@ -73,6 +75,8 @@ public class LoggingUtils {
         logIfNotNull(logMap, COMPANY_STATUS, queryParams.getCompanyStatusList());
         logIfNotNull(logMap, SIC_CODES, queryParams.getSicCodes());
         logIfNotNull(logMap, COMPANY_TYPE, queryParams.getCompanyTypeList());
+        logIfNotNull(logMap, DISSOLVED_FROM, queryParams.getDissolvedFrom());
+        logIfNotNull(logMap, DISSOLVED_TO, queryParams.getDissolvedTo());
         logIfNotNull(logMap, COMPANY_NAME_EXCLUDES, queryParams.getCompanyNameExcludes());
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("enhanced search filters", logMap);

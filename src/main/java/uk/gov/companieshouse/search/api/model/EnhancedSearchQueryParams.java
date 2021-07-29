@@ -19,6 +19,10 @@ public class EnhancedSearchQueryParams {
 
     private List<String> companyTypeList;
 
+    private LocalDate dissolvedFrom;
+
+    private LocalDate dissolvedTo;
+
     private String companyNameExcludes;
 
     public String getCompanyNameIncludes() {
@@ -75,6 +79,22 @@ public class EnhancedSearchQueryParams {
 
     public void setCompanyTypeList(List<String> companyTypeList) {
         this.companyTypeList = companyTypeList;
+    }
+
+    public LocalDate getDissolvedFrom() {
+        return dissolvedFrom;
+    }
+
+    public void setDissolvedFrom(LocalDate dissolvedFrom) {
+        this.dissolvedFrom = dissolvedFrom;
+    }
+
+    public LocalDate getDissolvedTo() {
+        return dissolvedTo;
+    }
+
+    public void setDissolvedTo(LocalDate dissolvedTo) {
+        this.dissolvedTo = dissolvedTo;
     }
 
     public String getCompanyNameExcludes() {

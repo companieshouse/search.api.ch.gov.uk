@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.search.api.elasticsearch;
 
 import java.time.LocalDate;
+
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -19,12 +20,12 @@ public class EnhancedSearchQueries {
 
         if (queryParams.getCompanyNameIncludes() != null) {
             boolQueryBuilder.filter(
-                    QueryBuilders.matchQuery("current_company.corporate_name", queryParams.getCompanyNameIncludes()));
+                QueryBuilders.matchQuery("current_company.corporate_name", queryParams.getCompanyNameIncludes()));
         }
 
         if (queryParams.getLocation() != null) {
             queryBuilder = QueryBuilders.matchQuery("current_company.full_address",
-                    queryParams.getLocation()).operator(Operator.OR);
+                queryParams.getLocation()).operator(Operator.OR);
 
             boolQueryBuilder.filter(queryBuilder);
         }
@@ -35,14 +36,19 @@ public class EnhancedSearchQueries {
         }
 
         addRangeQueryDates(boolQueryBuilder,
-                queryParams.getIncorporatedFrom(),
-                queryParams.getIncorporatedTo(),
-                "current_company.date_of_creation");
+            queryParams.getIncorporatedFrom(),
+            queryParams.getIncorporatedTo(),
+            "current_company.date_of_creation");
+
+        addRangeQueryDates(boolQueryBuilder,
+            queryParams.getDissolvedFrom(),
+            queryParams.getDissolvedTo(),
+            "current_company.date_of_cessation");
 
         if (queryParams.getSicCodes() != null) {
 
             queryBuilder = QueryBuilders.termsQuery("current_company.sic_codes",
-                    queryParams.getSicCodes());
+                queryParams.getSicCodes());
 
             boolQueryBuilder.filter(queryBuilder);
         }
@@ -53,8 +59,8 @@ public class EnhancedSearchQueries {
 
         if (queryParams.getCompanyNameExcludes() != null) {
             queryBuilder = QueryBuilders.matchQuery("current_company.corporate_name",
-                    queryParams.getCompanyNameExcludes())
-                    .operator(Operator.OR);
+                queryParams.getCompanyNameExcludes())
+                .operator(Operator.OR);
 
             boolQueryBuilder.mustNot(queryBuilder);
         }
@@ -62,7 +68,7 @@ public class EnhancedSearchQueries {
         return boolQueryBuilder;
     }
 
-    private void addRangeQueryDates(BoolQueryBuilder boolQueryBuilder, LocalDate from, LocalDate to,  String fieldName) {
+    private void addRangeQueryDates(BoolQueryBuilder boolQueryBuilder, LocalDate from, LocalDate to, String fieldName) {
         if (from == null && to == null) {
             return;
         }

@@ -75,24 +75,16 @@ public class EnhancedQueryParamMapper {
                                                                 List<String> companyStatusList,
                                                                 List<String> sicCodes,
                                                                 List<String> companyTypeList,
+                                                                String dissolvedFrom,
+                                                                String dissolvedTo,
                                                                 String companyNameExcludes) throws DateFormatException, MappingException {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
         enhancedSearchQueryParams.setCompanyNameIncludes(companyNameIncludes);
         enhancedSearchQueryParams.setLocation(location);
         enhancedSearchQueryParams.setSicCodes(sicCodes);
+        mapDates(enhancedSearchQueryParams, incorporatedFrom, incorporatedTo, dissolvedFrom, dissolvedTo);
         enhancedSearchQueryParams.setCompanyNameExcludes(companyNameExcludes);
-
-        try {
-            if (incorporatedFrom != null) {
-                enhancedSearchQueryParams.setIncorporatedFrom(LocalDate.parse(incorporatedFrom));
-            }
-            if (incorporatedTo != null) {
-                enhancedSearchQueryParams.setIncorporatedTo(LocalDate.parse(incorporatedTo));
-            }
-        } catch (DateTimeParseException e) {
-            throw new DateFormatException("error occurred setting date field");
-        }
 
         if (companyStatusList != null) {
             enhancedSearchQueryParams.setCompanyStatusList(
@@ -105,6 +97,30 @@ public class EnhancedQueryParamMapper {
         }
 
         return enhancedSearchQueryParams;
+    }
+
+    private void mapDates(EnhancedSearchQueryParams enhancedSearchQueryParams,
+                          String incorporatedFrom,
+                          String incorporatedTo,
+                          String dissolvedFrom,
+                          String dissolvedTo) throws DateFormatException {
+
+        try {
+            if (incorporatedFrom != null) {
+                enhancedSearchQueryParams.setIncorporatedFrom(LocalDate.parse(incorporatedFrom));
+            }
+            if (incorporatedTo != null) {
+                enhancedSearchQueryParams.setIncorporatedTo(LocalDate.parse(incorporatedTo));
+            }
+            if (dissolvedFrom != null) {
+                enhancedSearchQueryParams.setDissolvedFrom(LocalDate.parse(dissolvedFrom));
+            }
+            if (dissolvedTo != null) {
+                enhancedSearchQueryParams.setDissolvedTo(LocalDate.parse(dissolvedTo));
+            }
+        } catch (DateTimeParseException e) {
+            throw new DateFormatException("error occurred setting date field");
+        }
     }
 
     private List<String> mapListParam(List<String> paramList,
