@@ -56,6 +56,8 @@ class EnhancedQueryParamMapperTest {
         assertEquals(LOCATION, enhancedSearchQueryParams.getLocation());
         assertEquals(INCORPORATED_FROM_MAPPED, enhancedSearchQueryParams.getIncorporatedFrom());
         assertEquals(INCORPORATED_TO_MAPPED, enhancedSearchQueryParams.getIncorporatedTo());
+        assertEquals(DISSOLVED_FROM_MAPPED, enhancedSearchQueryParams.getDissolvedFrom());
+        assertEquals(DISSOLVED_TO_MAPPED, enhancedSearchQueryParams.getDissolvedTo());
         assertEquals(ACTIVE_COMPANY_STATUS, enhancedSearchQueryParams.getCompanyStatusList().get(0));
         assertEquals(SIC_CODES_LIST, enhancedSearchQueryParams.getSicCodes());
     }
