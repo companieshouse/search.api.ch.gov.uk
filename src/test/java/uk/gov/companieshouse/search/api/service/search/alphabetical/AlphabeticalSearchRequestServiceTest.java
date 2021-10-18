@@ -27,6 +27,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
@@ -56,6 +57,9 @@ class AlphabeticalSearchRequestServiceTest {
     @Mock
     private ElasticSearchResponseMapper mockElasticSearchResponseMapper;
 
+    @Mock
+    private EnvironmentReader mockEnvironmentReader;
+
     private static final String CORPORATE_NAME = "corporateName";
     private static final String TOP_HIT = "TEST COMPANY";
     private static final String ORDERED_ALPHA_KEY = "orderedAlphaKey";
@@ -69,6 +73,7 @@ class AlphabeticalSearchRequestServiceTest {
     private static final String COMPANY_TYPE = "ltd";
     private static final String COMPANY_PROFILE_LINK = "/company/00000000";
     private static final String KIND = "searchresults#dissolved-company";
+    private static final String ALPHABETICAL_FALLBACK_QUERY_LIMIT = "ALPHABETICAL_FALLBACK_QUERY_LIMIT";
 
     @Test
     @DisplayName("Test search request returns results successfully with best match query")
@@ -208,6 +213,7 @@ class AlphabeticalSearchRequestServiceTest {
 
         when(mockAlphabeticalSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
                 .thenReturn(createSearchHits());
+        doReturn(25).when(mockEnvironmentReader).getMandatoryInteger(ALPHABETICAL_FALLBACK_QUERY_LIMIT);
 
         SearchHits searchHits = searchRequestService.peelbackSearchRequest(createEmptySearchHits(), ORDERED_ALPHA_KEY,
                 REQUEST_ID);
