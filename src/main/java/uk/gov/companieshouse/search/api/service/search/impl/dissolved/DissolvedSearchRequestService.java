@@ -18,6 +18,7 @@ import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.GenerateEtagUtil;
+import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
@@ -47,10 +48,13 @@ public class DissolvedSearchRequestService {
     @Autowired
     private ElasticSearchResponseMapper elasticSearchResponseMapper;
 
+    @Autowired
+    private EnvironmentReader environmentReader;
+
     private static final String TOP_KIND = "search#alphabetical-dissolved";
-    private static final int FALLBACK_QUERY_LIMIT = 25;
     private static final String RESULT_FOUND = "A result has been found";
     private static final String SEARCH_HITS = "searchHits";
+    private static final String DISSOLVED_ALPHABETICAL_FALLBACK_QUERY_LIMIT = "DISSOLVED_ALPHABETICAL_FALLBACK_QUERY_LIMIT";
     
     private Integer sizeAbove;
     private Integer sizeBelow;
@@ -230,10 +234,13 @@ public class DissolvedSearchRequestService {
     }
 
     public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphaKey, String requestId)
-            throws IOException {
+        throws IOException {
+
+        Integer fallbackQueryLimit = environmentReader.getMandatoryInteger(DISSOLVED_ALPHABETICAL_FALLBACK_QUERY_LIMIT);
+
         for (int i = 0; i < orderedAlphaKey.length(); i++) {
 
-            if (hits.getTotalHits().value > 0 || i == FALLBACK_QUERY_LIMIT) {
+            if (hits.getTotalHits().value > 0 || i == fallbackQueryLimit) {
                 return hits;
             }
 

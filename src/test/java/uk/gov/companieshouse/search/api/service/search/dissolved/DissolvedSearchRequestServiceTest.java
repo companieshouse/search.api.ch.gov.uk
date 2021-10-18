@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
@@ -54,6 +56,9 @@ class DissolvedSearchRequestServiceTest {
     @Mock
     private ElasticSearchResponseMapper mockElasticSearchResponseMapper;
 
+    @Mock
+    private EnvironmentReader mockEnvironmentReader;
+
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
     private static final String COMPANY_NAME = "TEST COMPANY";
@@ -75,6 +80,7 @@ class DissolvedSearchRequestServiceTest {
     private static final Integer START_INDEX = 0;
     private static final String SEARCH_BEFORE_VALUE = "search_before:1234";
     private static final String SEARCH_AFTER_VALUE = "search_after:1234";
+    private static final String DISSOLVED_ALPHABETICAL_FALLBACK_QUERY_LIMIT = "DISSOLVED_ALPHABETICAL_FALLBACK_QUERY_LIMIT";
 
     @Test
     @DisplayName("Test dissolved alphabetical search request returns results successfully with best match query")
@@ -445,6 +451,7 @@ class DissolvedSearchRequestServiceTest {
 
         when(mockDissolvedSearchRequests.getBestMatchResponse(ORDERED_ALPHA_KEY, REQUEST_ID))
                 .thenReturn(createSearchHits(true, true, true, true));
+        doReturn(25).when(mockEnvironmentReader).getMandatoryInteger(DISSOLVED_ALPHABETICAL_FALLBACK_QUERY_LIMIT);
 
         SearchHits searchHits = dissolvedSearchRequestService.peelbackSearchRequest(createEmptySearchHits(),
                 ORDERED_ALPHA_KEY, REQUEST_ID);
