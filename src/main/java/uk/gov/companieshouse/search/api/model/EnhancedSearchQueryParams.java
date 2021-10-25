@@ -5,6 +5,8 @@ import java.util.List;
 
 public class EnhancedSearchQueryParams {
 
+    private Integer startIndex;
+
     private String companyNameIncludes;
 
     private String location;
@@ -24,6 +26,14 @@ public class EnhancedSearchQueryParams {
     private LocalDate dissolvedTo;
 
     private String companyNameExcludes;
+
+    public Integer getStartIndex() {
+        return startIndex;
+    }
+
+    public void setStartIndex(Integer startIndex) {
+        this.startIndex = startIndex;
+    }
 
     public String getCompanyNameIncludes() {
         return companyNameIncludes;

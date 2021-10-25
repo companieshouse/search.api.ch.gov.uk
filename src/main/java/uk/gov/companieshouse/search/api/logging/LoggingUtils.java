@@ -68,6 +68,7 @@ public class LoggingUtils {
 
     public static Map<String, Object> getLogMap(EnhancedSearchQueryParams queryParams, String requestId) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logIfNotNull(logMap, START_INDEX, queryParams.getStartIndex());
         logIfNotNull(logMap, COMPANY_NAME, queryParams.getCompanyNameIncludes());
         logIfNotNull(logMap, LOCATION, queryParams.getLocation());
         logIfNotNull(logMap, INCORPORATED_FROM, queryParams.getIncorporatedFrom());
