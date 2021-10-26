@@ -43,9 +43,11 @@ public class EnhancedSearchRequestService {
         TopHit topHit = new TopHit();
         List<Company> results = new ArrayList<>();
         String kind = "search#enhanced-search";
+        long numberOfHits;
 
         try {
             SearchHits hits = enhancedSearchRequests.getCompanies(queryParams, requestId);
+            numberOfHits = hits.getTotalHits().value;
 
             if (hits.getTotalHits().value > 0) {
                 getLogger().info(RESULT_FOUND, logMap);
@@ -61,7 +63,11 @@ public class EnhancedSearchRequestService {
             getLogger().error("failed to return a company using enhanced search", logMap);
             throw new SearchException("error occurred reading data from the search hits", e);
         }
+        SearchResults<Company> enhancedSearchResults =
+            new SearchResults<>(etag, topHit, results, kind);
 
-        return new SearchResults<>(etag, topHit, results, kind);
+        enhancedSearchResults.setHits(numberOfHits);
+
+        return enhancedSearchResults;
     }
 }
