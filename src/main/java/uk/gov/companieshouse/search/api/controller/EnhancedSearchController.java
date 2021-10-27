@@ -11,6 +11,7 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.LOCATION;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIC_CODES;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
@@ -49,6 +50,7 @@ public class EnhancedSearchController {
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
 
+    private static final String START_INDEX_QUERY_PARAM = "start_index";
     private static final String COMPANY_NAME_QUERY_PARAM = "company_name_includes";
     private static final String LOCATION_QUERY_PARAM = "location";
     private static final String INCORPORATED_FROM_QUERY_PARAMETER = "incorporated_from";
@@ -63,7 +65,8 @@ public class EnhancedSearchController {
 
     @GetMapping("/companies")
     @ResponseBody
-    public ResponseEntity<Object> search(@RequestParam(name = COMPANY_NAME_QUERY_PARAM, required = false) String companyName,
+    public ResponseEntity<Object> search(@RequestParam(name = START_INDEX_QUERY_PARAM, required = false) Integer startIndex,
+                                         @RequestParam(name = COMPANY_NAME_QUERY_PARAM, required = false) String companyName,
                                          @RequestParam(name = LOCATION_QUERY_PARAM, required = false) String location,
                                          @RequestParam(name = INCORPORATED_FROM_QUERY_PARAMETER, required = false) String incorporatedFrom,
                                          @RequestParam(name = INCORPORATED_TO_QUERY_PARAMETER, required = false) String incorporatedTo,
@@ -76,6 +79,7 @@ public class EnhancedSearchController {
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        logIfNotNull(logMap, START_INDEX, startIndex);
         logIfNotNull(logMap, COMPANY_NAME, companyName);
         logIfNotNull(logMap, LOCATION, location);
         logIfNotNull(logMap, INCORPORATED_FROM, incorporatedFrom);
@@ -91,9 +95,10 @@ public class EnhancedSearchController {
         logMap.remove(MESSAGE);
 
         EnhancedSearchQueryParams enhancedSearchQueryParams;
+
         try {
             enhancedSearchQueryParams = queryParamMapper
-                .mapEnhancedQueryParameters(companyName, location, incorporatedFrom,
+                .mapEnhancedQueryParameters(startIndex, companyName, location, incorporatedFrom,
                     incorporatedTo, companyStatusList, sicCodes, companyTypeList, dissolvedFrom, dissolvedTo, companyNameExcludes);
         } catch (DateFormatException dfe) {
            return apiToResponseMapper.map(new ResponseObject(ResponseStatus.DATE_FORMAT_ERROR, null));

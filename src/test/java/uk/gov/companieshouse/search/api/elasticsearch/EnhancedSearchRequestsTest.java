@@ -75,6 +75,7 @@ class EnhancedSearchRequestsTest {
     private EnhancedSearchQueryParams createEnhancedSearchQueryParams() {
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
 
+        enhancedSearchQueryParams.setStartIndex(0);
         enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
 
         return enhancedSearchQueryParams;

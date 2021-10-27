@@ -21,6 +21,7 @@ import java.util.List;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EnhancedQueryParamMapperTest {
 
+    private static final Integer START_INDEX_ZERO = 0;
     private static final String COMPANY_NAME = "test company";
     private static final String LOCATION = "location";
     private static final String INCORPORATED_FROM = "2000-01-01";
@@ -49,9 +50,10 @@ class EnhancedQueryParamMapperTest {
 
         EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
         EnhancedSearchQueryParams enhancedSearchQueryParams =
-            enhancedQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, INCORPORATED_FROM,
+            enhancedQueryParamMapper.mapEnhancedQueryParameters(START_INDEX_ZERO, COMPANY_NAME, LOCATION, INCORPORATED_FROM,
                 INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES);
 
+        assertEquals(START_INDEX_ZERO, enhancedSearchQueryParams.getStartIndex());
         assertEquals(COMPANY_NAME, enhancedSearchQueryParams.getCompanyNameIncludes());
         assertEquals(LOCATION, enhancedSearchQueryParams.getLocation());
         assertEquals(INCORPORATED_FROM_MAPPED, enhancedSearchQueryParams.getIncorporatedFrom());
@@ -63,12 +65,36 @@ class EnhancedQueryParamMapperTest {
     }
 
     @Test
+    @DisplayName("Test start index set to 0 when start index is null")
+    void testMapParamsSuccessfulNoStartIndex() throws Exception {
+
+        EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
+        EnhancedSearchQueryParams enhancedSearchQueryParams =
+            enhancedQueryParamMapper.mapEnhancedQueryParameters(null, COMPANY_NAME, LOCATION, INCORPORATED_FROM,
+                INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES);
+
+        assertEquals(START_INDEX_ZERO, enhancedSearchQueryParams.getStartIndex());
+    }
+
+    @Test
+    @DisplayName("Test start index set to 0 when start index is less than 0")
+    void testMapParamsSuccessfulStartIndexBelowZero() throws Exception {
+
+        EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
+        EnhancedSearchQueryParams enhancedSearchQueryParams =
+            enhancedQueryParamMapper.mapEnhancedQueryParameters(-1, COMPANY_NAME, LOCATION, INCORPORATED_FROM,
+                INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES);
+
+        assertEquals(START_INDEX_ZERO, enhancedSearchQueryParams.getStartIndex());
+    }
+
+    @Test
     @DisplayName("Test params mapped successfully no dates")
     void testMapParamsSuccessfulNoDates() throws Exception {
 
         EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
         EnhancedSearchQueryParams enhancedSearchQueryParams =
-            enhancedQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, null,
+            enhancedQueryParamMapper.mapEnhancedQueryParameters(START_INDEX_ZERO, COMPANY_NAME, LOCATION, null,
                 null, null, null, null, null, null, null);
 
         assertEquals(COMPANY_NAME, enhancedSearchQueryParams.getCompanyNameIncludes());
@@ -84,7 +110,7 @@ class EnhancedQueryParamMapperTest {
         EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
 
         assertThrows(DateFormatException.class, () -> {
-            enhancedQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, BAD_DATE_FORMAT,
+            enhancedQueryParamMapper.mapEnhancedQueryParameters(START_INDEX_ZERO, COMPANY_NAME, LOCATION, BAD_DATE_FORMAT,
                 BAD_DATE_FORMAT, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, BAD_DATE_FORMAT, BAD_DATE_FORMAT, COMPANY_NAME_EXCLUDES);
         });
     }
@@ -96,7 +122,7 @@ class EnhancedQueryParamMapperTest {
         EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
 
         assertThrows(MappingException.class, () -> {
-            enhancedQueryParamMapper.mapEnhancedQueryParameters(COMPANY_NAME, LOCATION, INCORPORATED_FROM,
+            enhancedQueryParamMapper.mapEnhancedQueryParameters(START_INDEX_ZERO, COMPANY_NAME, LOCATION, INCORPORATED_FROM,
                 INCORPORATED_TO, BAD_COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES);
         });
     }
