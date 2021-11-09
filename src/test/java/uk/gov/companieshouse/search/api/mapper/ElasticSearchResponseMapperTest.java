@@ -13,9 +13,9 @@ import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED
 import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_NO_PREVIOUS_NAME;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_NO_ROA;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_POST_20_YEARS;
-import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_RESPONSE;
-import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_RESPONSE_DISSOLVED_COMPANY;
-import static uk.gov.companieshouse.search.api.constants.TestConstants.ENHANCED_RESPONSE_MISSING_FIELDS;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.ADVANCED_RESPONSE;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.ADVANCED_RESPONSE_DISSOLVED_COMPANY;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.ADVANCED_RESPONSE_MISSING_FIELDS;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -241,10 +241,10 @@ class ElasticSearchResponseMapperTest {
     }
 
     @Test
-    @DisplayName("Map enhanced top hit successful")
+    @DisplayName("Map advanced top hit successful")
     void mapEmhancedTopHitSuccessful() {
 
-        TopHit topHit = elasticSearchResponseMapper.mapEnhancedTopHit(createEnhancedCompany());
+        TopHit topHit = elasticSearchResponseMapper.mapAdvancedTopHit(createAdvancedCompany());
 
         assertEquals(COMPANY_NAME, topHit.getCompanyName());
         assertEquals(COMPANY_NUMBER, topHit.getCompanyNumber());
@@ -408,13 +408,13 @@ class ElasticSearchResponseMapperTest {
     }
 
     @Test
-    @DisplayName("Map enhanced response successful for active company")
-    void mapEnhancedResponseSuccessfulActiveTest() {
+    @DisplayName("Map advanced response successful for active company")
+    void mapAdvancedResponseSuccessfulActiveTest() {
 
-        SearchHits searchHits = createHits(ENHANCED_RESPONSE);
+        SearchHits searchHits = createHits(ADVANCED_RESPONSE);
 
         Company company =
-                elasticSearchResponseMapper.mapEnhancedSearchResponse(searchHits.getAt(0));
+                elasticSearchResponseMapper.mapAdvancedSearchResponse(searchHits.getAt(0));
 
         assertEquals(COMPANY_NAME, company.getCompanyName());
         assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
@@ -427,13 +427,13 @@ class ElasticSearchResponseMapperTest {
     }
 
     @Test
-    @DisplayName("Map enhanced response successful with missing fields")
-    void mapEnhancedResponseSuccessfulMissingFields() {
+    @DisplayName("Map advanced response successful with missing fields")
+    void mapAdvancedResponseSuccessfulMissingFields() {
 
-        SearchHits searchHits = createHits(ENHANCED_RESPONSE_MISSING_FIELDS);
+        SearchHits searchHits = createHits(ADVANCED_RESPONSE_MISSING_FIELDS);
 
         Company company =
-                elasticSearchResponseMapper.mapEnhancedSearchResponse(searchHits.getAt(0));
+                elasticSearchResponseMapper.mapAdvancedSearchResponse(searchHits.getAt(0));
 
         assertEquals(COMPANY_NAME, company.getCompanyName());
         assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
@@ -442,13 +442,13 @@ class ElasticSearchResponseMapperTest {
     }
 
     @Test
-    @DisplayName("Map enhanced response successful for dissolved company")
-    void mapEnhancedResponseSuccessfulDissolvedTest() {
+    @DisplayName("Map advanced response successful for dissolved company")
+    void mapAdvancedResponseSuccessfulDissolvedTest() {
 
-        SearchHits searchHits = createHits(ENHANCED_RESPONSE_DISSOLVED_COMPANY);
+        SearchHits searchHits = createHits(ADVANCED_RESPONSE_DISSOLVED_COMPANY);
 
         Company company =
-                elasticSearchResponseMapper.mapEnhancedSearchResponse(searchHits.getAt(0));
+                elasticSearchResponseMapper.mapAdvancedSearchResponse(searchHits.getAt(0));
 
         assertEquals(COMPANY_NAME, company.getCompanyName());
         assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
@@ -556,7 +556,7 @@ class ElasticSearchResponseMapperTest {
         return company;
     }
 
-    private Company createEnhancedCompany() {
+    private Company createAdvancedCompany() {
         Company company = new Company();
         company.setCompanyName(COMPANY_NAME);
         company.setCompanyNumber(COMPANY_NUMBER);

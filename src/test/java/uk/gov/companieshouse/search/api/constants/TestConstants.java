@@ -221,7 +221,7 @@ public static final String DISSOLVED_INNER_HITS =
             "\"company_number\" : \"00000000\"" +
         "}";
 
-public static final String ENHANCED_RESPONSE =
+public static final String ADVANCED_RESPONSE =
         "{" +
             "\"current_company\" : {" +
                 "\"company_number\" : \"00000000\"," +
@@ -247,7 +247,7 @@ public static final String ENHANCED_RESPONSE =
             "\"company_type\" : \"ltd\"" +
         "}";
 
-public static final String ENHANCED_RESPONSE_DISSOLVED_COMPANY =
+public static final String ADVANCED_RESPONSE_DISSOLVED_COMPANY =
         "{" +
             "\"current_company\" : {" +
                 "\"company_number\" : \"00000000\"," +
@@ -274,7 +274,7 @@ public static final String ENHANCED_RESPONSE_DISSOLVED_COMPANY =
             "\"company_type\" : \"ltd\"" +
         "}";
 
-public static final String ENHANCED_RESPONSE_MISSING_FIELDS =
+public static final String ADVANCED_RESPONSE_MISSING_FIELDS =
         "{" +
             "\"current_company\" : {" +
                 "\"company_number\" : \"00000000\"," +

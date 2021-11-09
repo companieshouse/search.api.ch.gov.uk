@@ -8,15 +8,15 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-class EnhancedSearchQueriesTest {
+class AdvancedSearchQueriesTest {
 
-    private EnhancedSearchQueries enhancedSearchQueries = new EnhancedSearchQueries();
+    private AdvancedSearchQueries advancedSearchQueries = new AdvancedSearchQueries();
 
     private static final String COMPANY_NAME = "TEST COMPANY";
     private static final String LOCATION = "TEST LOCATION";
@@ -45,11 +45,11 @@ class EnhancedSearchQueriesTest {
     @Test
     @DisplayName("Create company name must contain query")
     void companyNameMustContainQuery() {
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
 
         BoolQueryBuilder boolQueryBuilder =
-                enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+                advancedSearchQueries.buildAdvancedSearchQuery(advancedSearchQueryParams);
 
         assertNotNull(boolQueryBuilder);
         assertTrue(boolQueryBuilder.toString().contains(COMPANY_NAME_MUST_CONTAIN_FIELD));
@@ -59,11 +59,11 @@ class EnhancedSearchQueriesTest {
     @Test
     @DisplayName("Create location match query")
     void locationMatchQuery() {
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setLocation(LOCATION);
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setLocation(LOCATION);
 
         QueryBuilder queryBuilder =
-                enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+                advancedSearchQueries.buildAdvancedSearchQuery(advancedSearchQueryParams);
 
         assertNotNull(queryBuilder);
         assertTrue(queryBuilder.toString().contains(LOCATION_MATCH_FIELD));
@@ -73,11 +73,11 @@ class EnhancedSearchQueriesTest {
     @Test
     @DisplayName("Create incorporated from match query")
     void incorporatedFromQuery() {
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setIncorporatedFrom(INCORPORATED_FROM);
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setIncorporatedFrom(INCORPORATED_FROM);
 
         QueryBuilder queryBuilder =
-                enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+                advancedSearchQueries.buildAdvancedSearchQuery(advancedSearchQueryParams);
 
         assertNotNull(queryBuilder);
         assertTrue(queryBuilder.toString().contains(INCORPORATION_DATE_MATCH_FIELD));
@@ -87,11 +87,11 @@ class EnhancedSearchQueriesTest {
     @Test
     @DisplayName("Create incorporated to match query")
     void incorporatedToQuery() {
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setIncorporatedTo(INCORPORATED_TO);
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setIncorporatedTo(INCORPORATED_TO);
 
         QueryBuilder queryBuilder =
-                enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+                advancedSearchQueries.buildAdvancedSearchQuery(advancedSearchQueryParams);
 
         assertNotNull(queryBuilder);
         assertTrue(queryBuilder.toString().contains(INCORPORATION_DATE_MATCH_FIELD));
@@ -101,11 +101,11 @@ class EnhancedSearchQueriesTest {
     @Test
     @DisplayName("Create dissolved from match query")
     void dissolvedFromQuery() {
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setDissolvedFrom(DISSOLVED_FROM);
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setDissolvedFrom(DISSOLVED_FROM);
 
         QueryBuilder queryBuilder =
-            enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+            advancedSearchQueries.buildAdvancedSearchQuery(advancedSearchQueryParams);
 
         assertNotNull(queryBuilder);
         assertTrue(queryBuilder.toString().contains(DISSOLVED_DATE_MATCH_FIELD));
@@ -115,11 +115,11 @@ class EnhancedSearchQueriesTest {
     @Test
     @DisplayName("Create dissolved to match query")
     void dissolvedToQuery() {
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setDissolvedFrom(DISSOLVED_TO);
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setDissolvedFrom(DISSOLVED_TO);
 
         QueryBuilder queryBuilder =
-            enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+            advancedSearchQueries.buildAdvancedSearchQuery(advancedSearchQueryParams);
 
         assertNotNull(queryBuilder);
         assertTrue(queryBuilder.toString().contains(DISSOLVED_DATE_MATCH_FIELD));
@@ -129,11 +129,11 @@ class EnhancedSearchQueriesTest {
     @Test
     @DisplayName("Create company status match query")
     void companyStatusQuery() {
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyStatusList(COMPANY_STATUS_LIST);
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setCompanyStatusList(COMPANY_STATUS_LIST);
 
         QueryBuilder queryBuilder =
-            enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+            advancedSearchQueries.buildAdvancedSearchQuery(advancedSearchQueryParams);
 
         assertNotNull(queryBuilder);
         assertTrue(queryBuilder.toString().contains(COMPANY_STATUS_MATCH_FIELD));
@@ -143,11 +143,11 @@ class EnhancedSearchQueriesTest {
     @Test
     @DisplayName("Create sic codes match query")
     void sicCodesMatchQuery() {
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setSicCodes(SIC_CODES_LIST);
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setSicCodes(SIC_CODES_LIST);
 
         QueryBuilder queryBuilder =
-                enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+                advancedSearchQueries.buildAdvancedSearchQuery(advancedSearchQueryParams);
 
         assertNotNull(queryBuilder);
         assertTrue(queryBuilder.toString().contains(SIC_CODES_MATCH_FIELD));
@@ -157,11 +157,11 @@ class EnhancedSearchQueriesTest {
     @Test
     @DisplayName("Create company type match query")
     void companyTypeQuery() {
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyTypeList(COMPANY_TYPES_LIST);
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setCompanyTypeList(COMPANY_TYPES_LIST);
 
         QueryBuilder queryBuilder =
-            enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+            advancedSearchQueries.buildAdvancedSearchQuery(advancedSearchQueryParams);
 
         assertNotNull(queryBuilder);
         assertTrue(queryBuilder.toString().contains(COMPANY_TYPE_MATCH_FIELD));
@@ -172,11 +172,11 @@ class EnhancedSearchQueriesTest {
     @Test
     @DisplayName("Create company name excludes query")
     void companyNameExcludesQuery() {
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyNameExcludes(COMPANY_NAME_EXCLUDES);
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setCompanyNameExcludes(COMPANY_NAME_EXCLUDES);
 
         BoolQueryBuilder boolQueryBuilder =
-                enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+                advancedSearchQueries.buildAdvancedSearchQuery(advancedSearchQueryParams);
 
         assertNotNull(boolQueryBuilder);
         assertTrue(boolQueryBuilder.toString().contains(COMPANY_NAME_EXCLUDES));
@@ -185,10 +185,10 @@ class EnhancedSearchQueriesTest {
     @Test
     @DisplayName("No query parameters present")
     void noQueryParametersPresent() {
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
 
         BoolQueryBuilder boolQueryBuilder =
-                enhancedSearchQueries.buildEnhancedSearchQuery(enhancedSearchQueryParams);
+                advancedSearchQueries.buildAdvancedSearchQuery(advancedSearchQueryParams);
 
         assertNotNull(boolQueryBuilder);
         assertFalse(boolQueryBuilder.toString().contains(COMPANY_NAME_MUST_CONTAIN_FIELD));

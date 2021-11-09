@@ -28,24 +28,24 @@ import uk.gov.companieshouse.search.api.exception.DateFormatException;
 import uk.gov.companieshouse.search.api.exception.MappingException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
-import uk.gov.companieshouse.search.api.mapper.EnhancedQueryParamMapper;
-import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.mapper.AdvancedQueryParamMapper;
+import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
-import uk.gov.companieshouse.search.api.service.search.impl.enhanced.EnhancedSearchIndexService;
+import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchIndexService;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/enhanced-search", produces = MediaType.APPLICATION_JSON_VALUE)
-public class EnhancedSearchController {
+@RequestMapping(value = "/advanced-search", produces = MediaType.APPLICATION_JSON_VALUE)
+public class AdvancedSearchController {
 
     @Autowired
-    private EnhancedQueryParamMapper queryParamMapper;
+    private AdvancedQueryParamMapper queryParamMapper;
 
     @Autowired
-    private EnhancedSearchIndexService searchIndexService;
+    private AdvancedSearchIndexService searchIndexService;
 
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
@@ -90,15 +90,15 @@ public class EnhancedSearchController {
         logIfNotNull(logMap, DISSOLVED_FROM, dissolvedFrom);
         logIfNotNull(logMap, DISSOLVED_TO, dissolvedTo);
         logIfNotNull(logMap, COMPANY_NAME_EXCLUDES, companyNameExcludes);
-        logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
+        logMap.put(INDEX, LoggingUtils.ADVANCED_SEARCH_INDEX);
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
 
-        EnhancedSearchQueryParams enhancedSearchQueryParams;
+        AdvancedSearchQueryParams advancedSearchQueryParams;
 
         try {
-            enhancedSearchQueryParams = queryParamMapper
-                .mapEnhancedQueryParameters(startIndex, companyName, location, incorporatedFrom,
+            advancedSearchQueryParams = queryParamMapper
+                .mapAdvancedQueryParameters(startIndex, companyName, location, incorporatedFrom,
                     incorporatedTo, companyStatusList, sicCodes, companyTypeList, dissolvedFrom, dissolvedTo, companyNameExcludes);
         } catch (DateFormatException dfe) {
            return apiToResponseMapper.map(new ResponseObject(ResponseStatus.DATE_FORMAT_ERROR, null));
@@ -106,7 +106,7 @@ public class EnhancedSearchController {
             return apiToResponseMapper.map(new ResponseObject(ResponseStatus.MAPPING_ERROR, null));
         }
 
-        ResponseObject responseObject = searchIndexService.searchEnhanced(enhancedSearchQueryParams, requestId);
+        ResponseObject responseObject = searchIndexService.searchAdvanced(advancedSearchQueryParams, requestId);
 
         return apiToResponseMapper.map(responseObject);
     }
