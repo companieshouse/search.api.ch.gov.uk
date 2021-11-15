@@ -27,6 +27,8 @@ public class EnhancedSearchQueryParams {
 
     private String companyNameExcludes;
 
+    private Integer size;
+
     public Integer getStartIndex() {
         return startIndex;
     }
@@ -113,5 +115,13 @@ public class EnhancedSearchQueryParams {
 
     public void setCompanyNameExcludes(String companyNameExcludes) {
         this.companyNameExcludes = companyNameExcludes;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
     }
 }

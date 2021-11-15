@@ -62,6 +62,7 @@ public class EnhancedSearchController {
     private static final String DISSOLVED_TO_QUERY_PARAMETER = "dissolved_to";
     private static final String COMPANY_NAME_EXCLUDES = "company_name_excludes";
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
+    private static final String SIZE_PARAM = "size";
 
     @GetMapping("/companies")
     @ResponseBody
@@ -76,6 +77,7 @@ public class EnhancedSearchController {
                                          @RequestParam(name = DISSOLVED_FROM_QUERY_PARAMETER, required = false) String dissolvedFrom,
                                          @RequestParam(name = DISSOLVED_TO_QUERY_PARAMETER, required = false) String dissolvedTo,
                                          @RequestParam(name = COMPANY_NAME_EXCLUDES, required = false) String companyNameExcludes,
+                                         @RequestParam(name = SIZE_PARAM, required = false) Integer size,
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
@@ -90,6 +92,7 @@ public class EnhancedSearchController {
         logIfNotNull(logMap, DISSOLVED_FROM, dissolvedFrom);
         logIfNotNull(logMap, DISSOLVED_TO, dissolvedTo);
         logIfNotNull(logMap, COMPANY_NAME_EXCLUDES, companyNameExcludes);
+        logIfNotNull(logMap, SIZE_PARAM, size);
         logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
@@ -99,7 +102,7 @@ public class EnhancedSearchController {
         try {
             enhancedSearchQueryParams = queryParamMapper
                 .mapEnhancedQueryParameters(startIndex, companyName, location, incorporatedFrom,
-                    incorporatedTo, companyStatusList, sicCodes, companyTypeList, dissolvedFrom, dissolvedTo, companyNameExcludes);
+                    incorporatedTo, companyStatusList, sicCodes, companyTypeList, dissolvedFrom, dissolvedTo, companyNameExcludes, size);
         } catch (DateFormatException dfe) {
            return apiToResponseMapper.map(new ResponseObject(ResponseStatus.DATE_FORMAT_ERROR, null));
         } catch (MappingException me) {

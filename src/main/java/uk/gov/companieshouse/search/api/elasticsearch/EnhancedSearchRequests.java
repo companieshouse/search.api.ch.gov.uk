@@ -37,7 +37,7 @@ public class EnhancedSearchRequests {
 
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
-        sourceBuilder.size(20);
+        sourceBuilder.size(queryParams.getSize());
         sourceBuilder.from(queryParams.getStartIndex());
 
         searchRequest.source(sourceBuilder.query(enhancedSearchQueries.buildEnhancedSearchQuery(queryParams)));

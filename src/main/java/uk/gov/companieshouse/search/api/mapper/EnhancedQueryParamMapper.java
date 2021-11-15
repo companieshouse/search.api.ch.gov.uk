@@ -78,13 +78,15 @@ public class EnhancedQueryParamMapper {
                                                                 List<String> companyTypeList,
                                                                 String dissolvedFrom,
                                                                 String dissolvedTo,
-                                                                String companyNameExcludes) throws DateFormatException, MappingException {
+                                                                String companyNameExcludes,
+                                                                Integer size) throws DateFormatException, MappingException {
 
         EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
 
         if (startIndex == null || startIndex < 0) {
             startIndex = 0;
         }
+
         enhancedSearchQueryParams.setStartIndex(startIndex);
         enhancedSearchQueryParams.setCompanyNameIncludes(companyNameIncludes);
         enhancedSearchQueryParams.setLocation(location);
@@ -101,6 +103,15 @@ public class EnhancedQueryParamMapper {
             enhancedSearchQueryParams.setCompanyTypeList(
                 mapListParam(companyTypeList, ACCEPTED_COMPANY_TYPES, COMPANY_TYPE));
         }
+
+        //make these magic numbers env vars
+        if (size != null && size > 500) size = 500;
+
+        if (size == null || size < 0) {
+            size = 20;
+        }
+
+        enhancedSearchQueryParams.setSize(size);
 
         return enhancedSearchQueryParams;
     }
