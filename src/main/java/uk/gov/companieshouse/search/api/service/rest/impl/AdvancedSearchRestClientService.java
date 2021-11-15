@@ -16,19 +16,19 @@ import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 import java.io.IOException;
 
 @Service
-public class EnhancedSearchRestClientService implements RestClientService {
+public class AdvancedSearchRestClientService implements RestClientService {
 
     @Autowired
-    @Qualifier("enhancedClient")
-    private RestHighLevelClient enhancedClient;
+    @Qualifier("advancedClient")
+    private RestHighLevelClient advancedClient;
 
     @Override
     public SearchResponse search(SearchRequest searchRequest) throws IOException {
-        return enhancedClient.search(searchRequest, DEFAULT);
+        return advancedClient.search(searchRequest, DEFAULT);
     }
 
     @Override
     public UpdateResponse upsert(UpdateRequest updateRequest) throws IOException {
-        return enhancedClient.update(updateRequest, RequestOptions.DEFAULT);
+        return advancedClient.update(updateRequest, RequestOptions.DEFAULT);
     }
 }

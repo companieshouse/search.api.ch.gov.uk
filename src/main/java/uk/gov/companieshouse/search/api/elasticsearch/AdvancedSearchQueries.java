@@ -8,12 +8,12 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.springframework.stereotype.Component;
-import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 
 @Component
-public class EnhancedSearchQueries {
+public class AdvancedSearchQueries {
 
-    public BoolQueryBuilder buildEnhancedSearchQuery(EnhancedSearchQueryParams queryParams) {
+    public BoolQueryBuilder buildAdvancedSearchQuery(AdvancedSearchQueryParams queryParams) {
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         QueryBuilder queryBuilder;

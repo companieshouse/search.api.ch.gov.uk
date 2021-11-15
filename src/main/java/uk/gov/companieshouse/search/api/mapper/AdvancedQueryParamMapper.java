@@ -6,7 +6,7 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_TYPE
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.search.api.exception.DateFormatException;
 import uk.gov.companieshouse.search.api.exception.MappingException;
-import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class EnhancedQueryParamMapper {
+public class AdvancedQueryParamMapper {
 
     private static final List<String> ACCEPTED_COMPANY_STATUS = Arrays.asList(
         "active",
@@ -68,7 +68,7 @@ public class EnhancedQueryParamMapper {
         "ukeig"
     );
 
-    public EnhancedSearchQueryParams mapEnhancedQueryParameters(Integer startIndex,
+    public AdvancedSearchQueryParams mapAdvancedQueryParameters(Integer startIndex,
                                                                 String companyNameIncludes,
                                                                 String location,
                                                                 String incorporatedFrom,
@@ -80,32 +80,32 @@ public class EnhancedQueryParamMapper {
                                                                 String dissolvedTo,
                                                                 String companyNameExcludes) throws DateFormatException, MappingException {
 
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
 
         if (startIndex == null || startIndex < 0) {
             startIndex = 0;
         }
-        enhancedSearchQueryParams.setStartIndex(startIndex);
-        enhancedSearchQueryParams.setCompanyNameIncludes(companyNameIncludes);
-        enhancedSearchQueryParams.setLocation(location);
-        enhancedSearchQueryParams.setSicCodes(sicCodes);
-        mapDates(enhancedSearchQueryParams, incorporatedFrom, incorporatedTo, dissolvedFrom, dissolvedTo);
-        enhancedSearchQueryParams.setCompanyNameExcludes(companyNameExcludes);
+        advancedSearchQueryParams.setStartIndex(startIndex);
+        advancedSearchQueryParams.setCompanyNameIncludes(companyNameIncludes);
+        advancedSearchQueryParams.setLocation(location);
+        advancedSearchQueryParams.setSicCodes(sicCodes);
+        mapDates(advancedSearchQueryParams, incorporatedFrom, incorporatedTo, dissolvedFrom, dissolvedTo);
+        advancedSearchQueryParams.setCompanyNameExcludes(companyNameExcludes);
 
         if (companyStatusList != null) {
-            enhancedSearchQueryParams.setCompanyStatusList(
+            advancedSearchQueryParams.setCompanyStatusList(
                 mapListParam(companyStatusList, ACCEPTED_COMPANY_STATUS, COMPANY_STATUS));
         }
 
         if (companyTypeList != null) {
-            enhancedSearchQueryParams.setCompanyTypeList(
+            advancedSearchQueryParams.setCompanyTypeList(
                 mapListParam(companyTypeList, ACCEPTED_COMPANY_TYPES, COMPANY_TYPE));
         }
 
-        return enhancedSearchQueryParams;
+        return advancedSearchQueryParams;
     }
 
-    private void mapDates(EnhancedSearchQueryParams enhancedSearchQueryParams,
+    private void mapDates(AdvancedSearchQueryParams advancedSearchQueryParams,
                           String incorporatedFrom,
                           String incorporatedTo,
                           String dissolvedFrom,
@@ -113,16 +113,16 @@ public class EnhancedQueryParamMapper {
 
         try {
             if (incorporatedFrom != null) {
-                enhancedSearchQueryParams.setIncorporatedFrom(LocalDate.parse(incorporatedFrom));
+                advancedSearchQueryParams.setIncorporatedFrom(LocalDate.parse(incorporatedFrom));
             }
             if (incorporatedTo != null) {
-                enhancedSearchQueryParams.setIncorporatedTo(LocalDate.parse(incorporatedTo));
+                advancedSearchQueryParams.setIncorporatedTo(LocalDate.parse(incorporatedTo));
             }
             if (dissolvedFrom != null) {
-                enhancedSearchQueryParams.setDissolvedFrom(LocalDate.parse(dissolvedFrom));
+                advancedSearchQueryParams.setDissolvedFrom(LocalDate.parse(dissolvedFrom));
             }
             if (dissolvedTo != null) {
-                enhancedSearchQueryParams.setDissolvedTo(LocalDate.parse(dissolvedTo));
+                advancedSearchQueryParams.setDissolvedTo(LocalDate.parse(dissolvedTo));
             }
         } catch (DateTimeParseException e) {
             throw new DateFormatException("error occurred setting date field");

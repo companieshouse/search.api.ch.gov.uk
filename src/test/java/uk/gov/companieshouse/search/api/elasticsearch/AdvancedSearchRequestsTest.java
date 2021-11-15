@@ -24,27 +24,27 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.environment.EnvironmentReader;
-import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
-import uk.gov.companieshouse.search.api.service.rest.impl.EnhancedSearchRestClientService;
+import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClientService;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class EnhancedSearchRequestsTest {
+class AdvancedSearchRequestsTest {
 
     @InjectMocks
-    private EnhancedSearchRequests enhancedSearchRequests;
+    private AdvancedSearchRequests advancedSearchRequests;
 
     @Mock
     private EnvironmentReader mockEnvironmentReader;
 
     @Mock
-    private EnhancedSearchQueries mockEnhancedSearchQueries;
+    private AdvancedSearchQueries mockAdvancedSearchQueries;
 
     @Mock
-    private EnhancedSearchRestClientService mockSearchRestClient;
+    private AdvancedSearchRestClientService mockSearchRestClient;
 
     private static final String COMPANY_NAME = "TEST COMPANY";
-    private static final String ENV_READER_RESULT = "ENHANCED_SEARCH_INDEX";
+    private static final String ENV_READER_RESULT = "ADVANCED_SEARCH_INDEX";
     private static final String REQUEST_ID = "123456789";
 
     @Test
@@ -54,7 +54,7 @@ class EnhancedSearchRequestsTest {
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT);
         when(mockSearchRestClient.search(any(SearchRequest.class))).thenReturn(createSearchResponse());
 
-        SearchHits searchHits = enhancedSearchRequests.getCompanies(createEnhancedSearchQueryParams(), REQUEST_ID);
+        SearchHits searchHits = advancedSearchRequests.getCompanies(createAdvancedSearchQueryParams(), REQUEST_ID);
 
         assertNotNull(searchHits);
         assertEquals(1, searchHits.getTotalHits().value);
@@ -72,13 +72,13 @@ class EnhancedSearchRequestsTest {
         return searchResponse;
     }
 
-    private EnhancedSearchQueryParams createEnhancedSearchQueryParams() {
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
+    private AdvancedSearchQueryParams createAdvancedSearchQueryParams() {
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
 
-        enhancedSearchQueryParams.setStartIndex(0);
-        enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
+        advancedSearchQueryParams.setStartIndex(0);
+        advancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
 
-        return enhancedSearchQueryParams;
+        return advancedSearchQueryParams;
 
     }
 }

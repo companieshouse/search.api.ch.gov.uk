@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.search.api.exception.DateFormatException;
 import uk.gov.companieshouse.search.api.exception.MappingException;
-import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class EnhancedQueryParamMapperTest {
+class AdvancedQueryParamMapperTest {
 
     private static final Integer START_INDEX_ZERO = 0;
     private static final String COMPANY_NAME = "test company";
@@ -48,69 +48,69 @@ class EnhancedQueryParamMapperTest {
     @DisplayName("Test params mapped successfully")
     void testMapParamsSuccessful() throws Exception {
 
-        EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
-        EnhancedSearchQueryParams enhancedSearchQueryParams =
-            enhancedQueryParamMapper.mapEnhancedQueryParameters(START_INDEX_ZERO, COMPANY_NAME, LOCATION, INCORPORATED_FROM,
+        AdvancedQueryParamMapper advancedQueryParamMapper = new AdvancedQueryParamMapper();
+        AdvancedSearchQueryParams advancedSearchQueryParams =
+            advancedQueryParamMapper.mapAdvancedQueryParameters(START_INDEX_ZERO, COMPANY_NAME, LOCATION, INCORPORATED_FROM,
                 INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES);
 
-        assertEquals(START_INDEX_ZERO, enhancedSearchQueryParams.getStartIndex());
-        assertEquals(COMPANY_NAME, enhancedSearchQueryParams.getCompanyNameIncludes());
-        assertEquals(LOCATION, enhancedSearchQueryParams.getLocation());
-        assertEquals(INCORPORATED_FROM_MAPPED, enhancedSearchQueryParams.getIncorporatedFrom());
-        assertEquals(INCORPORATED_TO_MAPPED, enhancedSearchQueryParams.getIncorporatedTo());
-        assertEquals(DISSOLVED_FROM_MAPPED, enhancedSearchQueryParams.getDissolvedFrom());
-        assertEquals(DISSOLVED_TO_MAPPED, enhancedSearchQueryParams.getDissolvedTo());
-        assertEquals(ACTIVE_COMPANY_STATUS, enhancedSearchQueryParams.getCompanyStatusList().get(0));
-        assertEquals(SIC_CODES_LIST, enhancedSearchQueryParams.getSicCodes());
+        assertEquals(START_INDEX_ZERO, advancedSearchQueryParams.getStartIndex());
+        assertEquals(COMPANY_NAME, advancedSearchQueryParams.getCompanyNameIncludes());
+        assertEquals(LOCATION, advancedSearchQueryParams.getLocation());
+        assertEquals(INCORPORATED_FROM_MAPPED, advancedSearchQueryParams.getIncorporatedFrom());
+        assertEquals(INCORPORATED_TO_MAPPED, advancedSearchQueryParams.getIncorporatedTo());
+        assertEquals(DISSOLVED_FROM_MAPPED, advancedSearchQueryParams.getDissolvedFrom());
+        assertEquals(DISSOLVED_TO_MAPPED, advancedSearchQueryParams.getDissolvedTo());
+        assertEquals(ACTIVE_COMPANY_STATUS, advancedSearchQueryParams.getCompanyStatusList().get(0));
+        assertEquals(SIC_CODES_LIST, advancedSearchQueryParams.getSicCodes());
     }
 
     @Test
     @DisplayName("Test start index set to 0 when start index is null")
     void testMapParamsSuccessfulNoStartIndex() throws Exception {
 
-        EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
-        EnhancedSearchQueryParams enhancedSearchQueryParams =
-            enhancedQueryParamMapper.mapEnhancedQueryParameters(null, COMPANY_NAME, LOCATION, INCORPORATED_FROM,
+        AdvancedQueryParamMapper advancedQueryParamMapper = new AdvancedQueryParamMapper();
+        AdvancedSearchQueryParams advancedSearchQueryParams =
+            advancedQueryParamMapper.mapAdvancedQueryParameters(null, COMPANY_NAME, LOCATION, INCORPORATED_FROM,
                 INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES);
 
-        assertEquals(START_INDEX_ZERO, enhancedSearchQueryParams.getStartIndex());
+        assertEquals(START_INDEX_ZERO, advancedSearchQueryParams.getStartIndex());
     }
 
     @Test
     @DisplayName("Test start index set to 0 when start index is less than 0")
     void testMapParamsSuccessfulStartIndexBelowZero() throws Exception {
 
-        EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
-        EnhancedSearchQueryParams enhancedSearchQueryParams =
-            enhancedQueryParamMapper.mapEnhancedQueryParameters(-1, COMPANY_NAME, LOCATION, INCORPORATED_FROM,
+        AdvancedQueryParamMapper advancedQueryParamMapper = new AdvancedQueryParamMapper();
+        AdvancedSearchQueryParams advancedSearchQueryParams =
+            advancedQueryParamMapper.mapAdvancedQueryParameters(-1, COMPANY_NAME, LOCATION, INCORPORATED_FROM,
                 INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES);
 
-        assertEquals(START_INDEX_ZERO, enhancedSearchQueryParams.getStartIndex());
+        assertEquals(START_INDEX_ZERO, advancedSearchQueryParams.getStartIndex());
     }
 
     @Test
     @DisplayName("Test params mapped successfully no dates")
     void testMapParamsSuccessfulNoDates() throws Exception {
 
-        EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
-        EnhancedSearchQueryParams enhancedSearchQueryParams =
-            enhancedQueryParamMapper.mapEnhancedQueryParameters(START_INDEX_ZERO, COMPANY_NAME, LOCATION, null,
+        AdvancedQueryParamMapper advancedQueryParamMapper = new AdvancedQueryParamMapper();
+        AdvancedSearchQueryParams advancedSearchQueryParams =
+            advancedQueryParamMapper.mapAdvancedQueryParameters(START_INDEX_ZERO, COMPANY_NAME, LOCATION, null,
                 null, null, null, null, null, null, null);
 
-        assertEquals(COMPANY_NAME, enhancedSearchQueryParams.getCompanyNameIncludes());
-        assertEquals(LOCATION, enhancedSearchQueryParams.getLocation());
-        assertNull(enhancedSearchQueryParams.getIncorporatedFrom());
-        assertNull(enhancedSearchQueryParams.getIncorporatedTo());
+        assertEquals(COMPANY_NAME, advancedSearchQueryParams.getCompanyNameIncludes());
+        assertEquals(LOCATION, advancedSearchQueryParams.getLocation());
+        assertNull(advancedSearchQueryParams.getIncorporatedFrom());
+        assertNull(advancedSearchQueryParams.getIncorporatedTo());
     }
 
     @Test
     @DisplayName("Test date format exception thrown")
     void testDateFormatExceptionThrown() {
 
-        EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
+        AdvancedQueryParamMapper advancedQueryParamMapper = new AdvancedQueryParamMapper();
 
         assertThrows(DateFormatException.class, () -> {
-            enhancedQueryParamMapper.mapEnhancedQueryParameters(START_INDEX_ZERO, COMPANY_NAME, LOCATION, BAD_DATE_FORMAT,
+            advancedQueryParamMapper.mapAdvancedQueryParameters(START_INDEX_ZERO, COMPANY_NAME, LOCATION, BAD_DATE_FORMAT,
                 BAD_DATE_FORMAT, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, BAD_DATE_FORMAT, BAD_DATE_FORMAT, COMPANY_NAME_EXCLUDES);
         });
     }
@@ -119,10 +119,10 @@ class EnhancedQueryParamMapperTest {
     @DisplayName("Test mapping exception thrown")
     void testMappingExceptionThrown() {
 
-        EnhancedQueryParamMapper enhancedQueryParamMapper = new EnhancedQueryParamMapper();
+        AdvancedQueryParamMapper advancedQueryParamMapper = new AdvancedQueryParamMapper();
 
         assertThrows(MappingException.class, () -> {
-            enhancedQueryParamMapper.mapEnhancedQueryParameters(START_INDEX_ZERO, COMPANY_NAME, LOCATION, INCORPORATED_FROM,
+            advancedQueryParamMapper.mapAdvancedQueryParameters(START_INDEX_ZERO, COMPANY_NAME, LOCATION, INCORPORATED_FROM,
                 INCORPORATED_TO, BAD_COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES);
         });
     }
