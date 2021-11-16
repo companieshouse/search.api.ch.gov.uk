@@ -23,7 +23,7 @@ public class ElasticSearchConfig {
     // These are currently pointing at the existing ES instance, will need to be updated in the configs for both
     private static final String ALPHABETICAL_SEARCH_URL = "ELASTIC_SEARCH_URL";
     private static final String DISSOLVED_SEARCH_URL = "DISSOLVED_SEARCH_URL";
-    private static final String ENHANCED_SEARCH_URL = "ENHANCED_SEARCH_URL";
+    private static final String ADVANCED_SEARCH_URL = "ADVANCED_SEARCH_URL";
 
     @Qualifier("alphabeticalClient")
     @Bean(destroyMethod = "close")
@@ -31,10 +31,10 @@ public class ElasticSearchConfig {
         return createClient(ALPHABETICAL_SEARCH_URL);
     }
 
-    @Qualifier("enhancedClient")
+    @Qualifier("advancedClient")
     @Bean(destroyMethod = "close")
-    public RestHighLevelClient enhancedRestClient() {
-        return createClient(ENHANCED_SEARCH_URL);
+    public RestHighLevelClient advancedRestClient() {
+        return createClient(ADVANCED_SEARCH_URL);
     }
 
     @Qualifier("dissolvedClient")

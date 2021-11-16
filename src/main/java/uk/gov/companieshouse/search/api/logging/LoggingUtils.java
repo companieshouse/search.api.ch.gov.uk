@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
-import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 
 public class LoggingUtils {
 
@@ -20,7 +20,7 @@ public class LoggingUtils {
     public static final String INDEX = "index_name";
     public static final String INDEX_ALPHABETICAL = "alphabetical_search_index";
     public static final String INDEX_DISSOLVED = "dissolved_search_index";
-    public static final String ENHANCED_SEARCH_INDEX = "enhanced_search_index";
+    public static final String ADVANCED_SEARCH_INDEX = "advanced_search_index";
     public static final String MESSAGE = "message";
     public static final String ORDERED_ALPHAKEY = "ordered_alphakey";
     public static final String ORDERED_ALPHAKEY_WITH_ID = "ordered_alphakey_with_id";
@@ -32,9 +32,9 @@ public class LoggingUtils {
     public static final String SIZE = "size";
     public static final String START_INDEX = "start_index";
     public static final String LOCATION = "location";
-    public static final String SUCCESSFUL_SEARCH = "Enhanced search successful";
-    public static final String STANDARD_ERROR_MESSAGE = "An error occurred while enhanced searching for a company";
-    public static final String NO_RESULTS_FOUND = "No results were returned while enhanced searching for a company";
+    public static final String SUCCESSFUL_SEARCH = "Advanced search successful";
+    public static final String STANDARD_ERROR_MESSAGE = "An error occurred while advanced searching for a company";
+    public static final String NO_RESULTS_FOUND = "No results were returned while advanced searching for a company";
     public static final String INCORPORATED_FROM = "incorporated_from";
     public static final String INCORPORATED_TO = "incorporated_to";
     public static final String DISSOLVED_FROM = "dissolved_from";
@@ -66,7 +66,7 @@ public class LoggingUtils {
         }
     }
 
-    public static Map<String, Object> getLogMap(EnhancedSearchQueryParams queryParams, String requestId) {
+    public static Map<String, Object> getLogMap(AdvancedSearchQueryParams queryParams, String requestId) {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
         logIfNotNull(logMap, START_INDEX, queryParams.getStartIndex());
         logIfNotNull(logMap, COMPANY_NAME, queryParams.getCompanyNameIncludes());
@@ -79,8 +79,8 @@ public class LoggingUtils {
         logIfNotNull(logMap, DISSOLVED_FROM, queryParams.getDissolvedFrom());
         logIfNotNull(logMap, DISSOLVED_TO, queryParams.getDissolvedTo());
         logIfNotNull(logMap, COMPANY_NAME_EXCLUDES, queryParams.getCompanyNameExcludes());
-        logMap.put(INDEX, LoggingUtils.ENHANCED_SEARCH_INDEX);
-        getLogger().info("enhanced search filters", logMap);
+        logMap.put(INDEX, LoggingUtils.ADVANCED_SEARCH_INDEX);
+        getLogger().info("advanced search filters", logMap);
 
         return logMap;
     }

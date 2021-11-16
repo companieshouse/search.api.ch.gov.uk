@@ -8,29 +8,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
-import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
-import uk.gov.companieshouse.search.api.service.rest.impl.EnhancedSearchRestClientService;
+import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClientService;
 
 import java.io.IOException;
 import java.util.Map;
 
 @Component
-public class EnhancedSearchRequests {
+public class AdvancedSearchRequests {
 
     @Autowired
-    private EnhancedSearchRestClientService restClientService;
+    private AdvancedSearchRestClientService restClientService;
 
     @Autowired
     private EnvironmentReader environmentReader;
 
     @Autowired
-    private EnhancedSearchQueries enhancedSearchQueries;
+    private AdvancedSearchQueries advancedSearchQueries;
 
-    private static final String INDEX = "ENHANCED_SEARCH_INDEX";
+    private static final String INDEX = "ADVANCED_SEARCH_INDEX";
 
-    public SearchHits getCompanies(EnhancedSearchQueryParams queryParams, String requestId) throws IOException {
+    public SearchHits getCompanies(AdvancedSearchQueryParams queryParams, String requestId) throws IOException {
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        LoggingUtils.getLogger().info("Building enhanced search request", logMap);
+        LoggingUtils.getLogger().info("Building advanced search request", logMap);
 
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.indices(environmentReader.getMandatoryString(INDEX));
@@ -40,7 +40,7 @@ public class EnhancedSearchRequests {
         sourceBuilder.size(queryParams.getSize());
         sourceBuilder.from(queryParams.getStartIndex());
 
-        searchRequest.source(sourceBuilder.query(enhancedSearchQueries.buildEnhancedSearchQuery(queryParams)));
+        searchRequest.source(sourceBuilder.query(advancedSearchQueries.buildAdvancedSearchQuery(queryParams)));
 
         SearchResponse searchResponse = restClientService.search(searchRequest);
 

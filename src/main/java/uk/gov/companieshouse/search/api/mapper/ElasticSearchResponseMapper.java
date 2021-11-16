@@ -52,7 +52,7 @@ public class ElasticSearchResponseMapper {
     private static final String SEARCH_RESULTS_COMPANY_KIND = "search-results#company";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
-    DateTimeFormatter enhancedFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
+    DateTimeFormatter advancedFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
 
     public TopHit mapAlphabeticalTopHit(Company company) {
         TopHit topHit = new TopHit();
@@ -91,19 +91,19 @@ public class ElasticSearchResponseMapper {
         return topHit;
     }
 
-    public TopHit mapEnhancedTopHit(Company enhancedCompany) {
+    public TopHit mapAdvancedTopHit(Company advancedCompany) {
         TopHit topHit = new TopHit();
 
-        topHit.setCompanyName(enhancedCompany.getCompanyName());
-        topHit.setCompanyNumber(enhancedCompany.getCompanyNumber());
-        topHit.setCompanyStatus(enhancedCompany.getCompanyStatus());
-        topHit.setCompanyType(enhancedCompany.getCompanyType());
-        topHit.setKind(enhancedCompany.getKind());
-        topHit.setRegisteredOfficeAddress(enhancedCompany.getRegisteredOfficeAddress());
-        topHit.setDateOfCessation(enhancedCompany.getDateOfCessation());
-        topHit.setDateOfCreation(enhancedCompany.getDateOfCreation());
-        topHit.setSicCodes(enhancedCompany.getSicCodes());
-        topHit.setLinks(enhancedCompany.getLinks());
+        topHit.setCompanyName(advancedCompany.getCompanyName());
+        topHit.setCompanyNumber(advancedCompany.getCompanyNumber());
+        topHit.setCompanyStatus(advancedCompany.getCompanyStatus());
+        topHit.setCompanyType(advancedCompany.getCompanyType());
+        topHit.setKind(advancedCompany.getKind());
+        topHit.setRegisteredOfficeAddress(advancedCompany.getRegisteredOfficeAddress());
+        topHit.setDateOfCessation(advancedCompany.getDateOfCessation());
+        topHit.setDateOfCreation(advancedCompany.getDateOfCreation());
+        topHit.setSicCodes(advancedCompany.getSicCodes());
+        topHit.setLinks(advancedCompany.getLinks());
 
         return topHit;
     }
@@ -164,42 +164,42 @@ public class ElasticSearchResponseMapper {
         return dissolvedCompany;
     }
 
-    public Company mapEnhancedSearchResponse(SearchHit hit) {
+    public Company mapAdvancedSearchResponse(SearchHit hit) {
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();
         Map<String, Object> currentCompanyMap = (Map<String, Object>) sourceAsMap.get(CURRENT_COMPANY_KEY);
         Map<String, Object> linksMap = (Map<String, Object>) sourceAsMap.get(LINKS_KEY);
         Map<String, Object> addressToMap = (Map<String, Object>) currentCompanyMap.get(ADDRESS_KEY);
-        Company enhancedCompany = new Company();
+        Company advancedCompany = new Company();
 
-        enhancedCompany.setCompanyName((String) currentCompanyMap.get(CORPORATE_NAME_KEY));
-        enhancedCompany.setCompanyNumber((String) currentCompanyMap.get(COMPANY_NUMBER_KEY));
-        enhancedCompany.setCompanyStatus((String) currentCompanyMap.get(COMPANY_STATUS_KEY));
-        enhancedCompany.setCompanyType((String) sourceAsMap.get(COMPANY_TYPE_KEY));
-        enhancedCompany.setKind(SEARCH_RESULTS_COMPANY_KIND);
+        advancedCompany.setCompanyName((String) currentCompanyMap.get(CORPORATE_NAME_KEY));
+        advancedCompany.setCompanyNumber((String) currentCompanyMap.get(COMPANY_NUMBER_KEY));
+        advancedCompany.setCompanyStatus((String) currentCompanyMap.get(COMPANY_STATUS_KEY));
+        advancedCompany.setCompanyType((String) sourceAsMap.get(COMPANY_TYPE_KEY));
+        advancedCompany.setKind(SEARCH_RESULTS_COMPANY_KIND);
 
         if (currentCompanyMap.containsKey(DATE_OF_CESSATION)) {
-            enhancedCompany.setDateOfCessation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CESSATION), enhancedFormatter));
+            advancedCompany.setDateOfCessation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CESSATION), advancedFormatter));
         }
 
         if (currentCompanyMap.containsKey(DATE_OF_CREATION)) {
-            enhancedCompany.setDateOfCreation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CREATION), enhancedFormatter));
+            advancedCompany.setDateOfCreation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CREATION), advancedFormatter));
         }
 
         if (currentCompanyMap.containsKey(SIC_CODES_KEY)) {
-            enhancedCompany.setSicCodes((List<String>) currentCompanyMap.get(SIC_CODES_KEY));
+            advancedCompany.setSicCodes((List<String>) currentCompanyMap.get(SIC_CODES_KEY));
         }
 
         Address roAddress = null;
         if (addressToMap != null) {
             roAddress = mapRegisteredOfficeAddressFields(addressToMap);
         }
-        enhancedCompany.setRegisteredOfficeAddress(roAddress);
+        advancedCompany.setRegisteredOfficeAddress(roAddress);
 
         Links links = new Links();
         links.setCompanyProfile((String) (linksMap.get(SELF_KEY)));
-        enhancedCompany.setLinks(links);
+        advancedCompany.setLinks(links);
 
-        return enhancedCompany;
+        return advancedCompany;
     }
 
     public List<Company> mapPreviousNames(SearchHits hits) {

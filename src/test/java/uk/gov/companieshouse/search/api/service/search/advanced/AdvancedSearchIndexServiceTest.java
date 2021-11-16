@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.service.search.enhanced;
+package uk.gov.companieshouse.search.api.service.search.advanced;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,24 +17,24 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.search.api.exception.SearchException;
-import uk.gov.companieshouse.search.api.model.EnhancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
-import uk.gov.companieshouse.search.api.service.search.impl.enhanced.EnhancedSearchIndexService;
-import uk.gov.companieshouse.search.api.service.search.impl.enhanced.EnhancedSearchRequestService;
+import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchIndexService;
+import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchRequestService;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class EnhancedSearchIndexServiceTest {
+class AdvancedSearchIndexServiceTest {
 
     @InjectMocks
-    private EnhancedSearchIndexService searchIndexService;
+    private AdvancedSearchIndexService searchIndexService;
 
     @Mock
-    private EnhancedSearchRequestService mockEnhancedSearchRequestService;
+    private AdvancedSearchRequestService mockAdvancedSearchRequestService;
 
     private static final String COMPANY_NAME = "test company";
     private static final String SIC_CODES = "99960";
@@ -42,16 +42,16 @@ class EnhancedSearchIndexServiceTest {
     private static final String REQUEST_ID = "requestId";
 
     @Test
-    @DisplayName("Test enhanced search request returns successfully")
+    @DisplayName("Test advanced search request returns successfully")
     void searchRequestSuccessful() throws Exception {
 
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
-        enhancedSearchQueryParams.setSicCodes(SIC_CODES_LIST);
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
+        advancedSearchQueryParams.setSicCodes(SIC_CODES_LIST);
 
-        when(mockEnhancedSearchRequestService.getSearchResults(enhancedSearchQueryParams, "request id"))
+        when(mockAdvancedSearchRequestService.getSearchResults(advancedSearchQueryParams, "request id"))
                 .thenReturn(createSearchResults(true, false));;
-        ResponseObject responseObject = searchIndexService.searchEnhanced(enhancedSearchQueryParams, "request id");
+        ResponseObject responseObject = searchIndexService.searchAdvanced(advancedSearchQueryParams, "request id");
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_FOUND, responseObject.getStatus());
@@ -61,13 +61,13 @@ class EnhancedSearchIndexServiceTest {
     @DisplayName("Test search returns an error")
     void searchRequestReturnsError() throws Exception {
 
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
 
-        when(mockEnhancedSearchRequestService.getSearchResults(any(), anyString()))
+        when(mockAdvancedSearchRequestService.getSearchResults(any(), anyString()))
                 .thenThrow(SearchException.class);
 
-        ResponseObject responseObject = searchIndexService.searchEnhanced(enhancedSearchQueryParams, REQUEST_ID);
+        ResponseObject responseObject = searchIndexService.searchAdvanced(advancedSearchQueryParams, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_ERROR, responseObject.getStatus());
@@ -76,12 +76,12 @@ class EnhancedSearchIndexServiceTest {
     @Test
     @DisplayName("Test search returns no results")
     void searchRequestReturnsNoResults() throws Exception {
-        EnhancedSearchQueryParams enhancedSearchQueryParams = new EnhancedSearchQueryParams();
-        enhancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
 
-        when(mockEnhancedSearchRequestService.getSearchResults(any(), anyString()))
+        when(mockAdvancedSearchRequestService.getSearchResults(any(), anyString()))
                 .thenReturn(createSearchResults(false, false));
-        ResponseObject responseObject = searchIndexService.searchEnhanced(enhancedSearchQueryParams, REQUEST_ID);
+        ResponseObject responseObject = searchIndexService.searchAdvanced(advancedSearchQueryParams, REQUEST_ID);
 
         assertNotNull(responseObject);
         assertEquals(ResponseStatus.SEARCH_NOT_FOUND, responseObject.getStatus());
@@ -89,7 +89,7 @@ class EnhancedSearchIndexServiceTest {
 
     private SearchResults<Company> createSearchResults(boolean isResultsPopulated, boolean isItemsEmpty) {
         SearchResults<Company> searchResults = new SearchResults<>();
-        searchResults.setKind("enhanced");
+        searchResults.setKind("advanced");
 
         if (!isItemsEmpty) {
             searchResults.setTopHit(null);

@@ -3,7 +3,7 @@ package uk.gov.companieshouse.search.api.model;
 import java.time.LocalDate;
 import java.util.List;
 
-public class EnhancedSearchQueryParams {
+public class AdvancedSearchQueryParams {
 
     private Integer startIndex;
 

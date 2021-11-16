@@ -30,7 +30,7 @@ class ElasticSearchConfigTest {
 
     private static final String ENV_READER_RESULT_ALPHABETICAL = "https://cluster-alphabetical.url.com";
     private static final String ENV_READER_RESULT_DISSOLVED = "https://cluster-dissolved.url.com";
-    private static final String ENV_READER_RESULT_ENHANCED = "https://cluster-enhanced.url.com";
+    private static final String ENV_READER_RESULT_ADVANCED = "https://cluster-advanced.url.com";
 
     @Test
     @DisplayName("Test calling create client returns a rest high level client for alphabetical search")
@@ -62,16 +62,16 @@ class ElasticSearchConfigTest {
     }
 
     @Test
-    @DisplayName("Test calling create client returns a rest high level client for enhanced search")
-    void testEnhancedRestClient() throws Exception {
+    @DisplayName("Test calling create client returns a rest high level client for advanced search")
+    void testAdvancedRestClient() throws Exception {
 
-        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT_ENHANCED);
+        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT_ADVANCED);
 
-        RestHighLevelClient restHighLevelClient = elasticSearchConfig.enhancedRestClient();
+        RestHighLevelClient restHighLevelClient = elasticSearchConfig.advancedRestClient();
         assertNotNull(restHighLevelClient);
 
         List<Node> nodes = restHighLevelClient.getLowLevelClient().getNodes();
-        assertEquals(ENV_READER_RESULT_ENHANCED, nodes.get(0).getHost().toString());
+        assertEquals(ENV_READER_RESULT_ADVANCED, nodes.get(0).getHost().toString());
         assertEquals(1, restHighLevelClient.getLowLevelClient().getNodes().size());
     }
 
