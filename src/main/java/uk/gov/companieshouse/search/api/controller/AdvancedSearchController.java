@@ -15,6 +15,8 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,18 +26,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.exception.DateFormatException;
 import uk.gov.companieshouse.search.api.exception.MappingException;
+import uk.gov.companieshouse.search.api.exception.SizeException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
-import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.mapper.AdvancedQueryParamMapper;
+import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchIndexService;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/advanced-search", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,6 +50,9 @@ public class AdvancedSearchController {
 
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
+
+    @Autowired
+    private EnvironmentReader environmentReader;
 
     private static final String START_INDEX_QUERY_PARAM = "start_index";
     private static final String COMPANY_NAME_QUERY_PARAM = "company_name_includes";
@@ -107,6 +111,8 @@ public class AdvancedSearchController {
            return apiToResponseMapper.map(new ResponseObject(ResponseStatus.DATE_FORMAT_ERROR, null));
         } catch (MappingException me) {
             return apiToResponseMapper.map(new ResponseObject(ResponseStatus.MAPPING_ERROR, null));
+        } catch (SizeException se) {
+            return apiToResponseMapper.map(new ResponseObject(ResponseStatus.ADVANCED_SIZE_PARAMETER_ERROR, null));
         }
 
         ResponseObject responseObject = searchIndexService.searchAdvanced(advancedSearchQueryParams, requestId);

@@ -9,28 +9,31 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FOUND;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.exception.DateFormatException;
 import uk.gov.companieshouse.search.api.exception.MappingException;
-import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
+import uk.gov.companieshouse.search.api.exception.SizeException;
 import uk.gov.companieshouse.search.api.mapper.AdvancedQueryParamMapper;
+import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchIndexService;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -44,6 +47,12 @@ class AdvancedSearchControllerTest {
 
     @Mock
     private ApiToResponseMapper mockApiToResponseMapper;
+
+    @Captor
+    private ArgumentCaptor<ResponseObject> responseObjectCaptor;
+
+    @Mock
+    private EnvironmentReader mockEnvironmentReader;
 
     @InjectMocks
     private AdvancedSearchController advancedSearchController;
@@ -62,6 +71,7 @@ class AdvancedSearchControllerTest {
     private static final String PLC_COMPANY_TYPE = "plc";
     private static final String COMPANY_NAME_EXCLUDES = "test name excludes";
     private static final String REQUEST_ID = "requestID";
+    private static final Integer SIZE = 20;
 
     private static final List<String> COMPANY_STATUS_LIST = Arrays.asList(ACTIVE_COMPANY_STATUS);
     private static final List<String> SIC_CODES_LIST = Arrays.asList(SIC_CODES);
@@ -79,7 +89,7 @@ class AdvancedSearchControllerTest {
         advancedSearchQueryParams.setSicCodes(SIC_CODES_LIST);
 
         when(mockQueryParamMapper.mapAdvancedQueryParameters(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM,
-            INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES))
+            INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE))
             .thenReturn(advancedSearchQueryParams);
         when(mockSearchIndexService.searchAdvanced(any(), anyString())).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
@@ -87,7 +97,7 @@ class AdvancedSearchControllerTest {
 
         ResponseEntity<?> responseEntity =
             advancedSearchController.search(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM, INCORPORATED_TO,
-                COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES,
+                COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE,
                 REQUEST_ID);
 
         assertNotNull(responseEntity);
@@ -102,14 +112,14 @@ class AdvancedSearchControllerTest {
         advancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME_INCLUDES);
 
         when(mockQueryParamMapper.mapAdvancedQueryParameters(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM,
-            INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES))
+            INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE))
             .thenThrow(DateFormatException.class);
         when(mockApiToResponseMapper.map(any()))
             .thenReturn(ResponseEntity.status(BAD_REQUEST).body("Date format exception"));
 
         ResponseEntity<?> responseEntity =
             advancedSearchController.search(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM, INCORPORATED_TO,
-                COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES,
+                COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE,
                 REQUEST_ID);
 
         assertNotNull(responseEntity);
@@ -124,14 +134,37 @@ class AdvancedSearchControllerTest {
         advancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME_INCLUDES);
 
         when(mockQueryParamMapper.mapAdvancedQueryParameters(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM,
-            INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES))
+            INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE))
             .thenThrow(MappingException.class);
         when(mockApiToResponseMapper.map(any()))
             .thenReturn(ResponseEntity.status(BAD_REQUEST).body("Mapping exception"));
 
         ResponseEntity<?> responseEntity =
             advancedSearchController.search(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM, INCORPORATED_TO,
-                COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, REQUEST_ID);
+                COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE,  REQUEST_ID);
+
+        assertNotNull(responseEntity);
+        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test size exception caught")
+    void testSizeException() throws Exception {
+
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME_INCLUDES);
+        advancedSearchQueryParams.setSize(1000);
+
+        when(mockQueryParamMapper.mapAdvancedQueryParameters(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM,
+                INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE))
+                .thenThrow(SizeException.class);
+        when(mockApiToResponseMapper.map(any()))
+                .thenReturn(ResponseEntity.status(BAD_REQUEST).body("Size exception"));
+
+        ResponseEntity<?> responseEntity =
+                advancedSearchController.search(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM, INCORPORATED_TO,
+                        COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE,
+                        REQUEST_ID);
 
         assertNotNull(responseEntity);
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
