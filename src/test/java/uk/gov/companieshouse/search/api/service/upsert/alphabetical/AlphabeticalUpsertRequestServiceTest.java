@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.service.upsert;
+package uk.gov.companieshouse.search.api.service.upsert.alphabetical;
 
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
@@ -17,6 +17,7 @@ import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchUpsertRe
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
+import uk.gov.companieshouse.search.api.service.upsert.alphabetical.AlphabeticalUpsertRequestService;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,10 +32,10 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UpsertRequestServiceTest {
+class AlphabeticalUpsertRequestServiceTest {
 
     @InjectMocks
-    private UpsertRequestService upsertRequestService;
+    private AlphabeticalUpsertRequestService alphabeticalUpsertRequestService;
 
     @Mock
     private AlphaKeyService mockAlphaKeyService;
@@ -80,8 +81,8 @@ class UpsertRequestServiceTest {
             .thenReturn(createRequest(company, ORDERED_ALPHA_KEY_FIELD,
                 ORDERED_ALPHA_KEY_WITH_ID_FIELD));
 
-        IndexRequest indexRequest = upsertRequestService.createIndexRequest(company);
-        UpdateRequest updateRequest = upsertRequestService.createUpdateRequest(company, indexRequest);
+        IndexRequest indexRequest = alphabeticalUpsertRequestService.createIndexRequest(company);
+        UpdateRequest updateRequest = alphabeticalUpsertRequestService.createUpdateRequest(company, indexRequest);
 
         assertNotNull(indexRequest);
         assertNotNull(updateRequest);
@@ -99,7 +100,7 @@ class UpsertRequestServiceTest {
             ORDERED_ALPHA_KEY_WITH_ID_FIELD)).thenThrow(IOException.class);
 
         assertThrows(UpsertException.class,
-            () -> upsertRequestService.createIndexRequest(company));
+            () -> alphabeticalUpsertRequestService.createIndexRequest(company));
     }
 
     @Test
@@ -113,7 +114,7 @@ class UpsertRequestServiceTest {
             ORDERED_ALPHA_KEY_WITH_ID_FIELD)).thenThrow(IOException.class);
 
         assertThrows(UpsertException.class,
-            () -> upsertRequestService.createUpdateRequest(company, indexRequest));
+            () -> alphabeticalUpsertRequestService.createUpdateRequest(company, indexRequest));
     }
 
     private CompanyProfileApi createCompany() {

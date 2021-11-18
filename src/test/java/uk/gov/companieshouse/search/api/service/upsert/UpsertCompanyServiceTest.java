@@ -26,6 +26,7 @@ import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
+import uk.gov.companieshouse.search.api.service.upsert.alphabetical.AlphabeticalUpsertRequestService;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -35,7 +36,7 @@ class UpsertCompanyServiceTest {
     private AlphabeticalSearchRestClientService mockRestClientService;
 
     @Mock
-    private UpsertRequestService mockUpsertRequestService;
+    private AlphabeticalUpsertRequestService mockAlphabeticalUpsertRequestService;
 
     @InjectMocks
     private UpsertCompanyService upsertCompanyService;
@@ -47,8 +48,8 @@ class UpsertCompanyServiceTest {
         CompanyProfileApi company = createCompany();
         IndexRequest indexRequest = new IndexRequest("alpha_search");
 
-        when(mockUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
-        when(mockUpsertRequestService.createUpdateRequest(
+        when(mockAlphabeticalUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
+        when(mockAlphabeticalUpsertRequestService.createUpdateRequest(
             company, indexRequest)).thenReturn(any(UpdateRequest.class));
 
         ResponseObject responseObject = upsertCompanyService.upsert(company);
@@ -63,7 +64,7 @@ class UpsertCompanyServiceTest {
 
         CompanyProfileApi company = createCompany();
 
-        when(mockUpsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
+        when(mockAlphabeticalUpsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
 
         ResponseObject responseObject = upsertCompanyService.upsert(company);
 
@@ -78,8 +79,8 @@ class UpsertCompanyServiceTest {
         CompanyProfileApi company = createCompany();
         IndexRequest indexRequest = new IndexRequest("alpha_search");
 
-        when(mockUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
-        when(mockUpsertRequestService.createUpdateRequest(
+        when(mockAlphabeticalUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
+        when(mockAlphabeticalUpsertRequestService.createUpdateRequest(
             company, indexRequest)).thenThrow(UpsertException.class);
 
         ResponseObject responseObject = upsertCompanyService.upsert(company);
@@ -96,8 +97,8 @@ class UpsertCompanyServiceTest {
         IndexRequest indexRequest = new IndexRequest("alpha_search");
         UpdateRequest updateRequest = new UpdateRequest("alpha_search", company.getCompanyNumber());
 
-        when(mockUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
-        when(mockUpsertRequestService.createUpdateRequest(
+        when(mockAlphabeticalUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
+        when(mockAlphabeticalUpsertRequestService.createUpdateRequest(
             company, indexRequest)).thenReturn(updateRequest);
 
         when(mockRestClientService.upsert(updateRequest)).thenThrow(IOException.class);

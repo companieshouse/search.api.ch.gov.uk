@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.search.api.service.upsert;
 
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ADVANCED_SEARCH_INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NUMBER;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
@@ -19,19 +20,29 @@ import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
+import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
+import uk.gov.companieshouse.search.api.service.upsert.advanced.AdvancedUpsertRequestService;
+import uk.gov.companieshouse.search.api.service.upsert.alphabetical.AlphabeticalUpsertRequestService;
 
 @Service
 public class UpsertCompanyService {
 
     @Autowired
-    private AlphabeticalSearchRestClientService restClientService;
+    private AlphabeticalSearchRestClientService alphabeticalSearchRestClientService;
 
     @Autowired
-    private UpsertRequestService upsertRequestService;
+    private AdvancedSearchRestClientService advancedSearchRestClientService;
+
+    @Autowired
+    private AlphabeticalUpsertRequestService alphabeticalUpsertRequestService;
+
+    @Autowired
+    private AdvancedUpsertRequestService advancedUpsertRequestService;
 
     /**
-     * Upserts a new document to elastic search. If a document does not exist it is added.
+     * Upserts a new document to the alphabetical search index.
+     * If a document does not exist it is added.
      * If the document does exist it is updated.
      *
      * @param company - Company sent over in REST call to be added/updated
@@ -48,21 +59,58 @@ public class UpsertCompanyService {
         UpdateRequest updateRequest;
 
         try {
-            indexRequest = upsertRequestService.createIndexRequest(company);
-            updateRequest = upsertRequestService.createUpdateRequest(company, indexRequest);
+            indexRequest = alphabeticalUpsertRequestService.createIndexRequest(company);
+            updateRequest = alphabeticalUpsertRequestService.createUpdateRequest(company, indexRequest);
         } catch (UpsertException e) {
             getLogger().error("An error occured attempting upsert the document", logMap);
             return new ResponseObject(ResponseStatus.UPSERT_ERROR);
         }
 
         try {
-            restClientService.upsert(updateRequest);
+            alphabeticalSearchRestClientService.upsert(updateRequest);
         } catch (IOException e) {
             getLogger().error("IOException when upserting company", logMap);
             return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
         }
 
         getLogger().info("Upsert successful for ", logMap);
+        return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
+    }
+
+    /**
+     * Upserts a new document to advanced search index.
+     * If a document does not exist it is added.
+     * If the document does exist it is updated.
+     *
+     * @param company - Company sent over in REST call to be added/updated
+     * @return {@link ResponseObject}
+     */
+    public ResponseObject upsertAdvanced(CompanyProfileApi company) {
+        Map<String, Object> logMap = new HashMap<>();
+        logMap.put(COMPANY_NAME, company.getCompanyName());
+        logMap.put(COMPANY_NUMBER, company.getCompanyNumber());
+        logMap.put(INDEX, ADVANCED_SEARCH_INDEX);
+        getLogger().info("Upserting to advanced index underway", logMap);
+
+        IndexRequest indexRequest;
+        UpdateRequest updateRequest;
+
+        try {
+            indexRequest = advancedUpsertRequestService.createIndexRequest(company);
+            updateRequest = advancedUpsertRequestService.createUpdateRequest(company, indexRequest);
+        } catch (UpsertException e) {
+            getLogger().error("An error occured attempting upsert the document to advanced search index", logMap);
+            return new ResponseObject(ResponseStatus.UPSERT_ERROR);
+        }
+
+        try {
+            advancedSearchRestClientService.upsert(updateRequest);
+        } catch (IOException e) {
+            getLogger().error("IOException when upserting a company to the advanced search index", logMap);
+            return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
+        }
+
+        getLogger().info("Upsert successful to advanced search index", logMap);
         return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
     }
 }
