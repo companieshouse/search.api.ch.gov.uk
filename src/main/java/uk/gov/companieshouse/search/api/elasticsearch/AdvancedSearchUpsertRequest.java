@@ -28,13 +28,17 @@ public class AdvancedSearchUpsertRequest {
     private static final String CORPORATE_NAME_START = "corporate_name_start";
     private static final String SIC_CODES = "sic_codes";
     private static final String ADDRESS = "address";
+    private static final String PREMISES = "premises";
     private static final String ADDRESS_LINE_1 = "address_line_1";
     private static final String ADDRESS_LINE_2 = "address_line_2";
     private static final String POSTAL_CODE = "postal_code";
     private static final String LOCALITY = "locality";
+    private static final String REGION = "region";
+    private static final String COUNTRY = "country";
     private static final String WILDCARD_KEY = "wildcard_key";
     private static final String DATE_OF_CREATION = "date_of_creation";
     private static final String DATE_OF_CESSATION = "date_of_cessation";
+    private static final String FULL_ADDRESS = ""
 
     public XContentBuilder buildRequest(
         CompanyProfileApi company,
@@ -53,14 +57,18 @@ public class AdvancedSearchUpsertRequest {
             .field(COMPANY_NUMBER, company.getCompanyNumber())
             .field(COMPANY_STATUS, company.getCompanyStatus())
             .startObject(ADDRESS)
+            .field(PREMISES, registeredOfficeAddress.getPremises())
             .field(ADDRESS_LINE_1, registeredOfficeAddress.getAddressLine1())
             .field(ADDRESS_LINE_2, registeredOfficeAddress.getAddressLine2())
             .field(POSTAL_CODE, registeredOfficeAddress.getPostalCode())
             .field(LOCALITY, registeredOfficeAddress.getLocality())
+            .field(REGION, registeredOfficeAddress.getRegion())
+            .field(COUNTRY, registeredOfficeAddress.getCountry())
             .endObject()
             .field(WILDCARD_KEY, orderedAlphaKey)
             .field(DATE_OF_CREATION, company.getDateOfCreation())
             .field(DATE_OF_CESSATION, company.getDateOfCessation())
+            .field(FULL_ADDRESS, createFullAddress(registeredOfficeAddress))
             .endObject()
             .endObject();
     }
@@ -71,6 +79,33 @@ public class AdvancedSearchUpsertRequest {
             return companyName.substring(0, companyName.lastIndexOf(' '));
         }
         return companyName;
+    }
+
+    private String createFullAddress(RegisteredOfficeAddressApi registeredOfficeAddressApi) {
+        StringBuilder fullAddressBuilder = new StringBuilder();
+
+        appendAddressField(registeredOfficeAddressApi.getPremises(), fullAddressBuilder);
+        appendAddressField(registeredOfficeAddressApi.getAddressLine1(), fullAddressBuilder);
+        appendAddressField(registeredOfficeAddressApi.getAddressLine2(), fullAddressBuilder);
+        appendAddressField(registeredOfficeAddressApi.getPostalCode(), fullAddressBuilder);
+        appendAddressField(registeredOfficeAddressApi.getLocality(), fullAddressBuilder);
+        appendAddressField(registeredOfficeAddressApi.getRegion(), fullAddressBuilder);
+        appendAddressField(registeredOfficeAddressApi.getCountry(), fullAddressBuilder);
+
+        String fullAddress = fullAddressBuilder.toString();
+
+        if (fullAddress.charAt(fullAddress.length() - 1) == 'x') {
+            fullAddress = fullAddress.substring(0, fullAddress.length() - 1);
+        }
+
+        return fullAddress.toString();
+    }
+
+    private void appendAddressField(String field, StringBuilder fullAddress) {
+        if (field != null) {
+            fullAddress.append(field);
+            fullAddress.append(", ");
+        }
     }
 
     static final String[] CORPORATE_NAME_ENDINGS = {
