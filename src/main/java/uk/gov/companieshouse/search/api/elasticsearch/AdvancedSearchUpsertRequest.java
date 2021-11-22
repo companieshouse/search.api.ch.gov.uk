@@ -2,14 +2,11 @@ package uk.gov.companieshouse.search.api.elasticsearch;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
-import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import uk.gov.companieshouse.api.model.common.Links;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.api.model.company.RegisteredOfficeAddressApi;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Map;
 
 public class AdvancedSearchUpsertRequest {
