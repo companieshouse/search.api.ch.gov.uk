@@ -41,19 +41,20 @@ public class AdvancedUpsertRequestService {
         Map<String, Object> logMap = setUpUpsertLogging(company);
 
         String orderedAlphaKey = "";
-        String orderedAlphaKeyWithID = "";
+        String sameAsKey = "";
 
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(company.getCompanyName());
         if (alphaKeyResponse != null) {
             orderedAlphaKey = alphaKeyResponse.getOrderedAlphaKey();
-            orderedAlphaKeyWithID = alphaKeyResponse.getOrderedAlphaKey() + ":" + company.getCompanyNumber();
+            sameAsKey = alphaKeyResponse.getSameAsAlphaKey();
+
             logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphaKey);
         }
 
         try {
             LoggingUtils.getLogger().info("Preparing index request", logMap);
             return new IndexRequest(environmentReader.getMandatoryString(INDEX))
-                .source(advancedSearchUpsertRequest.buildRequest(company, orderedAlphaKey, orderedAlphaKeyWithID)).id(company.getCompanyNumber());
+                .source(advancedSearchUpsertRequest.buildRequest(company, orderedAlphaKey, sameAsKey)).id(company.getCompanyNumber());
         } catch (IOException e) {
             LoggingUtils.getLogger().error("Failed to index a document for company", logMap);
             throw new UpsertException("Unable create index request");
@@ -72,13 +73,13 @@ public class AdvancedUpsertRequestService {
         Map<String, Object> logMap = setUpUpsertLogging(company);
 
         String orderedAlphaKey = "";
-        String orderedAlphaKeyWithID = "";
+        String sameAsKey = "";
 
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(company.getCompanyName());
         if (alphaKeyResponse != null) {
             orderedAlphaKey = alphaKeyResponse.getOrderedAlphaKey();
+            sameAsKey = alphaKeyResponse.getSameAsAlphaKey();
             logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphaKey);
-            orderedAlphaKeyWithID = alphaKeyResponse.getOrderedAlphaKey() + ":" + company.getCompanyNumber();
         }
 
         try {
@@ -86,7 +87,7 @@ public class AdvancedUpsertRequestService {
 
             return new UpdateRequest(environmentReader.getMandatoryString(INDEX), company.getCompanyNumber())
                 .docAsUpsert(true)
-                .doc(advancedSearchUpsertRequest.buildRequest(company, orderedAlphaKey, orderedAlphaKeyWithID))
+                .doc(advancedSearchUpsertRequest.buildRequest(company, orderedAlphaKey, sameAsKey))
                 .upsert(indexRequest);
         } catch (IOException e) {
             LoggingUtils.getLogger().error("Failed to update a document for company", logMap);

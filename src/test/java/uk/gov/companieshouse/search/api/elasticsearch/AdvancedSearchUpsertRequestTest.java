@@ -26,8 +26,7 @@ class AdvancedSearchUpsertRequestTest {
     private static final LocalDate DATE_OF_CREATION = LocalDate.of(1983, 01, 01);
     private static final LocalDate DATE_OF_CESSATION = LocalDate.of(1993, 01, 01);
 
-    private static final String ORDERED_ALPHA_KEY_FIELD = "testcompany";
-    private static final String ORDERED_ALPHA_KEY_WITH_ID_FIELD = "testcompany:12345678";
+    private static final String ALPHA_KEY = "testcompany";
 
     @Test
     @DisplayName("Test build request successful")
@@ -35,8 +34,7 @@ class AdvancedSearchUpsertRequestTest {
 
         AdvancedSearchUpsertRequest advancedSearchUpsertRequest = new AdvancedSearchUpsertRequest();
         XContentBuilder xContentBuilder =
-            advancedSearchUpsertRequest.buildRequest(createCompany(), ORDERED_ALPHA_KEY_FIELD,
-                ORDERED_ALPHA_KEY_WITH_ID_FIELD);
+            advancedSearchUpsertRequest.buildRequest(createCompany(), ALPHA_KEY, ALPHA_KEY);
 
         assertNotNull(xContentBuilder);
     }
