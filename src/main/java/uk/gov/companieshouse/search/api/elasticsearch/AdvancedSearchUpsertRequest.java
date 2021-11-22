@@ -119,8 +119,8 @@ public class AdvancedSearchUpsertRequest {
 
         String fullAddress = fullAddressBuilder.toString();
 
-        if (fullAddress.charAt(fullAddress.length() - 1) == ',') {
-            fullAddress = fullAddress.substring(0, fullAddress.length() - 1);
+        if (fullAddress.charAt(fullAddress.length() - 2) == ',') {
+            fullAddress = fullAddress.substring(0, fullAddress.length() - 2);
         }
 
         return fullAddress;
