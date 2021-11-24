@@ -25,7 +25,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
+import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
+import uk.gov.companieshouse.search.api.service.upsert.advanced.AdvancedUpsertRequestService;
 import uk.gov.companieshouse.search.api.service.upsert.alphabetical.AlphabeticalUpsertRequestService;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,10 +35,16 @@ import uk.gov.companieshouse.search.api.service.upsert.alphabetical.Alphabetical
 class UpsertCompanyServiceTest {
 
     @Mock
-    private AlphabeticalSearchRestClientService mockRestClientService;
+    private AlphabeticalSearchRestClientService mockAlphabeticalRestClientService;
 
     @Mock
     private AlphabeticalUpsertRequestService mockAlphabeticalUpsertRequestService;
+
+    @Mock
+    private AdvancedSearchRestClientService mockAdvancedRestClientService;
+
+    @Mock
+    private AdvancedUpsertRequestService mockAdvancedUpsertRequestService;
 
     @InjectMocks
     private UpsertCompanyService upsertCompanyService;
@@ -59,6 +67,23 @@ class UpsertCompanyServiceTest {
     }
 
     @Test
+    @DisplayName("Test advanced search upsert is successful")
+    void testAdvancedSearchUpsertIsSuccessful() throws Exception {
+
+        CompanyProfileApi company = createCompany();
+        IndexRequest indexRequest = new IndexRequest("advanced_search");
+
+        when(mockAdvancedUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
+        when(mockAdvancedUpsertRequestService.createUpdateRequest(
+            company, indexRequest)).thenReturn(any(UpdateRequest.class));
+
+        ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
+
+        assertNotNull(responseObject);
+        assertEquals(DOCUMENT_UPSERTED, responseObject.getStatus());
+    }
+
+    @Test
     @DisplayName("Test exception thrown during index request")
     void testExceptionThrownDuringIndexRequest() throws Exception {
 
@@ -67,6 +92,21 @@ class UpsertCompanyServiceTest {
         when(mockAlphabeticalUpsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
 
         ResponseObject responseObject = upsertCompanyService.upsert(company);
+
+        assertNotNull(responseObject);
+        assertEquals(UPSERT_ERROR, responseObject.getStatus());
+    }
+
+
+    @Test
+    @DisplayName("Test exception thrown during advanced search index request")
+    void testExceptionThrownDuringAdvancedSearchIndexRequest() throws Exception {
+
+        CompanyProfileApi company = createCompany();
+
+        when(mockAdvancedUpsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
+
+        ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
 
         assertNotNull(responseObject);
         assertEquals(UPSERT_ERROR, responseObject.getStatus());
@@ -90,6 +130,24 @@ class UpsertCompanyServiceTest {
     }
 
     @Test
+    @DisplayName("Test exception thrown during advanced search update request")
+    void testExceptionThrownDuringAdvancedSearchUpdateRequest() throws Exception {
+
+        CompanyProfileApi company = createCompany();
+        IndexRequest indexRequest = new IndexRequest("advanced_search");
+
+        when(mockAdvancedUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
+        when(mockAdvancedUpsertRequestService.createUpdateRequest(
+            company, indexRequest)).thenThrow(UpsertException.class);
+
+        ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
+
+        assertNotNull(responseObject);
+        assertEquals(UPSERT_ERROR, responseObject.getStatus());
+    }
+
+
+    @Test
     @DisplayName("Test exception thrown during upsert")
     void testExceptionThrownDuringUpsert() throws Exception {
 
@@ -101,9 +159,29 @@ class UpsertCompanyServiceTest {
         when(mockAlphabeticalUpsertRequestService.createUpdateRequest(
             company, indexRequest)).thenReturn(updateRequest);
 
-        when(mockRestClientService.upsert(updateRequest)).thenThrow(IOException.class);
+        when(mockAlphabeticalRestClientService.upsert(updateRequest)).thenThrow(IOException.class);
 
         ResponseObject responseObject = upsertCompanyService.upsert(company);
+
+        assertNotNull(responseObject);
+        assertEquals(UPDATE_REQUEST_ERROR, responseObject.getStatus());
+    }
+
+    @Test
+    @DisplayName("Test exception thrown during advanced search upsert")
+    void testExceptionThrownDuringAdvancedSearchUpsert() throws Exception {
+
+        CompanyProfileApi company = createCompany();
+        IndexRequest indexRequest = new IndexRequest("advanced_search");
+        UpdateRequest updateRequest = new UpdateRequest("advanced_search", company.getCompanyNumber());
+
+        when(mockAdvancedUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
+        when(mockAdvancedUpsertRequestService.createUpdateRequest(
+            company, indexRequest)).thenReturn(updateRequest);
+
+        when(mockAdvancedRestClientService.upsert(updateRequest)).thenThrow(IOException.class);
+
+        ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
 
         assertNotNull(responseObject);
         assertEquals(UPDATE_REQUEST_ERROR, responseObject.getStatus());

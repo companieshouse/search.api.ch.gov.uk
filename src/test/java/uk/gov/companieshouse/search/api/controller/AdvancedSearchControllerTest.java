@@ -160,7 +160,7 @@ class AdvancedSearchControllerTest {
         ResponseObject responseObject = new ResponseObject(DOCUMENT_UPSERTED);
         CompanyProfileApi company = createCompany();
 
-        when(mockUpsertCompanyService.upsert(company)).thenReturn(responseObject);
+        when(mockUpsertCompanyService.upsertAdvanced(company)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject)).thenReturn(ResponseEntity.status(OK).build());
 
         ResponseEntity<?> responseEntity = advancedSearchController.upsert(company.getCompanyNumber(), company);
@@ -175,7 +175,7 @@ class AdvancedSearchControllerTest {
         ResponseObject responseObject = new ResponseObject(UPSERT_ERROR);
         CompanyProfileApi company = createCompany();
 
-        when(mockUpsertCompanyService.upsert(company)).thenReturn(responseObject);
+        when(mockUpsertCompanyService.upsertAdvanced(company)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
 
@@ -191,7 +191,7 @@ class AdvancedSearchControllerTest {
         ResponseObject responseObject = new ResponseObject(UPDATE_REQUEST_ERROR);
         CompanyProfileApi company = createCompany();
 
-        when(mockUpsertCompanyService.upsert(company)).thenReturn(responseObject);
+        when(mockUpsertCompanyService.upsertAdvanced(company)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObject))
             .thenReturn(ResponseEntity.status(INTERNAL_SERVER_ERROR).build());
 

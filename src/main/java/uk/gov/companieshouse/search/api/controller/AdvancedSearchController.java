@@ -139,7 +139,7 @@ public class AdvancedSearchController {
             || !companyNumber.equalsIgnoreCase(company.getCompanyNumber())) {
             responseObject = new ResponseObject(ResponseStatus.UPSERT_ERROR);
         } else {
-            responseObject = upsertCompanyService.upsert(company);
+            responseObject = upsertCompanyService.upsertAdvanced(company);
         }
         return apiToResponseMapper.map(responseObject);
     }
