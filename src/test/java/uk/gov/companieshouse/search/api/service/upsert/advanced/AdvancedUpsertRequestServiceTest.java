@@ -69,8 +69,6 @@ class AdvancedUpsertRequestServiceTest {
     private static final String COMPANY_NUMBER_KEY = "company_number";
     private static final String COMPANY_STATUS_KEY = "company_status";
     private static final String CORPORATE_NAME_KEY = "corporate_name";
-    private static final String CORPORATE_NAME_START_KEY = "corporate_name_start";
-    private static final String CORPORATE_NAME_ENDING_KEY = "corporate_name_ending";
     private static final String RECORD_TYPE_KEY = "record_type";
     private static final String RECORD_TYPE_VALUE = "companies";
     private static final String LINKS_KEY = "links";
@@ -182,7 +180,6 @@ class AdvancedUpsertRequestServiceTest {
             .startObject()
                 .field(COMPANY_TYPE_KEY, company.getType())
                 .startObject(CURRENT_COMPANY_KEY)
-                    .field(CORPORATE_NAME_START_KEY, company.getCompanyName())
                     .field(CORPORATE_NAME_KEY, company.getCompanyName())
                     .array(SIC_CODES_KEY, company.getSicCodes())
                     .field(COMPANY_NUMBER_KEY, company.getCompanyNumber())
@@ -202,7 +199,6 @@ class AdvancedUpsertRequestServiceTest {
                     .field(FULL_ADDRESS_KEY, FULL_ADDRESS)
                     .field(RECORD_TYPE_KEY, RECORD_TYPE_VALUE)
                     .field(SAME_AS_KEY, SAME_AS)
-                    .field(CORPORATE_NAME_ENDING_KEY, company.getCompanyName())
                 .endObject()
                 .startObject(ITEMS_KEY)
                     .startObject(ADDRESS_KEY)
@@ -217,8 +213,6 @@ class AdvancedUpsertRequestServiceTest {
                     .field(COMPANY_NUMBER_KEY, company.getCompanyNumber())
                     .field(COMPANY_STATUS_KEY, company.getCompanyStatus())
                     .field(CORPORATE_NAME_KEY, company.getCompanyName())
-                    .field(CORPORATE_NAME_START_KEY, company.getCompanyName())
-                    .field(CORPORATE_NAME_ENDING_KEY, company.getCompanyName())
                     .array(SIC_CODES_KEY, company.getSicCodes())
                     .field(DATE_OF_CREATION_KEY, company.getDateOfCreation())
                     .field(DATE_OF_CESSATION_KEY, company.getDateOfCessation())

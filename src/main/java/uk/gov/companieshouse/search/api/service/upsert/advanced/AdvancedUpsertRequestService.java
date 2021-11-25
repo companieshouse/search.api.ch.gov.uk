@@ -9,8 +9,6 @@ import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.AdvancedSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
-import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
-import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -19,8 +19,6 @@ public class AdvancedSearchUpsertRequest {
     private static final String COMPANY_NUMBER_KEY = "company_number";
     private static final String COMPANY_STATUS_KEY = "company_status";
     private static final String CORPORATE_NAME_KEY = "corporate_name";
-    private static final String CORPORATE_NAME_START_KEY = "corporate_name_start";
-    private static final String CORPORATE_NAME_ENDING_KEY = "corporate_name_ending";
     private static final String RECORD_TYPE_KEY = "record_type";
     private static final String RECORD_TYPE_VALUE = "companies";
     private static final String LINKS_KEY = "links";
@@ -51,61 +49,60 @@ public class AdvancedSearchUpsertRequest {
         RegisteredOfficeAddressApi registeredOfficeAddress = company.getRegisteredOfficeAddress();
         Map<String, String> links = company.getLinks();
 
-        return jsonBuilder()
-            .startObject()
-                .field(COMPANY_TYPE_KEY, company.getType())
-                .startObject(CURRENT_COMPANY_KEY)
-                    .field(CORPORATE_NAME_START_KEY, company.getCompanyName())
-                    .field(CORPORATE_NAME_KEY, company.getCompanyName())
-                    .array(SIC_CODES_KEY, company.getSicCodes())
-                    .field(COMPANY_NUMBER_KEY, company.getCompanyNumber())
-                    .field(COMPANY_STATUS_KEY, company.getCompanyStatus())
-                    .startObject(ADDRESS_KEY)
-                        .field(PREMISES_KEY, registeredOfficeAddress.getPremises())
-                        .field(ADDRESS_LINE_1_KEY, registeredOfficeAddress.getAddressLine1())
-                        .field(ADDRESS_LINE_2_KEY, registeredOfficeAddress.getAddressLine2())
-                        .field(POSTAL_CODE_KEY, registeredOfficeAddress.getPostalCode())
-                        .field(LOCALITY_KEY, registeredOfficeAddress.getLocality())
-                        .field(REGION_KEY, registeredOfficeAddress.getRegion())
-                        .field(COUNTRY_KEY, registeredOfficeAddress.getCountry())
-                    .endObject()
-                    .field(WILDCARD_KEY, orderedAlphaKey)
-                    .field(DATE_OF_CREATION_KEY, company.getDateOfCreation())
-                    .field(DATE_OF_CESSATION_KEY, company.getDateOfCessation())
-                    .field(FULL_ADDRESS_KEY, createFullAddress(registeredOfficeAddress))
-                    .field(RECORD_TYPE_KEY, RECORD_TYPE_VALUE)
-                    .field(SAME_AS_KEY, sameAsKey)
-                    .field(CORPORATE_NAME_ENDING_KEY, company.getCompanyName())
-                .endObject()
-                .startObject(ITEMS_KEY)
-                    .startObject(ADDRESS_KEY)
-                        .field(PREMISES_KEY, registeredOfficeAddress.getPremises())
-                        .field(ADDRESS_LINE_1_KEY, registeredOfficeAddress.getAddressLine1())
-                        .field(ADDRESS_LINE_2_KEY, registeredOfficeAddress.getAddressLine2())
-                        .field(POSTAL_CODE_KEY, registeredOfficeAddress.getPostalCode())
-                        .field(LOCALITY_KEY, registeredOfficeAddress.getLocality())
-                        .field(REGION_KEY, registeredOfficeAddress.getRegion())
-                        .field(COUNTRY_KEY, registeredOfficeAddress.getCountry())
-                    .endObject()
-                    .field(COMPANY_NUMBER_KEY, company.getCompanyNumber())
-                    .field(COMPANY_STATUS_KEY, company.getCompanyStatus())
-                    .field(CORPORATE_NAME_KEY, company.getCompanyName())
-                    .field(CORPORATE_NAME_START_KEY, company.getCompanyName())
-                    .field(CORPORATE_NAME_ENDING_KEY, company.getCompanyName())
-                    .array(SIC_CODES_KEY, company.getSicCodes())
-                    .field(DATE_OF_CREATION_KEY, company.getDateOfCreation())
-                    .field(DATE_OF_CESSATION_KEY, company.getDateOfCessation())
-                    .field(FULL_ADDRESS_KEY, createFullAddress(registeredOfficeAddress))
-                    .field(SAME_AS_KEY, sameAsKey)
-                    .field(WILDCARD_KEY, orderedAlphaKey)
-                    .field(RECORD_TYPE_KEY, RECORD_TYPE_VALUE)
-                .endObject()
-                .field(KIND_KEY, KIND_VALUE)
-                .startObject(LINKS_KEY)
-                    .field(SELF_KEY, links.get(SELF_KEY))
-                .endObject()
-                .field(SORT_KEY, orderedAlphaKey + "0")
-            .endObject();
+        XContentBuilder jsonBuilder = jsonBuilder().startObject();
+        jsonBuilder.field(COMPANY_TYPE_KEY, company.getType());
+            jsonBuilder.startObject(CURRENT_COMPANY_KEY);
+                jsonBuilder.field(CORPORATE_NAME_KEY, company.getCompanyName());
+                jsonBuilder.array(SIC_CODES_KEY, company.getSicCodes());
+                jsonBuilder.field(COMPANY_NUMBER_KEY, company.getCompanyNumber());
+                jsonBuilder.field(COMPANY_STATUS_KEY, company.getCompanyStatus());
+                jsonBuilder.startObject(ADDRESS_KEY);
+                    buildAddressJSON(jsonBuilder, registeredOfficeAddress);
+                jsonBuilder.endObject();
+                jsonBuilder.field(WILDCARD_KEY, orderedAlphaKey);
+                jsonBuilder.field(DATE_OF_CREATION_KEY, company.getDateOfCreation());
+                if (company.getDateOfCessation() != null) {
+                    jsonBuilder.field(DATE_OF_CESSATION_KEY, company.getDateOfCessation());
+                }
+                jsonBuilder.field(FULL_ADDRESS_KEY, createFullAddress(registeredOfficeAddress));
+                jsonBuilder.field(RECORD_TYPE_KEY, RECORD_TYPE_VALUE);
+                jsonBuilder.field(SAME_AS_KEY, sameAsKey);
+            jsonBuilder.endObject();
+            jsonBuilder.startObject(ITEMS_KEY);
+                jsonBuilder.startObject(ADDRESS_KEY);
+                    buildAddressJSON(jsonBuilder, registeredOfficeAddress);
+                jsonBuilder.endObject();
+                jsonBuilder.field(COMPANY_NUMBER_KEY, company.getCompanyNumber());
+                jsonBuilder.field(COMPANY_STATUS_KEY, company.getCompanyStatus());
+                jsonBuilder.field(CORPORATE_NAME_KEY, company.getCompanyName());
+                jsonBuilder.array(SIC_CODES_KEY, company.getSicCodes());
+                jsonBuilder.field(DATE_OF_CREATION_KEY, company.getDateOfCreation());
+                if (company.getDateOfCessation() != null) {
+                    jsonBuilder.field(DATE_OF_CESSATION_KEY, company.getDateOfCessation());
+                }
+                jsonBuilder.field(FULL_ADDRESS_KEY, createFullAddress(registeredOfficeAddress));
+                jsonBuilder.field(SAME_AS_KEY, sameAsKey);
+                jsonBuilder.field(WILDCARD_KEY, orderedAlphaKey);
+                jsonBuilder.field(RECORD_TYPE_KEY, RECORD_TYPE_VALUE);
+            jsonBuilder.endObject();
+            jsonBuilder.field(KIND_KEY, KIND_VALUE);
+            jsonBuilder.startObject(LINKS_KEY);
+                jsonBuilder.field(SELF_KEY, links.get(SELF_KEY));
+            jsonBuilder.endObject();
+            jsonBuilder.field(SORT_KEY, orderedAlphaKey + "0");
+        jsonBuilder.endObject();
+
+        return jsonBuilder;
+    }
+
+    private void buildAddressJSON(XContentBuilder jsonBuilder, RegisteredOfficeAddressApi roa) throws IOException {
+        appendNonNullField(PREMISES_KEY, roa.getPremises(), jsonBuilder);
+        appendNonNullField(ADDRESS_LINE_1_KEY, roa.getAddressLine1(), jsonBuilder);
+        appendNonNullField(ADDRESS_LINE_2_KEY, roa.getAddressLine2(), jsonBuilder);
+        appendNonNullField(POSTAL_CODE_KEY, roa.getPostalCode(), jsonBuilder);
+        appendNonNullField(LOCALITY_KEY, roa.getLocality(), jsonBuilder);
+        appendNonNullField(REGION_KEY, roa.getRegion(), jsonBuilder);
+        appendNonNullField(COUNTRY_KEY, roa.getCountry(), jsonBuilder);
     }
 
     private String createFullAddress(RegisteredOfficeAddressApi registeredOfficeAddressApi) {
@@ -126,6 +123,12 @@ public class AdvancedSearchUpsertRequest {
         }
 
         return fullAddress;
+    }
+
+    private void appendNonNullField(String fieldName, String fieldValue, XContentBuilder jsonBuilder) throws IOException {
+        if (fieldValue != null) {
+            jsonBuilder.field(fieldName, fieldValue);
+        }
     }
 
     private void appendAddressField(String field, StringBuilder fullAddress) {
