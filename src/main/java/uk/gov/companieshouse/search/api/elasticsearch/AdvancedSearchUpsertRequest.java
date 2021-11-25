@@ -3,12 +3,14 @@ package uk.gov.companieshouse.search.api.elasticsearch;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.api.model.company.RegisteredOfficeAddressApi;
 
 import java.io.IOException;
 import java.util.Map;
 
+@Component
 public class AdvancedSearchUpsertRequest {
 
     private static final String COMPANY_TYPE_KEY = "company_type";

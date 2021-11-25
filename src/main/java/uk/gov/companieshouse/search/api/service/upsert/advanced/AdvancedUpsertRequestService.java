@@ -20,9 +20,6 @@ import java.util.Map;
 public class AdvancedUpsertRequestService {
 
     @Autowired
-    private AlphaKeyService alphaKeyService;
-
-    @Autowired
     private EnvironmentReader environmentReader;
 
     @Autowired
@@ -36,21 +33,10 @@ public class AdvancedUpsertRequestService {
      * @return {@link IndexRequest}
      * @throws UpsertException
      */
-    public IndexRequest createIndexRequest(CompanyProfileApi company) throws UpsertException {
+    public IndexRequest createIndexRequest(CompanyProfileApi company, String orderedAlphaKey,
+                                           String sameAsKey) throws UpsertException {
 
         Map<String, Object> logMap = setUpUpsertLogging(company);
-
-        String orderedAlphaKey = "";
-        String sameAsKey = "";
-
-        AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(company.getCompanyName());
-        if (alphaKeyResponse != null) {
-            orderedAlphaKey = alphaKeyResponse.getOrderedAlphaKey();
-            sameAsKey = alphaKeyResponse.getSameAsAlphaKey();
-
-            logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphaKey);
-        }
-
         try {
             LoggingUtils.getLogger().info("Preparing index request", logMap);
             return new IndexRequest(environmentReader.getMandatoryString(INDEX))
@@ -68,20 +54,10 @@ public class AdvancedUpsertRequestService {
      * @return {@link UpdateRequest}
      * @throws UpsertException
      */
-    public UpdateRequest createUpdateRequest(CompanyProfileApi company, IndexRequest indexRequest)
-        throws UpsertException {
+    public UpdateRequest createUpdateRequest(CompanyProfileApi company, String orderedAlphaKey,
+                                             String sameAsKey, IndexRequest indexRequest) throws UpsertException {
+
         Map<String, Object> logMap = setUpUpsertLogging(company);
-
-        String orderedAlphaKey = "";
-        String sameAsKey = "";
-
-        AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(company.getCompanyName());
-        if (alphaKeyResponse != null) {
-            orderedAlphaKey = alphaKeyResponse.getOrderedAlphaKey();
-            sameAsKey = alphaKeyResponse.getSameAsAlphaKey();
-            logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphaKey);
-        }
-
         try {
             LoggingUtils.getLogger().info("Attempt to upsert document if it does not exist", logMap);
 

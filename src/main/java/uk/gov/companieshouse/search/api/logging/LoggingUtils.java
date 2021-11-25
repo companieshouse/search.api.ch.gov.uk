@@ -23,6 +23,7 @@ public class LoggingUtils {
     public static final String ADVANCED_SEARCH_INDEX = "advanced_search_index";
     public static final String MESSAGE = "message";
     public static final String ORDERED_ALPHAKEY = "ordered_alphakey";
+    public static final String SAME_AS_ALPHAKEYKEY = "same_as_alphakey";
     public static final String ORDERED_ALPHAKEY_WITH_ID = "ordered_alphakey_with_id";
     public static final String REQUEST_ID = "request_id";
     public static final String UPSERT_COMPANY_NUMBER = "upsert_company_number";

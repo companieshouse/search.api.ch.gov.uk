@@ -204,42 +204,31 @@ class AdvancedSearchControllerTest {
     @Test
     @DisplayName("Test upsert returns a HTTP 400 Bad Request if the company number is null")
     void testUpsertWithNullCompanyNumberReturnsBadRequest() {
-        CompanyProfileApi company = createCompany();
 
-        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
-            .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
-
-        ResponseEntity<?> responseEntity = advancedSearchController.upsert(null, company);
-
-        assertEquals(UPSERT_ERROR, responseObjectCaptor.getValue().getStatus());
-        assertNotNull(responseEntity);
-        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
+        testReturnsBadRequest(null);
     }
 
     @Test
     @DisplayName("Test upsert returns a HTTP 400 Bad Request if the company number does not match the request body")
     void testUpsertWithDifferentCompanyNumberReturnsBadRequest() {
-        CompanyProfileApi company = createCompany();
 
-        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
-            .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
-
-        ResponseEntity<?> responseEntity = advancedSearchController.upsert("1234567890", company);
-
-        assertEquals(UPSERT_ERROR, responseObjectCaptor.getValue().getStatus());
-        assertNotNull(responseEntity);
-        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
+        testReturnsBadRequest("1234567890");
     }
 
     @Test
     @DisplayName("Test upsert returns a HTTP 400 Bad Request if the company number is an empty string")
     void testUpsertWithEmptyStringCompanyNumberReturnsBadRequest() {
+
+        testReturnsBadRequest("");
+    }
+
+    private void testReturnsBadRequest(String companyNumber) {
         CompanyProfileApi company = createCompany();
 
         when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
             .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
 
-        ResponseEntity<?> responseEntity = advancedSearchController.upsert("", company);
+        ResponseEntity<?> responseEntity = advancedSearchController.upsert(companyNumber, company);
 
         assertEquals(UPSERT_ERROR, responseObjectCaptor.getValue().getStatus());
         assertNotNull(responseEntity);

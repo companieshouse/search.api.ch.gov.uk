@@ -18,8 +18,11 @@ import org.springframework.stereotype.Service;
 
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
+import uk.gov.companieshouse.search.api.logging.LoggingUtils;
+import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
+import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.upsert.advanced.AdvancedUpsertRequestService;
@@ -39,6 +42,9 @@ public class UpsertCompanyService {
 
     @Autowired
     private AdvancedUpsertRequestService advancedUpsertRequestService;
+
+    @Autowired
+    private AlphaKeyService alphaKeyService;
 
     /**
      * Upserts a new document to the alphabetical search index.
@@ -95,9 +101,20 @@ public class UpsertCompanyService {
         IndexRequest indexRequest;
         UpdateRequest updateRequest;
 
+        String orderedAlphaKey = "";
+        String sameAsKey = "";
+
+        AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(company.getCompanyName());
+        if (alphaKeyResponse != null) {
+            orderedAlphaKey = alphaKeyResponse.getOrderedAlphaKey();
+            sameAsKey = alphaKeyResponse.getSameAsAlphaKey();
+            logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphaKey);
+            logMap.put(LoggingUtils.SAME_AS_ALPHAKEYKEY, sameAsKey);
+        }
+
         try {
-            indexRequest = advancedUpsertRequestService.createIndexRequest(company);
-            updateRequest = advancedUpsertRequestService.createUpdateRequest(company, indexRequest);
+            indexRequest = advancedUpsertRequestService.createIndexRequest(company, orderedAlphaKey, sameAsKey);
+            updateRequest = advancedUpsertRequestService.createUpdateRequest(company, orderedAlphaKey, sameAsKey, indexRequest);
         } catch (UpsertException e) {
             getLogger().error("An error occured attempting upsert the document to advanced search index", logMap);
             return new ResponseObject(ResponseStatus.UPSERT_ERROR);

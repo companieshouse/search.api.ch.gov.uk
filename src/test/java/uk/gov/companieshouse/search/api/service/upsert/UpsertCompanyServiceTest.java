@@ -3,6 +3,7 @@ package uk.gov.companieshouse.search.api.service.upsert;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_UPSERTED;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPDATE_REQUEST_ERROR;
@@ -24,7 +25,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
+import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
+import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.upsert.advanced.AdvancedUpsertRequestService;
@@ -46,8 +49,14 @@ class UpsertCompanyServiceTest {
     @Mock
     private AdvancedUpsertRequestService mockAdvancedUpsertRequestService;
 
+    @Mock
+    private AlphaKeyService mockAlphaKeyService;
+
     @InjectMocks
     private UpsertCompanyService upsertCompanyService;
+
+    private static final String ORDERED_ALPHA_KEY_FIELD = "orderedAlphaKey";
+    private static final String SAME_AS_ALPHA_KEY_FIELD = "sameAsAlphaKey";
 
     @Test
     @DisplayName("Test upsert is successful")
@@ -73,9 +82,30 @@ class UpsertCompanyServiceTest {
         CompanyProfileApi company = createCompany();
         IndexRequest indexRequest = new IndexRequest("advanced_search");
 
-        when(mockAdvancedUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
+        when(mockAdvancedUpsertRequestService.createIndexRequest(company, ORDERED_ALPHA_KEY_FIELD,
+            SAME_AS_ALPHA_KEY_FIELD)).thenReturn(indexRequest);
         when(mockAdvancedUpsertRequestService.createUpdateRequest(
-            company, indexRequest)).thenReturn(any(UpdateRequest.class));
+            company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD, indexRequest)).thenReturn(any(UpdateRequest.class));
+
+        ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
+
+        assertNotNull(responseObject);
+        assertEquals(DOCUMENT_UPSERTED, responseObject.getStatus());
+    }
+
+    @Test
+    @DisplayName("Test advanced search upsert is successful null alpha key response")
+    void testAdvancedSearchUpsertIsSuccessfulNullAlphaKeyResponse() throws Exception {
+
+        CompanyProfileApi company = createCompany();
+        IndexRequest indexRequest = new IndexRequest("advanced_search");
+
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(null);
+        when(mockAdvancedUpsertRequestService.createIndexRequest(company, "",
+            "")).thenReturn(indexRequest);
+        when(mockAdvancedUpsertRequestService.createUpdateRequest(
+            company, "", "", indexRequest)).thenReturn(any(UpdateRequest.class));
 
         ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
 
@@ -104,7 +134,9 @@ class UpsertCompanyServiceTest {
 
         CompanyProfileApi company = createCompany();
 
-        when(mockAdvancedUpsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
+        when(mockAdvancedUpsertRequestService.createIndexRequest(company, ORDERED_ALPHA_KEY_FIELD,
+            SAME_AS_ALPHA_KEY_FIELD)).thenThrow(UpsertException.class);
 
         ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
 
@@ -136,9 +168,11 @@ class UpsertCompanyServiceTest {
         CompanyProfileApi company = createCompany();
         IndexRequest indexRequest = new IndexRequest("advanced_search");
 
-        when(mockAdvancedUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
+        when(mockAdvancedUpsertRequestService.createIndexRequest(company, ORDERED_ALPHA_KEY_FIELD,
+            SAME_AS_ALPHA_KEY_FIELD)).thenReturn(indexRequest);
         when(mockAdvancedUpsertRequestService.createUpdateRequest(
-            company, indexRequest)).thenThrow(UpsertException.class);
+            company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD, indexRequest)).thenThrow(UpsertException.class);
 
         ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
 
@@ -175,9 +209,11 @@ class UpsertCompanyServiceTest {
         IndexRequest indexRequest = new IndexRequest("advanced_search");
         UpdateRequest updateRequest = new UpdateRequest("advanced_search", company.getCompanyNumber());
 
-        when(mockAdvancedUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
+        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
+        when(mockAdvancedUpsertRequestService.createIndexRequest(company, ORDERED_ALPHA_KEY_FIELD,
+            SAME_AS_ALPHA_KEY_FIELD)).thenReturn(indexRequest);
         when(mockAdvancedUpsertRequestService.createUpdateRequest(
-            company, indexRequest)).thenReturn(updateRequest);
+            company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD, indexRequest)).thenReturn(updateRequest);
 
         when(mockAdvancedRestClientService.upsert(updateRequest)).thenThrow(IOException.class);
 
@@ -185,6 +221,14 @@ class UpsertCompanyServiceTest {
 
         assertNotNull(responseObject);
         assertEquals(UPDATE_REQUEST_ERROR, responseObject.getStatus());
+    }
+
+    private AlphaKeyResponse createResponse() {
+        AlphaKeyResponse alphaKeyResponse = new AlphaKeyResponse();
+        alphaKeyResponse.setOrderedAlphaKey(ORDERED_ALPHA_KEY_FIELD);
+        alphaKeyResponse.setSameAsAlphaKey(SAME_AS_ALPHA_KEY_FIELD);
+
+        return alphaKeyResponse;
     }
 
     private CompanyProfileApi createCompany() {

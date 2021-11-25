@@ -23,7 +23,6 @@ import uk.gov.companieshouse.api.model.company.RegisteredOfficeAddressApi;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.AdvancedSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
-import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AdvancedUpsertRequestServiceTest {
+class AdvancedUpsertRequestServiceTest {
 
     @Mock
     private AlphaKeyService mockAlphaKeyService;
@@ -96,7 +95,6 @@ public class AdvancedUpsertRequestServiceTest {
 
     @BeforeEach
     void init() {
-        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ADVANCED_SEARCH);
     }
 
@@ -111,8 +109,10 @@ public class AdvancedUpsertRequestServiceTest {
             .thenReturn(createRequest(company, ORDERED_ALPHA_KEY_FIELD,
                 SAME_AS_ALPHA_KEY_FIELD));
 
-        IndexRequest indexRequest = advancedUpsertRequestService.createIndexRequest(company);
-        UpdateRequest updateRequest = advancedUpsertRequestService.createUpdateRequest(company, indexRequest);
+        IndexRequest indexRequest = advancedUpsertRequestService
+            .createIndexRequest(company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD);
+        UpdateRequest updateRequest = advancedUpsertRequestService
+            .createUpdateRequest(company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD, indexRequest);
 
         assertNotNull(indexRequest);
         assertNotNull(updateRequest);
@@ -130,7 +130,7 @@ public class AdvancedUpsertRequestServiceTest {
             SAME_AS_ALPHA_KEY_FIELD)).thenThrow(IOException.class);
 
         assertThrows(UpsertException.class,
-            () -> advancedUpsertRequestService.createIndexRequest(company));
+            () -> advancedUpsertRequestService.createIndexRequest(company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD));
     }
 
     @Test
@@ -144,15 +144,8 @@ public class AdvancedUpsertRequestServiceTest {
             SAME_AS_ALPHA_KEY_FIELD)).thenThrow(IOException.class);
 
         assertThrows(UpsertException.class,
-            () -> advancedUpsertRequestService.createUpdateRequest(company, indexRequest));
-    }
-
-    private AlphaKeyResponse createResponse() {
-        AlphaKeyResponse alphaKeyResponse = new AlphaKeyResponse();
-        alphaKeyResponse.setOrderedAlphaKey(ORDERED_ALPHA_KEY_FIELD);
-        alphaKeyResponse.setSameAsAlphaKey(SAME_AS_ALPHA_KEY_FIELD);
-
-        return alphaKeyResponse;
+            () -> advancedUpsertRequestService
+                .createUpdateRequest(company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD, indexRequest));
     }
 
     private CompanyProfileApi createCompany() {
