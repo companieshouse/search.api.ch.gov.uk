@@ -19,13 +19,15 @@ public class AdvancedSearchQueries {
         QueryBuilder queryBuilder;
 
         if (queryParams.getCompanyNameIncludes() != null) {
-            boolQueryBuilder.filter(
-                QueryBuilders.matchQuery("current_company.corporate_name", queryParams.getCompanyNameIncludes()));
+            queryBuilder = QueryBuilders.matchQuery("current_company.corporate_name",
+                    queryParams.getCompanyNameIncludes()).operator(Operator.AND);
+
+            boolQueryBuilder.filter(queryBuilder);
         }
 
         if (queryParams.getLocation() != null) {
             queryBuilder = QueryBuilders.matchQuery("current_company.full_address",
-                queryParams.getLocation()).operator(Operator.OR);
+                    queryParams.getLocation()).operator(Operator.AND);
 
             boolQueryBuilder.filter(queryBuilder);
         }
