@@ -98,7 +98,6 @@ public class UpsertCompanyService {
         logMap.put(INDEX, ADVANCED_SEARCH_INDEX);
         getLogger().info("Upserting to advanced index underway", logMap);
 
-        IndexRequest indexRequest;
         UpdateRequest updateRequest;
 
         String orderedAlphaKey = "";

@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.search.api.service.upsert.advanced;
 
-import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
