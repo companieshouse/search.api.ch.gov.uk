@@ -107,28 +107,11 @@ class AdvancedUpsertRequestServiceTest {
             .thenReturn(createRequest(company, ORDERED_ALPHA_KEY_FIELD,
                 SAME_AS_ALPHA_KEY_FIELD));
 
-        IndexRequest indexRequest = advancedUpsertRequestService
-            .createIndexRequest(company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD);
         UpdateRequest updateRequest = advancedUpsertRequestService
-            .createUpdateRequest(company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD, indexRequest);
+            .createUpdateRequest(company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD);
 
-        assertNotNull(indexRequest);
         assertNotNull(updateRequest);
-        assertEquals(ADVANCED_SEARCH, indexRequest.index());
         assertEquals(ADVANCED_SEARCH, updateRequest.index());
-    }
-
-    @Test
-    @DisplayName("Test create index request throws exception")
-    void testCreateIndexThrowsException() throws Exception {
-
-        CompanyProfileApi company = createCompany();
-
-        when(mockAdvancedSearchUpsertRequest.buildRequest(company, ORDERED_ALPHA_KEY_FIELD,
-            SAME_AS_ALPHA_KEY_FIELD)).thenThrow(IOException.class);
-
-        assertThrows(UpsertException.class,
-            () -> advancedUpsertRequestService.createIndexRequest(company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD));
     }
 
     @Test
@@ -136,14 +119,13 @@ class AdvancedUpsertRequestServiceTest {
     void testUpdateIndexThrowsException() throws Exception {
 
         CompanyProfileApi company = createCompany();
-        IndexRequest indexRequest = new IndexRequest(ADVANCED_SEARCH);
 
         when(mockAdvancedSearchUpsertRequest.buildRequest(company, ORDERED_ALPHA_KEY_FIELD,
             SAME_AS_ALPHA_KEY_FIELD)).thenThrow(IOException.class);
 
         assertThrows(UpsertException.class,
             () -> advancedUpsertRequestService
-                .createUpdateRequest(company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD, indexRequest));
+                .createUpdateRequest(company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD));
     }
 
     private CompanyProfileApi createCompany() {

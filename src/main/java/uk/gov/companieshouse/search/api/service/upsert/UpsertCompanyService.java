@@ -113,8 +113,7 @@ public class UpsertCompanyService {
         }
 
         try {
-            indexRequest = advancedUpsertRequestService.createIndexRequest(company, orderedAlphaKey, sameAsKey);
-            updateRequest = advancedUpsertRequestService.createUpdateRequest(company, orderedAlphaKey, sameAsKey, indexRequest);
+            updateRequest = advancedUpsertRequestService.createUpdateRequest(company, orderedAlphaKey, sameAsKey);
         } catch (UpsertException e) {
             getLogger().error("An error occured attempting upsert the document to advanced search index", logMap);
             return new ResponseObject(ResponseStatus.UPSERT_ERROR);

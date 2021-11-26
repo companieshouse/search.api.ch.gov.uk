@@ -26,34 +26,14 @@ public class AdvancedUpsertRequestService {
     private static final String INDEX = "ADVANCED_SEARCH_INDEX";
 
     /**
-     * Create an index request for document if it does not currently exist
-     * @param company - Company sent over in REST call to be added/updated
-     * @return {@link IndexRequest}
-     * @throws UpsertException
-     */
-    public IndexRequest createIndexRequest(CompanyProfileApi company, String orderedAlphaKey,
-                                           String sameAsKey) throws UpsertException {
-
-        Map<String, Object> logMap = setUpUpsertLogging(company);
-        try {
-            LoggingUtils.getLogger().info("Preparing index request", logMap);
-            return new IndexRequest(environmentReader.getMandatoryString(INDEX))
-                .source(advancedSearchUpsertRequest.buildRequest(company, orderedAlphaKey, sameAsKey)).id(company.getCompanyNumber());
-        } catch (IOException e) {
-            LoggingUtils.getLogger().error("Failed to index a document for company", logMap);
-            throw new UpsertException("Unable create index request");
-        }
-    }
-
-    /**
      * If document already exists attempt to upsert the document
      * @param company - Company sent over in REST call to be added/updated
-     * @param indexRequest
+     *
      * @return {@link UpdateRequest}
      * @throws UpsertException
      */
     public UpdateRequest createUpdateRequest(CompanyProfileApi company, String orderedAlphaKey,
-                                             String sameAsKey, IndexRequest indexRequest) throws UpsertException {
+                                             String sameAsKey) throws UpsertException {
 
         Map<String, Object> logMap = setUpUpsertLogging(company);
         try {
@@ -61,8 +41,7 @@ public class AdvancedUpsertRequestService {
 
             return new UpdateRequest(environmentReader.getMandatoryString(INDEX), company.getCompanyNumber())
                 .docAsUpsert(true)
-                .doc(advancedSearchUpsertRequest.buildRequest(company, orderedAlphaKey, sameAsKey))
-                .upsert(indexRequest);
+                .doc(advancedSearchUpsertRequest.buildRequest(company, orderedAlphaKey, sameAsKey));
         } catch (IOException e) {
             LoggingUtils.getLogger().error("Failed to update a document for company", logMap);
             throw new UpsertException("Unable to create update request");

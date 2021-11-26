@@ -83,10 +83,8 @@ class UpsertCompanyServiceTest {
         IndexRequest indexRequest = new IndexRequest("advanced_search");
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
-        when(mockAdvancedUpsertRequestService.createIndexRequest(company, ORDERED_ALPHA_KEY_FIELD,
-            SAME_AS_ALPHA_KEY_FIELD)).thenReturn(indexRequest);
         when(mockAdvancedUpsertRequestService.createUpdateRequest(
-            company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD, indexRequest)).thenReturn(any(UpdateRequest.class));
+            company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD)).thenReturn(any(UpdateRequest.class));
 
         ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
 
@@ -102,10 +100,8 @@ class UpsertCompanyServiceTest {
         IndexRequest indexRequest = new IndexRequest("advanced_search");
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(null);
-        when(mockAdvancedUpsertRequestService.createIndexRequest(company, "",
-            "")).thenReturn(indexRequest);
         when(mockAdvancedUpsertRequestService.createUpdateRequest(
-            company, "", "", indexRequest)).thenReturn(any(UpdateRequest.class));
+            company, "", "")).thenReturn(any(UpdateRequest.class));
 
         ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
 
@@ -122,23 +118,6 @@ class UpsertCompanyServiceTest {
         when(mockAlphabeticalUpsertRequestService.createIndexRequest(company)).thenThrow(UpsertException.class);
 
         ResponseObject responseObject = upsertCompanyService.upsert(company);
-
-        assertNotNull(responseObject);
-        assertEquals(UPSERT_ERROR, responseObject.getStatus());
-    }
-
-
-    @Test
-    @DisplayName("Test exception thrown during advanced search index request")
-    void testExceptionThrownDuringAdvancedSearchIndexRequest() throws Exception {
-
-        CompanyProfileApi company = createCompany();
-
-        when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
-        when(mockAdvancedUpsertRequestService.createIndexRequest(company, ORDERED_ALPHA_KEY_FIELD,
-            SAME_AS_ALPHA_KEY_FIELD)).thenThrow(UpsertException.class);
-
-        ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
 
         assertNotNull(responseObject);
         assertEquals(UPSERT_ERROR, responseObject.getStatus());
@@ -169,10 +148,8 @@ class UpsertCompanyServiceTest {
         IndexRequest indexRequest = new IndexRequest("advanced_search");
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
-        when(mockAdvancedUpsertRequestService.createIndexRequest(company, ORDERED_ALPHA_KEY_FIELD,
-            SAME_AS_ALPHA_KEY_FIELD)).thenReturn(indexRequest);
         when(mockAdvancedUpsertRequestService.createUpdateRequest(
-            company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD, indexRequest)).thenThrow(UpsertException.class);
+            company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD)).thenThrow(UpsertException.class);
 
         ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
 
@@ -210,10 +187,8 @@ class UpsertCompanyServiceTest {
         UpdateRequest updateRequest = new UpdateRequest("advanced_search", company.getCompanyNumber());
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
-        when(mockAdvancedUpsertRequestService.createIndexRequest(company, ORDERED_ALPHA_KEY_FIELD,
-            SAME_AS_ALPHA_KEY_FIELD)).thenReturn(indexRequest);
         when(mockAdvancedUpsertRequestService.createUpdateRequest(
-            company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD, indexRequest)).thenReturn(updateRequest);
+            company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD)).thenReturn(updateRequest);
 
         when(mockAdvancedRestClientService.upsert(updateRequest)).thenThrow(IOException.class);
 
