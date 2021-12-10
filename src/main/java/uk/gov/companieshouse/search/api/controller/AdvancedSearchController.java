@@ -66,7 +66,6 @@ public class AdvancedSearchController {
     @Autowired
     private UpsertCompanyService upsertCompanyService;
 
-
     private static final String START_INDEX_QUERY_PARAM = "start_index";
     private static final String COMPANY_NAME_QUERY_PARAM = "company_name_includes";
     private static final String LOCATION_QUERY_PARAM = "location";

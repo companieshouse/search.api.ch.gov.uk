@@ -121,9 +121,7 @@ public class AdvancedQueryParamMapper {
         } catch (SizeException se) {
             throw new SizeException("error occurred size field");
         }
-
         return advancedSearchQueryParams;
-
     }
 
     private void mapDates(AdvancedSearchQueryParams advancedSearchQueryParams,
