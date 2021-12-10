@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.service.upsert;
+package uk.gov.companieshouse.search.api.service.upsert.alphabetical;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 
 @Service
-public class UpsertRequestService {
+public class AlphabeticalUpsertRequestService {
 
     @Autowired
     private AlphaKeyService alphaKeyService;
