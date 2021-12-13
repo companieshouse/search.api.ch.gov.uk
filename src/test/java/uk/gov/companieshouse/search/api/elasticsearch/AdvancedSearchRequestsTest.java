@@ -77,6 +77,7 @@ class AdvancedSearchRequestsTest {
 
         advancedSearchQueryParams.setStartIndex(0);
         advancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME);
+        advancedSearchQueryParams.setSize(20);
 
         return advancedSearchQueryParams;
 

@@ -17,6 +17,10 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.UPSERT_COMPA
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,19 +36,15 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.DateFormatException;
 import uk.gov.companieshouse.search.api.exception.MappingException;
+import uk.gov.companieshouse.search.api.exception.SizeException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
-import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.mapper.AdvancedQueryParamMapper;
+import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchIndexService;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
-
-import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/advanced-search", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -74,6 +74,7 @@ public class AdvancedSearchController {
     private static final String DISSOLVED_TO_QUERY_PARAMETER = "dissolved_to";
     private static final String COMPANY_NAME_EXCLUDES = "company_name_excludes";
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
+    private static final String SIZE_PARAM = "size";
 
     @GetMapping("/companies")
     @ResponseBody
@@ -88,6 +89,7 @@ public class AdvancedSearchController {
                                          @RequestParam(name = DISSOLVED_FROM_QUERY_PARAMETER, required = false) String dissolvedFrom,
                                          @RequestParam(name = DISSOLVED_TO_QUERY_PARAMETER, required = false) String dissolvedTo,
                                          @RequestParam(name = COMPANY_NAME_EXCLUDES, required = false) String companyNameExcludes,
+                                         @RequestParam(name = SIZE_PARAM, required = false) Integer size,
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
         Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
@@ -102,6 +104,7 @@ public class AdvancedSearchController {
         logIfNotNull(logMap, DISSOLVED_FROM, dissolvedFrom);
         logIfNotNull(logMap, DISSOLVED_TO, dissolvedTo);
         logIfNotNull(logMap, COMPANY_NAME_EXCLUDES, companyNameExcludes);
+        logIfNotNull(logMap, SIZE_PARAM, size);
         logMap.put(INDEX, LoggingUtils.ADVANCED_SEARCH_INDEX);
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
@@ -111,11 +114,13 @@ public class AdvancedSearchController {
         try {
             advancedSearchQueryParams = queryParamMapper
                 .mapAdvancedQueryParameters(startIndex, companyName, location, incorporatedFrom,
-                    incorporatedTo, companyStatusList, sicCodes, companyTypeList, dissolvedFrom, dissolvedTo, companyNameExcludes);
+                    incorporatedTo, companyStatusList, sicCodes, companyTypeList, dissolvedFrom, dissolvedTo, companyNameExcludes, size);
         } catch (DateFormatException dfe) {
            return apiToResponseMapper.map(new ResponseObject(ResponseStatus.DATE_FORMAT_ERROR, null));
         } catch (MappingException me) {
             return apiToResponseMapper.map(new ResponseObject(ResponseStatus.MAPPING_ERROR, null));
+        } catch (SizeException se) {
+            return apiToResponseMapper.map(new ResponseObject(ResponseStatus.ADVANCED_SIZE_PARAMETER_ERROR, null));
         }
 
         ResponseObject responseObject = searchIndexService.searchAdvanced(advancedSearchQueryParams, requestId);

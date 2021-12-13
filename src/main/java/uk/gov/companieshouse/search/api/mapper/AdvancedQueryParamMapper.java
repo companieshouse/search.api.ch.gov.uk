@@ -3,16 +3,19 @@ package uk.gov.companieshouse.search.api.mapper;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_STATUS;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_TYPE;
 
-import org.springframework.stereotype.Component;
-import uk.gov.companieshouse.search.api.exception.DateFormatException;
-import uk.gov.companieshouse.search.api.exception.MappingException;
-import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.search.api.exception.DateFormatException;
+import uk.gov.companieshouse.search.api.exception.MappingException;
+import uk.gov.companieshouse.search.api.exception.SizeException;
+import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
 
 @Component
 public class AdvancedQueryParamMapper {
@@ -68,6 +71,12 @@ public class AdvancedQueryParamMapper {
         "ukeig"
     );
 
+    @Autowired
+    private EnvironmentReader environmentReader;
+
+    private static final String ADVANCED_SEARCH_DEFAULT_SIZE = "ADVANCED_SEARCH_DEFAULT_SIZE";
+    private static final String ADVANCED_SEARCH_MAX_SIZE = "ADVANCED_SEARCH_MAX_SIZE";
+
     public AdvancedSearchQueryParams mapAdvancedQueryParameters(Integer startIndex,
                                                                 String companyNameIncludes,
                                                                 String location,
@@ -78,13 +87,16 @@ public class AdvancedQueryParamMapper {
                                                                 List<String> companyTypeList,
                                                                 String dissolvedFrom,
                                                                 String dissolvedTo,
-                                                                String companyNameExcludes) throws DateFormatException, MappingException {
+                                                                String companyNameExcludes,
+                                                                Integer size)
+            throws DateFormatException, MappingException, SizeException {
 
         AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
 
         if (startIndex == null || startIndex < 0) {
             startIndex = 0;
         }
+
         advancedSearchQueryParams.setStartIndex(startIndex);
         advancedSearchQueryParams.setCompanyNameIncludes(companyNameIncludes);
         advancedSearchQueryParams.setLocation(location);
@@ -102,6 +114,13 @@ public class AdvancedQueryParamMapper {
                 mapListParam(companyTypeList, ACCEPTED_COMPANY_TYPES, COMPANY_TYPE));
         }
 
+        try {
+            advancedSearchQueryParams.setSize(SearchRequestUtils.checkResultsSize
+                    (size, environmentReader.getMandatoryInteger(ADVANCED_SEARCH_DEFAULT_SIZE),
+                            environmentReader.getMandatoryInteger(ADVANCED_SEARCH_MAX_SIZE)));
+        } catch (SizeException se) {
+            throw new SizeException("error occurred size field");
+        }
         return advancedSearchQueryParams;
     }
 

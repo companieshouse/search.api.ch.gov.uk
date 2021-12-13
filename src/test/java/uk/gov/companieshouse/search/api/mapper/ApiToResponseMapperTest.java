@@ -1,5 +1,26 @@
 package uk.gov.companieshouse.search.api.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.ADVANCED_SIZE_PARAMETER_ERROR;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DATE_FORMAT_ERROR;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_UPSERTED;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.MAPPING_ERROR;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.REQUEST_PARAMETER_ERROR;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_ERROR;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_NOT_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SIZE_PARAMETER_ERROR;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPDATE_REQUEST_ERROR;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPSERT_ERROR;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -12,26 +33,6 @@ import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DATE_FORMAT_ERROR;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_UPSERTED;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.MAPPING_ERROR;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.REQUEST_PARAMETER_ERROR;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_ERROR;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_NOT_FOUND;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SIZE_PARAMETER_ERROR;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPDATE_REQUEST_ERROR;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPSERT_ERROR;
-
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ApiToResponseMapperTest {
@@ -43,6 +44,7 @@ class ApiToResponseMapperTest {
     private EnvironmentReader mockEnvironmentReader;
 
     private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
+    private static final String ADVANCED_SEARCH_MAX_SIZE = "ADVANCED_SEARCH_MAX_SIZE";
 
     @Test
     @DisplayName("Test if OK returned")
@@ -177,6 +179,21 @@ class ApiToResponseMapperTest {
         assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
         assertEquals("Invalid size parameter, size must be greater than zero and not greater than 50",
             responseEntity.getBody());
+    }
+
+    @Test
+    @DisplayName("Test if size parameter is invalid for advanced search, greater than max allowed")
+    void testAdvancedSearchSizeParameterInvalid() {
+
+        ResponseObject responseObject = new ResponseObject(ADVANCED_SIZE_PARAMETER_ERROR);
+
+        when(mockEnvironmentReader.getMandatoryInteger(ADVANCED_SEARCH_MAX_SIZE)).thenReturn(500);
+        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
+
+        assertNotNull(responseEntity);
+        assertEquals(UNPROCESSABLE_ENTITY, responseEntity.getStatusCode());
+        assertEquals("Invalid size parameter, size must be greater than zero and not greater than 500",
+                responseEntity.getBody());
     }
 
     @Test
