@@ -34,7 +34,7 @@
 
         <!-- Structured logging -->
         <structured-logging.version>1.9.10</structured-logging.version>
-        <log4j.version>2.15.0</log4j.version>
+        <log4j.version>2.16.0</log4j.version>
 
         <!-- Maven and Surefire plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
