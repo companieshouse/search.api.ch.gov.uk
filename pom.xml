@@ -33,8 +33,8 @@
         <jib-maven-plugin.version>3.1.1</jib-maven-plugin.version>
 
         <!-- Structured logging -->
-        <structured-logging.version>1.9.11</structured-logging.version>
-        <log4j.version>2.16.0</log4j.version>
+        <structured-logging.version>1.9.12</structured-logging.version>
+        <log4j.version>2.17.0</log4j.version>
 
         <!-- Maven and Surefire plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
