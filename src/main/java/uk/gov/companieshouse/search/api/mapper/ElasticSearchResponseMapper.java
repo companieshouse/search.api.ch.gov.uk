@@ -1,21 +1,21 @@
 package uk.gov.companieshouse.search.api.mapper;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Component;
+
 import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
 import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 @Component
 public class ElasticSearchResponseMapper {
@@ -52,7 +52,7 @@ public class ElasticSearchResponseMapper {
     private static final String SEARCH_RESULTS_ALPHABETICAL_KIND = "searchresults#alphabetical-search";
     private static final String SEARCH_RESULTS_COMPANY_KIND = "search-results#company";
     
-    private static final List<String> STATUS_LIST = new ArrayList<String>();
+    private static final List<String> STATUS_LIST = new ArrayList<>();
     
     static {
         STATUS_LIST.add("dissolved");
