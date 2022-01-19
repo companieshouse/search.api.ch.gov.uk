@@ -16,6 +16,7 @@ import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED
 import static uk.gov.companieshouse.search.api.constants.TestConstants.ADVANCED_RESPONSE;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.ADVANCED_RESPONSE_DISSOLVED_COMPANY;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.ADVANCED_RESPONSE_MISSING_FIELDS;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.ADVANCED_RESPONSE_WITH_DISSOLVED_DATE;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -424,6 +425,26 @@ class ElasticSearchResponseMapperTest {
         assertEquals(LOCALITY, company.getRegisteredOfficeAddress().getLocality());
         assertEquals(POSTCODE, company.getRegisteredOfficeAddress().getPostalCode());
         assertEquals(SIC_CODES_LIST, company.getSicCodes());
+    }
+    
+    @Test
+    @DisplayName("Map advanced response for an active company with a dissoled date does not return the dissolved date")
+    void mapAdvancedResponseActiveCompanyWithDissolvedDate() {
+
+        SearchHits searchHits = createHits(ADVANCED_RESPONSE_WITH_DISSOLVED_DATE);
+
+        Company company =
+                elasticSearchResponseMapper.mapAdvancedSearchResponse(searchHits.getAt(0));
+
+        assertEquals(COMPANY_NAME, company.getCompanyName());
+        assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
+        assertEquals(COMPANY_STATUS_ACTIVE, company.getCompanyStatus());
+        assertEquals(COMPANY_KIND, company.getKind());
+        assertEquals(DATE_OF_CREATION, company.getDateOfCreation().toString());
+        assertEquals(LOCALITY, company.getRegisteredOfficeAddress().getLocality());
+        assertEquals(POSTCODE, company.getRegisteredOfficeAddress().getPostalCode());
+        assertEquals(SIC_CODES_LIST, company.getSicCodes());
+        assertNull(company.getDateOfCessation());
     }
 
     @Test

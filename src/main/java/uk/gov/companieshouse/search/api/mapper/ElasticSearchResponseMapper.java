@@ -12,6 +12,7 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -50,6 +51,12 @@ public class ElasticSearchResponseMapper {
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolved-company";
     private static final String SEARCH_RESULTS_ALPHABETICAL_KIND = "searchresults#alphabetical-search";
     private static final String SEARCH_RESULTS_COMPANY_KIND = "search-results#company";
+    
+    private static final List<String> STATUS_LIST = Collections.unmodifiableList(new ArrayList<String>() {{
+        add("dissolved");
+        add("closed");
+        add("converted-closed");
+    }});
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
     DateTimeFormatter advancedFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
@@ -177,7 +184,8 @@ public class ElasticSearchResponseMapper {
         advancedCompany.setCompanyType((String) sourceAsMap.get(COMPANY_TYPE_KEY));
         advancedCompany.setKind(SEARCH_RESULTS_COMPANY_KIND);
 
-        if (currentCompanyMap.containsKey(DATE_OF_CESSATION)) {
+        if (STATUS_LIST.contains(advancedCompany.getCompanyStatus().toLowerCase()) 
+                && currentCompanyMap.containsKey(DATE_OF_CESSATION)) {
             advancedCompany.setDateOfCessation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CESSATION), advancedFormatter));
         }
 
