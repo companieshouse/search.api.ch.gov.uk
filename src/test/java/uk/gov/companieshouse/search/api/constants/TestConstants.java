@@ -247,6 +247,33 @@ public static final String ADVANCED_RESPONSE =
             "\"company_type\" : \"ltd\"" +
         "}";
 
+public static final String ADVANCED_RESPONSE_WITH_DISSOLVED_DATE =
+"{" +
+    "\"current_company\" : {" +
+        "\"company_number\" : \"00000000\"," +
+        "\"corporate_name\" : \"TEST COMPANY\"," +
+        "\"company_status\" : \"active\"," +
+        "\"sic_codes\" : [" +
+            "\"99960\"" +
+        "]," +
+        "\"address\" : {" +
+            "\"address_line_1\" : \"addressLine1\"," +
+            "\"address_line_2\" : \"addressLine2\"," +
+            "\"locality\" : \"locality\"," +
+            "\"post_code\" : \"AB00 0 AB\"," +
+            "\"country\" : \"wales\"," +
+            "\"premises\" : \"unit 1\"," +
+            "\"region\" : \"south\"" +
+        "}," +
+        "\"date_of_cessation\" : \"2010-05-01\"," +
+        "\"date_of_creation\" : \"1989-05-01\"" +
+    "}," +
+    "\"links\" : {" +
+        "\"self\" : \"/company/00000000\"" +
+    "}," +
+    "\"company_type\" : \"ltd\"" +
+"}";
+
 public static final String ADVANCED_RESPONSE_DISSOLVED_COMPANY =
         "{" +
             "\"current_company\" : {" +

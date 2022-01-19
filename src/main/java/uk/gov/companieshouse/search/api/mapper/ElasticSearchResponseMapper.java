@@ -1,20 +1,21 @@
 package uk.gov.companieshouse.search.api.mapper;
 
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.springframework.stereotype.Component;
-import uk.gov.companieshouse.search.api.model.TopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
-import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
-import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
-import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.springframework.stereotype.Component;
+
+import uk.gov.companieshouse.search.api.model.TopHit;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Links;
+import uk.gov.companieshouse.search.api.model.esdatamodel.PreviousCompanyName;
 
 @Component
 public class ElasticSearchResponseMapper {
@@ -50,6 +51,14 @@ public class ElasticSearchResponseMapper {
     private static final String SEARCH_RESULTS_KIND = "searchresults#dissolved-company";
     private static final String SEARCH_RESULTS_ALPHABETICAL_KIND = "searchresults#alphabetical-search";
     private static final String SEARCH_RESULTS_COMPANY_KIND = "search-results#company";
+    
+    private static final List<String> STATUS_LIST = new ArrayList<>();
+    
+    static {
+        STATUS_LIST.add("dissolved");
+        STATUS_LIST.add("closed");
+        STATUS_LIST.add("converted-closed");
+    }
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
     DateTimeFormatter advancedFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
@@ -177,7 +186,8 @@ public class ElasticSearchResponseMapper {
         advancedCompany.setCompanyType((String) sourceAsMap.get(COMPANY_TYPE_KEY));
         advancedCompany.setKind(SEARCH_RESULTS_COMPANY_KIND);
 
-        if (currentCompanyMap.containsKey(DATE_OF_CESSATION)) {
+        if (STATUS_LIST.contains(advancedCompany.getCompanyStatus().toLowerCase()) 
+                && currentCompanyMap.containsKey(DATE_OF_CESSATION)) {
             advancedCompany.setDateOfCessation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CESSATION), advancedFormatter));
         }
 
