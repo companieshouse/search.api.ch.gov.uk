@@ -52,11 +52,13 @@ public class ElasticSearchResponseMapper {
     private static final String SEARCH_RESULTS_ALPHABETICAL_KIND = "searchresults#alphabetical-search";
     private static final String SEARCH_RESULTS_COMPANY_KIND = "search-results#company";
     
-    private static final List<String> STATUS_LIST = Collections.unmodifiableList(new ArrayList<String>() {{
-        add("dissolved");
-        add("closed");
-        add("converted-closed");
-    }});
+    private static final List<String> STATUS_LIST = new ArrayList<String>();
+    
+    static {
+        STATUS_LIST.add("dissolved");
+        STATUS_LIST.add("closed");
+        STATUS_LIST.add("converted-closed");
+    }
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
     DateTimeFormatter advancedFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
