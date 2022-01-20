@@ -186,7 +186,7 @@ public class ElasticSearchResponseMapper {
         advancedCompany.setCompanyType((String) sourceAsMap.get(COMPANY_TYPE_KEY));
         advancedCompany.setKind(SEARCH_RESULTS_COMPANY_KIND);
 
-        if (STATUS_LIST.contains(advancedCompany.getCompanyStatus().toLowerCase()) 
+        if (STATUS_LIST.contains(advancedCompany.getCompanyStatus()) 
                 && currentCompanyMap.containsKey(DATE_OF_CESSATION)) {
             advancedCompany.setDateOfCessation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CESSATION), advancedFormatter));
         }
