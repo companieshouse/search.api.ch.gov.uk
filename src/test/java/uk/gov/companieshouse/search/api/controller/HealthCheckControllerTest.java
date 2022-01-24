@@ -14,14 +14,14 @@ import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class HealthCheckControllerTest {
+class HealthCheckControllerTest {
     
     @InjectMocks
     private HealthCheckController testClass;
     
     @Test
     @DisplayName("Health check confirms health with HTTP 200")
-    public void applicationHealthcheckRunsSuccessfully(){
+    void applicationHealthcheckRunsSuccessfully(){
         // When the health endpoint is polled
         final ResponseEntity<Void> response = testClass.getHealthCheck();
         // Then the response is HTTP 200
