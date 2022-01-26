@@ -128,6 +128,8 @@ public class AdvancedSearchUpsertRequest {
     private void appendNonNullField(String fieldName, String fieldValue, XContentBuilder jsonBuilder) throws IOException {
         if (fieldValue != null) {
             jsonBuilder.field(fieldName, fieldValue);
+        } else {
+            jsonBuilder.field(fieldName, "");
         }
     }
 
