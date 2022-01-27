@@ -96,13 +96,13 @@ public class AdvancedSearchUpsertRequest {
     }
 
     private void buildAddressJSON(XContentBuilder jsonBuilder, RegisteredOfficeAddressApi roa) throws IOException {
-        appendNonNullField(PREMISES_KEY, roa.getPremises(), jsonBuilder);
-        appendNonNullField(ADDRESS_LINE_1_KEY, roa.getAddressLine1(), jsonBuilder);
-        appendNonNullField(ADDRESS_LINE_2_KEY, roa.getAddressLine2(), jsonBuilder);
-        appendNonNullField(POSTAL_CODE_KEY, roa.getPostalCode(), jsonBuilder);
-        appendNonNullField(LOCALITY_KEY, roa.getLocality(), jsonBuilder);
-        appendNonNullField(REGION_KEY, roa.getRegion(), jsonBuilder);
-        appendNonNullField(COUNTRY_KEY, roa.getCountry(), jsonBuilder);
+        jsonBuilder.field(PREMISES_KEY, roa.getPremises());
+        jsonBuilder.field(ADDRESS_LINE_1_KEY, roa.getAddressLine1());
+        jsonBuilder.field(ADDRESS_LINE_2_KEY, roa.getAddressLine2());
+        jsonBuilder.field(POSTAL_CODE_KEY, roa.getPostalCode());
+        jsonBuilder.field(LOCALITY_KEY, roa.getLocality());
+        jsonBuilder.field(REGION_KEY, roa.getRegion());
+        jsonBuilder.field(COUNTRY_KEY, roa.getCountry());
     }
 
     private String createFullAddress(RegisteredOfficeAddressApi registeredOfficeAddressApi) {
@@ -123,14 +123,6 @@ public class AdvancedSearchUpsertRequest {
         }
 
         return fullAddress;
-    }
-
-    private void appendNonNullField(String fieldName, String fieldValue, XContentBuilder jsonBuilder) throws IOException {
-        if (fieldValue != null) {
-            jsonBuilder.field(fieldName, fieldValue);
-        } else {
-            jsonBuilder.field(fieldName, "");
-        }
     }
 
     private void appendAddressField(String field, StringBuilder fullAddress) {
