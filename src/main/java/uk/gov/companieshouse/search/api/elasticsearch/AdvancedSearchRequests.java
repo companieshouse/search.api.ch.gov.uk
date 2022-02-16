@@ -39,6 +39,7 @@ public class AdvancedSearchRequests {
 
         sourceBuilder.size(queryParams.getSize());
         sourceBuilder.from(queryParams.getStartIndex());
+        sourceBuilder.trackTotalHits(true);
 
         searchRequest.source(sourceBuilder.query(advancedSearchQueries.buildAdvancedSearchQuery(queryParams)));
 
