@@ -187,11 +187,11 @@ public class ElasticSearchResponseMapper {
         advancedCompany.setKind(SEARCH_RESULTS_COMPANY_KIND);
 
         if (STATUS_LIST.contains(advancedCompany.getCompanyStatus()) 
-                && currentCompanyMap.containsKey(DATE_OF_CESSATION)) {
+                && currentCompanyMap.containsKey(DATE_OF_CESSATION) && currentCompanyMap.get(DATE_OF_CESSATION) != null) {
             advancedCompany.setDateOfCessation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CESSATION), advancedFormatter));
         }
 
-        if (currentCompanyMap.containsKey(DATE_OF_CREATION)) {
+        if (currentCompanyMap.containsKey(DATE_OF_CREATION) && currentCompanyMap.get(DATE_OF_CREATION) != null) {
             advancedCompany.setDateOfCreation(LocalDate.parse((String) currentCompanyMap.get(DATE_OF_CREATION), advancedFormatter));
         }
 
