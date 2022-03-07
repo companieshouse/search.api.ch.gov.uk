@@ -448,7 +448,7 @@ class ElasticSearchResponseMapperTest {
     }
 
     @Test
-    @DisplayName("Map advanced response successful with missing fields")
+    @DisplayName("Map advanced response successful with missing fields and null date of creation and cessation")
     void mapAdvancedResponseSuccessfulMissingFields() {
 
         SearchHits searchHits = createHits(ADVANCED_RESPONSE_MISSING_FIELDS);
@@ -460,6 +460,8 @@ class ElasticSearchResponseMapperTest {
         assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
         assertEquals(COMPANY_STATUS, company.getCompanyStatus());
         assertEquals(COMPANY_KIND, company.getKind());
+        assertEquals(null, company.getDateOfCreation());
+        assertEquals(null, company.getDateOfCessation());
     }
 
     @Test
