@@ -70,6 +70,7 @@ public class AdvancedSearchController {
     private static final String COMPANY_STATUS_QUERY_PARAMETER = "company_status";
     private static final String SIC_CODE_QUERY_PARAMETER = "sic_codes";
     private static final String COMPANY_TYPE_QUERY_PARAMETER = "company_type";
+    private static final String COMPANY_SUBTYPE_QUERY_PARAMETER = "company_subtype";
     private static final String DISSOLVED_FROM_QUERY_PARAMETER = "dissolved_from";
     private static final String DISSOLVED_TO_QUERY_PARAMETER = "dissolved_to";
     private static final String COMPANY_NAME_EXCLUDES = "company_name_excludes";
@@ -86,6 +87,7 @@ public class AdvancedSearchController {
                                          @RequestParam(name = COMPANY_STATUS_QUERY_PARAMETER, required = false) List<String> companyStatusList,
                                          @RequestParam(name = SIC_CODE_QUERY_PARAMETER, required = false) List<String> sicCodes,
                                          @RequestParam(name = COMPANY_TYPE_QUERY_PARAMETER, required = false) List<String> companyTypeList,
+                                         @RequestParam(name = COMPANY_SUBTYPE_QUERY_PARAMETER, required = false) List<String> companySubtypeList,
                                          @RequestParam(name = DISSOLVED_FROM_QUERY_PARAMETER, required = false) String dissolvedFrom,
                                          @RequestParam(name = DISSOLVED_TO_QUERY_PARAMETER, required = false) String dissolvedTo,
                                          @RequestParam(name = COMPANY_NAME_EXCLUDES, required = false) String companyNameExcludes,
@@ -114,7 +116,7 @@ public class AdvancedSearchController {
         try {
             advancedSearchQueryParams = queryParamMapper
                 .mapAdvancedQueryParameters(startIndex, companyName, location, incorporatedFrom,
-                    incorporatedTo, companyStatusList, sicCodes, companyTypeList, dissolvedFrom, dissolvedTo, companyNameExcludes, size);
+                    incorporatedTo, companyStatusList, sicCodes, companyTypeList, companySubtypeList, dissolvedFrom, dissolvedTo, companyNameExcludes, size);
         } catch (DateFormatException dfe) {
            return apiToResponseMapper.map(new ResponseObject(ResponseStatus.DATE_FORMAT_ERROR, null));
         } catch (MappingException me) {

@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.search.api.mapper;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_STATUS;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_SUBTYPE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_TYPE;
 
 import java.time.LocalDate;
@@ -71,6 +72,11 @@ public class AdvancedQueryParamMapper {
         "ukeig"
     );
 
+    private static final List<String> ACCEPTED_COMPANY_SUBTYPES = Arrays.asList(
+        "community-interest-company",
+        "private-fund-limited-partnership"
+    );
+
     @Autowired
     private EnvironmentReader environmentReader;
 
@@ -85,6 +91,7 @@ public class AdvancedQueryParamMapper {
                                                                 List<String> companyStatusList,
                                                                 List<String> sicCodes,
                                                                 List<String> companyTypeList,
+                                                                List<String> companySubtypeList,
                                                                 String dissolvedFrom,
                                                                 String dissolvedTo,
                                                                 String companyNameExcludes,
@@ -112,6 +119,11 @@ public class AdvancedQueryParamMapper {
         if (companyTypeList != null) {
             advancedSearchQueryParams.setCompanyTypeList(
                 mapListParam(companyTypeList, ACCEPTED_COMPANY_TYPES, COMPANY_TYPE));
+        }
+
+        if (companySubtypeList != null) {
+            advancedSearchQueryParams.setCompanySubtypeList(
+                mapListParam(companySubtypeList, ACCEPTED_COMPANY_SUBTYPES, COMPANY_SUBTYPE));
         }
 
         try {

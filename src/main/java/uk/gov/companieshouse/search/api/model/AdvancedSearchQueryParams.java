@@ -21,6 +21,8 @@ public class AdvancedSearchQueryParams {
 
     private List<String> companyTypeList;
 
+    private List<String> companySubtypeList;
+
     private LocalDate dissolvedFrom;
 
     private LocalDate dissolvedTo;
@@ -91,6 +93,14 @@ public class AdvancedSearchQueryParams {
 
     public void setCompanyTypeList(List<String> companyTypeList) {
         this.companyTypeList = companyTypeList;
+    }
+
+    public List<String> getCompanySubtypeList() {
+        return companySubtypeList;
+    }
+
+    public void setCompanySubtypeList(List<String> companySubtypeList) {
+        this.companySubtypeList = companySubtypeList;
     }
 
     public LocalDate getDissolvedFrom() {
