@@ -39,7 +39,7 @@ public class ApiToResponseMapper {
             case MAPPING_ERROR:
                 return ResponseEntity.status(BAD_REQUEST)
                     .body("Error attempting to map request parameter values, please check the values of fields " +
-                        "'company_status' or 'company_type' contain accurate values");
+                        "'company_status' or 'company_type' or 'company_subtype' contain accurate values");
             case REQUEST_PARAMETER_ERROR:
                 return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                         .body("Invalid url parameter for search_type, " +
