@@ -3,7 +3,9 @@ package uk.gov.companieshouse.search.api.mapper;
 import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_TO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.ADVANCED_RESPONSE_WITH_COMPANY_SUBTYPE;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.ALPHABETICAL_RESPONSE;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.CIC_COMPANY_SUBTYPE;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_INNER_HITS;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.DISSOLVED_RESPONSE_NO_ADDRESS_LINES;
@@ -55,6 +57,7 @@ class ElasticSearchResponseMapperTest {
     private static final String COMPANY_STATUS = "dissolved";
     private static final String COMPANY_STATUS_ACTIVE = "active";
     private static final String COMPANY_TYPE = "ltd";
+    private static final String COMPANY_SUBTYPE = "community-interest-company";
     private static final String COMPANY_PROFILE_LINK = "/company/00000000";
     private static final String KIND = "searchresults#dissolved-company";
     private static final String COMPANY_KIND = "search-results#company";
@@ -259,6 +262,25 @@ class ElasticSearchResponseMapperTest {
     }
 
     @Test
+    @DisplayName("Map advanced top hit with company subtype successful")
+    void mapEmhancedTopHitWithSubTypeSuccessful() {
+
+        TopHit topHit = elasticSearchResponseMapper.mapAdvancedTopHit(createAdvancedCompany());
+        topHit.setCompanySubtype(CIC_COMPANY_SUBTYPE);
+
+        assertEquals(COMPANY_NAME, topHit.getCompanyName());
+        assertEquals(COMPANY_NUMBER, topHit.getCompanyNumber());
+        assertEquals(COMPANY_STATUS, topHit.getCompanyStatus());
+        assertEquals(COMPANY_TYPE, topHit.getCompanyType());
+        assertEquals(COMPANY_SUBTYPE, topHit.getCompanySubtype());
+        assertEquals(KIND, topHit.getKind());
+        assertEquals(DATE_OF_CESSATION, topHit.getDateOfCessation().toString());
+        assertEquals(DATE_OF_CREATION, topHit.getDateOfCreation().toString());
+        assertEquals(SIC_CODES_LIST, topHit.getSicCodes());
+        assertEquals(COMPANY_PROFILE_LINK, topHit.getLinks().getCompanyProfile());
+    }
+
+    @Test
     @DisplayName("Map dissolved top hit successful")
     void mapTopHitSuccessful() {
 
@@ -426,9 +448,29 @@ class ElasticSearchResponseMapperTest {
         assertEquals(POSTCODE, company.getRegisteredOfficeAddress().getPostalCode());
         assertEquals(SIC_CODES_LIST, company.getSicCodes());
     }
+
+    @Test
+    @DisplayName("Map advanced response successful for company with a subtype")
+    void mapAdvancedResponseSuccessfulSubTypeTest() {
+
+        SearchHits searchHits = createHits(ADVANCED_RESPONSE_WITH_COMPANY_SUBTYPE);
+
+        Company company =
+                elasticSearchResponseMapper.mapAdvancedSearchResponse(searchHits.getAt(0));
+
+        assertEquals(COMPANY_NAME, company.getCompanyName());
+        assertEquals(COMPANY_NUMBER, company.getCompanyNumber());
+        assertEquals(COMPANY_STATUS_ACTIVE, company.getCompanyStatus());
+        assertEquals(COMPANY_KIND, company.getKind());
+        assertEquals(DATE_OF_CREATION, company.getDateOfCreation().toString());
+        assertEquals(LOCALITY, company.getRegisteredOfficeAddress().getLocality());
+        assertEquals(POSTCODE, company.getRegisteredOfficeAddress().getPostalCode());
+        assertEquals(SIC_CODES_LIST, company.getSicCodes());
+        assertEquals(COMPANY_SUBTYPE, company.getCompanySubtype());
+    }
     
     @Test
-    @DisplayName("Map advanced response for an active company with a dissoled date does not return the dissolved date")
+    @DisplayName("Map advanced response for an active company with a dissolved date does not return the dissolved date")
     void mapAdvancedResponseActiveCompanyWithDissolvedDate() {
 
         SearchHits searchHits = createHits(ADVANCED_RESPONSE_WITH_DISSOLVED_DATE);

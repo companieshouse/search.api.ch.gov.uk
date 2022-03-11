@@ -59,6 +59,10 @@ public class AdvancedSearchQueries {
             boolQueryBuilder.filter(QueryBuilders.termsQuery("company_type", queryParams.getCompanyTypeList()));
         }
 
+        if (queryParams.getCompanySubtypeList() != null) {
+            boolQueryBuilder.filter(QueryBuilders.termsQuery("company_subtype", queryParams.getCompanySubtypeList()));
+        }
+
         if (queryParams.getCompanyNameExcludes() != null) {
             queryBuilder = QueryBuilders.matchQuery("current_company.corporate_name",
                 queryParams.getCompanyNameExcludes())

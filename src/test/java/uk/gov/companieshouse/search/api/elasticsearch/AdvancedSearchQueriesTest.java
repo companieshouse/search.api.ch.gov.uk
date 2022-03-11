@@ -24,6 +24,8 @@ class AdvancedSearchQueriesTest {
     private static final String SIC_CODES = "99960";
     private static final String LTD_COMPANY_TYPE = "ltd";
     private static final String PLC_COMPANY_TYPE = "plc";
+    private static final String CIC_COMPANY_TYPE = "community-interest-company";
+    private static final String PFLP_COMPANY_TYPE = "private-fund-limited-partnership";
     private static final String COMPANY_NAME_EXCLUDES = "test name excludes";
     private static final LocalDate INCORPORATED_FROM = LocalDate.of(2000, 1, 1);
     private static final LocalDate INCORPORATED_TO = LocalDate.of(2002, 2, 2);
@@ -32,6 +34,7 @@ class AdvancedSearchQueriesTest {
     private static final List<String> COMPANY_STATUS_LIST = Arrays.asList(ACTIVE_COMPANY_STATUS);
     private static final List<String> SIC_CODES_LIST = Arrays.asList(SIC_CODES);
     private static final List<String> COMPANY_TYPES_LIST = Arrays.asList(LTD_COMPANY_TYPE, PLC_COMPANY_TYPE);
+    private static final List<String> COMPANY_SUBTYPE_LIST = Arrays.asList(CIC_COMPANY_TYPE, PFLP_COMPANY_TYPE );
 
     // Elastic search fields
     private static final String COMPANY_NAME_MUST_CONTAIN_FIELD = "current_company.corporate_name";
@@ -41,6 +44,7 @@ class AdvancedSearchQueriesTest {
     private static final String COMPANY_STATUS_MATCH_FIELD = "current_company.company_status.keyword";
     private static final String SIC_CODES_MATCH_FIELD = "current_company.sic_codes";
     private static final String COMPANY_TYPE_MATCH_FIELD = "company_type";
+    private static final String COMPANY_SUBTYPE_MATCH_FIELD = "company_subtype";
 
     @Test
     @DisplayName("Create company name must contain query")
@@ -167,6 +171,21 @@ class AdvancedSearchQueriesTest {
         assertTrue(queryBuilder.toString().contains(COMPANY_TYPE_MATCH_FIELD));
         assertTrue(queryBuilder.toString().contains(LTD_COMPANY_TYPE));
         assertTrue(queryBuilder.toString().contains(PLC_COMPANY_TYPE));
+    }
+
+    @Test
+    @DisplayName("Create company subtype match query")
+    void companySubtypeQuery() {
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setCompanySubtypeList(COMPANY_SUBTYPE_LIST);
+
+        QueryBuilder queryBuilder =
+                advancedSearchQueries.buildAdvancedSearchQuery(advancedSearchQueryParams);
+
+        assertNotNull(queryBuilder);
+        assertTrue(queryBuilder.toString().contains(COMPANY_SUBTYPE_MATCH_FIELD));
+        assertTrue(queryBuilder.toString().contains(CIC_COMPANY_TYPE));
+        assertTrue(queryBuilder.toString().contains(PFLP_COMPANY_TYPE));
     }
 
     @Test

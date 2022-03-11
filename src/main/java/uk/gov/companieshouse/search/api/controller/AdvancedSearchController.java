@@ -3,6 +3,7 @@ package uk.gov.companieshouse.search.api.controller;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NUMBER;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_STATUS;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_SUBTYPE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_TYPE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.DISSOLVED_FROM;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.DISSOLVED_TO;
@@ -103,6 +104,7 @@ public class AdvancedSearchController {
         logIfNotNull(logMap, COMPANY_STATUS, companyStatusList);
         logIfNotNull(logMap, SIC_CODES, sicCodes);
         logIfNotNull(logMap, COMPANY_TYPE, companyTypeList);
+        logIfNotNull(logMap, COMPANY_SUBTYPE, companySubtypeList);
         logIfNotNull(logMap, DISSOLVED_FROM, dissolvedFrom);
         logIfNotNull(logMap, DISSOLVED_TO, dissolvedTo);
         logIfNotNull(logMap, COMPANY_NAME_EXCLUDES, companyNameExcludes);

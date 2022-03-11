@@ -26,6 +26,9 @@ public class TopHit {
     @JsonProperty("company_type")
     private String companyType;
 
+    @JsonProperty("company_subtype")
+    private String companySubtype;
+
     @JsonProperty("ordered_alpha_key_with_id")
     private String orderedAlphaKeyWithId;
 
@@ -82,6 +85,14 @@ public class TopHit {
 
     public String getCompanyType() {
         return companyType;
+    }
+
+    public String getCompanySubtype() {
+        return companySubtype;
+    }
+
+    public void setCompanySubtype(String companySubtype) {
+        this.companySubtype = companySubtype;
     }
 
     public void setCompanyType(String companyType) {

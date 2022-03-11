@@ -65,6 +65,8 @@ class AdvancedQueryParamMapperTest {
         assertEquals(START_INDEX, advancedSearchQueryParams.getStartIndex());
         assertEquals(COMPANY_NAME, advancedSearchQueryParams.getCompanyNameIncludes());
         assertEquals(LOCATION, advancedSearchQueryParams.getLocation());
+        assertEquals(COMPANY_TYPES_LIST, advancedSearchQueryParams.getCompanyTypeList());
+        assertEquals(COMPANY_SUBTYPES_LIST, advancedSearchQueryParams.getCompanySubtypeList());
         assertEquals(INCORPORATED_FROM_MAPPED, advancedSearchQueryParams.getIncorporatedFrom());
         assertEquals(INCORPORATED_TO_MAPPED, advancedSearchQueryParams.getIncorporatedTo());
         assertEquals(DISSOLVED_FROM_MAPPED, advancedSearchQueryParams.getDissolvedFrom());
