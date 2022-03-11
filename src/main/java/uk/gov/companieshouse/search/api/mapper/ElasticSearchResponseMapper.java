@@ -25,6 +25,7 @@ public class ElasticSearchResponseMapper {
     private static final String COMPANY_NUMBER_KEY = "company_number";
     private static final String COMPANY_STATUS_KEY = "company_status";
     private static final String COMPANY_TYPE_KEY = "company_type";
+    private static final String COMPANY_SUBTYPE_KEY = "company_subtype";
     private static final String CURRENT_COMPANY_KEY = "current_company";
     private static final String SIC_CODES_KEY = "sic_codes";
     private static final String ITEMS_KEY = "items";
@@ -107,6 +108,7 @@ public class ElasticSearchResponseMapper {
         topHit.setCompanyNumber(advancedCompany.getCompanyNumber());
         topHit.setCompanyStatus(advancedCompany.getCompanyStatus());
         topHit.setCompanyType(advancedCompany.getCompanyType());
+        topHit.setCompanySubtype(advancedCompany.getCompanySubtype());
         topHit.setKind(advancedCompany.getKind());
         topHit.setRegisteredOfficeAddress(advancedCompany.getRegisteredOfficeAddress());
         topHit.setDateOfCessation(advancedCompany.getDateOfCessation());
@@ -184,6 +186,7 @@ public class ElasticSearchResponseMapper {
         advancedCompany.setCompanyNumber((String) currentCompanyMap.get(COMPANY_NUMBER_KEY));
         advancedCompany.setCompanyStatus((String) currentCompanyMap.get(COMPANY_STATUS_KEY));
         advancedCompany.setCompanyType((String) sourceAsMap.get(COMPANY_TYPE_KEY));
+        advancedCompany.setCompanySubtype((String) sourceAsMap.get(COMPANY_SUBTYPE_KEY));
         advancedCompany.setKind(SEARCH_RESULTS_COMPANY_KIND);
 
         if (STATUS_LIST.contains(advancedCompany.getCompanyStatus()) 

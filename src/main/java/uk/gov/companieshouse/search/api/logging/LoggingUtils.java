@@ -16,6 +16,7 @@ public class LoggingUtils {
     public static final String COMPANY_NUMBER = "company_number";
     public static final String COMPANY_STATUS = "company_status";
     public static final String COMPANY_TYPE = "company_type";
+    public static final String COMPANY_SUBTYPE = "company_subtype";
     public static final String DISSOLVED_SEARCH_ALPHABETICAL = "dissolved - alphabetical";
     public static final String INDEX = "index_name";
     public static final String INDEX_ALPHABETICAL = "alphabetical_search_index";
@@ -77,6 +78,7 @@ public class LoggingUtils {
         logIfNotNull(logMap, COMPANY_STATUS, queryParams.getCompanyStatusList());
         logIfNotNull(logMap, SIC_CODES, queryParams.getSicCodes());
         logIfNotNull(logMap, COMPANY_TYPE, queryParams.getCompanyTypeList());
+        logIfNotNull(logMap, COMPANY_SUBTYPE, queryParams.getCompanySubtypeList());
         logIfNotNull(logMap, DISSOLVED_FROM, queryParams.getDissolvedFrom());
         logIfNotNull(logMap, DISSOLVED_TO, queryParams.getDissolvedTo());
         logIfNotNull(logMap, COMPANY_NAME_EXCLUDES, queryParams.getCompanyNameExcludes());

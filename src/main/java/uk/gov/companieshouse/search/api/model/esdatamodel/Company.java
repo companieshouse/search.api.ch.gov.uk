@@ -23,6 +23,9 @@ public class Company {
     @JsonProperty("company_type")
     private String companyType;
 
+    @JsonProperty("company_subtype")
+    private String companySubtype;
+
     @JsonProperty("ordered_alpha_key_with_id")
     private String orderedAlphaKeyWithId;
 
@@ -83,6 +86,14 @@ public class Company {
 
     public void setCompanyType(String companyType) {
         this.companyType = companyType;
+    }
+
+    public String getCompanySubtype() {
+        return companySubtype;
+    }
+
+    public void setCompanySubtype(String companySubtype) {
+        this.companySubtype = companySubtype;
     }
 
     public String getOrderedAlphaKeyWithId() {
