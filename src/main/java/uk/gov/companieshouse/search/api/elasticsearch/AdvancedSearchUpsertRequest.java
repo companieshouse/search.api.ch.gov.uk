@@ -14,6 +14,7 @@ import java.util.Map;
 public class AdvancedSearchUpsertRequest {
 
     private static final String COMPANY_TYPE_KEY = "company_type";
+    private static final String COMPANY_SUBTYPE_KEY = "company_subtype";
     private static final String CURRENT_COMPANY_KEY = "current_company";
     private static final String ITEMS_KEY = "items";
     private static final String COMPANY_NUMBER_KEY = "company_number";
@@ -51,6 +52,7 @@ public class AdvancedSearchUpsertRequest {
 
         XContentBuilder jsonBuilder = jsonBuilder().startObject();
         jsonBuilder.field(COMPANY_TYPE_KEY, company.getType());
+        jsonBuilder.field(COMPANY_SUBTYPE_KEY, company.getSubtype());
             jsonBuilder.startObject(CURRENT_COMPANY_KEY);
                 jsonBuilder.field(CORPORATE_NAME_KEY, company.getCompanyName());
                 jsonBuilder.array(SIC_CODES_KEY, company.getSicCodes());

@@ -15,6 +15,7 @@ import java.util.Map;
 class AdvancedSearchUpsertRequestTest {
 
     private static final String COMPANY_TYPE = "ltd";
+    private static final String COMPANY_SUBTYPE = "test subtype";
     private static final String COMPANY_NUMBER = "12345678";
     private static final String COMPANY_STATUS = "active";
     private static final String COMPANY_NAME = "test company ltd";
@@ -42,6 +43,7 @@ class AdvancedSearchUpsertRequestTest {
     private CompanyProfileApi createCompany() {
         CompanyProfileApi company = new CompanyProfileApi();
         company.setType(COMPANY_TYPE);
+        company.setSubtype(COMPANY_SUBTYPE);
         company.setCompanyName(COMPANY_NAME);
         company.setSicCodes(SIC_CODES);
         company.setCompanyNumber(COMPANY_NUMBER);
