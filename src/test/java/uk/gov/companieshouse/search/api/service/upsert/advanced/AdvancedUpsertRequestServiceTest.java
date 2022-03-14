@@ -7,7 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import org.elasticsearch.action.index.IndexRequest;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,11 +27,6 @@ import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.AdvancedSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -50,6 +48,7 @@ class AdvancedUpsertRequestServiceTest {
     private static final String ORDERED_ALPHA_KEY_FIELD = "orderedAlphaKey";
     private static final String SAME_AS_ALPHA_KEY_FIELD = "sameAsAlphaKey";
     private static final String COMPANY_TYPE = "ltd";
+    private static final String COMPANY_SUBTYPE = "test subtype";
     private static final String COMPANY_NUMBER = "12345678";
     private static final String COMPANY_STATUS = "active";
     private static final String COMPANY_NAME = "test company ltd";
@@ -161,6 +160,7 @@ class AdvancedUpsertRequestServiceTest {
         return jsonBuilder()
             .startObject()
                 .field(COMPANY_TYPE_KEY, company.getType())
+                .field(COMPANY_SUBTYPE, company.getSubtype())
                 .startObject(CURRENT_COMPANY_KEY)
                     .field(CORPORATE_NAME_KEY, company.getCompanyName())
                     .array(SIC_CODES_KEY, company.getSicCodes())
