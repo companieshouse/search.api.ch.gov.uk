@@ -52,7 +52,7 @@ public class AdvancedSearchUpsertRequest {
 
         XContentBuilder jsonBuilder = jsonBuilder().startObject();
         jsonBuilder.field(COMPANY_TYPE_KEY, company.getType());
-        jsonBuilder.field(COMPANY_SUBTYPE_KEY, company.getType());
+        jsonBuilder.field(COMPANY_SUBTYPE_KEY, company.getSubtype());
             jsonBuilder.startObject(CURRENT_COMPANY_KEY);
                 jsonBuilder.field(CORPORATE_NAME_KEY, company.getCompanyName());
                 jsonBuilder.array(SIC_CODES_KEY, company.getSicCodes());
