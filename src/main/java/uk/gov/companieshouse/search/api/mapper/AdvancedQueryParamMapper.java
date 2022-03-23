@@ -69,6 +69,7 @@ public class AdvancedQueryParamMapper {
         "scottish-charitable-incorporated-organisation",
         "further-education-or-sixth-form-college-corporation",
         "eeig",
+        "registered-overseas-entity",
         "ukeig"
     );
 
