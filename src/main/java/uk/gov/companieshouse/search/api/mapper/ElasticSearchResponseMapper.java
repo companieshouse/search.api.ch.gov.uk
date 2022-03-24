@@ -59,6 +59,7 @@ public class ElasticSearchResponseMapper {
         STATUS_LIST.add("dissolved");
         STATUS_LIST.add("closed");
         STATUS_LIST.add("converted-closed");
+        STATUS_LIST.add("removed");
     }
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
