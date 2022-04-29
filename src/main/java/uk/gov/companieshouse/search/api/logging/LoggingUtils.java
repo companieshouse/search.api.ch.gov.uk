@@ -43,7 +43,9 @@ public class LoggingUtils {
     public static final String DISSOLVED_TO = "dissolved_to";
     public static final String SIC_CODES = "sic_codes";
     public static final String COMPANY_NAME_EXCLUDES = "company_name_excludes";
-
+    public static final String OFFICER_NAME = "officer_name";
+    public static final String UPSERT_OFFICER = "upsert_officer_id";
+    
     public static final String REQUEST_ID_LOG_KEY = "request_id";
     public static final String STATUS_LOG_KEY = "status";
     public static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
