@@ -52,7 +52,7 @@ class DisqualifiedSearchControllerTest {
     }
 
     @Test
-    @DisplayName("Test upsert returns a HTTP 200 Ok Response if the officer Id is an empty string")
+    @DisplayName("Test upsert returns a HTTP 400 Bad request if the officer Id is an empty string")
     void testUpsertWithEmptyStringOfficerIdReturnsBadRequest() {
 
         testReturnsBadRequest("");
@@ -93,7 +93,9 @@ class DisqualifiedSearchControllerTest {
 
         officer.setItems(buildItems(officer));
 
-        officer.setSortKey("Samson Thomas Lee1");
+        officer.setSortKey(officer.getItems().get(0).getSurname() + " " +
+                officer.getItems().get(0).getForename() + " " +
+                officer.getItems().get(0).getOtherForenames() + 1);
 
         Map<String, String> links = new HashMap<>();
         links.put("self", "/disqualified-officers/natural/12345encode");
@@ -126,8 +128,7 @@ class DisqualifiedSearchControllerTest {
         item.setAddress(buildAddress());
         item.setDisqualifiedFrom(disqualifiedFromDate);
         item.setDisqualifiedUntil(disqualifiedUntilDate);
-        item.setOtherForenames("Lee");
-        item.setWildcardKey("Samson Thomas Lee1");
+        item.setOtherForenames("SAMSON Thomas Lee1");
         item.setSurname("SAMSON");
         item.setFullAddress("1 Street, Castle, Castle, King County, King, KE1 1NN");
 
