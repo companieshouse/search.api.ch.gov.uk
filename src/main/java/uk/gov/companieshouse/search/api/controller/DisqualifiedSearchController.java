@@ -32,7 +32,7 @@ public class DisqualifiedSearchController {
         Map<String, Object> logMap = new HashMap<>();
         logMap.put(OFFICER_NAME, officer.getItems().get(0).getPersonName());
         logMap.put(UPSERT_OFFICER, officerId);
-        getLogger().info("Attempting to upsert a natural officer to disqualification search index" + officer.toString(), logMap);
+        getLogger().info("Attempting to upsert a natural officer to disqualification search index", logMap);
 
         ResponseObject responseObject;
 
