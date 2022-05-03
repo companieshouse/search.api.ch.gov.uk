@@ -6,4 +6,5 @@ routes:
   2: ^/alphabetical-search/companies/*
   3: ^/dissolved-search/companies
   4: ^/advanced-search/companies
+  5: ^/disqualified-search
   5: ^/search/healthcheck
