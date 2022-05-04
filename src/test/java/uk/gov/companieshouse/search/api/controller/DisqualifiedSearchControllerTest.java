@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import uk.gov.companieshouse.api.disqualification.DateOfBirth;
+import uk.gov.companieshouse.api.disqualification.DisqualificationLinks;
 import uk.gov.companieshouse.api.disqualification.Item;
 import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
 import uk.gov.companieshouse.api.model.delta.officers.AddressAPI;
@@ -27,9 +28,7 @@ import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -97,8 +96,8 @@ class DisqualifiedSearchControllerTest {
                 officer.getItems().get(0).getForename() + " " +
                 officer.getItems().get(0).getOtherForenames() + 1);
 
-        Map<String, String> links = new HashMap<>();
-        links.put("self", "/disqualified-officers/natural/12345encode");
+        DisqualificationLinks links = new DisqualificationLinks();
+        links.setSelf("/disqualified-officers/natural/12345encode");
         officer.setLinks(links);
 
         return officer;
