@@ -1,8 +1,5 @@
 package uk.gov.companieshouse.search.api.controller;
 
-
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.DISQUALIFIED_SEARCH_INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.OFFICER_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.UPSERT_OFFICER;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
