@@ -70,7 +70,7 @@ class DisqualifiedSearchControllerTest {
     private void testReturnsOkResponse(String officerId, boolean corporate) {
         OfficerDisqualification officer = createOfficer(corporate);
 
-        when(upsertDisqualificationService.upsertNaturalDisqualified(officer, officerId))
+        when(upsertDisqualificationService.upsertDisqualified(officer, officerId))
                 .thenReturn(new ResponseObject(DOCUMENT_UPSERTED));
         when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
                 .thenReturn(ResponseEntity.status(OK).build());

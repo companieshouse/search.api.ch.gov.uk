@@ -38,7 +38,7 @@ public class UpsertDisqualificationServiceTest {
         OfficerDisqualification officer = createOfficer();
         when(disqualifiedUpsertRequestService.createUpdateRequest(officer, OFFICER_ID)).thenReturn(request);
 
-        ResponseObject response = service.upsertNaturalDisqualified(officer, OFFICER_ID);
+        ResponseObject response = service.upsertDisqualified(officer, OFFICER_ID);
 
         assertEquals(ResponseStatus.DOCUMENT_UPSERTED, response.getStatus());
         verify(disqualifiedSearchRestClientService).upsert(request);
@@ -49,7 +49,7 @@ public class UpsertDisqualificationServiceTest {
         OfficerDisqualification officer = createOfficer();
         when(disqualifiedUpsertRequestService.createUpdateRequest(officer, OFFICER_ID)).thenThrow(new UpsertException(""));
 
-        ResponseObject response = service.upsertNaturalDisqualified(officer, OFFICER_ID);
+        ResponseObject response = service.upsertDisqualified(officer, OFFICER_ID);
 
         assertEquals(ResponseStatus.UPSERT_ERROR, response.getStatus());
     }
@@ -60,7 +60,7 @@ public class UpsertDisqualificationServiceTest {
         when(disqualifiedUpsertRequestService.createUpdateRequest(officer, OFFICER_ID)).thenReturn(request);
         when(disqualifiedSearchRestClientService.upsert(request)).thenThrow(new IOException(""));
 
-        ResponseObject response = service.upsertNaturalDisqualified(officer, OFFICER_ID);
+        ResponseObject response = service.upsertDisqualified(officer, OFFICER_ID);
 
         assertEquals(ResponseStatus.UPDATE_REQUEST_ERROR, response.getStatus());
     }

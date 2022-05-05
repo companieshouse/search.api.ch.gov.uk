@@ -39,7 +39,7 @@ public class DisqualifiedSearchController {
         if (officerId == null || officerId.isEmpty()) {
             responseObject = new ResponseObject(ResponseStatus.UPSERT_ERROR);
         } else {
-            responseObject = upsertDisqualificationService.upsertNaturalDisqualified(officer, officerId);
+            responseObject = upsertDisqualificationService.upsertDisqualified(officer, officerId);
         }
         return apiToResponseMapper.map(responseObject);
     }

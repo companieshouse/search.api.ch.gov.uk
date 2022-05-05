@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.disqualification.Item;
 import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
+import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.DisqualifiedSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 
@@ -22,15 +23,20 @@ public class DisqualifiedUpsertRequestServiceTest {
 
     private static final String UPDATE_JSON = "{\"example\":\"test\"}";
     private static final String OFFICER_ID = "testid";
+    private static final String INDEX = "DISQUALIFIED_SEARCH_INDEX";
+    private static final String PRIMARY = "primary_search";
 
     @Mock
     private DisqualifiedSearchUpsertRequest disqualifiedSearchUpsertRequest;
+    @Mock
+    private EnvironmentReader reader;
     @InjectMocks
     private DisqualifiedUpsertRequestService service;
 
     @Test
     public void serviceCreatesUpdateRequest() throws Exception {
         OfficerDisqualification officer = createOfficer();
+        when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
         when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenReturn(UPDATE_JSON);
 
         UpdateRequest request = service.createUpdateRequest(officer, OFFICER_ID);
@@ -45,6 +51,7 @@ public class DisqualifiedUpsertRequestServiceTest {
     @Test
     public void serviceThrowsUpsertException() throws Exception {
         OfficerDisqualification officer = createOfficer();
+        when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
         when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenThrow(new IOException());
 
         Exception e = assertThrows(UpsertException.class,

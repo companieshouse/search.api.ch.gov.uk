@@ -5,6 +5,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
+import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.DisqualifiedSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
@@ -17,6 +18,9 @@ public class DisqualifiedUpsertRequestService {
 
     @Autowired
     private DisqualifiedSearchUpsertRequest disqualifiedSearchUpsertRequest;
+
+    @Autowired
+    private EnvironmentReader environmentReader;
 
     private static final String INDEX = "DISQUALIFIED_SEARCH_INDEX";
 
@@ -31,9 +35,10 @@ public class DisqualifiedUpsertRequestService {
     public UpdateRequest createUpdateRequest(OfficerDisqualification officer, String officerId) throws UpsertException {
 
         Map<String, Object> logMap = LoggingUtils.setUpDisqualifcationUpsertLogging(officer.getItems().get(0));
-        try {
+        String index = environmentReader.getMandatoryString(INDEX);
 
-            UpdateRequest request =  new UpdateRequest("primary_search", "primary_search", officerId)
+        try {
+            UpdateRequest request =  new UpdateRequest(index, index, officerId)
                     .docAsUpsert(true).doc(disqualifiedSearchUpsertRequest.buildRequest(officer), XContentType.JSON);
 
             LoggingUtils.getLogger().info("Attempt to upsert document if it does not exist", logMap);

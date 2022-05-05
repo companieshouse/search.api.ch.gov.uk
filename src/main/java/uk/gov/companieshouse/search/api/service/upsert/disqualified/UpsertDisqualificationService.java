@@ -32,7 +32,7 @@ public class UpsertDisqualificationService {
      * @param officer -  Officer Disqualification sent over in REST call to be added/updated
      * @return {@link ResponseObject}
      */
-    public ResponseObject upsertNaturalDisqualified(OfficerDisqualification officer, String officerId) {
+    public ResponseObject upsertDisqualified(OfficerDisqualification officer, String officerId) {
         Map<String, Object> logMap = LoggingUtils.setUpDisqualifcationUpsertLogging(officer.getItems().get(0));
         getLogger().info("Upserting to disqualified index underway", logMap);
 
