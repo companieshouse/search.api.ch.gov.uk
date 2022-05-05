@@ -36,10 +36,7 @@ public class UpsertDisqualificationService {
      * @return {@link ResponseObject}
      */
     public ResponseObject upsertNaturalDisqualified(OfficerDisqualification officer, String officerId) {
-        Map<String, Object> logMap = new HashMap<>();
-        Item disqualification = officer.getItems().get(0);
-        logMap.put("officer name", disqualification.getForename() + " " + disqualification.getSurname());
-        logMap.put(INDEX, DISQUALIFIED_SEARCH_INDEX);
+        Map<String, Object> logMap = setUpUpsertLogging(officer.getItems().get(0));
         getLogger().info("Upserting to disqualified index underway", logMap);
 
         UpdateRequest updateRequest;
@@ -60,5 +57,16 @@ public class UpsertDisqualificationService {
 
         getLogger().info("Upsert successful to disqualified search index", logMap);
         return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
+    }
+
+    private Map<String, Object> setUpUpsertLogging(Item disqualification) {
+        Map<String, Object> logMap = new HashMap<>();
+        if (disqualification.getCorporateName() != null && disqualification.getCorporateName().length() > 0) {
+            logMap.put("officer name", disqualification.getCorporateName());
+        } else {
+            logMap.put("officer name", disqualification.getForename() + " " + disqualification.getSurname());
+        }
+        logMap.put(INDEX, DISQUALIFIED_SEARCH_INDEX);
+        return logMap;
     }
 }

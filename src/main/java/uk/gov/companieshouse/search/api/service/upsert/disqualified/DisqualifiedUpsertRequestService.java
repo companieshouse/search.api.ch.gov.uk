@@ -52,7 +52,11 @@ public class DisqualifiedUpsertRequestService {
 
     private Map<String, Object> setUpUpsertLogging(Item disqualification) {
         Map<String, Object> logMap = new HashMap<>();
-        logMap.put("officer name", disqualification.getForename() + " " + disqualification.getSurname());
+        if (disqualification.getCorporateName() != null && disqualification.getCorporateName().length() > 0) {
+            logMap.put("officer name", disqualification.getCorporateName());
+        } else {
+            logMap.put("officer name", disqualification.getForename() + " " + disqualification.getSurname());
+        }
         logMap.put(INDEX, DISQUALIFIED_SEARCH_INDEX);
         return logMap;
     }
