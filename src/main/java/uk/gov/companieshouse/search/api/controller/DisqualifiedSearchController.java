@@ -26,7 +26,6 @@ public class DisqualifiedSearchController {
     @Autowired
     private UpsertDisqualificationService upsertDisqualificationService;
 
-
     @PutMapping("/disqualified-officers/{officer_id}")
     public ResponseEntity<Object> upsertOfficer(@PathVariable("officer_id") String officerId,
                                                        @Valid @RequestBody OfficerDisqualification officer) {
