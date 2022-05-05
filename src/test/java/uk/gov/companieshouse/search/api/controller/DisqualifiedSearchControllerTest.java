@@ -25,6 +25,7 @@ import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
 import uk.gov.companieshouse.api.model.delta.officers.AddressAPI;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
+import uk.gov.companieshouse.search.api.service.upsert.disqualified.UpsertDisqualificationService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -39,6 +40,9 @@ class DisqualifiedSearchControllerTest {
 
     @Captor
     private ArgumentCaptor<ResponseObject> responseObjectCaptor;
+
+    @Mock
+    private UpsertDisqualificationService upsertDisqualificationService;
 
     @InjectMocks
     private DisqualifiedSearchController disqualifiedSearchController;
@@ -60,6 +64,8 @@ class DisqualifiedSearchControllerTest {
     private void testReturnsOkResponse(String officerId) {
         OfficerDisqualification officer = createOfficer();
 
+        when(upsertDisqualificationService.upsertNaturalDisqualified(officer, officerId))
+                .thenReturn(new ResponseObject(DOCUMENT_UPSERTED));
         when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
                 .thenReturn(ResponseEntity.status(OK).build());
 

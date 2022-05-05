@@ -13,6 +13,7 @@ import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
+import uk.gov.companieshouse.search.api.service.upsert.disqualified.UpsertDisqualificationService;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -24,6 +25,10 @@ public class DisqualifiedSearchController {
 
     @Autowired
     private ApiToResponseMapper apiToResponseMapper;
+
+    @Autowired
+    private UpsertDisqualificationService upsertDisqualificationService;
+
 
     @PutMapping("/disqualified-officers/{officer_id}")
     public ResponseEntity<Object> upsertOfficer(@PathVariable("officer_id") String officerId,
@@ -39,8 +44,7 @@ public class DisqualifiedSearchController {
         if (officerId == null || officerId.isEmpty()) {
             responseObject = new ResponseObject(ResponseStatus.UPSERT_ERROR);
         } else {
-            //TODO - officer upsert
-            responseObject = new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
+            responseObject = upsertDisqualificationService.upsertNaturalDisqualified(officer, officerId);
         }
         return apiToResponseMapper.map(responseObject);
     }
