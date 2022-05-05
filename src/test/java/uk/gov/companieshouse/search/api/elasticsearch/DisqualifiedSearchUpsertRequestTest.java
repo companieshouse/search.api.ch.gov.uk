@@ -12,8 +12,6 @@ import uk.gov.companieshouse.api.disqualification.DisqualificationLinks;
 import uk.gov.companieshouse.api.disqualification.Item;
 import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
 
-import java.time.LocalDate;
-
 public class DisqualifiedSearchUpsertRequestTest {
 
     private static final String FORENAME = "forename";
@@ -42,8 +40,8 @@ public class DisqualifiedSearchUpsertRequestTest {
         Item item = new Item();
         item.setForename(FORENAME);
         item.setSurname(SURNAME);
-        item.setDisqualifiedFrom(LocalDate.of(2020, 1, 1));
-        item.setDisqualifiedUntil(LocalDate.of(2025, 1, 1));
+        item.setDisqualifiedFrom("2020-01-01");
+        item.setDisqualifiedUntil("2025-01-01");
         officer.addItemsItem(item);
         DateOfBirth dob = new DateOfBirth();
         dob.setYear("2000");

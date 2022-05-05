@@ -27,7 +27,6 @@ import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.upsert.disqualified.UpsertDisqualificationService;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,10 +47,17 @@ class DisqualifiedSearchControllerTest {
     private DisqualifiedSearchController disqualifiedSearchController;
 
     @Test
-    @DisplayName("Test upsert returns a HTTP 200 Ok Response if the officer Id is presented")
-    void testUpsertWithCorrectOfficerIdReturnsOkRequest() {
+    @DisplayName("Test upsert returns a HTTP 200 Ok Response if the natural officer Id is presented")
+    void testUpsertWithCorrectNaturalOfficerIdReturnsOkRequest() {
 
-        testReturnsOkResponse("12345encode");
+        testReturnsOkResponse("12345encode", false);
+    }
+
+    @Test
+    @DisplayName("Test upsert returns a HTTP 200 Ok Response if the corporate officer Id is presented")
+    void testUpsertWithCorrectCorporateOfficerIdReturnsOkRequest() {
+
+        testReturnsOkResponse("12345encode", true);
     }
 
     @Test
@@ -61,8 +67,8 @@ class DisqualifiedSearchControllerTest {
         testReturnsBadRequest("");
     }
 
-    private void testReturnsOkResponse(String officerId) {
-        OfficerDisqualification officer = createOfficer();
+    private void testReturnsOkResponse(String officerId, boolean corporate) {
+        OfficerDisqualification officer = createOfficer(corporate);
 
         when(upsertDisqualificationService.upsertNaturalDisqualified(officer, officerId))
                 .thenReturn(new ResponseObject(DOCUMENT_UPSERTED));
@@ -77,7 +83,7 @@ class DisqualifiedSearchControllerTest {
     }
 
     private void testReturnsBadRequest(String officerId) {
-        OfficerDisqualification officer = createOfficer();
+        OfficerDisqualification officer = createOfficer(false);
 
         when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
             .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
@@ -89,18 +95,16 @@ class DisqualifiedSearchControllerTest {
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
     }
 
-    private OfficerDisqualification createOfficer() {
+    private OfficerDisqualification createOfficer(boolean corporate) {
         OfficerDisqualification officer = new OfficerDisqualification();
 
-        officer.setDateOfBirth(buildDateOfBirth(officer));
+        if (! corporate ) officer.setDateOfBirth(buildDateOfBirth(officer));
 
         officer.setKind("searchresults#disqualified-officer");
 
-        officer.setItems(buildItems(officer));
+        officer.setItems(buildItems(officer, corporate));
 
-        officer.setSortKey(officer.getItems().get(0).getSurname() + " " +
-                officer.getItems().get(0).getForename() + " " +
-                officer.getItems().get(0).getOtherForenames() + 1);
+        officer.setSortKey(officer.getItems().get(0).getWildcardKey());
 
         DisqualificationLinks links = new DisqualificationLinks();
         links.setSelf("/disqualified-officers/natural/12345encode");
@@ -118,23 +122,26 @@ class DisqualifiedSearchControllerTest {
         return dateOfBirth;
     }
 
-    public List<Item> buildItems(OfficerDisqualification officer) {
+    public List<Item> buildItems(OfficerDisqualification officer, boolean corporate) {
         Item item = new Item();
         List<Item> items = new ArrayList<>();
 
-        String disqualifiedFrom = "2020-08-16";
-        String disqualifiedUntil =  "2026-08-16";
-        LocalDate disqualifiedFromDate = LocalDate.parse(disqualifiedFrom);
-        LocalDate disqualifiedUntilDate = LocalDate.parse(disqualifiedUntil);
-
-        item.setPersonName("Thomas Lee SAMSON");
-        item.setForename("Thomas");
+        if (corporate) {
+            item.setCorporateName("Test Limited");
+            item.setCorporateStart("Test");
+            item.setCorporateName("Limited");
+            item.setWildcardKey("Test Limited1");
+        } else {
+            item.setPersonName("Thomas Lee SAMSON");
+            item.setForename("Thomas");
+            item.setOtherForenames("SAMSON Thomas Lee");
+            item.setSurname("SAMSON");
+            item.setWildcardKey("SAMSON Thomas Lee1");
+        }
         item.setRecordType("disqualifications");
         item.setAddress(buildAddress());
-        item.setDisqualifiedFrom(disqualifiedFromDate);
-        item.setDisqualifiedUntil(disqualifiedUntilDate);
-        item.setOtherForenames("SAMSON Thomas Lee1");
-        item.setSurname("SAMSON");
+        item.setDisqualifiedFrom("2020-08-16");
+        item.setDisqualifiedUntil("2026-08-16");
         item.setFullAddress("1 Street, Castle, Castle, King County, King, KE1 1NN");
 
         items.add(item);

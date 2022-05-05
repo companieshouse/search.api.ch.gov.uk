@@ -4,6 +4,8 @@ import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_
 
 import java.util.HashMap;
 import java.util.Map;
+
+import uk.gov.companieshouse.api.disqualification.Item;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
@@ -88,6 +90,17 @@ public class LoggingUtils {
         logMap.put(INDEX, LoggingUtils.ADVANCED_SEARCH_INDEX);
         getLogger().info("advanced search filters", logMap);
 
+        return logMap;
+    }
+
+    public static Map<String, Object> setUpDisqualifcationUpsertLogging(Item disqualification) {
+        Map<String, Object> logMap = new HashMap<>();
+        if (disqualification.getCorporateName() != null && disqualification.getCorporateName().length() > 0) {
+            logMap.put("officer name", disqualification.getCorporateName());
+        } else {
+            logMap.put("officer name", disqualification.getForename() + " " + disqualification.getSurname());
+        }
+        logMap.put(INDEX, DISQUALIFIED_SEARCH_INDEX);
         return logMap;
     }
 }
