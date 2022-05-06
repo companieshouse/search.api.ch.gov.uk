@@ -128,7 +128,8 @@ class DisqualifiedSearchControllerTest {
 
         if (corporate) {
             item.setCorporateName("Test Limited");
-            item.setCorporateStart("Test");
+            item.setCorporateNameStart("Test");
+            item.setCorporateNameEnding("Limited");
             item.setCorporateName("Limited");
             item.setWildcardKey("Test Limited1");
         } else {
