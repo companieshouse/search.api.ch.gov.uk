@@ -90,7 +90,7 @@ public class DisqualifiedUpsertRequestServiceTest {
         Exception e = assertThrows(UpsertException.class,
                 () -> service.createUpdateRequest(officer, OFFICER_ID));
 
-        assertEquals("Unable to create orderedAlphaKey", e.getMessage());
+        assertEquals("Unable to create ordered alpha key", e.getMessage());
     }
 
     private OfficerDisqualification createOfficer(boolean natural) {
