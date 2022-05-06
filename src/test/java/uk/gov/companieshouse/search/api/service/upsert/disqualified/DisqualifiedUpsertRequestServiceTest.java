@@ -2,6 +2,7 @@ package uk.gov.companieshouse.search.api.service.upsert.disqualified;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.elasticsearch.action.update.UpdateRequest;
@@ -80,6 +81,7 @@ public class DisqualifiedUpsertRequestServiceTest {
                 "], doc_as_upsert[true], doc[index {[null][_doc][null], source[" + UPDATE_JSON +
                 "]}], scripted_upsert[false], detect_noop[true]}";
         assertEquals(expected, request.toString());
+        verify(alphaKeyService).getAlphaKeyForCorporateName(officer.getItems().get(0).getCorporateName());
     }
 
     @Test

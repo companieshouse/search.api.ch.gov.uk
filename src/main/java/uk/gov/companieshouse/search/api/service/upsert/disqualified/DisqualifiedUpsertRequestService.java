@@ -61,14 +61,11 @@ public class DisqualifiedUpsertRequestService {
         }
     }
 
-    private void setKeyValues(OfficerDisqualification officer, Map<String, Object> logMap) throws UpsertException{
-
-        String orderedAlphaKey = "";
-
+    private void setKeyValues(OfficerDisqualification officer, Map<String, Object> logMap) throws UpsertException {
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(officer.getItems().get(0)
                 .getCorporateName());
         if (alphaKeyResponse != null) {
-            orderedAlphaKey = alphaKeyResponse.getOrderedAlphaKey() + "1";
+            String orderedAlphaKey = alphaKeyResponse.getOrderedAlphaKey() + "1";
             logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphaKey);
             officer.setSortKey(orderedAlphaKey);
             for (Item item: officer.getItems()) {
