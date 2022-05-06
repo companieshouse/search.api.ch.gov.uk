@@ -15,6 +15,8 @@ import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.DisqualifiedSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
+import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
+import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 
 import java.io.IOException;
 
@@ -30,12 +32,14 @@ public class DisqualifiedUpsertRequestServiceTest {
     private DisqualifiedSearchUpsertRequest disqualifiedSearchUpsertRequest;
     @Mock
     private EnvironmentReader reader;
+    @Mock
+    private AlphaKeyService alphaKeyService;
     @InjectMocks
     private DisqualifiedUpsertRequestService service;
 
     @Test
     public void serviceCreatesUpdateRequest() throws Exception {
-        OfficerDisqualification officer = createOfficer();
+        OfficerDisqualification officer = createOfficer(true);
         when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
         when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenReturn(UPDATE_JSON);
 
@@ -50,7 +54,7 @@ public class DisqualifiedUpsertRequestServiceTest {
 
     @Test
     public void serviceThrowsUpsertException() throws Exception {
-        OfficerDisqualification officer = createOfficer();
+        OfficerDisqualification officer = createOfficer(true);
         when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
         when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenThrow(new IOException());
 
@@ -60,9 +64,41 @@ public class DisqualifiedUpsertRequestServiceTest {
         assertEquals("Unable to create update request", e.getMessage());
     }
 
-    private OfficerDisqualification createOfficer() {
+    @Test
+    public void serviceWithCorporateCreatesUpdateRequest() throws Exception {
+        OfficerDisqualification officer = createOfficer(false);
+        when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
+        when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenReturn(UPDATE_JSON);
+        AlphaKeyResponse response = new AlphaKeyResponse();
+        response.setOrderedAlphaKey("abc");
+        when(alphaKeyService.getAlphaKeyForCorporateName(officer.getItems().get(0).getCorporateName())).thenReturn(response);
+
+        UpdateRequest request = service.createUpdateRequest(officer, OFFICER_ID);
+
+        assertEquals(OFFICER_ID, request.id());
+        String expected = "update {[primary_search][primary_search][" + OFFICER_ID +
+                "], doc_as_upsert[true], doc[index {[null][_doc][null], source[" + UPDATE_JSON +
+                "]}], scripted_upsert[false], detect_noop[true]}";
+        assertEquals(expected, request.toString());
+    }
+
+    @Test
+    public void alphaKeyFailThrowsUpsertException() throws Exception {
+        OfficerDisqualification officer = createOfficer(false);
+        when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
+
+        Exception e = assertThrows(UpsertException.class,
+                () -> service.createUpdateRequest(officer, OFFICER_ID));
+
+        assertEquals("Unable to create orderedAlphaKey", e.getMessage());
+    }
+
+    private OfficerDisqualification createOfficer(boolean natural) {
         OfficerDisqualification officer = new OfficerDisqualification();
         Item item = new Item();
+        if (natural) {
+            officer.setSortKey("abc");
+        }
         item.setForename("Forename");
         item.setSurname("Surname");
         officer.addItemsItem(item);

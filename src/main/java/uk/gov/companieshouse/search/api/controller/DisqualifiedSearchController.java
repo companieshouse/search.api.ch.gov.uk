@@ -30,7 +30,7 @@ public class DisqualifiedSearchController {
     public ResponseEntity<Object> upsertOfficer(@PathVariable("officer_id") String officerId,
                                                        @Valid @RequestBody OfficerDisqualification officer) {
 
-        Map<String, Object> logMap = LoggingUtils.setUpDisqualifcationUpsertLogging(officer.getItems().get(0));
+        Map<String, Object> logMap = LoggingUtils.setUpDisqualificationUpsertLogging(officer.getItems().get(0));
         getLogger().info("Attempting to upsert an officer to disqualification search index", logMap);
 
         ResponseObject responseObject;
