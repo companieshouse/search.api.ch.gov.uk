@@ -33,7 +33,7 @@ public class UpsertDisqualificationService {
      * @return {@link ResponseObject}
      */
     public ResponseObject upsertDisqualified(OfficerDisqualification officer, String officerId) {
-        Map<String, Object> logMap = LoggingUtils.setUpDisqualifcationUpsertLogging(officer.getItems().get(0));
+        Map<String, Object> logMap = LoggingUtils.setUpDisqualificationUpsertLogging(officer.getItems().get(0));
         getLogger().info("Upserting to disqualified index underway", logMap);
 
         UpdateRequest updateRequest;

@@ -93,7 +93,7 @@ public class LoggingUtils {
         return logMap;
     }
 
-    public static Map<String, Object> setUpDisqualifcationUpsertLogging(Item disqualification) {
+    public static Map<String, Object> setUpDisqualificationUpsertLogging(Item disqualification) {
         Map<String, Object> logMap = new HashMap<>();
         if (disqualification.getCorporateName() != null && disqualification.getCorporateName().length() > 0) {
             logMap.put("officer name", disqualification.getCorporateName());
