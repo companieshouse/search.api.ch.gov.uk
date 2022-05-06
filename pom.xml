@@ -24,7 +24,7 @@
         <start-class>uk.gov.companieshouse.search.api.SearchApiApplication</start-class>
         <api-helper-java.version>1.1.0-rc1</api-helper-java.version>
         <api-security-java.version>0.3.4</api-security-java.version>
-        <private-api-sdk-java.version>2.0.164</private-api-sdk-java.version>
+        <private-api-sdk-java.version>2.0.165</private-api-sdk-java.version>
 
         <!-- Elastic Search -->
         <elasticsearch.version>7.4.0</elasticsearch.version>
