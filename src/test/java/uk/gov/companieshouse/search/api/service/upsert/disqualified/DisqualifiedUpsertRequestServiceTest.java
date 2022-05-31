@@ -39,7 +39,7 @@ public class DisqualifiedUpsertRequestServiceTest {
     private DisqualifiedUpsertRequestService service;
 
     @Test
-    public void serviceCreatesUpdateRequest() throws Exception {
+    void serviceCreatesUpdateRequest() throws Exception {
         OfficerDisqualification officer = createOfficer(true);
         when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
         when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenReturn(UPDATE_JSON);
@@ -54,7 +54,7 @@ public class DisqualifiedUpsertRequestServiceTest {
     }
 
     @Test
-    public void serviceThrowsUpsertException() throws Exception {
+    void serviceThrowsUpsertException() throws Exception {
         OfficerDisqualification officer = createOfficer(true);
         when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
         when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenThrow(new UpsertException(""));
@@ -66,7 +66,7 @@ public class DisqualifiedUpsertRequestServiceTest {
     }
 
     @Test
-    public void serviceWithCorporateCreatesUpdateRequest() throws Exception {
+    void serviceWithCorporateCreatesUpdateRequest() throws Exception {
         OfficerDisqualification officer = createOfficer(false);
         when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
         when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenReturn(UPDATE_JSON);
@@ -85,7 +85,7 @@ public class DisqualifiedUpsertRequestServiceTest {
     }
 
     @Test
-    public void alphaKeyFailThrowsUpsertException() throws Exception {
+    void alphaKeyFailThrowsUpsertException() throws Exception {
         OfficerDisqualification officer = createOfficer(false);
         when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
 

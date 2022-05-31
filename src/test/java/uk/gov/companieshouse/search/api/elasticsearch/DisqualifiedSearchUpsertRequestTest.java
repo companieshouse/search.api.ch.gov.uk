@@ -25,7 +25,7 @@ public class DisqualifiedSearchUpsertRequestTest {
     private DisqualifiedSearchUpsertRequest request = new DisqualifiedSearchUpsertRequest();
 
     @Test
-    public void officerIsTransformedToJSONString() throws Exception {
+    void officerIsTransformedToJSONString() throws Exception {
         String actual = request.buildRequest(createOfficer(true, true, true));
 
         String expected = createExpectedJSON();
@@ -39,19 +39,19 @@ public class DisqualifiedSearchUpsertRequestTest {
     }
 
     @Test
-    public void missingKindOfficerIsNotTransformedToJSONString() throws Exception {
+    void missingKindOfficerIsNotTransformedToJSONString() throws Exception {
         assertThrows(UpsertException.class,
             () -> request.buildRequest(createOfficer(false, true, true)));
     }
 
     @Test
-    public void missingSelfOfficerIsNotTransformedToJSONString() throws Exception {
+    void missingSelfOfficerIsNotTransformedToJSONString() throws Exception {
         assertThrows(UpsertException.class,
             () -> request.buildRequest(createOfficer(true, false, true)));
     }
 
     @Test
-    public void missingAddressOfficerIsNotTransformedToJSONString() throws Exception {
+    void missingAddressOfficerIsNotTransformedToJSONString() throws Exception {
         assertThrows(UpsertException.class,
             () -> request.buildRequest(createOfficer(true, true, false)));
     }

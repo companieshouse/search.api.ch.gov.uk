@@ -36,7 +36,7 @@ public class UpsertDisqualificationServiceTest {
     private UpsertDisqualificationService service;
 
     @Test
-    public void disqualificationIsUpsertedCorrectly() throws Exception {
+    void disqualificationIsUpsertedCorrectly() throws Exception {
         OfficerDisqualification officer = createOfficer();
         when(disqualifiedUpsertRequestService.createUpdateRequest(officer, OFFICER_ID)).thenReturn(request);
 
@@ -47,7 +47,7 @@ public class UpsertDisqualificationServiceTest {
     }
 
     @Test
-    public void disqualificationReturnsUpsertErrorIfUpsertException() throws Exception {
+    void disqualificationReturnsUpsertErrorIfUpsertException() throws Exception {
         OfficerDisqualification officer = createOfficer();
         when(disqualifiedUpsertRequestService.createUpdateRequest(officer, OFFICER_ID)).thenThrow(new UpsertException(""));
 
@@ -57,7 +57,7 @@ public class UpsertDisqualificationServiceTest {
     }
 
     @Test
-    public void disqualificationReturnsServiceUnavailableIfServiceUnavailable() throws Exception {
+    void disqualificationReturnsServiceUnavailableIfServiceUnavailable() throws Exception {
         OfficerDisqualification officer = createOfficer();
         when(disqualifiedUpsertRequestService.createUpdateRequest(officer, OFFICER_ID)).thenThrow(new ServiceUnavailableException(""));
 
@@ -67,7 +67,7 @@ public class UpsertDisqualificationServiceTest {
     }
 
     @Test
-    public void disqualificationReturnsServiceUnavailableIfIOException() throws Exception {
+    void disqualificationReturnsServiceUnavailableIfIOException() throws Exception {
         OfficerDisqualification officer = createOfficer();
         when(disqualifiedUpsertRequestService.createUpdateRequest(officer, OFFICER_ID)).thenReturn(request);
         when(disqualifiedSearchRestClientService.upsert(request)).thenThrow(new IOException(""));
@@ -78,7 +78,7 @@ public class UpsertDisqualificationServiceTest {
     }
 
     @Test
-    public void disqualificationReturnsUpdateErrorIfBadRequest() throws Exception {
+    void disqualificationReturnsUpdateErrorIfBadRequest() throws Exception {
         OfficerDisqualification officer = createOfficer();
         when(disqualifiedUpsertRequestService.createUpdateRequest(officer, OFFICER_ID)).thenReturn(request);
         when(disqualifiedSearchRestClientService.upsert(request)).thenThrow(new ElasticsearchException(""));

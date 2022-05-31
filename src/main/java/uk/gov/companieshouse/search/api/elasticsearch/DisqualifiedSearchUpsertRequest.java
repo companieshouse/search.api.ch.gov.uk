@@ -16,7 +16,7 @@ import uk.gov.companieshouse.search.api.exception.UpsertException;
 @Component
 public class DisqualifiedSearchUpsertRequest {
 
-    public String buildRequest(OfficerDisqualification officer) throws UpsertException, IOException {
+    public String buildRequest(OfficerDisqualification officer) throws IOException {
         for (Item item : officer.getItems()) {
             if (ObjectUtils.isEmpty(item.getAddress())) {
                 throw new UpsertException("Missing or empty mandatory Address field");
