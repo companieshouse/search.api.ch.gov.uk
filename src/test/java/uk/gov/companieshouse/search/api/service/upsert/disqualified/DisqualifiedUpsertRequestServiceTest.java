@@ -85,7 +85,7 @@ public class DisqualifiedUpsertRequestServiceTest {
     }
 
     @Test
-    void alphaKeyFailThrowsUpsertException() throws Exception {
+    void alphaKeyFailThrowsServiceUnavailableException() throws Exception {
         OfficerDisqualification officer = createOfficer(false);
         when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
 
