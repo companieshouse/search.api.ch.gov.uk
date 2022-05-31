@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.search.api.service.upsert.disqualified;
 
-import org.elasticsearch.ElasticsearchStatusException;
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,7 +55,7 @@ public class UpsertDisqualificationService {
         } catch (IOException e) {
             getLogger().error("IOException when upserting a officer to the disqualified search index", logMap);
             return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
-        } catch (ElasticsearchStatusException e) {
+        } catch (ElasticsearchException e) {
             return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
         }
 

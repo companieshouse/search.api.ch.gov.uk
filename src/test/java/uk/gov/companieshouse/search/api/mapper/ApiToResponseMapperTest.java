@@ -17,6 +17,7 @@ import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.REQ
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_NOT_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SERVICE_UNAVAILABLE;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SIZE_PARAMETER_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPDATE_REQUEST_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPSERT_ERROR;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.model.SearchResults;
@@ -115,6 +117,20 @@ class ApiToResponseMapperTest {
         assertNotNull(responseEntity);
         assertNull(responseEntity.getBody());
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test if Service Unavailable returned")
+    void testServiceUnavailableOnUpsertReturned() {
+
+        ResponseObject responseObject =
+            new ResponseObject(SERVICE_UNAVAILABLE);
+
+        ResponseEntity<?> responseEntity = apiToResponseMapper.map(responseObject);
+
+        assertNotNull(responseEntity);
+        assertEquals("API attempted to call an unavailable service", responseEntity.getBody());
+        assertEquals(HttpStatus.SERVICE_UNAVAILABLE, responseEntity.getStatusCode());
     }
 
     @Test
