@@ -61,7 +61,7 @@ public class UpsertDisqualificationServiceTest {
 
         ResponseObject response = service.upsertDisqualified(officer, OFFICER_ID);
 
-        assertEquals(ResponseStatus.UPDATE_REQUEST_ERROR, response.getStatus());
+        assertEquals(ResponseStatus.SERVICE_UNAVAILABLE, response.getStatus());
     }
 
     private OfficerDisqualification createOfficer() {

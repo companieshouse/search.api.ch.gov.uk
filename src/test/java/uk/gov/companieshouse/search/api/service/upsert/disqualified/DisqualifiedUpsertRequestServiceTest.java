@@ -19,7 +19,7 @@ import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 
-import java.io.IOException;
+import javax.naming.ServiceUnavailableException;
 
 @ExtendWith(MockitoExtension.class)
 public class DisqualifiedUpsertRequestServiceTest {
@@ -57,7 +57,7 @@ public class DisqualifiedUpsertRequestServiceTest {
     public void serviceThrowsUpsertException() throws Exception {
         OfficerDisqualification officer = createOfficer(true);
         when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
-        when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenThrow(new IOException());
+        when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenThrow(new UpsertException(""));
 
         Exception e = assertThrows(UpsertException.class,
                 () -> service.createUpdateRequest(officer, OFFICER_ID));
@@ -89,7 +89,7 @@ public class DisqualifiedUpsertRequestServiceTest {
         OfficerDisqualification officer = createOfficer(false);
         when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
 
-        Exception e = assertThrows(UpsertException.class,
+        Exception e = assertThrows(ServiceUnavailableException.class,
                 () -> service.createUpdateRequest(officer, OFFICER_ID));
 
         assertEquals("Unable to create ordered alpha key", e.getMessage());
