@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public class ApiToResponseMapper {
                 return ResponseEntity.status(UNPROCESSABLE_ENTITY)
                     .body("Invalid size parameter, size must be greater than zero and not greater than "
                         + environmentReader.getMandatoryInteger(MAX_SIZE_PARAM));
+            case SERVICE_UNAVAILABLE:
+                    return ResponseEntity.status(SERVICE_UNAVAILABLE)
+                        .body("API attempted to call an unavailable service");
             case ADVANCED_SIZE_PARAMETER_ERROR:
                 return ResponseEntity.status(UNPROCESSABLE_ENTITY)
                         .body("Invalid size parameter, size must be greater than zero and not greater than "

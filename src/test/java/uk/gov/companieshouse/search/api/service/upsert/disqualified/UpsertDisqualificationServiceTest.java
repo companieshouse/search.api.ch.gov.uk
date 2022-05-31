@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,8 @@ import uk.gov.companieshouse.search.api.service.rest.impl.DisqualifiedSearchRest
 
 import java.io.IOException;
 
+import javax.naming.ServiceUnavailableException;
+
 @ExtendWith(MockitoExtension.class)
 public class UpsertDisqualificationServiceTest {
 
@@ -33,7 +36,7 @@ public class UpsertDisqualificationServiceTest {
     private UpsertDisqualificationService service;
 
     @Test
-    public void disqualificationIsUpsertedCorrectly() throws Exception {
+    void disqualificationIsUpsertedCorrectly() throws Exception {
         OfficerDisqualification officer = createOfficer();
         when(disqualifiedUpsertRequestService.createUpdateRequest(officer, OFFICER_ID)).thenReturn(request);
 
@@ -44,7 +47,7 @@ public class UpsertDisqualificationServiceTest {
     }
 
     @Test
-    public void disqualificationReturnsUpsertErrorIfUpsertException() throws Exception {
+    void disqualificationReturnsUpsertErrorIfUpsertException() throws Exception {
         OfficerDisqualification officer = createOfficer();
         when(disqualifiedUpsertRequestService.createUpdateRequest(officer, OFFICER_ID)).thenThrow(new UpsertException(""));
 
@@ -54,10 +57,31 @@ public class UpsertDisqualificationServiceTest {
     }
 
     @Test
-    public void disqualificationReturnsUpdateErrorIfIOException() throws Exception {
+    void disqualificationReturnsServiceUnavailableIfServiceUnavailable() throws Exception {
+        OfficerDisqualification officer = createOfficer();
+        when(disqualifiedUpsertRequestService.createUpdateRequest(officer, OFFICER_ID)).thenThrow(new ServiceUnavailableException(""));
+
+        ResponseObject response = service.upsertDisqualified(officer, OFFICER_ID);
+
+        assertEquals(ResponseStatus.SERVICE_UNAVAILABLE, response.getStatus());
+    }
+
+    @Test
+    void disqualificationReturnsServiceUnavailableIfIOException() throws Exception {
         OfficerDisqualification officer = createOfficer();
         when(disqualifiedUpsertRequestService.createUpdateRequest(officer, OFFICER_ID)).thenReturn(request);
         when(disqualifiedSearchRestClientService.upsert(request)).thenThrow(new IOException(""));
+
+        ResponseObject response = service.upsertDisqualified(officer, OFFICER_ID);
+
+        assertEquals(ResponseStatus.SERVICE_UNAVAILABLE, response.getStatus());
+    }
+
+    @Test
+    void disqualificationReturnsUpdateErrorIfBadRequest() throws Exception {
+        OfficerDisqualification officer = createOfficer();
+        when(disqualifiedUpsertRequestService.createUpdateRequest(officer, OFFICER_ID)).thenReturn(request);
+        when(disqualifiedSearchRestClientService.upsert(request)).thenThrow(new ElasticsearchException(""));
 
         ResponseObject response = service.upsertDisqualified(officer, OFFICER_ID);
 

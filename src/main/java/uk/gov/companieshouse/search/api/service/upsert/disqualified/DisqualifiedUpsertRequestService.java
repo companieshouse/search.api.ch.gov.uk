@@ -16,6 +16,8 @@ import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.naming.ServiceUnavailableException;
+
 @Service
 public class DisqualifiedUpsertRequestService {
 
@@ -37,8 +39,9 @@ public class DisqualifiedUpsertRequestService {
      *
      * @return {@link UpdateRequest}
      * @throws UpsertException
+     * @throws ServiceUnavailableException
      */
-    public UpdateRequest createUpdateRequest(OfficerDisqualification officer, String officerId) throws UpsertException {
+    public UpdateRequest createUpdateRequest(OfficerDisqualification officer, String officerId) throws UpsertException, ServiceUnavailableException {
 
         Map<String, Object> logMap = LoggingUtils.setUpDisqualificationUpsertLogging(officer.getItems().get(0));
         String index = environmentReader.getMandatoryString(INDEX);
@@ -61,7 +64,7 @@ public class DisqualifiedUpsertRequestService {
         }
     }
 
-    private void setKeyValues(OfficerDisqualification officer, Map<String, Object> logMap) throws UpsertException {
+    private void setKeyValues(OfficerDisqualification officer, Map<String, Object> logMap) throws ServiceUnavailableException {
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(officer.getItems().get(0)
                 .getCorporateName());
         if (alphaKeyResponse != null) {
@@ -72,7 +75,7 @@ public class DisqualifiedUpsertRequestService {
                 item.setWildcardKey(orderedAlphaKey);
             }
         } else {
-            throw new UpsertException("Unable to create ordered alpha key");
+            throw new ServiceUnavailableException("Unable to create ordered alpha key");
         }
     }
 }
