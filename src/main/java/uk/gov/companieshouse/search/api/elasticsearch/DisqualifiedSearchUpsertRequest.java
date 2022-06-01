@@ -15,6 +15,8 @@ import uk.gov.companieshouse.search.api.exception.UpsertException;
 
 @Component
 public class DisqualifiedSearchUpsertRequest {
+ 
+    private static final String KIND = "searchresults#disqualified-officer";
 
     public String buildRequest(OfficerDisqualification officer) throws IOException {
         for (Item item : officer.getItems()) {
@@ -22,19 +24,18 @@ public class DisqualifiedSearchUpsertRequest {
                 throw new UpsertException("Missing or empty mandatory Address field");
             }
         }
-        checkMandatoryValues(officer.getKind(), officer.getLinks().getSelf());
+        checkMandatoryValues(officer.getLinks().getSelf(), officer.getKind());
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return mapper.writeValueAsString(officer);
     }
 
-    private void checkMandatoryValues(String... properties) throws UpsertException {
-        for (String property : properties) {
-            if (StringUtils.isEmpty(property)) {
-                throw new UpsertException("Mandatory property blank or null");
-            }
+    private void checkMandatoryValues(String self, String kind) throws UpsertException {
+        if ( StringUtils.isEmpty(self) || ! self.matches(".*(corporate|natural)")) {
+            throw new UpsertException("self in incorrect format");
+        }
+        if ( StringUtils.isEmpty(kind) || ! kind.equals(KIND)) {
+            throw new UpsertException("Kind was not for a disqualified officer");
         }
     }
 }
-
-

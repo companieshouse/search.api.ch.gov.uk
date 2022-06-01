@@ -18,9 +18,9 @@ public class DisqualifiedSearchUpsertRequestTest {
 
     private static final String FORENAME = "forename";
     private static final String SURNAME = "surname";
-    private static final String SELF = "links";
+    private static final String SELF = "links/natural";
     private static final String SORT_KEY = "key";
-    private static final String KIND = "kind";
+    private static final String KIND = "searchresults#disqualified-officer";
 
     private DisqualifiedSearchUpsertRequest request = new DisqualifiedSearchUpsertRequest();
 
@@ -54,6 +54,22 @@ public class DisqualifiedSearchUpsertRequestTest {
     void missingAddressOfficerIsNotTransformedToJSONString() throws Exception {
         assertThrows(UpsertException.class,
             () -> request.buildRequest(createOfficer(true, true, false)));
+    }
+
+    @Test
+    void incorrectSelfOfficerIsNotTransformedToJSONString() throws Exception {
+        OfficerDisqualification officer = createOfficer(true, true, true);
+        officer.getLinks().setSelf("links");
+        assertThrows(UpsertException.class,
+            () -> request.buildRequest(officer));
+    }
+
+    @Test
+    void incorrectKindOfficerIsNotTransformedToJSONString() throws Exception {
+        OfficerDisqualification officer = createOfficer(true, true, true);
+        officer.setKind(" ");
+        assertThrows(UpsertException.class,
+            () -> request.buildRequest(officer));
     }
 
     private OfficerDisqualification createOfficer(boolean kindPasses, boolean selfPasses, boolean addressPasses) throws Exception{
