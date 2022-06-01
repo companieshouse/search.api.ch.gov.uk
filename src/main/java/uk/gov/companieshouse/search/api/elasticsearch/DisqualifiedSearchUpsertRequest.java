@@ -31,7 +31,7 @@ public class DisqualifiedSearchUpsertRequest {
     }
 
     private void checkMandatoryValues(String self, String kind) throws UpsertException {
-        if (StringUtils.isEmpty(self) || ! self.matches(".*(corporate|natural).*")) {
+        if (StringUtils.isEmpty(self) || ! (self.contains("corporate") || self.contains("natural"))) {
             throw new UpsertException("self in incorrect format");
         }
         if (StringUtils.isEmpty(kind) || ! kind.equals(KIND)) {
