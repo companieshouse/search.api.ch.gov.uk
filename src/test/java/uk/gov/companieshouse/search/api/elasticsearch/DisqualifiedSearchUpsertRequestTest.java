@@ -18,7 +18,7 @@ public class DisqualifiedSearchUpsertRequestTest {
 
     private static final String FORENAME = "forename";
     private static final String SURNAME = "surname";
-    private static final String SELF = "links/natural";
+    private static final String SELF = "links/natural/asdcadc";
     private static final String SORT_KEY = "key";
     private static final String KIND = "searchresults#disqualified-officer";
 
