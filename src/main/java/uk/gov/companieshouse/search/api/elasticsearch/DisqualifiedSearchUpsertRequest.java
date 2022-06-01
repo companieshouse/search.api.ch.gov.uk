@@ -31,10 +31,10 @@ public class DisqualifiedSearchUpsertRequest {
     }
 
     private void checkMandatoryValues(String self, String kind) throws UpsertException {
-        if ( StringUtils.isEmpty(self) || ! self.matches(".*(corporate|natural)")) {
+        if (StringUtils.isEmpty(self) || ! self.matches(".*(corporate|natural)")) {
             throw new UpsertException("self in incorrect format");
         }
-        if ( StringUtils.isEmpty(kind) || ! kind.equals(KIND)) {
+        if (StringUtils.isEmpty(kind) || ! kind.equals(KIND)) {
             throw new UpsertException("Kind was not for a disqualified officer");
         }
     }
