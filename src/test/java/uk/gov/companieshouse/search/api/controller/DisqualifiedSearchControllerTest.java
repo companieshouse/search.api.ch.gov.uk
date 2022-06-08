@@ -4,7 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DELETE_NOT_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_DELETED;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_UPSERTED;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPSERT_ERROR;
 
@@ -25,6 +28,7 @@ import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
 import uk.gov.companieshouse.api.model.delta.officers.AddressAPI;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
+import uk.gov.companieshouse.search.api.service.delete.disqualified.DeleteDisqualificationService;
 import uk.gov.companieshouse.search.api.service.upsert.disqualified.UpsertDisqualificationService;
 
 import java.util.ArrayList;
@@ -34,6 +38,8 @@ import java.util.List;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DisqualifiedSearchControllerTest {
 
+    private static final String OFFICER_ID = "12345encode";
+
     @Mock
     private ApiToResponseMapper mockApiToResponseMapper;
 
@@ -42,6 +48,9 @@ class DisqualifiedSearchControllerTest {
 
     @Mock
     private UpsertDisqualificationService upsertDisqualificationService;
+
+    @Mock
+    private DeleteDisqualificationService deleteDisqualificationService;
 
     @InjectMocks
     private DisqualifiedSearchController disqualifiedSearchController;
@@ -65,6 +74,34 @@ class DisqualifiedSearchControllerTest {
     void testUpsertWithEmptyStringOfficerIdReturnsBadRequest() {
 
         testReturnsBadRequest("");
+    }
+
+    @Test
+    @DisplayName("Test delete returns a HTTP 200 Ok Response if the  officer Id is presented")
+    void testDeleteWithCorrectOfficerIdReturnsOkRequest() {
+        when(deleteDisqualificationService.deleteOfficer(OFFICER_ID))
+                .thenReturn(new ResponseObject(DOCUMENT_DELETED));
+        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+                .thenReturn(ResponseEntity.status(OK).build());
+
+        ResponseEntity<?> responseEntity = disqualifiedSearchController.deleteOfficer(OFFICER_ID);
+
+        assertEquals(DOCUMENT_DELETED, responseObjectCaptor.getValue().getStatus());
+        assertNotNull(responseEntity);
+        assertEquals(OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test delete returns a HTTP 404 Response if the officer Id is not presented")
+    void testDeleteWithEmptyOfficerIdReturnsNotFound() {
+        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+                .thenReturn(ResponseEntity.status(NOT_FOUND).build());
+
+        ResponseEntity<?> responseEntity = disqualifiedSearchController.deleteOfficer("");
+
+        assertEquals(DELETE_NOT_FOUND, responseObjectCaptor.getValue().getStatus());
+        assertNotNull(responseEntity);
+        assertEquals(NOT_FOUND, responseEntity.getStatusCode());
     }
 
     private void testReturnsOkResponse(String officerId, boolean corporate) {

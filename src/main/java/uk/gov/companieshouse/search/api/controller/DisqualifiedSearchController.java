@@ -11,6 +11,7 @@ import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
+import uk.gov.companieshouse.search.api.service.delete.disqualified.DeleteDisqualificationService;
 import uk.gov.companieshouse.search.api.service.upsert.disqualified.UpsertDisqualificationService;
 
 import javax.validation.Valid;
@@ -26,6 +27,9 @@ public class DisqualifiedSearchController {
     @Autowired
     private UpsertDisqualificationService upsertDisqualificationService;
 
+    @Autowired
+    private DeleteDisqualificationService deleteDisqualificationService;
+
     @PutMapping("/disqualified-officers/{officer_id}")
     public ResponseEntity<Object> upsertOfficer(@PathVariable("officer_id") String officerId,
                                                        @Valid @RequestBody OfficerDisqualification officer) {
@@ -40,6 +44,22 @@ public class DisqualifiedSearchController {
         } else {
             responseObject = upsertDisqualificationService.upsertDisqualified(officer, officerId);
         }
+        return apiToResponseMapper.map(responseObject);
+    }
+
+    @DeleteMapping("/delete/{officer_id}")
+    public ResponseEntity<Object> deleteOfficer(@PathVariable("officer_id") String officerId) {
+        Map<String, Object> logMap = LoggingUtils.setUpDisqualificationDeleteLogging(officerId);
+        getLogger().info("Attempting to delete an officer to disqualification search index", logMap);
+
+        ResponseObject responseObject;
+
+        if (officerId == null || officerId.isEmpty()) {
+            responseObject = new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
+        } else {
+            responseObject = deleteDisqualificationService.deleteOfficer(officerId);
+        }
+
         return apiToResponseMapper.map(responseObject);
     }
 }

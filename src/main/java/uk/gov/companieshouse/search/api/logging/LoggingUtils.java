@@ -103,4 +103,11 @@ public class LoggingUtils {
         logMap.put(INDEX, DISQUALIFIED_SEARCH_INDEX);
         return logMap;
     }
+
+    public static Map<String, Object> setUpDisqualificationDeleteLogging(String officerId) {
+        Map<String, Object> logMap = new HashMap<>();
+        logMap.put("officer ID", officerId);
+        logMap.put(INDEX, DISQUALIFIED_SEARCH_INDEX);
+        return logMap;
+    }
 }
