@@ -62,6 +62,6 @@ public class DeleteDisqualificationServiceTest {
 
         ResponseObject response = service.deleteOfficer(OFFICER_ID);
 
-        assertEquals(ResponseStatus.UPDATE_REQUEST_ERROR, response.getStatus());
+        assertEquals(ResponseStatus.DELETE_REQUEST_ERROR, response.getStatus());
     }
 }

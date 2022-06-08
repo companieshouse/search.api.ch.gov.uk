@@ -34,7 +34,7 @@ public class DeleteDisqualificationService {
             getLogger().error("IOException when deleting an officer from the disqualified search index", logMap);
             return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
         } catch (ElasticsearchException e) {
-            return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
+            return new ResponseObject(ResponseStatus.DELETE_REQUEST_ERROR);
         }
 
         getLogger().info("Delete successful to disqualified search index", logMap);

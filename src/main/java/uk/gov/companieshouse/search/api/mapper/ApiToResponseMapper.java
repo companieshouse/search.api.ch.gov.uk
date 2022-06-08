@@ -34,6 +34,7 @@ public class ApiToResponseMapper {
                 return ResponseEntity.status(NOT_FOUND).build();
             case UPDATE_REQUEST_ERROR:
             case UPSERT_ERROR:
+            case DELETE_REQUEST_ERROR:
                 return ResponseEntity.status(BAD_REQUEST).build();
             case DATE_FORMAT_ERROR:
                 return ResponseEntity.status(BAD_REQUEST)
