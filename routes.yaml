@@ -7,4 +7,5 @@ routes:
   3: ^/dissolved-search/companies
   4: ^/advanced-search/companies
   5: ^/disqualified-search/disqualified-officers
-  6: ^/search/healthcheck
+  6: ^/disqualified-search/delete
+  7: ^/search/healthcheck
