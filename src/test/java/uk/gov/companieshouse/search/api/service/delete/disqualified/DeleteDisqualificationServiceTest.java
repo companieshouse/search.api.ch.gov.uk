@@ -5,6 +5,8 @@ import static org.mockito.Mockito.when;
 
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.index.shard.ShardId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +24,7 @@ public class DeleteDisqualificationServiceTest {
 
     private static final String OFFICER_ID = "officerId";
     private static final DeleteRequest REQUEST = new DeleteRequest();
+    private static final String INDEX = "primary_search";
 
     @Mock
     DisqualifiedSearchRestClientService disqualifiedSearchRestClientService;
@@ -38,11 +41,25 @@ public class DeleteDisqualificationServiceTest {
     }
 
     @Test
-    void deletesOfficer() {
+    void deletesOfficer() throws Exception {
+        DeleteResponse deleteResponse = new DeleteResponse(
+                new ShardId(INDEX, INDEX, 1), INDEX, "1", 1, 1, 1, true);
+        when(disqualifiedSearchRestClientService.delete(REQUEST)).thenReturn(deleteResponse);
 
         ResponseObject response = service.deleteOfficer(OFFICER_ID);
 
         assertEquals(ResponseStatus.DOCUMENT_DELETED, response.getStatus());
+    }
+
+    @Test
+    void returnsDeleteNotFoundWhenOfficerDoesNotExist() throws Exception {
+        DeleteResponse deleteResponse = new DeleteResponse(
+                new ShardId(INDEX, INDEX, 1), INDEX, "1", 1, 1, 1, false);
+        when(disqualifiedSearchRestClientService.delete(REQUEST)).thenReturn(deleteResponse);
+
+        ResponseObject response = service.deleteOfficer(OFFICER_ID);
+
+        assertEquals(ResponseStatus.DELETE_NOT_FOUND, response.getStatus());
     }
 
     @Test

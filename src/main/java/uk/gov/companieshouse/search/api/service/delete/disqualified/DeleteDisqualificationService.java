@@ -1,7 +1,9 @@
 package uk.gov.companieshouse.search.api.service.delete.disqualified;
 
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
@@ -28,8 +30,9 @@ public class DeleteDisqualificationService {
         Map<String, Object> logMap = LoggingUtils.setUpDisqualificationDeleteLogging(officerId);
         DeleteRequest deleteRequest = disqualifiedDeleteRequestService.createDeleteRequest(officerId);
 
+        DeleteResponse response;
         try {
-            disqualifiedSearchRestClientService.delete(deleteRequest);
+            response = disqualifiedSearchRestClientService.delete(deleteRequest);
         } catch (IOException e) {
             getLogger().error("IOException when deleting an officer from the disqualified search index", logMap);
             return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
@@ -37,8 +40,13 @@ public class DeleteDisqualificationService {
             return new ResponseObject(ResponseStatus.DELETE_REQUEST_ERROR);
         }
 
-        getLogger().info("Delete successful to disqualified search index", logMap);
-        return new ResponseObject(ResponseStatus.DOCUMENT_DELETED);
+        if (response.getResult() == DocWriteResponse.Result.NOT_FOUND) {
+            getLogger().error("Document with id " + officerId + " not found", logMap);
+            return new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
+        } else {
+            getLogger().info("Delete successful to disqualified search index", logMap);
+            return new ResponseObject(ResponseStatus.DOCUMENT_DELETED);
+        }
 
     }
 }
