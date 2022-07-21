@@ -31,6 +31,7 @@ public class DisqualifiedUpsertRequestService {
     private AlphaKeyService alphaKeyService;
 
     private static final String INDEX = "DISQUALIFIED_SEARCH_INDEX";
+    private static final String TYPE = "primary_search";
 
     /**
      * If document already exists attempt to upsert the document
@@ -51,7 +52,7 @@ public class DisqualifiedUpsertRequestService {
         }
 
         try {
-            UpdateRequest request = new UpdateRequest(index, index, officerId)
+            UpdateRequest request = new UpdateRequest(index, TYPE, officerId)
                     .docAsUpsert(true).doc(disqualifiedSearchUpsertRequest.buildRequest(officer), XContentType.JSON);
 
             LoggingUtils.getLogger().info("Attempt to upsert document if it does not exist", logMap);
