@@ -15,7 +15,8 @@ import uk.gov.companieshouse.environment.EnvironmentReader;
 @ExtendWith(MockitoExtension.class)
 public class DisqualifiedDeleteRequestServiceTest {
 
-    private static final String INDEX = "primary_search";
+    private static final String INDEX = "primary_search2";
+    private static final String TYPE = "primary_search";
     private static final String OFFICER_ID = "officerId";
 
     @Mock
@@ -35,6 +36,6 @@ public class DisqualifiedDeleteRequestServiceTest {
 
         assertEquals(OFFICER_ID, request.id());
         assertEquals(INDEX, request.index());
-        assertEquals(INDEX, request.type());
+        assertEquals(TYPE, request.type());
     }
 }

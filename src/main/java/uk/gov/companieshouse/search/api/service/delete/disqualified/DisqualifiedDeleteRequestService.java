@@ -12,6 +12,7 @@ import java.util.Map;
 public class DisqualifiedDeleteRequestService {
 
     private static final String INDEX = "DISQUALIFIED_SEARCH_INDEX";
+    private static final String TYPE = "primary_search";
 
     @Autowired
     private EnvironmentReader environmentReader;
@@ -21,7 +22,7 @@ public class DisqualifiedDeleteRequestService {
         Map<String, Object> logMap = LoggingUtils.setUpDisqualificationDeleteLogging(officerId);
         String index = environmentReader.getMandatoryString(INDEX);
 
-        DeleteRequest request = new DeleteRequest(index, index, officerId);
+        DeleteRequest request = new DeleteRequest(index, TYPE, officerId);
 
         LoggingUtils.getLogger().info("Attempt to delete officer if it exists", logMap);
 

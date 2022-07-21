@@ -27,7 +27,7 @@ public class DisqualifiedUpsertRequestServiceTest {
     private static final String UPDATE_JSON = "{\"example\":\"test\"}";
     private static final String OFFICER_ID = "testid";
     private static final String INDEX = "DISQUALIFIED_SEARCH_INDEX";
-    private static final String PRIMARY = "primary_search";
+    private static final String PRIMARY = "primary_search2";
 
     @Mock
     private DisqualifiedSearchUpsertRequest disqualifiedSearchUpsertRequest;
@@ -47,7 +47,7 @@ public class DisqualifiedUpsertRequestServiceTest {
         UpdateRequest request = service.createUpdateRequest(officer, OFFICER_ID);
 
         assertEquals(OFFICER_ID, request.id());
-        String expected = "update {[primary_search][primary_search][" + OFFICER_ID +
+        String expected = "update {[primary_search2][primary_search][" + OFFICER_ID +
                 "], doc_as_upsert[true], doc[index {[null][_doc][null], source[" + UPDATE_JSON +
                 "]}], scripted_upsert[false], detect_noop[true]}";
         assertEquals(expected, request.toString());
@@ -77,7 +77,7 @@ public class DisqualifiedUpsertRequestServiceTest {
         UpdateRequest request = service.createUpdateRequest(officer, OFFICER_ID);
 
         assertEquals(OFFICER_ID, request.id());
-        String expected = "update {[primary_search][primary_search][" + OFFICER_ID +
+        String expected = "update {[primary_search2][primary_search][" + OFFICER_ID +
                 "], doc_as_upsert[true], doc[index {[null][_doc][null], source[" + UPDATE_JSON +
                 "]}], scripted_upsert[false], detect_noop[true]}";
         assertEquals(expected, request.toString());
