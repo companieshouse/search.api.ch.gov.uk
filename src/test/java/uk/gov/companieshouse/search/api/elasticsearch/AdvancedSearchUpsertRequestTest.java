@@ -30,17 +30,28 @@ class AdvancedSearchUpsertRequestTest {
     private static final String ALPHA_KEY = "testcompany";
 
     @Test
-    @DisplayName("Test build request successful")
+    @DisplayName("Test build request is successful")
     void testBuildRequestReturnsXContentBuilder() throws Exception{
 
         AdvancedSearchUpsertRequest advancedSearchUpsertRequest = new AdvancedSearchUpsertRequest();
         XContentBuilder xContentBuilder =
-            advancedSearchUpsertRequest.buildRequest(createCompany(), ALPHA_KEY, ALPHA_KEY);
+            advancedSearchUpsertRequest.buildRequest(createCompany(true), ALPHA_KEY, ALPHA_KEY);
 
         assertNotNull(xContentBuilder);
     }
 
-    private CompanyProfileApi createCompany() {
+    @Test
+    @DisplayName("Test build request is successful even when registered office address fields all empty")
+    void testBuildRequestReturnsXContentBuilderWithEmptyRegisteredOfficeAddress() throws Exception{
+
+        AdvancedSearchUpsertRequest advancedSearchUpsertRequest = new AdvancedSearchUpsertRequest();
+        XContentBuilder xContentBuilder =
+                advancedSearchUpsertRequest.buildRequest(createCompany(false), ALPHA_KEY, ALPHA_KEY);
+
+        assertNotNull(xContentBuilder);
+    }
+
+    private CompanyProfileApi createCompany(final boolean populateRegisteredAddressFields) {
         CompanyProfileApi company = new CompanyProfileApi();
         company.setType(COMPANY_TYPE);
         company.setSubtype(COMPANY_SUBTYPE);
@@ -50,10 +61,12 @@ class AdvancedSearchUpsertRequestTest {
         company.setCompanyStatus(COMPANY_STATUS);
 
         RegisteredOfficeAddressApi registeredOfficeAddressApi = new RegisteredOfficeAddressApi();
-        registeredOfficeAddressApi.setAddressLine1(ADDRESS_LINE_1);
-        registeredOfficeAddressApi.setAddressLine2(ADDRESS_LINE_2);
-        registeredOfficeAddressApi.setPostalCode(POSTAL_CODE);
-        registeredOfficeAddressApi.setLocality(LOCALITY);
+        if (populateRegisteredAddressFields) {
+            registeredOfficeAddressApi.setAddressLine1(ADDRESS_LINE_1);
+            registeredOfficeAddressApi.setAddressLine2(ADDRESS_LINE_2);
+            registeredOfficeAddressApi.setPostalCode(POSTAL_CODE);
+            registeredOfficeAddressApi.setLocality(LOCALITY);
+        }
         company.setRegisteredOfficeAddress(registeredOfficeAddressApi);
 
         company.setDateOfCreation(DATE_OF_CREATION);
