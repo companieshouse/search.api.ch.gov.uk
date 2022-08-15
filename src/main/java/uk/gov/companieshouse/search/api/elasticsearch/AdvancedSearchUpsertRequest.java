@@ -120,7 +120,7 @@ public class AdvancedSearchUpsertRequest {
 
         String fullAddress = fullAddressBuilder.toString();
 
-        if (fullAddress.charAt(fullAddress.length() - 2) == ',') {
+        if (!fullAddress.isEmpty() && fullAddress.charAt(fullAddress.length() - 2) == ',') {
             fullAddress = fullAddress.substring(0, fullAddress.length() - 2);
         }
 
