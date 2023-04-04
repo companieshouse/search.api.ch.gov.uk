@@ -14,7 +14,6 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.LOCATION;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIC_CODES;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.UPSERT_COMPANY_NUMBER;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
@@ -52,6 +51,9 @@ import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 @RestController
 @RequestMapping(value = "/advanced-search", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdvancedSearchController {
+
+
+
 
     @Autowired
     private AdvancedQueryParamMapper queryParamMapper;
