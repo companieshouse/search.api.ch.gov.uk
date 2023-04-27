@@ -12,6 +12,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 
@@ -32,8 +33,10 @@ public abstract class AbstractSearchRequest {
     
 
     public SearchHits getBestMatchResponse(String orderedAlphakey, String requestId) throws IOException {
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphakey);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .orderedAlphakey(orderedAlphakey)
+                .build().getLogMap();
         LoggingUtils.getLogger().info("Searching for best company match", logMap);
         SearchRequest searchRequestBestMatch = createBaseSearchRequest(requestId);
         searchRequestBestMatch.source(bestMatchSourceBuilder(
@@ -45,8 +48,10 @@ public abstract class AbstractSearchRequest {
     }
 
     public SearchHits getStartsWithResponse(String orderedAlphakey, String requestId) throws IOException {
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphakey);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .orderedAlphakey(orderedAlphakey)
+                .build().getLogMap();
         LoggingUtils.getLogger().info("Searching using alphakey prefix", logMap);
         
         SearchRequest searchRequestStartsWith = createBaseSearchRequest(requestId);
@@ -61,9 +66,11 @@ public abstract class AbstractSearchRequest {
 
     public SearchHits getCorporateNameStartsWithResponse(String orderedAlphakey,
         String requestId) throws IOException {
-        
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(LoggingUtils.ORDERED_ALPHAKEY, orderedAlphakey);
+
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .orderedAlphakey(orderedAlphakey)
+                .build().getLogMap();
         LoggingUtils.getLogger().info("Searching using orderedAlphaKey", logMap);
 
         SearchRequest searchRequestCorporateName = createBaseSearchRequest(requestId);
@@ -81,11 +88,13 @@ public abstract class AbstractSearchRequest {
     public SearchHits getAboveResultsResponse(String requestId,
         String orderedAlphakeyWithId,
         String topHitCompanyName, Integer size) throws IOException {
-        
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(LoggingUtils.ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
-        logMap.put(LoggingUtils.COMPANY_NAME, topHitCompanyName);
-        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SIZE, size);
+
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .orderedAlphakeyWithId(orderedAlphakeyWithId)
+                .companyName(topHitCompanyName)
+                .size(String.valueOf(size))
+                .build().getLogMap();
         LoggingUtils.getLogger().info("Retrieving the alphabetically descending results", logMap);
 
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
@@ -99,11 +108,13 @@ public abstract class AbstractSearchRequest {
     public SearchHits getDescendingResultsResponse(String requestId,
         String orderedAlphakeyWithId,
         String topHitCompanyName, Integer size) throws IOException {
-        
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(LoggingUtils.ORDERED_ALPHAKEY_WITH_ID, orderedAlphakeyWithId);
-        logMap.put(LoggingUtils.COMPANY_NAME, topHitCompanyName);
-        LoggingUtils.logIfNotNull(logMap, LoggingUtils.SIZE, size);
+
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .orderedAlphakeyWithId(orderedAlphakeyWithId)
+                .companyName(topHitCompanyName)
+                .size(String.valueOf(size))
+                .build().getLogMap();
         LoggingUtils.getLogger().info("Retrieving the alphabetically ascending results", logMap);
 
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);

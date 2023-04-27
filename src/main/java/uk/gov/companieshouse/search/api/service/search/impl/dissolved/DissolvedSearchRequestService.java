@@ -5,13 +5,7 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_DISSOLVED;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY_WITH_ID;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_TYPE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -19,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.GenerateEtagUtil;
 import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
@@ -61,10 +56,14 @@ public class DissolvedSearchRequestService {
 
     public SearchResults<Company> getSearchResults(String companyName, String searchBefore, String searchAfter,
                                                    Integer size, String requestId) throws SearchException {
-        Map<String, Object> logMap = getLogMap(requestId, companyName);
-        logIfNotNull(logMap, SEARCH_BEFORE, searchBefore);
-        logIfNotNull(logMap, SEARCH_AFTER, searchAfter);
-        logIfNotNull(logMap, SIZE, size);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .companyName(companyName)
+                .indexName(INDEX_DISSOLVED)
+                .searchBefore(searchBefore)
+                .searchAfter(searchAfter)
+                .size(String.valueOf(size))
+                .build().getLogMap();
         getLogger().info("getting dissolved search results", logMap);
         logMap.remove(MESSAGE);
 
@@ -142,9 +141,14 @@ public class DissolvedSearchRequestService {
                                                             String searchType,
                                                             Integer startIndex,
                                                             Integer size) throws SearchException {
-        Map<String, Object> logMap = getLogMap(requestId, companyName);
-        logMap.put(START_INDEX, startIndex);
-        logMap.put(SEARCH_TYPE, searchType);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .companyName(companyName)
+                .indexName(INDEX_DISSOLVED)
+                .startIndex(String.valueOf(startIndex))
+                .searchType(searchType)
+                .size(String.valueOf(size))
+                .build().getLogMap();
         getLogger().info("getting dissolved " + searchType + " search results", logMap);
 
         String etag = GenerateEtagUtil.generateEtag();
@@ -183,9 +187,14 @@ public class DissolvedSearchRequestService {
                                                           String searchType,
                                                           Integer startIndex,
                                                           Integer size) throws SearchException {
-        Map<String, Object> logMap = getLogMap(requestId, companyName);
-        logMap.put(START_INDEX, startIndex);
-        logMap.put(SEARCH_TYPE, searchType);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .companyName(companyName)
+                .indexName(INDEX_DISSOLVED)
+                .startIndex(String.valueOf(startIndex))
+                .searchType(searchType)
+                .size(String.valueOf(size))
+                .build().getLogMap();
         getLogger().info("getting dissolved " + searchType + " search results", logMap);
 
         String etag = GenerateEtagUtil.generateEtag();

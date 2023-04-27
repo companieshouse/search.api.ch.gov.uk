@@ -2,6 +2,7 @@ package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
@@ -12,15 +13,8 @@ import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
 
 import java.util.Map;
 
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.createLoggingMap;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
 @Service
 public class AlphabeticalSearchIndexService implements SearchIndexService {
@@ -36,12 +30,14 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
             String requestId) {
 
 
-        Map<String, Object> logMap = createLoggingMap(requestId);
-        logMap.put(COMPANY_NAME, corporateName);
-        logMap.put(INDEX, INDEX_ALPHABETICAL);
-        logIfNotNull(logMap, SEARCH_BEFORE, searchBefore);
-        logIfNotNull(logMap, SEARCH_AFTER, searchAfter);
-        logIfNotNull(logMap, SIZE, size);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .companyName(corporateName)
+                .indexName(INDEX_ALPHABETICAL)
+                .searchBefore(searchBefore)
+                .searchAfter(searchAfter)
+                .size(String.valueOf(size))
+                .build().getLogMap();
 
         SearchResults<Company> searchResults;
 

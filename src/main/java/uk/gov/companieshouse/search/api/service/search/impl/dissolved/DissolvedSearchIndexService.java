@@ -4,16 +4,12 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.DISSOLVED_SEARCH_ALPHABETICAL;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_TYPE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.SearchResults;
@@ -36,13 +32,17 @@ public class DissolvedSearchIndexService {
 
     public ResponseObject searchAlphabetical(String companyName, String searchBefore, String searchAfter,
             Integer size, String requestId) {
-        Map<String, Object> logMap = getLogMap(companyName, requestId, DISSOLVED_SEARCH_ALPHABETICAL);
-        logIfNotNull(logMap, SEARCH_BEFORE, searchBefore);
-        logIfNotNull(logMap, SEARCH_AFTER, searchAfter);
-        logIfNotNull(logMap, SIZE, size);
-        logMap.remove(MESSAGE);
-        
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .companyName(companyName)
+                .searchType(DISSOLVED_SEARCH_ALPHABETICAL)
+                .indexName(LoggingUtils.INDEX_DISSOLVED)
+                .searchBefore(searchBefore)
+                .searchAfter(searchAfter)
+                .size(String.valueOf(size))
+                .build().getLogMap();
 
+        logMap.remove(MESSAGE);
         SearchResults<Company> searchResults;
         try {
             getLogger().info("Searching using alphabetical search method", logMap);
@@ -65,10 +65,14 @@ public class DissolvedSearchIndexService {
 
     public ResponseObject searchBestMatch(String companyName, String requestId, String searchType,
             Integer startIndex, Integer size) {
-        Map<String, Object> logMap = getLogMap(companyName, requestId, searchType);
-        logIfNotNull(logMap, START_INDEX, startIndex);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .companyName(companyName)
+                .searchType(DISSOLVED_SEARCH_ALPHABETICAL)
+                .indexName(LoggingUtils.INDEX_DISSOLVED)
+                .startIndex(String.valueOf(startIndex))
+                .build().getLogMap();
         logMap.remove(MESSAGE);
-
         SearchResults<?> searchResults;
         try {
             if (searchType.equals(BEST_MATCH_SEARCH_TYPE)) {

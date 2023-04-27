@@ -1,14 +1,7 @@
 package uk.gov.companieshouse.search.api.controller;
 
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.exception.SizeException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
@@ -66,13 +60,16 @@ public class DissolvedSearchController {
             @RequestParam(name = SIZE_PARAM, required = false) Integer size,
             @RequestParam(name = START_INDEX_QUERY_PARAM, required = false) Integer startIndex,
             @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(COMPANY_NAME, companyName);
-        logMap.put(INDEX, LoggingUtils.INDEX_DISSOLVED);
-        logIfNotNull(logMap, SEARCH_BEFORE, searchBefore);
-        logIfNotNull(logMap, SEARCH_AFTER, searchAfter);
-        logIfNotNull(logMap, SIZE, size);
-        logIfNotNull(logMap, START_INDEX, startIndex);
+
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .companyName(companyName)
+                .indexName(LoggingUtils.INDEX_DISSOLVED)
+                .searchBefore(searchBefore)
+                .searchAfter(searchAfter)
+                .size(String.valueOf(size))
+                .startIndex(String.valueOf(startIndex))
+                .build().getLogMap();
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
 

@@ -7,6 +7,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClientService;
@@ -29,7 +30,9 @@ public class AdvancedSearchRequests {
     private static final String INDEX = "ADVANCED_SEARCH_INDEX";
 
     public SearchHits getCompanies(AdvancedSearchQueryParams queryParams, String requestId) throws IOException {
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .build().getLogMap();
         LoggingUtils.getLogger().info("Building advanced search request", logMap);
 
         SearchRequest searchRequest = new SearchRequest();

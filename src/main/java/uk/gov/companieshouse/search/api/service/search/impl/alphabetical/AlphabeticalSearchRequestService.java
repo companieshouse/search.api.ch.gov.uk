@@ -1,23 +1,17 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY_WITH_ID;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.createLoggingMap;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
 import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
@@ -62,12 +56,14 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     @Override
     public SearchResults<Company> getAlphabeticalSearchResults(String corporateName, String searchBefore,
             String searchAfter, Integer size, String requestId) throws SearchException {
-        Map<String, Object> logMap = createLoggingMap(requestId);
-        logMap.put(COMPANY_NAME, corporateName);
-        logMap.put(INDEX, INDEX_ALPHABETICAL);
-        logIfNotNull(logMap, SEARCH_BEFORE, searchBefore);
-        logIfNotNull(logMap, SEARCH_AFTER, searchAfter);
-        logIfNotNull(logMap, SIZE, size);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .companyName(corporateName)
+                .indexName(INDEX_ALPHABETICAL)
+                .searchBefore(searchBefore)
+                .searchAfter(searchAfter)
+                .size(String.valueOf(size))
+                .build().getLogMap();
 
         getLogger().info("Performing search request", logMap);
         logMap.remove(MESSAGE);
