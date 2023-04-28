@@ -136,7 +136,7 @@ public class LoggingUtils {
 
     public static Map<String, Object> setUpDisqualificationDeleteLogging(String officerId) {
         return new DataMap.Builder()
-                //.officerId(officerId)
+                .officerId(officerId)
                 .indexName(DISQUALIFIED_SEARCH_INDEX).build().getLogMap();
     }
 }
