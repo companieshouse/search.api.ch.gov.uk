@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.elasticsearch.AdvancedSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
@@ -12,6 +13,8 @@ import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ADVANCED_SEARCH_INDEX;
 
 @Service
 public class AdvancedUpsertRequestService {
@@ -33,8 +36,11 @@ public class AdvancedUpsertRequestService {
      */
     public UpdateRequest createUpdateRequest(CompanyProfileApi company, String orderedAlphaKey,
                                              String sameAsKey) throws UpsertException {
-
-        Map<String, Object> logMap = setUpUpsertLogging(company);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .companyName(company.getCompanyName())
+                .companyNumber(company.getCompanyNumber())
+                .indexName(ADVANCED_SEARCH_INDEX)
+                .build().getLogMap();
         try {
             LoggingUtils.getLogger().info("Attempt to upsert document if it does not exist", logMap);
 

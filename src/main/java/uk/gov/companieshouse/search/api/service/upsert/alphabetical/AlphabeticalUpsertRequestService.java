@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
@@ -38,8 +39,12 @@ public class AlphabeticalUpsertRequestService {
      * @throws UpsertException
      */
     public IndexRequest createIndexRequest(CompanyProfileApi company) throws UpsertException {
-        
-        Map<String, Object> logMap = setUpUpsertLogging(company);
+
+        Map<String, Object> logMap = new DataMap.Builder()
+                .companyName(company.getCompanyName())
+                .companyNumber(company.getCompanyNumber())
+                .indexName(LoggingUtils.INDEX_ALPHABETICAL)
+                .build().getLogMap();
 
         String orderedAlphaKey = "";
         String orderedAlphaKeyWithID = "";
@@ -70,7 +75,11 @@ public class AlphabeticalUpsertRequestService {
      */
     public UpdateRequest createUpdateRequest(CompanyProfileApi company, IndexRequest indexRequest)
         throws UpsertException {
-        Map<String, Object> logMap = setUpUpsertLogging(company);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .companyName(company.getCompanyName())
+                .companyNumber(company.getCompanyNumber())
+                .indexName(LoggingUtils.INDEX_ALPHABETICAL)
+                .build().getLogMap();
 
         String orderedAlphaKey = "";
         String orderedAlphaKeyWithID = "";

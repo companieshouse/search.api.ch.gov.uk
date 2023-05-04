@@ -1,25 +1,12 @@
 package uk.gov.companieshouse.search.api.controller;
 
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NUMBER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_STATUS;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_SUBTYPE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_TYPE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.DISSOLVED_FROM;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.DISSOLVED_TO;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INCORPORATED_FROM;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INCORPORATED_TO;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.LOCATION;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIC_CODES;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.START_INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.UPSERT_COMPANY_NUMBER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.*;
 
-import java.util.HashMap;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +22,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.exception.DateFormatException;
 import uk.gov.companieshouse.search.api.exception.MappingException;
 import uk.gov.companieshouse.search.api.exception.SizeException;
-import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.AdvancedQueryParamMapper;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
@@ -50,18 +37,6 @@ import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 @RestController
 @RequestMapping(value = "/advanced-search", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdvancedSearchController {
-
-    @Autowired
-    private AdvancedQueryParamMapper queryParamMapper;
-
-    @Autowired
-    private AdvancedSearchIndexService searchIndexService;
-
-    @Autowired
-    private ApiToResponseMapper apiToResponseMapper;
-
-    @Autowired
-    private UpsertCompanyService upsertCompanyService;
 
     private static final String START_INDEX_QUERY_PARAM = "start_index";
     private static final String COMPANY_NAME_QUERY_PARAM = "company_name_includes";
@@ -77,6 +52,14 @@ public class AdvancedSearchController {
     private static final String COMPANY_NAME_EXCLUDES = "company_name_excludes";
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
     private static final String SIZE_PARAM = "size";
+    @Autowired
+    private AdvancedQueryParamMapper queryParamMapper;
+    @Autowired
+    private AdvancedSearchIndexService searchIndexService;
+    @Autowired
+    private ApiToResponseMapper apiToResponseMapper;
+    @Autowired
+    private UpsertCompanyService upsertCompanyService;
 
     @GetMapping("/companies")
     @ResponseBody
@@ -95,21 +78,46 @@ public class AdvancedSearchController {
                                          @RequestParam(name = SIZE_PARAM, required = false) Integer size,
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logIfNotNull(logMap, START_INDEX, startIndex);
-        logIfNotNull(logMap, COMPANY_NAME, companyName);
-        logIfNotNull(logMap, LOCATION, location);
-        logIfNotNull(logMap, INCORPORATED_FROM, incorporatedFrom);
-        logIfNotNull(logMap, INCORPORATED_TO, incorporatedTo);
-        logIfNotNull(logMap, COMPANY_STATUS, companyStatusList);
-        logIfNotNull(logMap, SIC_CODES, sicCodes);
-        logIfNotNull(logMap, COMPANY_TYPE, companyTypeList);
-        logIfNotNull(logMap, COMPANY_SUBTYPE, companySubtypeList);
-        logIfNotNull(logMap, DISSOLVED_FROM, dissolvedFrom);
-        logIfNotNull(logMap, DISSOLVED_TO, dissolvedTo);
-        logIfNotNull(logMap, COMPANY_NAME_EXCLUDES, companyNameExcludes);
-        logIfNotNull(logMap, SIZE_PARAM, size);
-        logMap.put(INDEX, LoggingUtils.ADVANCED_SEARCH_INDEX);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        Date incorporatedFromDate = null;
+        Date incorporatedToDate = null;
+        Date dissolvedFromDate = null;
+        Date dissolvedToDate = null;
+        try {
+            if(incorporatedFrom != null){
+                incorporatedFromDate = formatter.parse(incorporatedFrom);
+            }
+            if(incorporatedTo != null){
+                incorporatedToDate = formatter.parse(incorporatedTo);
+            }
+            if(dissolvedFrom != null){
+                dissolvedFromDate = formatter.parse(dissolvedFrom);
+            }
+            if(dissolvedTo != null){
+                dissolvedToDate = formatter.parse(dissolvedTo);
+            }
+        } catch (ParseException e) {
+            getLogger().error("Date passed in wrong format to advanced search controller", e);
+        }
+
+
+        Map<String, Object> logMap = new DataMap.Builder()
+                .companyName(companyName)
+                .startIndex(String.valueOf(startIndex))
+                .location(location)
+                .incorporatedFrom(incorporatedFromDate)
+                .incorporatedTo(incorporatedToDate)
+                .companyStatus(companyStatusList)
+                .sicCodes(sicCodes)
+                .companyType(companyTypeList)
+                .companySubtype(companySubtypeList)
+                .dissolvedFrom(dissolvedFromDate)
+                .dissolvedTo(dissolvedToDate)
+                .companyNameExcludes(companyNameExcludes)
+                .size(String.valueOf(size))
+                .indexName(ADVANCED_SEARCH_INDEX)
+                .build().getLogMap();
+
         getLogger().info("Search request received", logMap);
         logMap.remove(MESSAGE);
 
@@ -136,10 +144,12 @@ public class AdvancedSearchController {
     public ResponseEntity<Object> upsert(@PathVariable("company_number") String companyNumber,
                                          @Valid @RequestBody CompanyProfileApi company) {
 
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put(COMPANY_NAME, company.getCompanyName());
-        logMap.put(COMPANY_NUMBER, company.getCompanyNumber());
-        logMap.put(UPSERT_COMPANY_NUMBER, companyNumber);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .companyName(company.getCompanyName())
+                .companyNumber(company.getCompanyNumber())
+                .upsertCompanyNumber(companyNumber)
+                .build().getLogMap();
+
         getLogger().info("Attempting to upsert a company to advanced search index", logMap);
 
         ResponseObject responseObject;

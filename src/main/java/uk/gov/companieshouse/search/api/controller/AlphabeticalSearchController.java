@@ -1,18 +1,8 @@
 package uk.gov.companieshouse.search.api.controller;
 
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NUMBER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_AFTER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SEARCH_BEFORE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.SIZE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.UPSERT_COMPANY_NUMBER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.createLoggingMap;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.logIfNotNull;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -33,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 
 import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.exception.SizeException;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
@@ -51,21 +42,16 @@ public class AlphabeticalSearchController {
     private static final String SEARCH_BEFORE_PARAM = "search_before";
     private static final String SEARCH_AFTER_PARAM = "search_after";
     private static final String SIZE_PARAM = "size";
-
-    @Autowired
-    private AlphabeticalSearchIndexService searchIndexService;
-    
-    @Autowired
-    private UpsertCompanyService upsertCompanyService;
-
-    @Autowired
-    private ApiToResponseMapper apiToResponseMapper;
-
-    @Autowired
-    private EnvironmentReader environmentReader;
-
     private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
     private static final String ALPHABETICAL_SEARCH_RESULT_MAX = "ALPHABETICAL_SEARCH_RESULT_MAX";
+    @Autowired
+    private AlphabeticalSearchIndexService searchIndexService;
+    @Autowired
+    private UpsertCompanyService upsertCompanyService;
+    @Autowired
+    private ApiToResponseMapper apiToResponseMapper;
+    @Autowired
+    private EnvironmentReader environmentReader;
 
     @GetMapping("/companies")
     @ResponseBody
@@ -75,12 +61,14 @@ public class AlphabeticalSearchController {
                                                    @RequestParam(name = SIZE_PARAM, required = false) Integer size,
                                                    @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
-        Map<String, Object> logMap = createLoggingMap(requestId);
-        logMap.put(COMPANY_NAME, companyName);
-        logMap.put(INDEX, INDEX_ALPHABETICAL);
-        logIfNotNull(logMap, SEARCH_BEFORE, searchBefore);
-        logIfNotNull(logMap, SEARCH_AFTER, searchAfter);
-        logIfNotNull(logMap, SIZE, size);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .companyName(companyName)
+                .indexName(INDEX_ALPHABETICAL)
+                .searchBefore(searchBefore)
+                .searchAfter(searchAfter)
+                .size(String.valueOf(size))
+                .build().getLogMap();
         getLogger().info("Search request received", logMap);
 
         try {
@@ -102,10 +90,12 @@ public class AlphabeticalSearchController {
     @PutMapping("/companies/{company_number}")
     public ResponseEntity<Object> upsertCompany(@PathVariable("company_number") String companyNumber,
             @Valid @RequestBody CompanyProfileApi company) {
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put(COMPANY_NAME, company.getCompanyName());
-        logMap.put(COMPANY_NUMBER, company.getCompanyNumber());
-        logMap.put(UPSERT_COMPANY_NUMBER, companyNumber);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .companyName(company.getCompanyName())
+                .companyNumber(company.getCompanyNumber())
+                .upsertCompanyNumber(companyNumber)
+                .build().getLogMap();
+
         getLogger().info("Upserting company", logMap);
 
         ResponseObject responseObject;

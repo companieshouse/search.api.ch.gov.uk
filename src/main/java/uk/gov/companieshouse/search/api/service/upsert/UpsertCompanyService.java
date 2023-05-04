@@ -1,14 +1,6 @@
 package uk.gov.companieshouse.search.api.service.upsert;
 
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ADVANCED_SEARCH_INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NUMBER;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.elasticsearch.action.index.IndexRequest;
@@ -17,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
@@ -27,6 +20,8 @@ import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClie
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.upsert.advanced.AdvancedUpsertRequestService;
 import uk.gov.companieshouse.search.api.service.upsert.alphabetical.AlphabeticalUpsertRequestService;
+
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.*;
 
 @Service
 public class UpsertCompanyService {
@@ -55,10 +50,11 @@ public class UpsertCompanyService {
      * @return {@link ResponseObject}
      */
     public ResponseObject upsert(CompanyProfileApi company) {
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put(COMPANY_NAME, company.getCompanyName());
-        logMap.put(COMPANY_NUMBER, company.getCompanyNumber());
-        logMap.put(INDEX, INDEX_ALPHABETICAL);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .companyName(company.getCompanyName())
+                .companyNumber(company.getCompanyNumber())
+                .indexName(INDEX_ALPHABETICAL)
+                .build().getLogMap();
         getLogger().info("Upserting company underway", logMap);
 
         IndexRequest indexRequest;
@@ -92,10 +88,11 @@ public class UpsertCompanyService {
      * @return {@link ResponseObject}
      */
     public ResponseObject upsertAdvanced(CompanyProfileApi company) {
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put(COMPANY_NAME, company.getCompanyName());
-        logMap.put(COMPANY_NUMBER, company.getCompanyNumber());
-        logMap.put(INDEX, ADVANCED_SEARCH_INDEX);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .companyName(company.getCompanyName())
+                .companyNumber(company.getCompanyNumber())
+                .indexName(ADVANCED_SEARCH_INDEX)
+                .build().getLogMap();
         getLogger().info("Upserting to advanced index underway", logMap);
 
         UpdateRequest updateRequest;

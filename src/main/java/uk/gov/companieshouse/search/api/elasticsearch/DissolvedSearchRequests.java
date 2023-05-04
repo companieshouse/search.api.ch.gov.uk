@@ -8,6 +8,7 @@ import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 import uk.gov.companieshouse.search.api.service.rest.impl.DissolvedSearchRestClientService;
@@ -56,8 +57,10 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
                                    String searchType,
                                    Integer startIndex,
                                    Integer size) throws IOException {
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(LoggingUtils.COMPANY_NAME, companyName);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .companyName(companyName)
+                .build().getLogMap();
         LoggingUtils.getLogger().info("Searching for best dissolved company name " + searchType + " match", logMap);
 
         SearchRequest searchRequest = getBaseSearchRequest(requestId);

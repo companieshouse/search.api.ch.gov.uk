@@ -2,12 +2,17 @@ package uk.gov.companieshouse.search.api.logging;
 
 import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
 
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import uk.gov.companieshouse.api.disqualification.Item;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
+import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 
 public class LoggingUtils {
@@ -74,40 +79,64 @@ public class LoggingUtils {
     }
 
     public static Map<String, Object> getLogMap(AdvancedSearchQueryParams queryParams, String requestId) {
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logIfNotNull(logMap, START_INDEX, queryParams.getStartIndex());
-        logIfNotNull(logMap, COMPANY_NAME, queryParams.getCompanyNameIncludes());
-        logIfNotNull(logMap, LOCATION, queryParams.getLocation());
-        logIfNotNull(logMap, INCORPORATED_FROM, queryParams.getIncorporatedFrom());
-        logIfNotNull(logMap, INCORPORATED_TO, queryParams.getIncorporatedTo());
-        logIfNotNull(logMap, COMPANY_STATUS, queryParams.getCompanyStatusList());
-        logIfNotNull(logMap, SIC_CODES, queryParams.getSicCodes());
-        logIfNotNull(logMap, COMPANY_TYPE, queryParams.getCompanyTypeList());
-        logIfNotNull(logMap, COMPANY_SUBTYPE, queryParams.getCompanySubtypeList());
-        logIfNotNull(logMap, DISSOLVED_FROM, queryParams.getDissolvedFrom());
-        logIfNotNull(logMap, DISSOLVED_TO, queryParams.getDissolvedTo());
-        logIfNotNull(logMap, COMPANY_NAME_EXCLUDES, queryParams.getCompanyNameExcludes());
-        logMap.put(INDEX, LoggingUtils.ADVANCED_SEARCH_INDEX);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        Date incorporatedFromDate = null;
+        Date incorporatedToDate = null;
+        Date dissolvedFromDate = null;
+        Date dissolvedToDate = null;
+
+        if(queryParams.getIncorporatedFrom() != null){
+            incorporatedFromDate = Date.from(queryParams.getIncorporatedFrom().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        }
+        if(queryParams.getIncorporatedTo() != null) {
+            incorporatedToDate = Date.from(queryParams.getIncorporatedTo().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        }
+        if(queryParams.getDissolvedFrom() != null){
+            dissolvedFromDate = Date.from(queryParams.getDissolvedFrom().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        }
+        if(queryParams.getDissolvedTo() != null){
+            dissolvedToDate = Date.from(queryParams.getDissolvedTo().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        }
+
+        Map<String, Object> logMap = new DataMap.Builder()
+                .requestId(requestId)
+                .startIndex(String.valueOf(queryParams.getStartIndex()))
+                .companyName(queryParams.getCompanyNameIncludes())
+                .location(queryParams.getLocation())
+                .incorporatedFrom(incorporatedFromDate)
+                .incorporatedTo(incorporatedToDate)
+                .companyStatus(queryParams.getCompanyStatusList())
+                .sicCodes(queryParams.getSicCodes())
+                .companyType(queryParams.getCompanyTypeList())
+                .companySubtype(queryParams.getCompanySubtypeList())
+                .dissolvedFrom(dissolvedFromDate)
+                .dissolvedTo(dissolvedToDate)
+                .companyNameExcludes(queryParams.getCompanyNameExcludes())
+                .indexName(LoggingUtils.ADVANCED_SEARCH_INDEX)
+                .build().getLogMap();
         getLogger().info("advanced search filters", logMap);
 
         return logMap;
     }
 
     public static Map<String, Object> setUpDisqualificationUpsertLogging(Item disqualification) {
-        Map<String, Object> logMap = new HashMap<>();
+        String officerName;
         if (disqualification.getCorporateName() != null && disqualification.getCorporateName().length() > 0) {
-            logMap.put("officer name", disqualification.getCorporateName());
+            officerName = disqualification.getCorporateName();
         } else {
-            logMap.put("officer name", disqualification.getForename() + " " + disqualification.getSurname());
+            officerName = disqualification.getForename() + " " + disqualification.getSurname();
         }
-        logMap.put(INDEX, DISQUALIFIED_SEARCH_INDEX);
+        Map<String, Object> logMap = new DataMap.Builder()
+                .officerName(officerName)
+                .indexName(DISQUALIFIED_SEARCH_INDEX)
+                .build().getLogMap();
         return logMap;
     }
 
     public static Map<String, Object> setUpDisqualificationDeleteLogging(String officerId) {
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put("officer ID", officerId);
-        logMap.put(INDEX, DISQUALIFIED_SEARCH_INDEX);
-        return logMap;
+        return new DataMap.Builder()
+                .officerId(officerId)
+                .indexName(DISQUALIFIED_SEARCH_INDEX).build().getLogMap();
     }
 }
