@@ -1,4 +1,4 @@
-FROM blacktop/elasticsearch:6.8.13
+FROM blacktop/elasticsearch:6.8.23
 
 RUN apk update && \
   apk upgrade && \
