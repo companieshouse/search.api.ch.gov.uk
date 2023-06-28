@@ -13,7 +13,7 @@
     <parent>
         <groupId>uk.gov.companieshouse</groupId>
         <artifactId>companies-house-parent</artifactId>
-        <version>1.3.0</version>
+        <version>1.3.1</version>
         <relativePath />
     </parent>
 
@@ -26,13 +26,15 @@
         <private-api-sdk-java.version>2.0.268</private-api-sdk-java.version>
 
         <!-- Elastic Search -->
-        <elasticsearch.version>7.4.0</elasticsearch.version>
+        <elasticsearch.version>7.10.1</elasticsearch.version>
+        <spring-data-elasticsearch.version>4.2.6</spring-data-elasticsearch.version>
 
         <!-- Docker -->
         <jib-maven-plugin.version>3.3.2</jib-maven-plugin.version>
 
         <!-- Structured logging -->
-        <structured-logging.version>1.9.22</structured-logging.version>
+        <structured-logging.version>1.9.24</structured-logging.version>
+        <log4j.version>2.17.1</log4j.version>
 
         <!-- Maven and Surefire plugins -->
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -105,7 +107,6 @@
             <version>${elasticsearch.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>structured-logging</artifactId>
@@ -154,23 +155,22 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- Override log4j versions -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-to-slf4j</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+            <version>${log4j.version}</version>
         </dependency>
     </dependencies>
 

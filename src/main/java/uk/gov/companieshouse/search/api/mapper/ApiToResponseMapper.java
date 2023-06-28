@@ -7,7 +7,6 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.environment.EnvironmentReader;
@@ -16,11 +15,13 @@ import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 @Component
 public class ApiToResponseMapper {
 
-    @Autowired
-    private EnvironmentReader environmentReader;
-
+    private final EnvironmentReader environmentReader;
     private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
     private static final String ADVANCED_SEARCH_MAX_SIZE = "ADVANCED_SEARCH_MAX_SIZE";
+
+    public ApiToResponseMapper(EnvironmentReader environmentReader) {
+        this.environmentReader = environmentReader;
+    }
 
     public ResponseEntity<Object> map(ResponseObject responseObject) {
 

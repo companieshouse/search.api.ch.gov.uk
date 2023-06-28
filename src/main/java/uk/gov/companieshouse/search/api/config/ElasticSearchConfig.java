@@ -2,7 +2,6 @@ package uk.gov.companieshouse.search.api.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.exception.EndpointException;
 
@@ -25,6 +23,7 @@ public class ElasticSearchConfig {
     private static final String DISSOLVED_SEARCH_URL = "DISSOLVED_SEARCH_URL";
     private static final String ADVANCED_SEARCH_URL = "ADVANCED_SEARCH_URL";
     private static final String DISQUALIFIED_SEARCH_URL = "DISQUALIFIED_SEARCH_URL";
+    private static final String OFFICERS_SEARCH_URL = "OFFICERS_SEARCH_URL";
 
     @Qualifier("alphabeticalClient")
     @Bean(destroyMethod = "close")
@@ -48,6 +47,12 @@ public class ElasticSearchConfig {
     @Bean(destroyMethod = "close")
     public RestHighLevelClient disqualifiedRestClient() {
         return createClient(DISQUALIFIED_SEARCH_URL);
+    }
+
+    @Qualifier("officersClient")
+    @Bean(destroyMethod = "close")
+    public RestHighLevelClient officersRestClient() {
+        return createClient(OFFICERS_SEARCH_URL);
     }
 
     public RestHighLevelClient createClient(String url) {
