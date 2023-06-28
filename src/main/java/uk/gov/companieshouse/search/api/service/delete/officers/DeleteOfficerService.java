@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.service.delete.disqualified;
+package uk.gov.companieshouse.search.api.service.delete.officers;
 
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.DocWriteResponse;
@@ -17,24 +17,21 @@ import java.util.Map;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
 @Service
-public class DeleteDisqualificationService {
+public class DeleteOfficerService {
 
     @Autowired
     private PrimarySearchRestClientService primarySearchRestClientService;
-
     @Autowired
-    private DisqualifiedDeleteRequestService disqualifiedDeleteRequestService;
-
+    private OfficerDeleteRequestService officerDeleteRequestService;
     public ResponseObject deleteOfficer(String officerId) {
-
-        Map<String, Object> logMap = LoggingUtils.setUpDisqualificationDeleteLogging(officerId);
-        DeleteRequest deleteRequest = disqualifiedDeleteRequestService.createDeleteRequest(officerId);
+        Map<String, Object> logMap = LoggingUtils.setUpOfficersDeleteLogging(officerId);
+        DeleteRequest deleteRequest = officerDeleteRequestService.createDeleteRequest(officerId);
 
         DeleteResponse response;
         try {
             response = primarySearchRestClientService.delete(deleteRequest);
         } catch (IOException e) {
-            getLogger().error("IOException when deleting an officer from the disqualified search index", logMap);
+            getLogger().error("IOException encountered when deleting an officer from the primary search index", logMap);
             return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
         } catch (ElasticsearchException e) {
             return new ResponseObject(ResponseStatus.DELETE_REQUEST_ERROR);
@@ -44,9 +41,8 @@ public class DeleteDisqualificationService {
             getLogger().error("Document with id " + officerId + " not found", logMap);
             return new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
         } else {
-            getLogger().info("Delete successful to disqualified search index", logMap);
+            getLogger().info(String.format("Successfully deleted officer with id: [%s] from primary search index", officerId), logMap);
             return new ResponseObject(ResponseStatus.DOCUMENT_DELETED);
         }
-
     }
 }

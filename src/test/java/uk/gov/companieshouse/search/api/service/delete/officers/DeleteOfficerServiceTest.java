@@ -1,13 +1,11 @@
-package uk.gov.companieshouse.search.api.service.delete.disqualified;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+package uk.gov.companieshouse.search.api.service.delete.officers;
 
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.index.shard.ShardId;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,65 +17,70 @@ import uk.gov.companieshouse.search.api.service.rest.impl.PrimarySearchRestClien
 
 import java.io.IOException;
 
-@ExtendWith(MockitoExtension.class)
-public class DeleteDisqualificationServiceTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
-    private static final String OFFICER_ID = "officerId";
-    private static final DeleteRequest REQUEST = new DeleteRequest();
-    private static final String INDEX = "primary_search";
+@ExtendWith(MockitoExtension.class)
+public class DeleteOfficerServiceTest {
+    private final String OFFICER_ID = "ABCD1234";
+    private final DeleteRequest REQUEST = new DeleteRequest();
+    private final String INDEX = "primary_search";
 
     @Mock
     PrimarySearchRestClientService primarySearchRestClientService;
 
     @Mock
-    DisqualifiedDeleteRequestService disqualifiedDeleteRequestService;
+    OfficerDeleteRequestService officerDeleteRequestService;
 
     @InjectMocks
-    DeleteDisqualificationService service;
+    DeleteOfficerService deleteOfficerService;
 
     @BeforeEach
     void setup() {
-        when(disqualifiedDeleteRequestService.createDeleteRequest(OFFICER_ID)).thenReturn(REQUEST);
+        when(officerDeleteRequestService.createDeleteRequest(OFFICER_ID)).thenReturn(REQUEST);
     }
-
     @Test
-    void deletesOfficer() throws Exception {
+    @DisplayName("Test returns DOCUMENTED_DELETED response when officer successfully deleted")
+    void returnsDocumentDeleteWhenOfficerIsDeleted() throws Exception {
         DeleteResponse deleteResponse = new DeleteResponse(
                 new ShardId(INDEX, INDEX, 1), INDEX, "1", 1, 1, 1, true);
         when(primarySearchRestClientService.delete(REQUEST)).thenReturn(deleteResponse);
 
-        ResponseObject response = service.deleteOfficer(OFFICER_ID);
+        ResponseObject response = deleteOfficerService.deleteOfficer(OFFICER_ID);
 
         assertEquals(ResponseStatus.DOCUMENT_DELETED, response.getStatus());
     }
 
     @Test
+    @DisplayName("Test returns DELETE_NOT_FOUND response when given officer does not exist")
     void returnsDeleteNotFoundWhenOfficerDoesNotExist() throws Exception {
         DeleteResponse deleteResponse = new DeleteResponse(
                 new ShardId(INDEX, INDEX, 1), INDEX, "1", 1, 1, 1, false);
         when(primarySearchRestClientService.delete(REQUEST)).thenReturn(deleteResponse);
 
-        ResponseObject response = service.deleteOfficer(OFFICER_ID);
+        ResponseObject response = deleteOfficerService.deleteOfficer(OFFICER_ID);
 
         assertEquals(ResponseStatus.DELETE_NOT_FOUND, response.getStatus());
     }
 
     @Test
+    @DisplayName("Test returns SERVICE_UNAVAILABLE response if IOException is encountered")
     void returnsServiceUnavailableOnIOException() throws Exception {
 
         when(primarySearchRestClientService.delete(REQUEST)).thenThrow(new IOException());
 
-        ResponseObject response = service.deleteOfficer(OFFICER_ID);
+        ResponseObject response = deleteOfficerService.deleteOfficer(OFFICER_ID);
 
         assertEquals(ResponseStatus.SERVICE_UNAVAILABLE, response.getStatus());
     }
 
     @Test
-    void returnsUpdateErrorOnElasticSearchException() throws Exception {
+    @DisplayName("Test returns DELETE_REQUEST_ERROR response if ElasticsearchException is encountered")
+    void returnsDeleteRequestErrorOnElasticSearchException() throws Exception {
 
         when(primarySearchRestClientService.delete(REQUEST)).thenThrow(new ElasticsearchException(""));
 
-        ResponseObject response = service.deleteOfficer(OFFICER_ID);
+        ResponseObject response = deleteOfficerService.deleteOfficer(OFFICER_ID);
 
         assertEquals(ResponseStatus.DELETE_REQUEST_ERROR, response.getStatus());
     }

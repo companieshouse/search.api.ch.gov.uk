@@ -24,7 +24,7 @@ public class ElasticSearchConfig {
     private static final String ALPHABETICAL_SEARCH_URL = "ELASTIC_SEARCH_URL";
     private static final String DISSOLVED_SEARCH_URL = "DISSOLVED_SEARCH_URL";
     private static final String ADVANCED_SEARCH_URL = "ADVANCED_SEARCH_URL";
-    private static final String DISQUALIFIED_SEARCH_URL = "DISQUALIFIED_SEARCH_URL";
+    private static final String PRIMARY_SEARCH_URL = "PRIMARY_SEARCH_URL";
 
     @Qualifier("alphabeticalClient")
     @Bean(destroyMethod = "close")
@@ -44,10 +44,10 @@ public class ElasticSearchConfig {
         return createClient(DISSOLVED_SEARCH_URL);
     }
 
-    @Qualifier("disqualifiedClient")
+    @Qualifier("primaryClient")
     @Bean(destroyMethod = "close")
-    public RestHighLevelClient disqualifiedRestClient() {
-        return createClient(DISQUALIFIED_SEARCH_URL);
+    public RestHighLevelClient primaryClient() {
+        return createClient(PRIMARY_SEARCH_URL);
     }
 
     public RestHighLevelClient createClient(String url) {

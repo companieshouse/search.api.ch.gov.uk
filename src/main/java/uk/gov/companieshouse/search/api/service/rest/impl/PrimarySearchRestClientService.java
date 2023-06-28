@@ -17,23 +17,23 @@ import java.io.IOException;
 import static org.elasticsearch.client.RequestOptions.DEFAULT;
 
 @Service
-public class DisqualifiedSearchRestClientService implements RestClientService {
+public class PrimarySearchRestClientService implements RestClientService {
 
     @Autowired
-    @Qualifier("disqualifiedClient")
-    private RestHighLevelClient disqualifiedClient;
+    @Qualifier("primaryClient")
+    private RestHighLevelClient primaryClient;
 
     @Override
     public SearchResponse search(SearchRequest searchRequest) throws IOException {
-        return disqualifiedClient.search(searchRequest, DEFAULT);
+        return primaryClient.search(searchRequest, DEFAULT);
     }
 
     @Override
     public UpdateResponse upsert(UpdateRequest updateRequest) throws IOException {
-        return disqualifiedClient.update(updateRequest, DEFAULT);
+        return primaryClient.update(updateRequest, DEFAULT);
     }
 
     public DeleteResponse delete(DeleteRequest deleteRequest) throws IOException {
-        return disqualifiedClient.delete(deleteRequest, DEFAULT);
+        return primaryClient.delete(deleteRequest, DEFAULT);
     }
 }

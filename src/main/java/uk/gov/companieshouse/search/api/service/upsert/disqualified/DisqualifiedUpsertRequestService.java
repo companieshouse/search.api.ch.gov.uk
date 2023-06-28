@@ -30,7 +30,7 @@ public class DisqualifiedUpsertRequestService {
     @Autowired
     private AlphaKeyService alphaKeyService;
 
-    private static final String INDEX = "DISQUALIFIED_SEARCH_INDEX";
+    private static final String INDEX = "PRIMARY_SEARCH_INDEX";
     private static final String TYPE = "primary_search";
 
     /**
