@@ -5,13 +5,19 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
+import uk.gov.companieshouse.search.api.model.SearchType;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
-import uk.gov.companieshouse.search.api.service.delete.disqualified.DeleteDisqualificationService;
+import uk.gov.companieshouse.search.api.service.delete.primary.PrimarySearchDeleteService;
 import uk.gov.companieshouse.search.api.service.upsert.disqualified.UpsertDisqualificationService;
 
 import javax.validation.Valid;
@@ -28,7 +34,9 @@ public class DisqualifiedSearchController {
     private UpsertDisqualificationService upsertDisqualificationService;
 
     @Autowired
-    private DeleteDisqualificationService deleteDisqualificationService;
+    private PrimarySearchDeleteService primarySearchDeleteService;
+
+    private final String DISQUALIFICATION_SEARCH_TYPE = "disqualified-officer";
 
     @PutMapping("/disqualified-officers/{officer_id}")
     public ResponseEntity<Object> upsertOfficer(@PathVariable("officer_id") String officerId,
@@ -49,7 +57,7 @@ public class DisqualifiedSearchController {
 
     @DeleteMapping("/delete/{officer_id}")
     public ResponseEntity<Object> deleteOfficer(@PathVariable("officer_id") String officerId) {
-        Map<String, Object> logMap = LoggingUtils.setUpDisqualificationDeleteLogging(officerId);
+        Map<String, Object> logMap = LoggingUtils.setUpPrimarySearchDeleteLogging(officerId);
         getLogger().info("Attempting to delete an officer to disqualification search index", logMap);
 
         ResponseObject responseObject;
@@ -57,7 +65,7 @@ public class DisqualifiedSearchController {
         if (officerId == null || officerId.isEmpty()) {
             responseObject = new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
         } else {
-            responseObject = deleteDisqualificationService.deleteOfficer(officerId);
+            responseObject = primarySearchDeleteService.deleteOfficer(new SearchType(officerId, DISQUALIFICATION_SEARCH_TYPE));
         }
 
         return apiToResponseMapper.map(responseObject);

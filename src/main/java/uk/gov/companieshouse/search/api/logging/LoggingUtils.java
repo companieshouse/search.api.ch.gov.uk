@@ -142,8 +142,7 @@ public class LoggingUtils {
                 .build().getLogMap();
     }
 
-
-    public static Map<String, Object> setUpDisqualificationDeleteLogging(String officerId) {
+    public static Map<String, Object> setUpPrimarySearchDeleteLogging(String officerId) {
         return new DataMap.Builder()
                 .officerId(officerId)
                 .indexName(PRIMARY_SEARCH_INDEX).build().getLogMap();

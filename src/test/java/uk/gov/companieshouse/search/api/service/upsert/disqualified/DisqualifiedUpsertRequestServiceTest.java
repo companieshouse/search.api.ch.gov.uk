@@ -26,7 +26,7 @@ public class DisqualifiedUpsertRequestServiceTest {
 
     private static final String UPDATE_JSON = "{\"example\":\"test\"}";
     private static final String OFFICER_ID = "testid";
-    private static final String INDEX = "DISQUALIFIED_SEARCH_INDEX";
+    private static final String INDEX = "PRIMARY_SEARCH_INDEX";
     private static final String PRIMARY = "primary_search2";
 
     @Mock
