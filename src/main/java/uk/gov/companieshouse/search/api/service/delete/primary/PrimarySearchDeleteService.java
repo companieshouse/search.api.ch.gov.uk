@@ -19,7 +19,6 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
 @Service
 public class PrimarySearchDeleteService {
-
     @Autowired
     private PrimarySearchRestClientService primarySearchRestClientService;
 
@@ -51,6 +50,5 @@ public class PrimarySearchDeleteService {
                     searchType.getPrimarySearchType(), searchType.getOfficerId()), logMap);
             return new ResponseObject(ResponseStatus.DOCUMENT_DELETED);
         }
-
     }
 }
