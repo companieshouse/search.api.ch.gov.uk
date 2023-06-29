@@ -19,6 +19,7 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
 @Service
 public class PrimarySearchDeleteService {
+
     @Autowired
     private PrimarySearchRestClientService primarySearchRestClientService;
 
