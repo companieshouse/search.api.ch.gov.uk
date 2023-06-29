@@ -127,11 +127,10 @@ public class LoggingUtils {
         } else {
             officerName = disqualification.getForename() + " " + disqualification.getSurname();
         }
-        Map<String, Object> logMap = new DataMap.Builder()
+       return new DataMap.Builder()
                 .officerName(officerName)
                 .indexName(PRIMARY_SEARCH_INDEX)
                 .build().getLogMap();
-        return logMap;
     }
 
     public static Map<String, Object> setUpDisqualificationDeleteLogging(String officerId) {

@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteOfficerServiceTest {
+class DeleteOfficerServiceTest {
     private final String OFFICER_ID = "ABCD1234";
     private final DeleteRequest REQUEST = new DeleteRequest();
     private final String INDEX = "primary_search";

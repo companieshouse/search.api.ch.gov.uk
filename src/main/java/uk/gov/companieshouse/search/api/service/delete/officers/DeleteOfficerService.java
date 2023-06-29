@@ -21,8 +21,10 @@ public class DeleteOfficerService {
 
     @Autowired
     private PrimarySearchRestClientService primarySearchRestClientService;
+
     @Autowired
     private OfficerDeleteRequestService officerDeleteRequestService;
+
     public ResponseObject deleteOfficer(String officerId) {
         Map<String, Object> logMap = LoggingUtils.setUpOfficersDeleteLogging(officerId);
         DeleteRequest deleteRequest = officerDeleteRequestService.createDeleteRequest(officerId);

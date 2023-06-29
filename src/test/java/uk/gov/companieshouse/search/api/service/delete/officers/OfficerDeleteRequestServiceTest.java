@@ -9,13 +9,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.environment.EnvironmentReader;
-import uk.gov.companieshouse.search.api.service.delete.disqualified.DisqualifiedDeleteRequestService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class OfficerDeleteRequestServiceTest {
+class OfficerDeleteRequestServiceTest {
     private final String INDEX = "primary_search2";
     private final String TYPE = "primary_search";
     private final String OFFICER_ID = "officerId";
@@ -23,7 +22,7 @@ public class OfficerDeleteRequestServiceTest {
     EnvironmentReader reader;
 
     @InjectMocks
-    DisqualifiedDeleteRequestService service;
+    OfficerDeleteRequestService service;
 
     @BeforeEach
     void setup() {

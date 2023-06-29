@@ -2,11 +2,12 @@ package uk.gov.companieshouse.search.api.service.delete.officers;
 
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 
 import java.util.Map;
-
+@Service
 public class OfficerDeleteRequestService {
 
     private static final String INDEX = "PRIMARY_SEARCH_INDEX";

@@ -24,8 +24,7 @@ import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOC
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class OfficerSearchControllerTest {
-
+class OfficerSearchControllerTest {
     private final String OFFICER_ID = "ABCD1234";
     @Mock
     private ApiToResponseMapper apiToResponseMapper;
