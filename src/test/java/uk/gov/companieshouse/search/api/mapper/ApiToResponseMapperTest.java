@@ -36,7 +36,6 @@ import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 
 @ExtendWith(MockitoExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ApiToResponseMapperTest {
 
     @InjectMocks
