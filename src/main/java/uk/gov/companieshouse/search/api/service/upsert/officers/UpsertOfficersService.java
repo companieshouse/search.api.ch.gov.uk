@@ -28,7 +28,7 @@ public class UpsertOfficersService {
     }
 
     public ResponseObject upsertOfficers(AppointmentList appointmentList, String officerId) {
-        Map<String, Object> logMap = LoggingUtils.setUpOfficersAppointmentsUpsertLogging(appointmentList.getItems().get(0));
+        Map<String, Object> logMap = LoggingUtils.setUpOfficersAppointmentsUpsertLogging(officerId);
         getLogger().info("Upserting officer's appointments to primary index", logMap);
 
         UpdateRequest updateRequest;

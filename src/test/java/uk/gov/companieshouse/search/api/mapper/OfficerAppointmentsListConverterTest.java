@@ -39,7 +39,6 @@ import uk.gov.companieshouse.search.api.util.AlphaKeyMapper;
 class OfficerAppointmentsListConverterTest {
 
     private static final LocalDate DATE = LocalDate.of(2023, 7, 4);
-    private static final String RESOURCE_KIND = "searchresults#officer";
 
     private OfficerAppointmentsListConverter converter;
     @Mock
@@ -90,7 +89,7 @@ class OfficerAppointmentsListConverterTest {
                         .surname("surname")
                         .otherForenames("john"));
 
-        OfficerSearchAppointment appointment = OfficerSearchAppointment.Builder.builder().build();
+        OfficerSearchAppointment appointment = new OfficerSearchAppointment();
 
         OfficerSearchDocument expected = Builder.builder()
                 .activeCount(1)
@@ -101,7 +100,6 @@ class OfficerAppointmentsListConverterTest {
                         .year(1990))
                 .links(new OfficerSearchLinks("/officers/officerId/appointments"))
                 .items(List.of(appointment, appointment, appointment))
-                .kind(RESOURCE_KIND)
                 .sortKey("natural officer2")
                 .build();
 
@@ -150,7 +148,7 @@ class OfficerAppointmentsListConverterTest {
                         officerAppointmentSummary,
                         officerAppointmentSummary.resignedOn(DATE)));
 
-        OfficerSearchAppointment appointment = OfficerSearchAppointment.Builder.builder().build();
+        OfficerSearchAppointment appointment = new OfficerSearchAppointment();
 
         OfficerSearchDocument expected = Builder.builder()
                 .activeCount(1)
@@ -158,7 +156,6 @@ class OfficerAppointmentsListConverterTest {
                 .resignedCount(2)
                 .links(new OfficerSearchLinks("/officers/officerId/appointments"))
                 .items(List.of(appointment, appointment, appointment))
-                .kind(RESOURCE_KIND)
                 .sortKey("corporate officer2")
                 .build();
 
@@ -208,7 +205,7 @@ class OfficerAppointmentsListConverterTest {
                         officerAppointmentSummary,
                         officerAppointmentSummary.resignedOn(DATE)));
 
-        OfficerSearchAppointment appointment = OfficerSearchAppointment.Builder.builder().build();
+        OfficerSearchAppointment appointment = new OfficerSearchAppointment();
 
         OfficerSearchDocument expected = Builder.builder()
                 .activeCount(1)
@@ -216,7 +213,6 @@ class OfficerAppointmentsListConverterTest {
                 .resignedCount(2)
                 .links(new OfficerSearchLinks("/officers/officerId/appointments"))
                 .items(List.of(appointment, appointment, appointment))
-                .kind(RESOURCE_KIND)
                 .sortKey("natural officer2")
                 .build();
 
@@ -262,7 +258,7 @@ class OfficerAppointmentsListConverterTest {
                         officerAppointmentSummary,
                         officerAppointmentSummary.resignedOn(DATE)));
 
-        OfficerSearchAppointment appointment = OfficerSearchAppointment.Builder.builder().build();
+        OfficerSearchAppointment appointment = new OfficerSearchAppointment();
 
         OfficerSearchDocument expected = Builder.builder()
                 .activeCount(1)
@@ -273,7 +269,6 @@ class OfficerAppointmentsListConverterTest {
                         .year(1990))
                 .links(new OfficerSearchLinks("/officers/officerId/appointments"))
                 .items(List.of(appointment, appointment, appointment))
-                .kind(RESOURCE_KIND)
                 .sortKey("corporate officer2")
                 .build();
 
@@ -319,7 +314,7 @@ class OfficerAppointmentsListConverterTest {
                         officerAppointmentSummary,
                         officerAppointmentSummary));
 
-        OfficerSearchAppointment appointment = OfficerSearchAppointment.Builder.builder().build();
+        OfficerSearchAppointment appointment = new OfficerSearchAppointment();
 
         OfficerSearchDocument expected = Builder.builder()
                 .activeCount(1)
@@ -330,7 +325,6 @@ class OfficerAppointmentsListConverterTest {
                         .year(1990))
                 .links(new OfficerSearchLinks("/officers/officerId/appointments"))
                 .items(List.of(appointment, appointment, appointment))
-                .kind(RESOURCE_KIND)
                 .sortKey("natural officer2")
                 .build();
 

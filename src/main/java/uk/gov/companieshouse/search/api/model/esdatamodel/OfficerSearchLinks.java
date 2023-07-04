@@ -1,9 +1,11 @@
 package uk.gov.companieshouse.search.api.model.esdatamodel;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class OfficerSearchLinks {
 
+    @JsonProperty("self")
     private final String self;
 
     public OfficerSearchLinks(String self) {

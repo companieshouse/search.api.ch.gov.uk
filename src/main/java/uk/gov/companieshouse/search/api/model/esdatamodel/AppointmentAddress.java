@@ -1,17 +1,27 @@
 package uk.gov.companieshouse.search.api.model.esdatamodel;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class AppointmentAddress {
 
+    @JsonProperty("address_line_1")
     private final String addressLine1;
+    @JsonProperty("address_line_2")
     private final String addressLine2;
+    @JsonProperty("care_of")
     private final String careOf;
+    @JsonProperty("country")
     private final String country;
+    @JsonProperty("locality")
     private final String locality;
+    @JsonProperty("po_box")
     private final String poBox;
+    @JsonProperty("postal_code")
     private final String postalCode;
+    @JsonProperty("premises")
     private final String premises;
+    @JsonProperty("region")
     private final String region;
 
     private AppointmentAddress(Builder builder) {

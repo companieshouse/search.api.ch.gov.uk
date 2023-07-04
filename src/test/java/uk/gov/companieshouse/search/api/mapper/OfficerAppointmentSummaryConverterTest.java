@@ -12,13 +12,11 @@ import uk.gov.companieshouse.api.officer.NameElements;
 import uk.gov.companieshouse.api.officer.OfficerAppointmentSummary;
 import uk.gov.companieshouse.search.api.model.esdatamodel.OfficerAppointmentConverterModel;
 import uk.gov.companieshouse.search.api.model.esdatamodel.OfficerSearchAppointment;
-import uk.gov.companieshouse.search.api.util.AddressUtils;
 
 class OfficerAppointmentSummaryConverterTest {
 
     private static final LocalDate DATE = LocalDate.of(2023, 7, 4);
     private static final String FULL_ADDRESS = "Care Of, PO BOX, 123 Address Line 1, Address Line 2, Locality, Region, Country, Postal Code";
-    private static final String RECORD_TYPE = "officers";
     private OfficerAppointmentSummaryConverter converter;
 
     @BeforeEach
@@ -53,10 +51,10 @@ class OfficerAppointmentSummaryConverterTest {
 
         OfficerAppointmentConverterModel converterModel = new OfficerAppointmentConverterModel()
                 .officerAppointmentSummary(appointmentSummary)
-                .lastResignedOn(DATE);
+                .lastResignedOn(DATE)
+                .corporateOfficer(false);
 
-        OfficerSearchAppointment expected =
-                OfficerSearchAppointment.Builder.builder()
+        OfficerSearchAppointment expected = new OfficerSearchAppointment()
                         .officerRole(OfficerRoleEnum.DIRECTOR.toString())
                         .fullAddress(FULL_ADDRESS)
                         .forename("Forename")
@@ -67,9 +65,7 @@ class OfficerAppointmentSummaryConverterTest {
                         .personTitleName("Dr Forename Other Forenames Surname")
                         .appointedOn(DATE)
                         .appointedBefore(DATE)
-                        .resignedOn(DATE)
-                        .recordType(RECORD_TYPE)
-                        .build();
+                        .resignedOn(DATE);
 
         // when
         OfficerSearchAppointment actual = converter.convert(converterModel);
@@ -100,19 +96,17 @@ class OfficerAppointmentSummaryConverterTest {
 
         OfficerAppointmentConverterModel converterModel = new OfficerAppointmentConverterModel()
                 .officerAppointmentSummary(appointmentSummary)
-                .lastResignedOn(DATE);
+                .lastResignedOn(DATE)
+                .corporateOfficer(true);
 
-        OfficerSearchAppointment expected =
-                OfficerSearchAppointment.Builder.builder()
+        OfficerSearchAppointment expected = new OfficerSearchAppointment()
                         .officerRole(OfficerRoleEnum.CORPORATE_DIRECTOR.toString())
                         .corporateNameStart("Corporate Company")
                         .corporateNameEnding("Ltd")
                         .fullAddress(FULL_ADDRESS)
                         .appointedOn(DATE)
                         .appointedBefore(DATE)
-                        .resignedOn(DATE)
-                        .recordType(RECORD_TYPE)
-                        .build();
+                        .resignedOn(DATE);
 
         // when
         OfficerSearchAppointment actual = converter.convert(converterModel);

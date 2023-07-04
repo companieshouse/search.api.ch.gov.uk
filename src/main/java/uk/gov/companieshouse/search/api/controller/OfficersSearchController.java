@@ -39,18 +39,7 @@ public class OfficersSearchController {
     public ResponseEntity<Object> upsertOfficer(@PathVariable("officer_id") String officerId,
             @Valid @RequestBody AppointmentList appointmentList) {
 
-        Map<String, Object> logMap =
-                LoggingUtils.setUpOfficersAppointmentsUpsertLogging(appointmentList.getItems().get(0));
-        getLogger().debug("Attempting to upsert an officer's appointments to primary search index",
-                logMap);
-
-        ResponseObject responseObject;
-
-        if (StringUtils.isBlank(officerId)) {
-            responseObject = new ResponseObject(ResponseStatus.UPSERT_ERROR);
-        } else {
-            responseObject = upsertOfficersService.upsertOfficers(appointmentList, officerId);
-        }
+        ResponseObject responseObject = upsertOfficersService.upsertOfficers(appointmentList, officerId);
         return apiToResponseMapper.map(responseObject);
     }
 

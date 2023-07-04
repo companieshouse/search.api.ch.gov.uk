@@ -1,20 +1,29 @@
 package uk.gov.companieshouse.search.api.model.esdatamodel;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 import uk.gov.companieshouse.api.officer.DateOfBirth;
 
 public class OfficerSearchDocument {
 
-    private static final String RESOURCE_KIND = "searchresults#officer";
+    public static final String RESOURCE_KIND = "searchresults#officer";
 
+    @JsonProperty("active_count")
     private final long activeCount;
+    @JsonProperty("date_of_birth")
     private final DateOfBirth dateOfBirth;
+    @JsonProperty("inactive_count")
     private final long inactiveCount;
+    @JsonProperty("items")
     private List<OfficerSearchAppointment> items;
+    @JsonProperty("kind")
     private final String kind;
+    @JsonProperty("links")
     private final OfficerSearchLinks links;
+    @JsonProperty("resigned_count")
     private final long resignedCount;
+    @JsonProperty("sort_key")
     private final String sortKey;
 
     private OfficerSearchDocument(Builder builder) {
@@ -47,10 +56,6 @@ public class OfficerSearchDocument {
     public OfficerSearchDocument items(List<OfficerSearchAppointment> items) {
         this.items = items;
         return this;
-    }
-
-    public String getKind() {
-        return kind;
     }
 
     public OfficerSearchLinks getLinks() {

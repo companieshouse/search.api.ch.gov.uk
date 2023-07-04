@@ -134,10 +134,9 @@ public class LoggingUtils {
                 .build().getLogMap();
     }
 
-    public static Map<String, Object> setUpOfficersAppointmentsUpsertLogging(
-            OfficerAppointmentSummary officerAppointments) {
+    public static Map<String, Object> setUpOfficersAppointmentsUpsertLogging(String officerId) {
         return new DataMap.Builder()
-                .officerName(officerAppointments.getName())
+                .officerId(officerId)
                 .indexName(PRIMARY_SEARCH_INDEX)
                 .build().getLogMap();
     }
