@@ -82,7 +82,7 @@ class ElasticSearchConfigTest {
 
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT_DISQUALIFIED);
 
-        RestHighLevelClient restHighLevelClient = elasticSearchConfig.disqualifiedRestClient();
+        RestHighLevelClient restHighLevelClient = elasticSearchConfig.primaryClient();
         assertNotNull(restHighLevelClient);
 
         List<Node> nodes = restHighLevelClient.getLowLevelClient().getNodes();

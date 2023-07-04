@@ -59,4 +59,24 @@ class UserAuthorisationInterceptorTest {
         when(request.getHeader(ERIC_IDENTITY_TYPE)).thenReturn(INVALID_IDENTITY_TYPE_VALUE);
         assertFalse(userAuthorisationInterceptor.preHandle(request, response, null));
     }
+
+    @Test
+    @DisplayName("Authorise if DELETE and an internal API key is used")
+    void willAuthoriseIfRequestIsDeleteAndInternalAPIKey() {
+        when(request.getMethod()).thenReturn(HttpMethod.DELETE.toString());
+        doReturn("request-id").when(request).getHeader("X-Request-ID");
+        doReturn(ERIC_IDENTITY_TYPE_API_KEY_VALUE).when(request).getHeader(ERIC_IDENTITY_TYPE);
+        doReturn(SecurityConstants.INTERNAL_USER_ROLE).when(request).getHeader(EricConstants.ERIC_AUTHORISED_KEY_ROLES);
+        assertTrue(userAuthorisationInterceptor.preHandle(request, response, null));
+    }
+
+    @Test
+    @DisplayName("Does not authorise if DELETE and internal API key is not used")
+    void willNotAuthoriseIfRequestIsDeleteAndNoInternalAPIKey() {
+        when(request.getMethod()).thenReturn(HttpMethod.DELETE.toString());
+        doReturn("request-id").when(request).getHeader("X-Request-ID");
+        doReturn(ERIC_IDENTITY_TYPE_API_KEY_VALUE).when(request).getHeader(ERIC_IDENTITY_TYPE);
+        doReturn("fake").when(request).getHeader(EricConstants.ERIC_AUTHORISED_KEY_ROLES);
+        assertFalse(userAuthorisationInterceptor.preHandle(request, response, null));
+    }
 }

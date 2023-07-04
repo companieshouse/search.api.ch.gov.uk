@@ -2,6 +2,7 @@ package uk.gov.companieshouse.search.api.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -28,7 +29,7 @@ import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
 import uk.gov.companieshouse.api.model.delta.officers.AddressAPI;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
-import uk.gov.companieshouse.search.api.service.delete.disqualified.DeleteDisqualificationService;
+import uk.gov.companieshouse.search.api.service.delete.primary.PrimarySearchDeleteService;
 import uk.gov.companieshouse.search.api.service.upsert.disqualified.UpsertDisqualificationService;
 
 import java.util.ArrayList;
@@ -38,7 +39,8 @@ import java.util.List;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DisqualifiedSearchControllerTest {
 
-    private static final String OFFICER_ID = "12345encode";
+    private final String OFFICER_ID = "12345encode";
+    private final String PRIMARY_SEARCH_TYPE = "disqualified-officer";
 
     @Mock
     private ApiToResponseMapper mockApiToResponseMapper;
@@ -50,7 +52,7 @@ class DisqualifiedSearchControllerTest {
     private UpsertDisqualificationService upsertDisqualificationService;
 
     @Mock
-    private DeleteDisqualificationService deleteDisqualificationService;
+    private PrimarySearchDeleteService primarySearchDeleteService;
 
     @InjectMocks
     private DisqualifiedSearchController disqualifiedSearchController;
@@ -79,7 +81,7 @@ class DisqualifiedSearchControllerTest {
     @Test
     @DisplayName("Test delete returns a HTTP 200 Ok Response if the  officer Id is presented")
     void testDeleteWithCorrectOfficerIdReturnsOkRequest() {
-        when(deleteDisqualificationService.deleteOfficer(OFFICER_ID))
+        when(primarySearchDeleteService.deleteOfficer(any()))
                 .thenReturn(new ResponseObject(DOCUMENT_DELETED));
         when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
                 .thenReturn(ResponseEntity.status(OK).build());
