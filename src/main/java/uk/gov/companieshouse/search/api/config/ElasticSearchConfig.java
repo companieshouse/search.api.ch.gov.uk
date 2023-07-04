@@ -49,12 +49,6 @@ public class ElasticSearchConfig {
         return createClient(PRIMARY_SEARCH_URL);
     }
 
-    @Qualifier("officersClient")
-    @Bean(destroyMethod = "close")
-    public RestHighLevelClient officersRestClient() {
-        return createClient(OFFICERS_SEARCH_URL);
-    }
-
     public RestHighLevelClient createClient(String url) {
 
         URL endpoint;

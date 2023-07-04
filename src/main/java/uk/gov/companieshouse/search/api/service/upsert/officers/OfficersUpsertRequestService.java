@@ -21,7 +21,7 @@ public class OfficersUpsertRequestService {
 
     private final OfficersSearchUpsertRequest officersSearchUpsertRequest;
     private final EnvironmentReader environmentReader;
-    private static final String INDEX = "OFFICERS_SEARCH_INDEX";
+    private static final String INDEX = "PRIMARY_SEARCH_INDEX";
     private static final String TYPE = "primary_search";
     private final ConversionService conversionService;
 
@@ -44,15 +44,6 @@ public class OfficersUpsertRequestService {
 
         Map<String, Object> logMap = LoggingUtils.setUpOfficersAppointmentsUpsertLogging(appointmentList.getItems().get(0));
         String index = environmentReader.getMandatoryString(INDEX);
-
-        if((appointmentList.getDateOfBirth() == null)
-                || StringUtils.isBlank(appointmentList.getItems().get(0).getNameElements().getForename())
-                || StringUtils.isBlank(appointmentList.getItems().get(0).getNameElements().getOtherForenames())) {
-            appointmentList.setIsCorporateOfficer(true);
-        }
-        if(appointmentList.getItems().get(0).getNameElements().getSurname().contains(" ")){
-            appointmentList.setIsCorporateOfficer(false);
-        }
 
         OfficerSearchDocument documentToBeUpserted = Optional.ofNullable(conversionService.convert(appointmentList, OfficerSearchDocument.class))
                 .orElseThrow();

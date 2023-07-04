@@ -1,16 +1,15 @@
 package uk.gov.companieshouse.search.api.model.esdatamodel;
 
 import java.util.List;
+import java.util.Objects;
 import uk.gov.companieshouse.api.officer.DateOfBirth;
 
 public class OfficerSearchDocument {
 
-    public static final String KIND = "searchresults#officer";
-
     private final long activeCount;
     private final DateOfBirth dateOfBirth;
     private final long inactiveCount;
-    private final List<OfficerSearchAppointment> items;
+    private List<OfficerSearchAppointment> items;
     private final String kind;
     private final OfficerSearchLinks links;
     private final long resignedCount;
@@ -41,6 +40,11 @@ public class OfficerSearchDocument {
 
     public List<OfficerSearchAppointment> getItems() {
         return items;
+    }
+
+    public OfficerSearchDocument items(List<OfficerSearchAppointment> items) {
+        this.items = items;
+        return this;
     }
 
     public String getKind() {
@@ -120,5 +124,25 @@ public class OfficerSearchDocument {
         public OfficerSearchDocument build() {
             return new OfficerSearchDocument(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OfficerSearchDocument document = (OfficerSearchDocument) o;
+        return activeCount == document.activeCount && inactiveCount == document.inactiveCount
+                && resignedCount == document.resignedCount && Objects.equals(dateOfBirth, document.dateOfBirth)
+                && Objects.equals(items, document.items) && Objects.equals(kind, document.kind)
+                && Objects.equals(links, document.links) && Objects.equals(sortKey, document.sortKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(activeCount, dateOfBirth, inactiveCount, items, kind, links, resignedCount, sortKey);
     }
 }

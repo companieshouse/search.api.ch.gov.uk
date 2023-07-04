@@ -41,23 +41,4 @@ public class AlphaKeyService {
         }
         return null;
     }
-
-    public AlphaKeyResponse getAlphaKeyForOfficer(String officerCorporateName){
-        String alphaKeyUrl = environmentReader.getMandatoryString(ALPHAKEY_SERVICE_URL) + officerCorporateName.replace("&", "AND");
-
-        Map<String, Object> logMap =  new DataMap.Builder()
-                .companyName(officerCorporateName)
-                .build().getLogMap();
-
-        LoggingUtils.getLogger().info("Getting alphakey from alphakey service", logMap);
-
-        try{
-            ResponseEntity<AlphaKeyResponse> response =
-                    restTemplate.getForEntity(alphaKeyUrl, AlphaKeyResponse.class);
-            return response.getBody();
-        } catch (RestClientException ex) {
-            LoggingUtils.getLogger().error("Error occurred during api call to alphakey service", logMap);
-        }
-        return null;
-    }
 }

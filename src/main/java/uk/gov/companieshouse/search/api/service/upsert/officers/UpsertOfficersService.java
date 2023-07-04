@@ -12,18 +12,18 @@ import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
-import uk.gov.companieshouse.search.api.service.rest.impl.OfficersSearchRestClientService;
+import uk.gov.companieshouse.search.api.service.rest.impl.PrimarySearchRestClientService;
 
 @Service
 public class UpsertOfficersService {
 
-    private final OfficersSearchRestClientService officersSearchRestClientService;
+    private final PrimarySearchRestClientService primarySearchRestClientService;
 
     private final OfficersUpsertRequestService officersUpsertRequestService;
 
-    public UpsertOfficersService(OfficersSearchRestClientService officersSearchRestClientService,
+    public UpsertOfficersService(PrimarySearchRestClientService primarySearchRestClientService,
             OfficersUpsertRequestService officersUpsertRequestService) {
-        this.officersSearchRestClientService = officersSearchRestClientService;
+        this.primarySearchRestClientService = primarySearchRestClientService;
         this.officersUpsertRequestService = officersUpsertRequestService;
     }
 
@@ -41,7 +41,7 @@ public class UpsertOfficersService {
         }
 
         try {
-            officersSearchRestClientService.upsert(updateRequest);
+            primarySearchRestClientService.upsert(updateRequest);
         } catch (IOException e) {
             getLogger().error("IOException when upserting an officer to primary search "
                     + "index", logMap);

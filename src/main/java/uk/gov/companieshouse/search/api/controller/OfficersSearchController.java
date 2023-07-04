@@ -23,12 +23,10 @@ import uk.gov.companieshouse.search.api.service.upsert.officers.UpsertOfficersSe
 @RestController
 public class OfficersSearchController {
 
+    private static final String OFFICER_SEARCH_TYPE = "officer";
     private final ApiToResponseMapper apiToResponseMapper;
-
     private final UpsertOfficersService upsertOfficersService;
-
     private final PrimarySearchDeleteService primarySearchDeleteService;
-    private final String OFFICER_SEARCH_TYPE = "officer";
 
     public OfficersSearchController(ApiToResponseMapper apiToResponseMapper,
             UpsertOfficersService upsertOfficersService, PrimarySearchDeleteService primarySearchDeleteService) {

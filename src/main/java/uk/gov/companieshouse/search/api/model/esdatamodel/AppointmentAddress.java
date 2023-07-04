@@ -1,5 +1,7 @@
 package uk.gov.companieshouse.search.api.model.esdatamodel;
 
+import java.util.Objects;
+
 public class AppointmentAddress {
 
     private final String addressLine1;
@@ -12,7 +14,7 @@ public class AppointmentAddress {
     private final String premises;
     private final String region;
 
-    public AppointmentAddress(Builder builder) {
+    private AppointmentAddress(Builder builder) {
         addressLine1 = builder.addressLine1;
         addressLine2 = builder.addressLine2;
         careOf = builder.careOf;
@@ -60,39 +62,94 @@ public class AppointmentAddress {
         return region;
     }
 
+
     public static final class Builder {
 
-        private final String addressLine1;
-        private final String addressLine2;
-        private final String careOf;
-        private final String country;
-        private final String locality;
-        private final String poBox;
-        private final String postalCode;
-        private final String premises;
-        private final String region;
+        private String addressLine1;
+        private String addressLine2;
+        private String careOf;
+        private String country;
+        private String locality;
+        private String poBox;
+        private String postalCode;
+        private String premises;
+        private String region;
 
-        private Builder(String addressLine1, String addressLine2, String careOf, String country, String locality,
-                String poBox, String postalCode, String premises, String region) {
-            this.addressLine1 = addressLine1;
-            this.addressLine2 = addressLine2;
-            this.careOf = careOf;
-            this.country = country;
-            this.locality = locality;
-            this.poBox = poBox;
-            this.postalCode = postalCode;
-            this.premises = premises;
-            this.region = region;
+        private Builder() {
         }
 
-        public static Builder builder(String addressLine1, String addressLine2, String careOf, String country,
-                String locality, String poBox, String postalCode, String premises, String region) {
-            return new Builder(addressLine1, addressLine2, careOf, country, locality, poBox, postalCode, premises,
-                    region);
+        public static Builder builder() {
+            return new Builder();
+        }
+
+        public Builder addressLine1(String addressLine1) {
+            this.addressLine1 = addressLine1;
+            return this;
+        }
+
+        public Builder addressLine2(String addressLine2) {
+            this.addressLine2 = addressLine2;
+            return this;
+        }
+
+        public Builder careOf(String careOf) {
+            this.careOf = careOf;
+            return this;
+        }
+
+        public Builder country(String country) {
+            this.country = country;
+            return this;
+        }
+
+        public Builder locality(String locality) {
+            this.locality = locality;
+            return this;
+        }
+
+        public Builder poBox(String poBox) {
+            this.poBox = poBox;
+            return this;
+        }
+
+        public Builder postalCode(String postalCode) {
+            this.postalCode = postalCode;
+            return this;
+        }
+
+        public Builder premises(String premises) {
+            this.premises = premises;
+            return this;
+        }
+
+        public Builder region(String region) {
+            this.region = region;
+            return this;
         }
 
         public AppointmentAddress build() {
             return new AppointmentAddress(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AppointmentAddress that = (AppointmentAddress) o;
+        return Objects.equals(addressLine1, that.addressLine1) && Objects.equals(addressLine2,
+                that.addressLine2) && Objects.equals(careOf, that.careOf) && Objects.equals(country,
+                that.country) && Objects.equals(locality, that.locality) && Objects.equals(poBox,
+                that.poBox) && Objects.equals(postalCode, that.postalCode) && Objects.equals(premises,
+                that.premises) && Objects.equals(region, that.region);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(addressLine1, addressLine2, careOf, country, locality, poBox, postalCode, premises, region);
     }
 }
