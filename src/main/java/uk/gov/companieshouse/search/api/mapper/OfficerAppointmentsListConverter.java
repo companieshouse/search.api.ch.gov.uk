@@ -20,7 +20,6 @@ import uk.gov.companieshouse.search.api.util.AlphaKeyMapper;
 @Component
 public class OfficerAppointmentsListConverter implements Converter<AppointmentList, OfficerSearchDocument> {
 
-    private static final String RESOURCE_KIND = "searchresults#officer";
     private static final String CLEAN_NAME_ELEMENTS_REGEX = "^[\\W_]+";
     private final ConversionService officerAppointmentSummaryConverter;
     private final ConversionService appointmentAddressConverter;
@@ -74,7 +73,6 @@ public class OfficerAppointmentsListConverter implements Converter<AppointmentLi
                                         .corporateOfficer(appointmentList.getIsCorporateOfficer()),
                                 OfficerSearchAppointment.class))
                         .collect(Collectors.toList()))
-                .kind(RESOURCE_KIND)
                 .links(new OfficerSearchLinks(appointmentList.getLinks().getSelf()))
                 .resignedCount(appointmentList.getResignedCount())
                 .sortKey(sortKey)

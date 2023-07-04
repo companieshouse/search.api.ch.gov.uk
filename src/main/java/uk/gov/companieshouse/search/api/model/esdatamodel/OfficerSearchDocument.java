@@ -6,6 +6,8 @@ import uk.gov.companieshouse.api.officer.DateOfBirth;
 
 public class OfficerSearchDocument {
 
+    private static final String RESOURCE_KIND = "searchresults#officer";
+
     private final long activeCount;
     private final DateOfBirth dateOfBirth;
     private final long inactiveCount;
@@ -69,12 +71,13 @@ public class OfficerSearchDocument {
         private DateOfBirth dateOfBirth;
         private long inactiveCount;
         private List<OfficerSearchAppointment> items;
-        private String kind;
+        private final String kind;
         private OfficerSearchLinks links;
         private long resignedCount;
         private String sortKey;
 
         private Builder() {
+            this.kind = RESOURCE_KIND;
         }
 
         public static Builder builder() {
@@ -98,11 +101,6 @@ public class OfficerSearchDocument {
 
         public Builder items(List<OfficerSearchAppointment> items) {
             this.items = items;
-            return this;
-        }
-
-        public Builder kind(String kind) {
-            this.kind = kind;
             return this;
         }
 

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public class OfficerSearchAppointment {
 
+    private static final String RECORD_TYPE = "officers";
     private AppointmentAddress address;
     private final LocalDate appointedBefore;
     private final LocalDate appointedOn;
@@ -20,6 +21,7 @@ public class OfficerSearchAppointment {
     private final String surname;
     private final String title;
     private String wildcardKey;
+    private final String recordType;
 
     private OfficerSearchAppointment(Builder builder) {
         address = builder.address;
@@ -38,6 +40,7 @@ public class OfficerSearchAppointment {
         surname = builder.surname;
         title = builder.title;
         wildcardKey = builder.wildcardKey;
+        recordType = builder.recordType;
     }
 
     public AppointmentAddress getAddress() {
@@ -114,6 +117,10 @@ public class OfficerSearchAppointment {
         return this;
     }
 
+    public String getRecordType() {
+        return recordType;
+    }
+
     public static final class Builder {
 
         private AppointmentAddress address;
@@ -132,8 +139,10 @@ public class OfficerSearchAppointment {
         private String surname;
         private String title;
         private String wildcardKey;
+        private final String recordType;
 
         private Builder() {
+            this.recordType = RECORD_TYPE;
         }
 
         public static Builder builder() {

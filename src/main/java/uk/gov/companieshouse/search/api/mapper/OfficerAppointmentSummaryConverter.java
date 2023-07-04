@@ -20,14 +20,21 @@ public class OfficerAppointmentSummaryConverter implements
         boolean isCorporateOfficer = converterModel.isCorporateOfficer();
         Pair<String, String> corporateNameEndings = getCorporateNameEndings(appointment.getName());
 
-//        OfficerSearchAppointment searchAppointment = OfficerSearchAppointment.Builder.builder()
-//                .officerRole(appointment.getOfficerRole().toString())
-//                .fullAddress(getFullAddressString(converterModel.getOfficerAppointmentSummary().getAddress()))
-//                .build();
-//
-//        if (converterModel.getOfficerAppointmentSummary())
-//
-//        return searchAppointment;
+        OfficerSearchAppointment searchAppointment = OfficerSearchAppointment.Builder.builder()
+                .officerRole(appointment.getOfficerRole().toString())
+                .fullAddress(getFullAddressString(appointment.getAddress()))
+                .appointedOn(appointment.getAppointedOn())
+                .appointedBefore(appointment.getAppointedBefore())
+                .resignedOn(appointment.getResignedOn())
+                .build();
+
+        if (converterModel.isCorporateOfficer()) {
+            searchAppointment.nameEn
+        } else {
+
+        }
+
+        return searchAppointment;
 
         return OfficerSearchAppointment.Builder.builder()
                 .appointedOn(appointment.getAppointedOn())
