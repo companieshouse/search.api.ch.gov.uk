@@ -20,11 +20,15 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 @Service
 public class PrimarySearchDeleteService {
 
-    @Autowired
-    private PrimarySearchRestClientService primarySearchRestClientService;
+    private final PrimarySearchRestClientService primarySearchRestClientService;
 
-    @Autowired
-    private PrimarySearchDeleteRequestService primarySearchDeleteRequestService;
+    private final PrimarySearchDeleteRequestService primarySearchDeleteRequestService;
+
+    public PrimarySearchDeleteService(PrimarySearchRestClientService primarySearchRestClientService,
+            PrimarySearchDeleteRequestService primarySearchDeleteRequestService) {
+        this.primarySearchRestClientService = primarySearchRestClientService;
+        this.primarySearchDeleteRequestService = primarySearchDeleteRequestService;
+    }
 
     public ResponseObject deleteOfficer(SearchType searchType) {
 

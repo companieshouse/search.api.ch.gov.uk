@@ -13,8 +13,11 @@ import java.util.Map;
 public class PrimarySearchDeleteRequestService {
     private static final String INDEX = "PRIMARY_SEARCH_INDEX";
     private static final String TYPE = "primary_search";
-    @Autowired
-    private EnvironmentReader environmentReader;
+    private final EnvironmentReader environmentReader;
+
+    public PrimarySearchDeleteRequestService(EnvironmentReader environmentReader) {
+        this.environmentReader = environmentReader;
+    }
 
     public DeleteRequest createDeleteRequest(SearchType searchType) {
 
