@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import java.util.NoSuchElementException;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.convert.ConversionService;
 import uk.gov.companieshouse.api.officer.AppointmentList;
 import uk.gov.companieshouse.environment.EnvironmentReader;
-import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.esdatamodel.OfficerSearchDocument;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,7 +35,8 @@ class OfficersUpsertRequestServiceTest {
     private AppointmentList appointmentList;
 
     private final OfficerSearchDocument officerSearchDocument = OfficerSearchDocument.Builder.builder()
-            .sortKey("sort key").build();
+            .sortKey("sort key")
+            .build();
 
     @BeforeEach
     void setUp() {
@@ -57,12 +58,9 @@ class OfficersUpsertRequestServiceTest {
     }
 
     @Test
-    void serviceThrowsUpsertException() {
+    void serviceThrowsNoSuchElementException() {
         when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
 
-        Exception e = assertThrows(UpsertException.class,
-                () -> service.createUpdateRequest(appointmentList, OFFICER_ID));
-
-        assertEquals("Unable to create update request", e.getMessage());
+        assertThrows(NoSuchElementException.class, () -> service.createUpdateRequest(appointmentList, OFFICER_ID));
     }
 }
