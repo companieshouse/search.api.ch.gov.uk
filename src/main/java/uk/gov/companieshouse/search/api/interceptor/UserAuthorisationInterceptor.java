@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.search.api.interceptor;
 
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.REQUEST_ID_HEADER_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;

@@ -63,9 +63,9 @@ class OfficerAppointmentsListConverterTest {
                 .address(new Address())
                 .resignedOn(DATE)
                 .nameElements(new NameElements()
-                        .forename("-forename")
+                        .forename("-%forename")
                         .surname(" surname")
-                        .otherForenames("_john"));
+                        .otherForenames("_john-tester"));
 
         AppointmentList appointmentList = new AppointmentList()
                 .isCorporateOfficer(false)
@@ -87,7 +87,7 @@ class OfficerAppointmentsListConverterTest {
                 .nameElements(new NameElements()
                         .forename("forename")
                         .surname("surname")
-                        .otherForenames("john"));
+                        .otherForenames("john-tester"));
 
         OfficerSearchAppointment appointment = new OfficerSearchAppointment();
 
@@ -120,120 +120,6 @@ class OfficerAppointmentsListConverterTest {
                         .lastResignedOn(DATE),
                 OfficerSearchAppointment.class);
         verify(appointmentAddressConverter).convert(expectedAppointmentSummary.getAddress(), AppointmentAddress.class);
-    }
-
-    @Test
-    @DisplayName("Should successfully convert officers appointment list for false positive corporate officer to officers search document")
-    void convertFalsePositiveCorporateOfficer() {
-        // given
-
-        // this test ensures a bug copied over from chs-backend still passes
-        // e.g. when officer surname is one word (DOES NOT contain whitespace) it should be considered a
-        // corporate officer
-        // if the bug is to be fixed then a surname which DOES contain whitespace should indicate the officer is
-        // a corporate one - after all other checks have been performed regarding dob, forename and other forenames
-        OfficerAppointmentSummary officerAppointmentSummary = new OfficerAppointmentSummary()
-                .address(new Address())
-                .nameElements(new NameElements()
-                        .surname("CORPORATE"));
-
-        AppointmentList appointmentList = new AppointmentList()
-                .isCorporateOfficer(false)
-                .activeCount(1)
-                .inactiveCount(0)
-                .resignedCount(2)
-                .name("corporate officer")
-                .links(new OfficerLinkTypes().self("/officers/officerId/appointments"))
-                .items(List.of(officerAppointmentSummary,
-                        officerAppointmentSummary,
-                        officerAppointmentSummary.resignedOn(DATE)));
-
-        OfficerSearchAppointment appointment = new OfficerSearchAppointment();
-
-        OfficerSearchDocument expected = Builder.builder()
-                .activeCount(1)
-                .inactiveCount(0)
-                .resignedCount(2)
-                .links(new OfficerSearchLinks("/officers/officerId/appointments"))
-                .items(List.of(appointment, appointment, appointment))
-                .sortKey("corporate officer2")
-                .build();
-
-        when(alphaKeyMapper.makeSortKey(any())).thenReturn("corporate officer2");
-        when(officerAppointmentSummaryConverter.convert(any(), eq(OfficerSearchAppointment.class))).thenReturn(
-                appointment);
-        when(appointmentAddressConverter.convert(any(), eq(AppointmentAddress.class))).thenReturn(
-                AppointmentAddress.Builder.builder().build());
-
-        // when
-        OfficerSearchDocument actual = converter.convert(appointmentList);
-
-        // then
-        assertEquals(expected, actual);
-        verify(alphaKeyMapper).makeSortKey(appointmentList);
-        verify(officerAppointmentSummaryConverter, times(3)).convert(new OfficerAppointmentConverterModel()
-                        .officerAppointmentSummary(officerAppointmentSummary)
-                        .lastResignedOn(DATE)
-                        .corporateOfficer(true),
-                OfficerSearchAppointment.class);
-        verify(appointmentAddressConverter).convert(officerAppointmentSummary.getAddress(), AppointmentAddress.class);
-    }
-
-    @Test
-    @DisplayName("Should successfully convert officers appointment list for corporate officer incorrectly considered to be natural to officers search document")
-    void convertFalseNegativeCorporateOfficer() {
-        // given
-
-        // this test ensures a bug copied over from chs-backend still passes
-        // e.g. when officer surname is multiple words (DOES contain whitespace) it should be considered a
-        // natural officer
-        // if the bug is to be fixed then a surname which DOES contain whitespace should indicate the officer is
-        // a corporate one - after all other checks have been performed regarding dob, forename and other forenames
-        OfficerAppointmentSummary officerAppointmentSummary = new OfficerAppointmentSummary()
-                .address(new Address())
-                .nameElements(new NameElements()
-                        .surname("CORPORATE OFFICER CONSIDERED NATURAL LTD"));
-
-        AppointmentList appointmentList = new AppointmentList()
-                .isCorporateOfficer(false)
-                .activeCount(1)
-                .inactiveCount(0)
-                .resignedCount(2)
-                .name("natural officer")
-                .links(new OfficerLinkTypes().self("/officers/officerId/appointments"))
-                .items(List.of(officerAppointmentSummary,
-                        officerAppointmentSummary,
-                        officerAppointmentSummary.resignedOn(DATE)));
-
-        OfficerSearchAppointment appointment = new OfficerSearchAppointment();
-
-        OfficerSearchDocument expected = Builder.builder()
-                .activeCount(1)
-                .inactiveCount(0)
-                .resignedCount(2)
-                .links(new OfficerSearchLinks("/officers/officerId/appointments"))
-                .items(List.of(appointment, appointment, appointment))
-                .sortKey("natural officer2")
-                .build();
-
-        when(alphaKeyMapper.makeSortKey(any())).thenReturn("natural officer2");
-        when(officerAppointmentSummaryConverter.convert(any(), eq(OfficerSearchAppointment.class))).thenReturn(
-                appointment);
-        when(appointmentAddressConverter.convert(any(), eq(AppointmentAddress.class))).thenReturn(
-                AppointmentAddress.Builder.builder().build());
-
-        // when
-        OfficerSearchDocument actual = converter.convert(appointmentList);
-
-        // then
-        assertEquals(expected, actual);
-        verify(alphaKeyMapper).makeSortKey(appointmentList);
-        verify(officerAppointmentSummaryConverter, times(3)).convert(new OfficerAppointmentConverterModel()
-                        .officerAppointmentSummary(officerAppointmentSummary)
-                        .lastResignedOn(DATE)
-                        .corporateOfficer(false),
-                OfficerSearchAppointment.class);
-        verify(appointmentAddressConverter).convert(officerAppointmentSummary.getAddress(), AppointmentAddress.class);
     }
 
     @Test

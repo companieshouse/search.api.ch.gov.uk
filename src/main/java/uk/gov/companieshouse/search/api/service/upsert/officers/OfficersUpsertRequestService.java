@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.search.api.service.upsert.officers;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Map;
@@ -23,10 +22,12 @@ public class OfficersUpsertRequestService {
     private static final String INDEX = "PRIMARY_SEARCH_INDEX";
     private static final String TYPE = "primary_search";
     private final ConversionService conversionService;
+    private final ObjectMapper mapper;
 
-    public OfficersUpsertRequestService(EnvironmentReader environmentReader, @Lazy ConversionService conversionService) {
+    public OfficersUpsertRequestService(EnvironmentReader environmentReader, @Lazy ConversionService conversionService, ObjectMapper mapper) {
         this.environmentReader = environmentReader;
         this.conversionService = conversionService;
+        this.mapper = mapper;
     }
 
     public UpdateRequest createUpdateRequest(AppointmentList appointmentList, String officerId)
@@ -39,8 +40,6 @@ public class OfficersUpsertRequestService {
                 .orElseThrow();
 
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
             String jsonString = mapper.writeValueAsString(documentToBeUpserted);
 
             UpdateRequest request = new UpdateRequest(index, TYPE, officerId)

@@ -4,7 +4,6 @@ import com.google.common.collect.Iterables;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
@@ -26,7 +25,7 @@ public class OfficerAppointmentsListConverter implements Converter<AppointmentLi
     private final AlphaKeyMapper alphaKeyMapper;
 
     public OfficerAppointmentsListConverter(@Lazy ConversionService officerAppointmentSummaryConverter,
-            ConversionService appointmentAddressConverter, AlphaKeyMapper alphaKeyMapper) {
+            @Lazy ConversionService appointmentAddressConverter, AlphaKeyMapper alphaKeyMapper) {
         this.officerAppointmentSummaryConverter = officerAppointmentSummaryConverter;
         this.appointmentAddressConverter = appointmentAddressConverter;
         this.alphaKeyMapper = alphaKeyMapper;
@@ -53,13 +52,6 @@ public class OfficerAppointmentsListConverter implements Converter<AppointmentLi
                                     .ifPresent(surname -> elements.setSurname(
                                             surname.replaceAll(CLEAN_NAME_ELEMENTS_REGEX, "")));
                         }));
-
-        if (appointmentList.getDateOfBirth() == null &&
-                StringUtils.isBlank(appointmentList.getItems().get(0).getNameElements().getForename()) &&
-                StringUtils.isBlank(appointmentList.getItems().get(0).getNameElements().getOtherForenames()) &&
-                !appointmentList.getItems().get(0).getNameElements().getSurname().contains(" ")) {
-            appointmentList.setIsCorporateOfficer(true);
-        }
 
         OfficerSearchDocument document = OfficerSearchDocument.Builder.builder()
                 .activeCount(appointmentList.getActiveCount())

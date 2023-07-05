@@ -4,7 +4,6 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
 import java.util.Map;
 import javax.validation.Valid;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
