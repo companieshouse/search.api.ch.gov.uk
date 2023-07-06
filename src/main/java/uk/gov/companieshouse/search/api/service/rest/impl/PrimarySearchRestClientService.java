@@ -18,10 +18,9 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Service
 public class PrimarySearchRestClientService implements RestClientService {
 
-    @Qualifier("primaryClient")
     private final RestHighLevelClient primaryClient;
 
-    public PrimarySearchRestClientService(RestHighLevelClient primaryClient) {
+    public PrimarySearchRestClientService(@Qualifier("primaryClient") RestHighLevelClient primaryClient) {
         this.primaryClient = primaryClient;
     }
 
