@@ -53,16 +53,12 @@ class AlphaKeyMapperTest {
                 .items(Collections.singletonList(new OfficerAppointmentSummary()
                         .name("corporate officer name ltd")
                 ));
-        AlphaKeyResponse response = new AlphaKeyResponse();
-        response.setOrderedAlphaKey("corporate officer name ltd");
-
-        when(alphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(response);
 
         // when
         String actual = alphaKeyMapper.makeSortKey(appointmentList);
 
         // then
-        assertEquals("corporate officer name ltd2", actual);
-        verify(alphaKeyService).getAlphaKeyForCorporateName("corporate officer name ltd");
+        assertEquals("2", actual); // sortkey for corporate officers is just set to 2 for now
+        verifyNoInteractions(alphaKeyService);
     }
 }
