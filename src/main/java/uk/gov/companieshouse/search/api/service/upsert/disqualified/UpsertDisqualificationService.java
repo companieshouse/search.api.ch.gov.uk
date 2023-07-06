@@ -2,7 +2,6 @@ package uk.gov.companieshouse.search.api.service.upsert.disqualified;
 
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.update.UpdateRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
@@ -21,11 +20,14 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 @Service
 public class UpsertDisqualificationService {
 
-    @Autowired
-    private PrimarySearchRestClientService primarySearchRestClientService;
+    private final PrimarySearchRestClientService primarySearchRestClientService;
+    private final DisqualifiedUpsertRequestService disqualifiedUpsertRequestService;
 
-    @Autowired
-    private DisqualifiedUpsertRequestService disqualifiedUpsertRequestService;
+    public UpsertDisqualificationService(PrimarySearchRestClientService primarySearchRestClientService,
+            DisqualifiedUpsertRequestService disqualifiedUpsertRequestService) {
+        this.primarySearchRestClientService = primarySearchRestClientService;
+        this.disqualifiedUpsertRequestService = disqualifiedUpsertRequestService;
+    }
 
     /**
      * Upserts a new document to disqualified search index for an officer.

@@ -7,7 +7,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
@@ -19,9 +18,12 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Service
 public class PrimarySearchRestClientService implements RestClientService {
 
-    @Autowired
     @Qualifier("primaryClient")
-    private RestHighLevelClient primaryClient;
+    private final RestHighLevelClient primaryClient;
+
+    public PrimarySearchRestClientService(RestHighLevelClient primaryClient) {
+        this.primaryClient = primaryClient;
+    }
 
     @Override
     public SearchResponse search(SearchRequest searchRequest) throws IOException {

@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.search.api.util;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.Pair;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CorporateNameEndingsEnum;
@@ -25,6 +26,8 @@ public class OfficerNameUtils {
     }
 
     public static String getPersonTitle(String title) {
-        return PERSON_TITLES.contains(title.toLowerCase()) ? title : null;
+        return Optional.ofNullable(title)
+                .filter(t -> PERSON_TITLES.contains(t.toLowerCase()))
+                .orElse(null);
     }
 }

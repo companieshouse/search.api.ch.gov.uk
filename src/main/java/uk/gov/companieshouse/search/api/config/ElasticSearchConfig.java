@@ -23,7 +23,6 @@ public class ElasticSearchConfig {
     private static final String DISSOLVED_SEARCH_URL = "DISSOLVED_SEARCH_URL";
     private static final String ADVANCED_SEARCH_URL = "ADVANCED_SEARCH_URL";
     private static final String PRIMARY_SEARCH_URL = "PRIMARY_SEARCH_URL";
-    private static final String OFFICERS_SEARCH_URL = "OFFICERS_SEARCH_URL";
 
     @Qualifier("alphabeticalClient")
     @Bean(destroyMethod = "close")

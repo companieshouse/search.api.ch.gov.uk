@@ -2,7 +2,6 @@ package uk.gov.companieshouse.search.api.controller;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,16 +26,18 @@ import java.util.Map;
 @RequestMapping(value = "/disqualified-search", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DisqualifiedSearchController {
 
-    @Autowired
-    private ApiToResponseMapper apiToResponseMapper;
+    private static final String DISQUALIFICATION_SEARCH_TYPE = "disqualified-officer";
+    private final ApiToResponseMapper apiToResponseMapper;
+    private final UpsertDisqualificationService upsertDisqualificationService;
+    private final PrimarySearchDeleteService primarySearchDeleteService;
 
-    @Autowired
-    private UpsertDisqualificationService upsertDisqualificationService;
-
-    @Autowired
-    private PrimarySearchDeleteService primarySearchDeleteService;
-
-    private final String DISQUALIFICATION_SEARCH_TYPE = "disqualified-officer";
+    public DisqualifiedSearchController(ApiToResponseMapper apiToResponseMapper,
+            UpsertDisqualificationService upsertDisqualificationService,
+            PrimarySearchDeleteService primarySearchDeleteService) {
+        this.apiToResponseMapper = apiToResponseMapper;
+        this.upsertDisqualificationService = upsertDisqualificationService;
+        this.primarySearchDeleteService = primarySearchDeleteService;
+    }
 
     @PutMapping("/disqualified-officers/{officer_id}")
     public ResponseEntity<Object> upsertOfficer(@PathVariable("officer_id") String officerId,

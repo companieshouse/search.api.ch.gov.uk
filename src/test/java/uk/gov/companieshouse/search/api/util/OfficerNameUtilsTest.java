@@ -55,4 +55,15 @@ class OfficerNameUtilsTest {
         // then
         assertNull(actual);
     }
+
+    @Test
+    void shouldGetNullPersonTitleWhenNullProvided() {
+        // given
+
+        // when
+        String actual = getPersonTitle(null);
+
+        // then
+        assertNull(actual);
+    }
 }

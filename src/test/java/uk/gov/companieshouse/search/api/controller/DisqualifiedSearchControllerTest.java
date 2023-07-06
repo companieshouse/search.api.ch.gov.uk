@@ -3,6 +3,7 @@ package uk.gov.companieshouse.search.api.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -36,11 +37,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DisqualifiedSearchControllerTest {
 
-    private final String OFFICER_ID = "12345encode";
-    private final String PRIMARY_SEARCH_TYPE = "disqualified-officer";
+    private static final String OFFICER_ID = "12345encode";
 
     @Mock
     private ApiToResponseMapper mockApiToResponseMapper;
@@ -61,21 +60,21 @@ class DisqualifiedSearchControllerTest {
     @DisplayName("Test upsert returns a HTTP 200 Ok Response if the natural officer Id is presented")
     void testUpsertWithCorrectNaturalOfficerIdReturnsOkRequest() {
 
-        testReturnsOkResponse("12345encode", false);
+        testReturnsOkResponse(false);
     }
 
     @Test
     @DisplayName("Test upsert returns a HTTP 200 Ok Response if the corporate officer Id is presented")
     void testUpsertWithCorrectCorporateOfficerIdReturnsOkRequest() {
 
-        testReturnsOkResponse("12345encode", true);
+        testReturnsOkResponse(true);
     }
 
     @Test
     @DisplayName("Test upsert returns a HTTP 400 Bad request if the officer Id is an empty string")
     void testUpsertWithEmptyStringOfficerIdReturnsBadRequest() {
 
-        testReturnsBadRequest("");
+        testReturnsBadRequest();
     }
 
     @Test
@@ -83,11 +82,12 @@ class DisqualifiedSearchControllerTest {
     void testDeleteWithCorrectOfficerIdReturnsOkRequest() {
         when(primarySearchDeleteService.deleteOfficer(any()))
                 .thenReturn(new ResponseObject(DOCUMENT_DELETED));
-        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+        when(mockApiToResponseMapper.map(any()))
                 .thenReturn(ResponseEntity.status(OK).build());
 
         ResponseEntity<?> responseEntity = disqualifiedSearchController.deleteOfficer(OFFICER_ID);
 
+        verify(mockApiToResponseMapper).map(responseObjectCaptor.capture());
         assertEquals(DOCUMENT_DELETED, responseObjectCaptor.getValue().getStatus());
         assertNotNull(responseEntity);
         assertEquals(OK, responseEntity.getStatusCode());
@@ -96,39 +96,42 @@ class DisqualifiedSearchControllerTest {
     @Test
     @DisplayName("Test delete returns a HTTP 404 Response if the officer Id is not presented")
     void testDeleteWithEmptyOfficerIdReturnsNotFound() {
-        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+        when(mockApiToResponseMapper.map(any()))
                 .thenReturn(ResponseEntity.status(NOT_FOUND).build());
 
         ResponseEntity<?> responseEntity = disqualifiedSearchController.deleteOfficer("");
 
+        verify(mockApiToResponseMapper).map(responseObjectCaptor.capture());
         assertEquals(DELETE_NOT_FOUND, responseObjectCaptor.getValue().getStatus());
         assertNotNull(responseEntity);
         assertEquals(NOT_FOUND, responseEntity.getStatusCode());
     }
 
-    private void testReturnsOkResponse(String officerId, boolean corporate) {
+    private void testReturnsOkResponse(boolean corporate) {
         OfficerDisqualification officer = createOfficer(corporate);
 
-        when(upsertDisqualificationService.upsertDisqualified(officer, officerId))
+        when(upsertDisqualificationService.upsertDisqualified(officer, "12345encode"))
                 .thenReturn(new ResponseObject(DOCUMENT_UPSERTED));
-        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+        when(mockApiToResponseMapper.map(any()))
                 .thenReturn(ResponseEntity.status(OK).build());
 
-        ResponseEntity<?> responseEntity = disqualifiedSearchController.upsertOfficer(officerId, officer);
+        ResponseEntity<?> responseEntity = disqualifiedSearchController.upsertOfficer("12345encode", officer);
 
+        verify(mockApiToResponseMapper).map(responseObjectCaptor.capture());
         assertEquals(DOCUMENT_UPSERTED, responseObjectCaptor.getValue().getStatus());
         assertNotNull(responseEntity);
         assertEquals(OK, responseEntity.getStatusCode());
     }
 
-    private void testReturnsBadRequest(String officerId) {
+    private void testReturnsBadRequest() {
         OfficerDisqualification officer = createOfficer(false);
 
-        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+        when(mockApiToResponseMapper.map(any()))
             .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
 
-        ResponseEntity<?> responseEntity = disqualifiedSearchController.upsertOfficer(officerId, officer);
+        ResponseEntity<?> responseEntity = disqualifiedSearchController.upsertOfficer("", officer);
 
+        verify(mockApiToResponseMapper).map(responseObjectCaptor.capture());
         assertEquals(UPSERT_ERROR, responseObjectCaptor.getValue().getStatus());
         assertNotNull(responseEntity);
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
@@ -137,11 +140,11 @@ class DisqualifiedSearchControllerTest {
     private OfficerDisqualification createOfficer(boolean corporate) {
         OfficerDisqualification officer = new OfficerDisqualification();
 
-        if (! corporate ) officer.setDateOfBirth(buildDateOfBirth(officer));
+        if (! corporate ) officer.setDateOfBirth(buildDateOfBirth());
 
         officer.setKind("searchresults#disqualified-officer");
 
-        officer.setItems(buildItems(officer, corporate));
+        officer.setItems(buildItems(corporate));
 
         officer.setSortKey(officer.getItems().get(0).getWildcardKey());
 
@@ -152,7 +155,7 @@ class DisqualifiedSearchControllerTest {
         return officer;
     }
 
-    public DateOfBirth buildDateOfBirth(OfficerDisqualification officer) {
+    public DateOfBirth buildDateOfBirth() {
         DateOfBirth dateOfBirth = new DateOfBirth();
         dateOfBirth.setYear("1990");
         dateOfBirth.setMonth("06");
@@ -161,7 +164,7 @@ class DisqualifiedSearchControllerTest {
         return dateOfBirth;
     }
 
-    public List<Item> buildItems(OfficerDisqualification officer, boolean corporate) {
+    public List<Item> buildItems(boolean corporate) {
         Item item = new Item();
         List<Item> items = new ArrayList<>();
 
