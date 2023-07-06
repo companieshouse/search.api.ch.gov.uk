@@ -1,8 +1,8 @@
 package uk.gov.companieshouse.search.api.model;
 
 public class SearchType {
-    private String officerId;
-    private String primarySearchType;
+    private final String officerId;
+    private final String primarySearchType;
 
     public SearchType(String officerId, String primarySearchType) {
         this.officerId = officerId;
