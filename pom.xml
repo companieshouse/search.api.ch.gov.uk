@@ -217,17 +217,17 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <fork>true</fork>
-                    <meminitial>128m</meminitial>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <maxmem>512m</maxmem>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                <version>${maven-compiler-plugin.version}</version>-->
+<!--                <configuration>-->
+<!--                    <fork>true</fork>-->
+<!--                    <meminitial>128m</meminitial>-->
+<!--                    <encoding>${project.build.sourceEncoding}</encoding>-->
+<!--                    <maxmem>512m</maxmem>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
