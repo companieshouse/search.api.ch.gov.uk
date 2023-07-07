@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.search.api.interceptor;
 
-import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.REQUEST_ID_HEADER_NAME;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
@@ -36,7 +37,8 @@ public class UserAuthorisationInterceptor extends HandlerInterceptorAdapter {
         DataMap.Builder builder = new DataMap.Builder()
                 .requestId(request.getHeader(REQUEST_ID_HEADER_NAME));
 
-        if(AuthorisationUtil.hasInternalUserRole(request) && !GET.matches(request.getMethod())) {
+        if(AuthorisationUtil.hasInternalUserRole(request) &&
+                (PUT.matches(request.getMethod()) || DELETE.matches(request.getMethod()))) {
             getLogger().info("internal API is permitted to update the resource", builder.build().getLogMap());
             return true;
         } else {
