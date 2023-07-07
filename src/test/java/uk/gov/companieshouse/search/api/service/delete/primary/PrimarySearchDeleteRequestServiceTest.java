@@ -14,7 +14,7 @@ import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.model.SearchType;
 
 @ExtendWith(MockitoExtension.class)
-public class PrimarySearchDeleteRequestServiceTest {
+class PrimarySearchDeleteRequestServiceTest {
 
     private final String INDEX = "primary_search2";
     private final String TYPE = "primary_search";

@@ -21,7 +21,7 @@ import uk.gov.companieshouse.search.api.service.rest.impl.PrimarySearchRestClien
 import java.io.IOException;
 
 @ExtendWith(MockitoExtension.class)
-public class PrimarySearchDeleteServiceTest {
+class PrimarySearchDeleteServiceTest {
     private final SearchType searchType = new SearchType("officerId", "disqualified-officer");
     private static final DeleteRequest REQUEST = new DeleteRequest();
     private static final String INDEX = "primary_search";

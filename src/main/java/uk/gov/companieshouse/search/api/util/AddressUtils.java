@@ -6,6 +6,9 @@ import uk.gov.companieshouse.api.officer.Address;
 
 public class AddressUtils {
 
+    private AddressUtils() {
+    }
+
     public static String getFullAddressString(Address address) {
         return Stream.of(address.getCareOf(), address.getPoBox(), getPremiseAddressLine1(address), address.getAddressLine2(),
                 address.getLocality(), address.getRegion(), address.getCountry(), address.getPostalCode())

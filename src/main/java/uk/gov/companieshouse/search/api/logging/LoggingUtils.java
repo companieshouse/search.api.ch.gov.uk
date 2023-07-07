@@ -10,7 +10,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import uk.gov.companieshouse.api.disqualification.Item;
-import uk.gov.companieshouse.api.officer.OfficerAppointmentSummary;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.logging.util.DataMap;

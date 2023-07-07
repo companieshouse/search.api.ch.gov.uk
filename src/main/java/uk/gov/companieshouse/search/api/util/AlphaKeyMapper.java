@@ -3,16 +3,9 @@ package uk.gov.companieshouse.search.api.util;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.officer.AppointmentList;
 import uk.gov.companieshouse.api.officer.OfficerAppointmentSummary;
-import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 
 @Component
 public class AlphaKeyMapper {
-
-    private final AlphaKeyService alphaKeyService;
-
-    public AlphaKeyMapper(AlphaKeyService alphaKeyService) {
-        this.alphaKeyService = alphaKeyService;
-    }
 
     public String makeSortKey(AppointmentList appointmentList) {
         if (appointmentList.getIsCorporateOfficer()) {
