@@ -40,7 +40,6 @@
         <log4j.version>2.17.1</log4j.version>
 
         <!-- Maven and Surefire plugins -->
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
         <junit-platform-surefire-provider.version>1.2.0</junit-platform-surefire-provider.version>
@@ -217,17 +216,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                <version>${maven-compiler-plugin.version}</version>-->
-<!--                <configuration>-->
-<!--                    <fork>true</fork>-->
-<!--                    <meminitial>128m</meminitial>-->
-<!--                    <encoding>${project.build.sourceEncoding}</encoding>-->
-<!--                    <maxmem>512m</maxmem>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
