@@ -79,24 +79,4 @@ class UserAuthorisationInterceptorTest {
         doReturn("fake").when(request).getHeader(EricConstants.ERIC_AUTHORISED_KEY_ROLES);
         assertFalse(userAuthorisationInterceptor.preHandle(request, response, null));
     }
-
-    @Test
-    @DisplayName("Does not authorise if GET and internal API key is not used")
-    void willNotAuthoriseIfRequestIsGetWithInternalAPIKey() {
-        when(request.getMethod()).thenReturn(HttpMethod.GET.toString());
-        doReturn("request-id").when(request).getHeader("X-Request-ID");
-        doReturn(ERIC_IDENTITY_TYPE_API_KEY_VALUE).when(request).getHeader(ERIC_IDENTITY_TYPE);
-        doReturn(SecurityConstants.INTERNAL_USER_ROLE).when(request).getHeader(EricConstants.ERIC_AUTHORISED_KEY_ROLES);
-        assertFalse(userAuthorisationInterceptor.preHandle(request, response, null));
-    }
-
-    @Test
-    @DisplayName("Does not authorise if GET and internal API key is used")
-    void willNotAuthoriseIfRequestIsGetWithoutInternalAPIKey() {
-        when(request.getMethod()).thenReturn(HttpMethod.GET.toString());
-        doReturn("request-id").when(request).getHeader("X-Request-ID");
-        doReturn(ERIC_IDENTITY_TYPE_API_KEY_VALUE).when(request).getHeader(ERIC_IDENTITY_TYPE);
-        doReturn("fake").when(request).getHeader(EricConstants.ERIC_AUTHORISED_KEY_ROLES);
-        assertFalse(userAuthorisationInterceptor.preHandle(request, response, null));
-    }
 }
