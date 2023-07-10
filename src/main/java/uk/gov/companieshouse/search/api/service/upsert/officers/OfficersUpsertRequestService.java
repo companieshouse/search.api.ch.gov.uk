@@ -42,12 +42,8 @@ public class OfficersUpsertRequestService {
         try {
             String jsonString = mapper.writeValueAsString(documentToBeUpserted);
 
-            UpdateRequest request = new UpdateRequest(index, TYPE, officerId)
+            return new UpdateRequest(index, TYPE, officerId)
                     .docAsUpsert(true).doc(jsonString, XContentType.JSON);
-
-            LoggingUtils.getLogger().info("Attempt to upsert document if it does not exist", logMap);
-
-            return request;
 
         } catch (IOException e) {
             LoggingUtils.getLogger().error("Failed to update a document for appointmentList" + e.getMessage(), logMap);
