@@ -3,7 +3,6 @@ package uk.gov.companieshouse.search.api.service.upsert.disqualified;
 import uk.gov.companieshouse.api.disqualification.Item;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
 import uk.gov.companieshouse.environment.EnvironmentReader;
@@ -21,17 +20,18 @@ import javax.naming.ServiceUnavailableException;
 @Service
 public class DisqualifiedUpsertRequestService {
 
-    @Autowired
-    private DisqualifiedSearchUpsertRequest disqualifiedSearchUpsertRequest;
-
-    @Autowired
-    private EnvironmentReader environmentReader;
-
-    @Autowired
-    private AlphaKeyService alphaKeyService;
-
-    private static final String INDEX = "DISQUALIFIED_SEARCH_INDEX";
+    private static final String INDEX = "PRIMARY_SEARCH_INDEX";
     private static final String TYPE = "primary_search";
+    private final DisqualifiedSearchUpsertRequest disqualifiedSearchUpsertRequest;
+    private final EnvironmentReader environmentReader;
+    private final AlphaKeyService alphaKeyService;
+
+    public DisqualifiedUpsertRequestService(DisqualifiedSearchUpsertRequest disqualifiedSearchUpsertRequest,
+            EnvironmentReader environmentReader, AlphaKeyService alphaKeyService) {
+        this.disqualifiedSearchUpsertRequest = disqualifiedSearchUpsertRequest;
+        this.environmentReader = environmentReader;
+        this.alphaKeyService = alphaKeyService;
+    }
 
     /**
      * If document already exists attempt to upsert the document

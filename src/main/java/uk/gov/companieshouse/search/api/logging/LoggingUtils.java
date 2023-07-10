@@ -29,7 +29,7 @@ public class LoggingUtils {
     public static final String INDEX_ALPHABETICAL = "alphabetical_search_index";
     public static final String INDEX_DISSOLVED = "dissolved_search_index";
     public static final String ADVANCED_SEARCH_INDEX = "advanced_search_index";
-    public static final String DISQUALIFIED_SEARCH_INDEX = "primary_search";
+    public static final String PRIMARY_SEARCH_INDEX = "primary_search";
     public static final String MESSAGE = "message";
     public static final String ORDERED_ALPHAKEY = "ordered_alphakey";
     public static final String SAME_AS_ALPHAKEYKEY = "same_as_alphakey";
@@ -127,16 +127,22 @@ public class LoggingUtils {
         } else {
             officerName = disqualification.getForename() + " " + disqualification.getSurname();
         }
-        Map<String, Object> logMap = new DataMap.Builder()
+        return new DataMap.Builder()
                 .officerName(officerName)
-                .indexName(DISQUALIFIED_SEARCH_INDEX)
+                .indexName(PRIMARY_SEARCH_INDEX)
                 .build().getLogMap();
-        return logMap;
     }
 
-    public static Map<String, Object> setUpDisqualificationDeleteLogging(String officerId) {
+    public static Map<String, Object> setUpOfficersAppointmentsUpsertLogging(String officerId) {
         return new DataMap.Builder()
                 .officerId(officerId)
-                .indexName(DISQUALIFIED_SEARCH_INDEX).build().getLogMap();
+                .indexName(PRIMARY_SEARCH_INDEX)
+                .build().getLogMap();
+    }
+
+    public static Map<String, Object> setUpPrimarySearchDeleteLogging(String officerId) {
+        return new DataMap.Builder()
+                .officerId(officerId)
+                .indexName(PRIMARY_SEARCH_INDEX).build().getLogMap();
     }
 }

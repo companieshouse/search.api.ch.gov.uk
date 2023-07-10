@@ -2,14 +2,13 @@ package uk.gov.companieshouse.search.api.service.upsert.disqualified;
 
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.update.UpdateRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
-import uk.gov.companieshouse.search.api.service.rest.impl.DisqualifiedSearchRestClientService;
+import uk.gov.companieshouse.search.api.service.rest.impl.PrimarySearchRestClientService;
 
 import java.io.IOException;
 import java.util.Map;
@@ -21,11 +20,14 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 @Service
 public class UpsertDisqualificationService {
 
-    @Autowired
-    private DisqualifiedSearchRestClientService disqualifiedSearchRestClientService;
+    private final PrimarySearchRestClientService primarySearchRestClientService;
+    private final DisqualifiedUpsertRequestService disqualifiedUpsertRequestService;
 
-    @Autowired
-    private DisqualifiedUpsertRequestService disqualifiedUpsertRequestService;
+    public UpsertDisqualificationService(PrimarySearchRestClientService primarySearchRestClientService,
+            DisqualifiedUpsertRequestService disqualifiedUpsertRequestService) {
+        this.primarySearchRestClientService = primarySearchRestClientService;
+        this.disqualifiedUpsertRequestService = disqualifiedUpsertRequestService;
+    }
 
     /**
      * Upserts a new document to disqualified search index for an officer.
@@ -51,7 +53,7 @@ public class UpsertDisqualificationService {
         }
 
         try {
-            disqualifiedSearchRestClientService.upsert(updateRequest);
+            primarySearchRestClientService.upsert(updateRequest);
         } catch (IOException e) {
             getLogger().error("IOException when upserting a officer to the disqualified search index", logMap);
             return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);

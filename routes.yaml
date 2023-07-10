@@ -8,4 +8,5 @@ routes:
   4: ^/advanced-search/companies
   5: ^/disqualified-search/disqualified-officers
   6: ^/disqualified-search/delete
-  7: ^/search/healthcheck
+  7: ^/officers-search/officers
+  8: ^/search/healthcheck
