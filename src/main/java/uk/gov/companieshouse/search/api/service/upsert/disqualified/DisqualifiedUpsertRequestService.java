@@ -5,7 +5,6 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
-import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.DisqualifiedSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
@@ -16,21 +15,22 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.naming.ServiceUnavailableException;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @Service
 public class DisqualifiedUpsertRequestService {
 
-    private static final String INDEX = "PRIMARY_SEARCH_INDEX";
     private static final String TYPE = "primary_search";
     private final DisqualifiedSearchUpsertRequest disqualifiedSearchUpsertRequest;
-    private final EnvironmentReader environmentReader;
     private final AlphaKeyService alphaKeyService;
+    private final ConfiguredIndexNamesProvider indices;
 
     public DisqualifiedUpsertRequestService(DisqualifiedSearchUpsertRequest disqualifiedSearchUpsertRequest,
-            EnvironmentReader environmentReader, AlphaKeyService alphaKeyService) {
+        AlphaKeyService alphaKeyService,
+        ConfiguredIndexNamesProvider indices) {
         this.disqualifiedSearchUpsertRequest = disqualifiedSearchUpsertRequest;
-        this.environmentReader = environmentReader;
         this.alphaKeyService = alphaKeyService;
+        this.indices = indices;
     }
 
     /**
@@ -44,15 +44,15 @@ public class DisqualifiedUpsertRequestService {
      */
     public UpdateRequest createUpdateRequest(OfficerDisqualification officer, String officerId) throws UpsertException, ServiceUnavailableException {
 
-        Map<String, Object> logMap = LoggingUtils.setUpDisqualificationUpsertLogging(officer.getItems().get(0));
-        String index = environmentReader.getMandatoryString(INDEX);
+        Map<String, Object> logMap =
+            LoggingUtils.setUpDisqualificationUpsertLogging(officer.getItems().get(0), indices);
 
         if (officer.getSortKey() == null || officer.getSortKey().equals("")) {
             setKeyValues(officer, logMap);
         }
 
         try {
-            UpdateRequest request = new UpdateRequest(index, TYPE, officerId)
+            UpdateRequest request = new UpdateRequest(indices.primary(), TYPE, officerId)
                     .docAsUpsert(true).doc(disqualifiedSearchUpsertRequest.buildRequest(officer), XContentType.JSON);
 
             LoggingUtils.getLogger().info("Attempt to upsert document if it does not exist", logMap);

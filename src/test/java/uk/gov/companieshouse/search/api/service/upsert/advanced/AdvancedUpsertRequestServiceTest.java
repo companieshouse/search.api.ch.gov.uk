@@ -4,7 +4,6 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -16,30 +15,24 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.api.model.company.RegisteredOfficeAddressApi;
-import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.AdvancedSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
-import uk.gov.companieshouse.search.api.service.AlphaKeyService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AdvancedUpsertRequestServiceTest {
 
     @Mock
-    private AlphaKeyService mockAlphaKeyService;
-
-    @Mock
-    private EnvironmentReader mockEnvironmentReader;
-
-    @Mock
     private AdvancedSearchUpsertRequest mockAdvancedSearchUpsertRequest;
+
+    @Mock
+    private ConfiguredIndexNamesProvider indices;
 
     @InjectMocks
     private AdvancedUpsertRequestService advancedUpsertRequestService;
@@ -92,7 +85,7 @@ class AdvancedUpsertRequestServiceTest {
 
     @BeforeEach
     void init() {
-        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ADVANCED_SEARCH);
+        when(indices.advanced()).thenReturn(ADVANCED_SEARCH);
     }
 
     @Test

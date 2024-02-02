@@ -1,6 +1,8 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+
+import java.util.Map;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.exception.SearchException;
@@ -10,17 +12,19 @@ import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
-
-import java.util.Map;
-
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @Service
 public class AlphabeticalSearchIndexService implements SearchIndexService {
 
-    @Autowired
-    private SearchRequestService<Company> searchRequestService;
+    private final SearchRequestService<Company> searchRequestService;
+    private final ConfiguredIndexNamesProvider indices;
+
+    public AlphabeticalSearchIndexService(SearchRequestService<Company> searchRequestService,
+        ConfiguredIndexNamesProvider indices) {
+        this.searchRequestService = searchRequestService;
+        this.indices = indices;
+    }
 
     /**
      * {@inheritDoc}
@@ -33,7 +37,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         Map<String, Object> logMap = new DataMap.Builder()
                 .requestId(requestId)
                 .companyName(corporateName)
-                .indexName(INDEX_ALPHABETICAL)
+                .indexName(indices.alphabetical())
                 .searchBefore(searchBefore)
                 .searchAfter(searchAfter)
                 .size(String.valueOf(size))

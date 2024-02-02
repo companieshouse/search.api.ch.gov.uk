@@ -4,7 +4,6 @@ import static org.apache.lucene.search.TotalHits.Relation.GREATER_THAN_OR_EQUAL_
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import org.apache.lucene.search.TotalHits;
@@ -23,9 +22,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClientService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -35,13 +34,13 @@ class AdvancedSearchRequestsTest {
     private AdvancedSearchRequests advancedSearchRequests;
 
     @Mock
-    private EnvironmentReader mockEnvironmentReader;
-
-    @Mock
     private AdvancedSearchQueries mockAdvancedSearchQueries;
 
     @Mock
     private AdvancedSearchRestClientService mockSearchRestClient;
+
+    @Mock
+    private ConfiguredIndexNamesProvider indices;
 
     private static final String COMPANY_NAME = "TEST COMPANY";
     private static final String ENV_READER_RESULT = "ADVANCED_SEARCH_INDEX";
@@ -50,9 +49,8 @@ class AdvancedSearchRequestsTest {
     @Test
     @DisplayName("Get company number (must contain) response")
     void getCompanyNumberMustContainSuccessful() throws Exception {
-
-        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT);
         when(mockSearchRestClient.search(any(SearchRequest.class))).thenReturn(createSearchResponse());
+        when(indices.advanced()).thenReturn(ENV_READER_RESULT);
 
         SearchHits searchHits = advancedSearchRequests.getCompanies(createAdvancedSearchQueryParams(), REQUEST_ID);
 

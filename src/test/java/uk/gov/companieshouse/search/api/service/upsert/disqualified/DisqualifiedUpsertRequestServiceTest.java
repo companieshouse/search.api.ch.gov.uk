@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import javax.naming.ServiceUnavailableException;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,13 +14,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.disqualification.Item;
 import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
-import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.DisqualifiedSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
-
-import javax.naming.ServiceUnavailableException;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
 public class DisqualifiedUpsertRequestServiceTest {
@@ -32,16 +31,16 @@ public class DisqualifiedUpsertRequestServiceTest {
     @Mock
     private DisqualifiedSearchUpsertRequest disqualifiedSearchUpsertRequest;
     @Mock
-    private EnvironmentReader reader;
-    @Mock
     private AlphaKeyService alphaKeyService;
+    @Mock
+    private ConfiguredIndexNamesProvider indices;
     @InjectMocks
     private DisqualifiedUpsertRequestService service;
 
     @Test
     void serviceCreatesUpdateRequest() throws Exception {
         OfficerDisqualification officer = createOfficer(true);
-        when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
+        when(indices.primary()).thenReturn(PRIMARY);
         when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenReturn(UPDATE_JSON);
 
         UpdateRequest request = service.createUpdateRequest(officer, OFFICER_ID);
@@ -56,7 +55,7 @@ public class DisqualifiedUpsertRequestServiceTest {
     @Test
     void serviceThrowsUpsertException() throws Exception {
         OfficerDisqualification officer = createOfficer(true);
-        when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
+        when(indices.primary()).thenReturn(PRIMARY);
         when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenThrow(new UpsertException(""));
 
         Exception e = assertThrows(UpsertException.class,
@@ -68,7 +67,7 @@ public class DisqualifiedUpsertRequestServiceTest {
     @Test
     void serviceWithCorporateCreatesUpdateRequest() throws Exception {
         OfficerDisqualification officer = createOfficer(false);
-        when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
+        when(indices.primary()).thenReturn(PRIMARY);
         when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenReturn(UPDATE_JSON);
         AlphaKeyResponse response = new AlphaKeyResponse();
         response.setOrderedAlphaKey("abc");
@@ -87,7 +86,7 @@ public class DisqualifiedUpsertRequestServiceTest {
     @Test
     void alphaKeyFailThrowsServiceUnavailableException() throws Exception {
         OfficerDisqualification officer = createOfficer(false);
-        when(reader.getMandatoryString(INDEX)).thenReturn(PRIMARY);
+        when(indices.primary()).thenReturn(PRIMARY);
 
         Exception e = assertThrows(ServiceUnavailableException.class,
                 () -> service.createUpdateRequest(officer, OFFICER_ID));

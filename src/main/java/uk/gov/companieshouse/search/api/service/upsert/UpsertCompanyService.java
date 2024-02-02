@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
@@ -20,26 +19,33 @@ import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClie
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.upsert.advanced.AdvancedUpsertRequestService;
 import uk.gov.companieshouse.search.api.service.upsert.alphabetical.AlphabeticalUpsertRequestService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.*;
 
 @Service
 public class UpsertCompanyService {
 
-    @Autowired
-    private AlphabeticalSearchRestClientService alphabeticalSearchRestClientService;
+    private final AlphabeticalSearchRestClientService alphabeticalSearchRestClientService;
+    private final AdvancedSearchRestClientService advancedSearchRestClientService;
+    private final AlphabeticalUpsertRequestService alphabeticalUpsertRequestService;
+    private final AdvancedUpsertRequestService advancedUpsertRequestService;
+    private final AlphaKeyService alphaKeyService;
+    private final ConfiguredIndexNamesProvider indices;
 
-    @Autowired
-    private AdvancedSearchRestClientService advancedSearchRestClientService;
-
-    @Autowired
-    private AlphabeticalUpsertRequestService alphabeticalUpsertRequestService;
-
-    @Autowired
-    private AdvancedUpsertRequestService advancedUpsertRequestService;
-
-    @Autowired
-    private AlphaKeyService alphaKeyService;
+    public UpsertCompanyService(
+        AlphabeticalSearchRestClientService alphabeticalSearchRestClientService,
+        AdvancedSearchRestClientService advancedSearchRestClientService,
+        AlphabeticalUpsertRequestService alphabeticalUpsertRequestService,
+        AdvancedUpsertRequestService advancedUpsertRequestService, AlphaKeyService alphaKeyService,
+        ConfiguredIndexNamesProvider indices) {
+        this.alphabeticalSearchRestClientService = alphabeticalSearchRestClientService;
+        this.advancedSearchRestClientService = advancedSearchRestClientService;
+        this.alphabeticalUpsertRequestService = alphabeticalUpsertRequestService;
+        this.advancedUpsertRequestService = advancedUpsertRequestService;
+        this.alphaKeyService = alphaKeyService;
+        this.indices = indices;
+    }
 
     /**
      * Upserts a new document to the alphabetical search index.
@@ -53,7 +59,7 @@ public class UpsertCompanyService {
         Map<String, Object> logMap = new DataMap.Builder()
                 .companyName(company.getCompanyName())
                 .companyNumber(company.getCompanyNumber())
-                .indexName(INDEX_ALPHABETICAL)
+                .indexName(indices.alphabetical())
                 .build().getLogMap();
         getLogger().info("Upserting company underway", logMap);
 
@@ -91,7 +97,7 @@ public class UpsertCompanyService {
         Map<String, Object> logMap = new DataMap.Builder()
                 .companyName(company.getCompanyName())
                 .companyNumber(company.getCompanyNumber())
-                .indexName(ADVANCED_SEARCH_INDEX)
+                .indexName(indices.advanced())
                 .build().getLogMap();
         getLogger().info("Upserting to advanced index underway", logMap);
 

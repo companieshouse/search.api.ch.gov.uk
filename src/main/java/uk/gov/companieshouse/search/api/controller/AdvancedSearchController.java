@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +32,7 @@ import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchIndexService;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @RestController
 @RequestMapping(value = "/advanced-search", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,14 +52,22 @@ public class AdvancedSearchController {
     private static final String COMPANY_NAME_EXCLUDES = "company_name_excludes";
     private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
     private static final String SIZE_PARAM = "size";
-    @Autowired
-    private AdvancedQueryParamMapper queryParamMapper;
-    @Autowired
-    private AdvancedSearchIndexService searchIndexService;
-    @Autowired
-    private ApiToResponseMapper apiToResponseMapper;
-    @Autowired
-    private UpsertCompanyService upsertCompanyService;
+
+    private final AdvancedQueryParamMapper queryParamMapper;
+    private final AdvancedSearchIndexService searchIndexService;
+    private final ApiToResponseMapper apiToResponseMapper;
+    private final UpsertCompanyService upsertCompanyService;
+    private final ConfiguredIndexNamesProvider indices;
+
+    public AdvancedSearchController(AdvancedQueryParamMapper queryParamMapper,
+        AdvancedSearchIndexService searchIndexService, ApiToResponseMapper apiToResponseMapper,
+        UpsertCompanyService upsertCompanyService, ConfiguredIndexNamesProvider indices) {
+        this.queryParamMapper = queryParamMapper;
+        this.searchIndexService = searchIndexService;
+        this.apiToResponseMapper = apiToResponseMapper;
+        this.upsertCompanyService = upsertCompanyService;
+        this.indices = indices;
+    }
 
     @GetMapping("/companies")
     @ResponseBody
@@ -115,7 +123,7 @@ public class AdvancedSearchController {
                 .dissolvedTo(dissolvedToDate)
                 .companyNameExcludes(companyNameExcludes)
                 .size(String.valueOf(size))
-                .indexName(ADVANCED_SEARCH_INDEX)
+                .indexName(indices.advanced())
                 .build().getLogMap();
 
         getLogger().info("Search request received", logMap);

@@ -34,6 +34,7 @@ import uk.gov.companieshouse.search.api.service.upsert.disqualified.UpsertDisqua
 
 import java.util.ArrayList;
 import java.util.List;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
 class DisqualifiedSearchControllerTest {
@@ -51,6 +52,9 @@ class DisqualifiedSearchControllerTest {
 
     @Mock
     private PrimarySearchDeleteService primarySearchDeleteService;
+
+    @Mock
+    private ConfiguredIndexNamesProvider indices;
 
     @InjectMocks
     private DisqualifiedSearchController disqualifiedSearchController;

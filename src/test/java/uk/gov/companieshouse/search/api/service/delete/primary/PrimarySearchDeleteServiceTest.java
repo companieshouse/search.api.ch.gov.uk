@@ -19,6 +19,7 @@ import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.rest.impl.PrimarySearchRestClientService;
 
 import java.io.IOException;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
 class PrimarySearchDeleteServiceTest {
@@ -29,6 +30,8 @@ class PrimarySearchDeleteServiceTest {
     PrimarySearchRestClientService primarySearchRestClientService;
     @Mock
     PrimarySearchDeleteRequestService primarySearchDeleteRequestService;
+    @Mock
+    private ConfiguredIndexNamesProvider indices;
 
     @InjectMocks
     PrimarySearchDeleteService service;

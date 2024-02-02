@@ -4,7 +4,6 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,20 +21,12 @@ import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
 import uk.gov.companieshouse.search.api.service.search.impl.dissolved.DissolvedSearchIndexService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 
 @RestController
 @RequestMapping(value = "/dissolved-search", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DissolvedSearchController {
-
-    @Autowired
-    private DissolvedSearchIndexService searchIndexService;
-
-    @Autowired
-    private ApiToResponseMapper apiToResponseMapper;
-
-    @Autowired
-    private EnvironmentReader environmentReader;
 
     private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
     private static final String DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX = "DISSOLVED_ALPHABETICAL_SEARCH_RESULT_MAX";
@@ -51,6 +42,22 @@ public class DissolvedSearchController {
     private static final String SEARCH_AFTER_PARAM = "search_after";
     private static final String SIZE_PARAM = "size";
 
+
+    private final DissolvedSearchIndexService searchIndexService;
+    private final ApiToResponseMapper apiToResponseMapper;
+    private final EnvironmentReader environmentReader;
+    private final ConfiguredIndexNamesProvider indices;
+
+
+    public DissolvedSearchController(DissolvedSearchIndexService searchIndexService,
+        ApiToResponseMapper apiToResponseMapper, EnvironmentReader environmentReader,
+        ConfiguredIndexNamesProvider indices) {
+        this.searchIndexService = searchIndexService;
+        this.apiToResponseMapper = apiToResponseMapper;
+        this.environmentReader = environmentReader;
+        this.indices = indices;
+    }
+
     @GetMapping("/companies")
     @ResponseBody
     public ResponseEntity<Object> searchCompanies(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
@@ -64,7 +71,7 @@ public class DissolvedSearchController {
         Map<String, Object> logMap = new DataMap.Builder()
                 .requestId(requestId)
                 .companyName(companyName)
-                .indexName(LoggingUtils.INDEX_DISSOLVED)
+                .indexName(indices.dissolved())
                 .searchBefore(searchBefore)
                 .searchAfter(searchAfter)
                 .size(String.valueOf(size))
