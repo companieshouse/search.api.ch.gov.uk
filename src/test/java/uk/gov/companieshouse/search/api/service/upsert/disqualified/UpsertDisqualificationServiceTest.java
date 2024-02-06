@@ -21,6 +21,7 @@ import uk.gov.companieshouse.search.api.service.rest.impl.PrimarySearchRestClien
 import java.io.IOException;
 
 import javax.naming.ServiceUnavailableException;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
 public class UpsertDisqualificationServiceTest {
@@ -32,6 +33,8 @@ public class UpsertDisqualificationServiceTest {
     private PrimarySearchRestClientService primarySearchRestClientService;
     @Mock
     private DisqualifiedUpsertRequestService disqualifiedUpsertRequestService;
+    @Mock
+    private ConfiguredIndexNamesProvider indices;
     @InjectMocks
     private UpsertDisqualificationService service;
 

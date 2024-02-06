@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.naming.ServiceUnavailableException;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
@@ -22,11 +23,14 @@ public class UpsertDisqualificationService {
 
     private final PrimarySearchRestClientService primarySearchRestClientService;
     private final DisqualifiedUpsertRequestService disqualifiedUpsertRequestService;
+    private final ConfiguredIndexNamesProvider indices;
 
     public UpsertDisqualificationService(PrimarySearchRestClientService primarySearchRestClientService,
-            DisqualifiedUpsertRequestService disqualifiedUpsertRequestService) {
+            DisqualifiedUpsertRequestService disqualifiedUpsertRequestService,
+        ConfiguredIndexNamesProvider indices) {
         this.primarySearchRestClientService = primarySearchRestClientService;
         this.disqualifiedUpsertRequestService = disqualifiedUpsertRequestService;
+        this.indices = indices;
     }
 
     /**
@@ -38,7 +42,8 @@ public class UpsertDisqualificationService {
      * @return {@link ResponseObject}
      */
     public ResponseObject upsertDisqualified(OfficerDisqualification officer, String officerId) {
-        Map<String, Object> logMap = LoggingUtils.setUpDisqualificationUpsertLogging(officer.getItems().get(0));
+        Map<String, Object> logMap =
+            LoggingUtils.setUpDisqualificationUpsertLogging(officer.getItems().get(0), indices);
         getLogger().info("Upserting to disqualified index underway", logMap);
 
         UpdateRequest updateRequest;

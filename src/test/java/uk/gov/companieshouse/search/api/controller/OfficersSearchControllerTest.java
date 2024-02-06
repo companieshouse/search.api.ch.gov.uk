@@ -25,6 +25,7 @@ import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.delete.primary.PrimarySearchDeleteService;
 import uk.gov.companieshouse.search.api.service.upsert.officers.UpsertOfficersService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
 class OfficersSearchControllerTest {
@@ -38,6 +39,8 @@ class OfficersSearchControllerTest {
     private PrimarySearchDeleteService primarySearchDeleteService;
     @Mock
     private UpsertOfficersService upsertOfficersService;
+    @Mock
+    private ConfiguredIndexNamesProvider indices;
     @InjectMocks
     private OfficersSearchController officersSearchController;
     @Mock

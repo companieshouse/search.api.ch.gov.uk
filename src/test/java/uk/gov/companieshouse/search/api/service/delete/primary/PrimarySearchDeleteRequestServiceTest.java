@@ -10,8 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.model.SearchType;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
 class PrimarySearchDeleteRequestServiceTest {
@@ -20,15 +20,16 @@ class PrimarySearchDeleteRequestServiceTest {
     private final String TYPE = "primary_search";
     private final String OFFICER_ID = "officerId";
     private final String PRIMARY_SEARCH_TYPE = "disqualified-officer";
+
     @Mock
-    EnvironmentReader reader;
+    private ConfiguredIndexNamesProvider indices;
 
     @InjectMocks
     PrimarySearchDeleteRequestService service;
 
     @BeforeEach
     void setup() {
-        when(reader.getMandatoryString("PRIMARY_SEARCH_INDEX")).thenReturn(INDEX);
+        when(indices.primary()).thenReturn(INDEX);
     }
 
     @Test

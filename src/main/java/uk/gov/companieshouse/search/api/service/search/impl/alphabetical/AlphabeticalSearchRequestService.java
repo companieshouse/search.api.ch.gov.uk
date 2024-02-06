@@ -1,14 +1,17 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY_WITH_ID;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.logging.util.DataMap;
@@ -21,27 +24,16 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @Service
 public class AlphabeticalSearchRequestService implements SearchRequestService {
 
-    @Autowired
-    private AlphaKeyService alphaKeyService;
-
-    @Autowired
-    private AlphabeticalSearchRequests alphabeticalSearchRequests;
-
-    @Autowired
-    private ElasticSearchResponseMapper elasticSearchResponseMapper;
-
-    @Autowired
-    private EnvironmentReader environmentReader;
+    private final AlphaKeyService alphaKeyService;
+    private final AlphabeticalSearchRequests alphabeticalSearchRequests;
+    private final ElasticSearchResponseMapper elasticSearchResponseMapper;
+    private final EnvironmentReader environmentReader;
+    private final ConfiguredIndexNamesProvider indices;
 
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
     private static final String TOP_LEVEL_ALPHABETICAL_KIND = "search#alphabetical-search";
@@ -49,6 +41,17 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
     private Integer sizeAbove;
     private Integer sizeBelow;
+
+    public AlphabeticalSearchRequestService(AlphaKeyService alphaKeyService,
+        AlphabeticalSearchRequests alphabeticalSearchRequests,
+        ElasticSearchResponseMapper elasticSearchResponseMapper,
+        EnvironmentReader environmentReader, ConfiguredIndexNamesProvider indices) {
+        this.alphaKeyService = alphaKeyService;
+        this.alphabeticalSearchRequests = alphabeticalSearchRequests;
+        this.elasticSearchResponseMapper = elasticSearchResponseMapper;
+        this.environmentReader = environmentReader;
+        this.indices = indices;
+    }
 
     /**
      * {@inheritDoc}
@@ -59,7 +62,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         Map<String, Object> logMap = new DataMap.Builder()
                 .requestId(requestId)
                 .companyName(corporateName)
-                .indexName(INDEX_ALPHABETICAL)
+                .indexName(indices.alphabetical())
                 .searchBefore(searchBefore)
                 .searchAfter(searchAfter)
                 .size(String.valueOf(size))

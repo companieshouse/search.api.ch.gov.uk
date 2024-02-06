@@ -29,9 +29,12 @@ import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEA
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPDATE_REQUEST_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPSERT_ERROR;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -53,14 +56,9 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchIndexService;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AdvancedSearchControllerTest {
 
     @Mock
@@ -77,6 +75,9 @@ class AdvancedSearchControllerTest {
 
     @Mock
     private UpsertCompanyService mockUpsertCompanyService;
+
+    @Mock
+    private ConfiguredIndexNamesProvider indices;
 
     @Captor
     private ArgumentCaptor<ResponseObject> responseObjectCaptor;

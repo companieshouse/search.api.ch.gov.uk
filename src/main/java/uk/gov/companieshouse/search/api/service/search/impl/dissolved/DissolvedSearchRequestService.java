@@ -1,22 +1,22 @@
 package uk.gov.companieshouse.search.api.service.search.impl.dissolved;
 
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.COMPANY_NAME;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_DISSOLVED;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY_WITH_ID;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.GenerateEtagUtil;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.elasticsearch.DissolvedSearchRequests;
 import uk.gov.companieshouse.search.api.exception.SearchException;
-import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
@@ -24,27 +24,16 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @Service
 public class DissolvedSearchRequestService {
 
-    @Autowired
-    private AlphaKeyService alphaKeyService;
-
-    @Autowired
-    private DissolvedSearchRequests dissolvedSearchRequests;
-
-    @Autowired
-    private ElasticSearchResponseMapper elasticSearchResponseMapper;
-
-    @Autowired
-    private EnvironmentReader environmentReader;
+    private final AlphaKeyService alphaKeyService;
+    private final DissolvedSearchRequests dissolvedSearchRequests;
+    private final ElasticSearchResponseMapper elasticSearchResponseMapper;
+    private final EnvironmentReader environmentReader;
+    private final ConfiguredIndexNamesProvider indices;
 
     private static final String TOP_KIND = "search#alphabetical-dissolved";
     private static final String RESULT_FOUND = "A result has been found";
@@ -54,12 +43,23 @@ public class DissolvedSearchRequestService {
     private Integer sizeAbove;
     private Integer sizeBelow;
 
+    public DissolvedSearchRequestService(AlphaKeyService alphaKeyService,
+        DissolvedSearchRequests dissolvedSearchRequests,
+        ElasticSearchResponseMapper elasticSearchResponseMapper,
+        EnvironmentReader environmentReader, ConfiguredIndexNamesProvider indices) {
+        this.alphaKeyService = alphaKeyService;
+        this.dissolvedSearchRequests = dissolvedSearchRequests;
+        this.elasticSearchResponseMapper = elasticSearchResponseMapper;
+        this.environmentReader = environmentReader;
+        this.indices = indices;
+    }
+
     public SearchResults<Company> getSearchResults(String companyName, String searchBefore, String searchAfter,
                                                    Integer size, String requestId) throws SearchException {
         Map<String, Object> logMap = new DataMap.Builder()
                 .requestId(requestId)
                 .companyName(companyName)
-                .indexName(INDEX_DISSOLVED)
+                .indexName(indices.dissolved())
                 .searchBefore(searchBefore)
                 .searchAfter(searchAfter)
                 .size(String.valueOf(size))
@@ -144,7 +144,7 @@ public class DissolvedSearchRequestService {
         Map<String, Object> logMap = new DataMap.Builder()
                 .requestId(requestId)
                 .companyName(companyName)
-                .indexName(INDEX_DISSOLVED)
+                .indexName(indices.dissolved())
                 .startIndex(String.valueOf(startIndex))
                 .searchType(searchType)
                 .size(String.valueOf(size))
@@ -190,7 +190,7 @@ public class DissolvedSearchRequestService {
         Map<String, Object> logMap = new DataMap.Builder()
                 .requestId(requestId)
                 .companyName(companyName)
-                .indexName(INDEX_DISSOLVED)
+                .indexName(indices.dissolved())
                 .startIndex(String.valueOf(startIndex))
                 .searchType(searchType)
                 .size(String.valueOf(size))
@@ -281,14 +281,6 @@ public class DissolvedSearchRequestService {
 
         Collections.reverse(results);
         return results;
-    }
-
-    private Map<String, Object> getLogMap(String requestId, String companyName) {
-        Map<String, Object> logMap = LoggingUtils.createLoggingMap(requestId);
-        logMap.put(COMPANY_NAME, companyName);
-        logMap.put(INDEX, INDEX_DISSOLVED);
-
-        return logMap;
     }
     
     private void checkSize(Integer size) {

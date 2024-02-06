@@ -18,6 +18,7 @@ import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.delete.primary.PrimarySearchDeleteService;
 import uk.gov.companieshouse.search.api.service.upsert.officers.UpsertOfficersService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @RestController
 public class OfficersSearchController {
@@ -26,12 +27,15 @@ public class OfficersSearchController {
     private final ApiToResponseMapper apiToResponseMapper;
     private final UpsertOfficersService upsertOfficersService;
     private final PrimarySearchDeleteService primarySearchDeleteService;
+    private final ConfiguredIndexNamesProvider indices;
 
     public OfficersSearchController(ApiToResponseMapper apiToResponseMapper,
-            UpsertOfficersService upsertOfficersService, PrimarySearchDeleteService primarySearchDeleteService) {
+            UpsertOfficersService upsertOfficersService, PrimarySearchDeleteService primarySearchDeleteService,
+        ConfiguredIndexNamesProvider indices) {
         this.apiToResponseMapper = apiToResponseMapper;
         this.upsertOfficersService = upsertOfficersService;
         this.primarySearchDeleteService = primarySearchDeleteService;
+        this.indices = indices;
     }
 
     @PutMapping(value = "/officers-search/officers/{officer_id}")
@@ -44,7 +48,7 @@ public class OfficersSearchController {
 
     @DeleteMapping("/officers-search/officers/{officer_id}")
     public ResponseEntity<Object> deleteOfficer(@PathVariable("officer_id") String officerId) {
-        Map<String, Object> logMap = LoggingUtils.setUpPrimarySearchDeleteLogging(officerId);
+        Map<String, Object> logMap = LoggingUtils.setUpPrimarySearchDeleteLogging(officerId, indices);
         getLogger().info("Attempting to delete an officer from the primary search index", logMap);
 
         ResponseObject responseObject;

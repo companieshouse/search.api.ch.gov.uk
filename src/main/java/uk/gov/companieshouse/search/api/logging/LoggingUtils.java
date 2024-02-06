@@ -14,6 +14,7 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 public class LoggingUtils {
 
@@ -26,10 +27,6 @@ public class LoggingUtils {
     public static final String COMPANY_SUBTYPE = "company_subtype";
     public static final String DISSOLVED_SEARCH_ALPHABETICAL = "dissolved - alphabetical";
     public static final String INDEX = "index_name";
-    public static final String INDEX_ALPHABETICAL = "alphabetical_search_index";
-    public static final String INDEX_DISSOLVED = "dissolved_search_index";
-    public static final String ADVANCED_SEARCH_INDEX = "advanced_search_index";
-    public static final String PRIMARY_SEARCH_INDEX = "primary_search";
     public static final String MESSAGE = "message";
     public static final String ORDERED_ALPHAKEY = "ordered_alphakey";
     public static final String SAME_AS_ALPHAKEYKEY = "same_as_alphakey";
@@ -78,7 +75,10 @@ public class LoggingUtils {
         }
     }
 
-    public static Map<String, Object> getLogMap(AdvancedSearchQueryParams queryParams, String requestId) {
+    public static Map<String, Object> getAdvancedSearchLogMap(
+        AdvancedSearchQueryParams queryParams,
+        String requestId,
+        ConfiguredIndexNamesProvider indices) {
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         Date incorporatedFromDate = null;
@@ -113,14 +113,16 @@ public class LoggingUtils {
                 .dissolvedFrom(dissolvedFromDate)
                 .dissolvedTo(dissolvedToDate)
                 .companyNameExcludes(queryParams.getCompanyNameExcludes())
-                .indexName(LoggingUtils.ADVANCED_SEARCH_INDEX)
+                .indexName(indices.advanced())
                 .build().getLogMap();
         getLogger().info("advanced search filters", logMap);
 
         return logMap;
     }
 
-    public static Map<String, Object> setUpDisqualificationUpsertLogging(Item disqualification) {
+    public static Map<String, Object> setUpDisqualificationUpsertLogging(
+        Item disqualification,
+        ConfiguredIndexNamesProvider indices) {
         String officerName;
         if (disqualification.getCorporateName() != null && disqualification.getCorporateName().length() > 0) {
             officerName = disqualification.getCorporateName();
@@ -129,20 +131,24 @@ public class LoggingUtils {
         }
         return new DataMap.Builder()
                 .officerName(officerName)
-                .indexName(PRIMARY_SEARCH_INDEX)
+                .indexName(indices.primary())
                 .build().getLogMap();
     }
 
-    public static Map<String, Object> setUpOfficersAppointmentsUpsertLogging(String officerId) {
+    public static Map<String, Object> setUpOfficersAppointmentsUpsertLogging(
+        String officerId,
+        ConfiguredIndexNamesProvider indices) {
         return new DataMap.Builder()
                 .officerId(officerId)
-                .indexName(PRIMARY_SEARCH_INDEX)
+                .indexName(indices.primary())
                 .build().getLogMap();
     }
 
-    public static Map<String, Object> setUpPrimarySearchDeleteLogging(String officerId) {
+    public static Map<String, Object> setUpPrimarySearchDeleteLogging(
+        String officerId,
+        ConfiguredIndexNamesProvider indices) {
         return new DataMap.Builder()
                 .officerId(officerId)
-                .indexName(PRIMARY_SEARCH_INDEX).build().getLogMap();
+                .indexName(indices.primary()).build().getLogMap();
     }
 }

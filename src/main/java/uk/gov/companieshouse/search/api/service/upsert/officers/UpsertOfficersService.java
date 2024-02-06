@@ -13,6 +13,7 @@ import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.rest.impl.PrimarySearchRestClientService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @Service
 public class UpsertOfficersService {
@@ -21,14 +22,19 @@ public class UpsertOfficersService {
 
     private final OfficersUpsertRequestService officersUpsertRequestService;
 
+    private final ConfiguredIndexNamesProvider indices;
+
     public UpsertOfficersService(PrimarySearchRestClientService primarySearchRestClientService,
-            OfficersUpsertRequestService officersUpsertRequestService) {
+            OfficersUpsertRequestService officersUpsertRequestService,
+        ConfiguredIndexNamesProvider indices) {
         this.primarySearchRestClientService = primarySearchRestClientService;
         this.officersUpsertRequestService = officersUpsertRequestService;
+        this.indices = indices;
     }
 
     public ResponseObject upsertOfficers(AppointmentList appointmentList, String officerId) {
-        Map<String, Object> logMap = LoggingUtils.setUpOfficersAppointmentsUpsertLogging(officerId);
+        Map<String, Object> logMap =
+            LoggingUtils.setUpOfficersAppointmentsUpsertLogging(officerId, indices);
         getLogger().info("Upserting officer's appointments to primary index", logMap);
 
         UpdateRequest updateRequest;

@@ -1,36 +1,37 @@
 package uk.gov.companieshouse.search.api.service.upsert.alphabetical;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
-import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchUpsertRequest;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @Service
 public class AlphabeticalUpsertRequestService {
 
-    @Autowired
-    private AlphaKeyService alphaKeyService;
+    private final AlphaKeyService alphaKeyService;
 
-    @Autowired
-    private EnvironmentReader environmentReader;
+    private final AlphabeticalSearchUpsertRequest alphabeticalSearchUpsertRequest;
 
-    @Autowired
-    private AlphabeticalSearchUpsertRequest alphabeticalSearchUpsertRequest;
+    private final ConfiguredIndexNamesProvider indices;
 
-    private static final String INDEX = "ALPHABETICAL_SEARCH_INDEX";
+    public AlphabeticalUpsertRequestService(AlphaKeyService alphaKeyService,
+        AlphabeticalSearchUpsertRequest alphabeticalSearchUpsertRequest,
+        ConfiguredIndexNamesProvider indices) {
+        this.alphaKeyService = alphaKeyService;
+        this.alphabeticalSearchUpsertRequest = alphabeticalSearchUpsertRequest;
+        this.indices = indices;
+    }
 
     /**
      * Create an index request for document if it does not currently exist
@@ -43,7 +44,7 @@ public class AlphabeticalUpsertRequestService {
         Map<String, Object> logMap = new DataMap.Builder()
                 .companyName(company.getCompanyName())
                 .companyNumber(company.getCompanyNumber())
-                .indexName(LoggingUtils.INDEX_ALPHABETICAL)
+                .indexName(indices.alphabetical())
                 .build().getLogMap();
 
         String orderedAlphaKey = "";
@@ -58,7 +59,7 @@ public class AlphabeticalUpsertRequestService {
 
         try {
             LoggingUtils.getLogger().info("Preparing index request", logMap);
-            return new IndexRequest(environmentReader.getMandatoryString(INDEX))
+            return new IndexRequest(indices.alphabetical())
                 .source(alphabeticalSearchUpsertRequest.buildRequest(company, orderedAlphaKey, orderedAlphaKeyWithID)).id(company.getCompanyNumber());
         } catch (IOException e) {
             LoggingUtils.getLogger().error("Failed to index a document for company", logMap);
@@ -78,7 +79,7 @@ public class AlphabeticalUpsertRequestService {
         Map<String, Object> logMap = new DataMap.Builder()
                 .companyName(company.getCompanyName())
                 .companyNumber(company.getCompanyNumber())
-                .indexName(LoggingUtils.INDEX_ALPHABETICAL)
+                .indexName(indices.alphabetical())
                 .build().getLogMap();
 
         String orderedAlphaKey = "";
@@ -94,7 +95,7 @@ public class AlphabeticalUpsertRequestService {
         try {
             LoggingUtils.getLogger().info("Attempt to upsert document if it does not exist", logMap);
 
-            return new UpdateRequest(environmentReader.getMandatoryString(INDEX), company.getCompanyNumber())
+            return new UpdateRequest(indices.alphabetical(), company.getCompanyNumber())
                 .docAsUpsert(true)
                 .doc(alphabeticalSearchUpsertRequest.buildRequest(company, orderedAlphaKey, orderedAlphaKeyWithID))
                 .upsert(indexRequest);
@@ -102,13 +103,5 @@ public class AlphabeticalUpsertRequestService {
             LoggingUtils.getLogger().error("Failed to update a document for company", logMap);
             throw new UpsertException("Unable to create update request");
         }
-    }
-
-    private Map<String, Object> setUpUpsertLogging(CompanyProfileApi company) {
-        Map<String, Object> logMap = new HashMap<>();
-        logMap.put(LoggingUtils.COMPANY_NAME, company.getCompanyName());
-        logMap.put(LoggingUtils.COMPANY_NUMBER, company.getCompanyNumber());
-        logMap.put(LoggingUtils.INDEX, LoggingUtils.INDEX_ALPHABETICAL);
-        return logMap;
     }
 }

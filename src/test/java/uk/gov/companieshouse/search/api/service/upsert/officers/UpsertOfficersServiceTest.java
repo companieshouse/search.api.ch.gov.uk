@@ -19,6 +19,7 @@ import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.rest.impl.PrimarySearchRestClientService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
 class UpsertOfficersServiceTest {
@@ -35,6 +36,8 @@ class UpsertOfficersServiceTest {
     private AppointmentList appointmentList;
     @Mock
     private UpdateRequest request;
+    @Mock
+    private ConfiguredIndexNamesProvider indices;
 
     @Test
     void officerIsUpsertedCorrectly() throws Exception {

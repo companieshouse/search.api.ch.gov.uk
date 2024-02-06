@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -25,9 +24,9 @@ import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchIndexService;
 import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchRequestService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AdvancedSearchIndexServiceTest {
 
     @InjectMocks
@@ -35,6 +34,9 @@ class AdvancedSearchIndexServiceTest {
 
     @Mock
     private AdvancedSearchRequestService mockAdvancedSearchRequestService;
+
+    @Mock
+    private ConfiguredIndexNamesProvider indices;
 
     private static final String COMPANY_NAME = "test company";
     private static final String SIC_CODES = "99960";

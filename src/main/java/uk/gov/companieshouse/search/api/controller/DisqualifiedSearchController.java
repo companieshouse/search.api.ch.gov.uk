@@ -21,6 +21,7 @@ import uk.gov.companieshouse.search.api.service.upsert.disqualified.UpsertDisqua
 
 import javax.validation.Valid;
 import java.util.Map;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @RestController
 @RequestMapping(value = "/disqualified-search", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -30,20 +31,24 @@ public class DisqualifiedSearchController {
     private final ApiToResponseMapper apiToResponseMapper;
     private final UpsertDisqualificationService upsertDisqualificationService;
     private final PrimarySearchDeleteService primarySearchDeleteService;
+    private final ConfiguredIndexNamesProvider indices;
 
     public DisqualifiedSearchController(ApiToResponseMapper apiToResponseMapper,
             UpsertDisqualificationService upsertDisqualificationService,
-            PrimarySearchDeleteService primarySearchDeleteService) {
+            PrimarySearchDeleteService primarySearchDeleteService,
+        ConfiguredIndexNamesProvider indices) {
         this.apiToResponseMapper = apiToResponseMapper;
         this.upsertDisqualificationService = upsertDisqualificationService;
         this.primarySearchDeleteService = primarySearchDeleteService;
+        this.indices = indices;
     }
 
     @PutMapping("/disqualified-officers/{officer_id}")
     public ResponseEntity<Object> upsertOfficer(@PathVariable("officer_id") String officerId,
                                                        @Valid @RequestBody OfficerDisqualification officer) {
 
-        Map<String, Object> logMap = LoggingUtils.setUpDisqualificationUpsertLogging(officer.getItems().get(0));
+        Map<String, Object> logMap =
+            LoggingUtils.setUpDisqualificationUpsertLogging(officer.getItems().get(0), indices);
         getLogger().info("Attempting to upsert an officer to disqualification search index", logMap);
 
         ResponseObject responseObject;
@@ -58,7 +63,7 @@ public class DisqualifiedSearchController {
 
     @DeleteMapping("/delete/{officer_id}")
     public ResponseEntity<Object> deleteOfficer(@PathVariable("officer_id") String officerId) {
-        Map<String, Object> logMap = LoggingUtils.setUpPrimarySearchDeleteLogging(officerId);
+        Map<String, Object> logMap = LoggingUtils.setUpPrimarySearchDeleteLogging(officerId, indices);
         getLogger().info("Attempting to delete an officer to disqualification search index", logMap);
 
         ResponseObject responseObject;

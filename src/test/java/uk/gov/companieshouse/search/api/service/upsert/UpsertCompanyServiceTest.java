@@ -2,7 +2,6 @@ package uk.gov.companieshouse.search.api.service.upsert;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_UPSERTED;
@@ -12,17 +11,14 @@ import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPS
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
@@ -32,9 +28,9 @@ import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClie
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.upsert.advanced.AdvancedUpsertRequestService;
 import uk.gov.companieshouse.search.api.service.upsert.alphabetical.AlphabeticalUpsertRequestService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class UpsertCompanyServiceTest {
 
     @Mock
@@ -52,6 +48,12 @@ class UpsertCompanyServiceTest {
     @Mock
     private AlphaKeyService mockAlphaKeyService;
 
+    @Mock
+    private ConfiguredIndexNamesProvider indices;
+
+    @Mock
+    private UpdateRequest updateRequest;
+
     @InjectMocks
     private UpsertCompanyService upsertCompanyService;
 
@@ -67,7 +69,7 @@ class UpsertCompanyServiceTest {
 
         when(mockAlphabeticalUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
         when(mockAlphabeticalUpsertRequestService.createUpdateRequest(
-            company, indexRequest)).thenReturn(any(UpdateRequest.class));
+            company, indexRequest)).thenReturn(updateRequest);
 
         ResponseObject responseObject = upsertCompanyService.upsert(company);
 
@@ -84,7 +86,7 @@ class UpsertCompanyServiceTest {
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
         when(mockAdvancedUpsertRequestService.createUpdateRequest(
-            company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD)).thenReturn(any(UpdateRequest.class));
+            company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD)).thenReturn(updateRequest);
 
         ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
 
@@ -101,7 +103,7 @@ class UpsertCompanyServiceTest {
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(null);
         when(mockAdvancedUpsertRequestService.createUpdateRequest(
-            company, "", "")).thenReturn(any(UpdateRequest.class));
+            company, "", "")).thenReturn(updateRequest);
 
         ResponseObject responseObject = upsertCompanyService.upsertAdvanced(company);
 

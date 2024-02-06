@@ -1,7 +1,7 @@
 package uk.gov.companieshouse.search.api.service.search.impl.advanced;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogMap;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getAdvancedSearchLogMap;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
 import java.io.IOException;
@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.elasticsearch.search.SearchHits;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.GenerateEtagUtil;
 import uk.gov.companieshouse.search.api.elasticsearch.AdvancedSearchRequests;
@@ -19,22 +18,28 @@ import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @Service
 public class AdvancedSearchRequestService {
 
-    @Autowired
-    private AdvancedSearchRequests advancedSearchRequests;
-
-    @Autowired
-    private ElasticSearchResponseMapper elasticSearchResponseMapper;
-
+    private final AdvancedSearchRequests advancedSearchRequests;
+    private final ElasticSearchResponseMapper elasticSearchResponseMapper;
+    private final ConfiguredIndexNamesProvider indices;
 
     private static final String RESULT_FOUND = "A result has been found";
 
+    public AdvancedSearchRequestService(AdvancedSearchRequests advancedSearchRequests,
+        ElasticSearchResponseMapper elasticSearchResponseMapper,
+        ConfiguredIndexNamesProvider indices) {
+        this.advancedSearchRequests = advancedSearchRequests;
+        this.elasticSearchResponseMapper = elasticSearchResponseMapper;
+        this.indices = indices;
+    }
+
     public SearchResults<Company> getSearchResults(AdvancedSearchQueryParams queryParams, String requestId) throws SearchException {
 
-        Map<String, Object> logMap = getLogMap(queryParams, requestId);
+        Map<String, Object> logMap = getAdvancedSearchLogMap(queryParams, requestId, indices);
 
         getLogger().info("Getting advanced search results", logMap);
         logMap.remove(MESSAGE);

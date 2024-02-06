@@ -13,6 +13,7 @@ import uk.gov.companieshouse.search.api.service.rest.impl.PrimarySearchRestClien
 
 import java.io.IOException;
 import java.util.Map;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
@@ -23,15 +24,20 @@ public class PrimarySearchDeleteService {
 
     private final PrimarySearchDeleteRequestService primarySearchDeleteRequestService;
 
+    private final ConfiguredIndexNamesProvider indices;
+
     public PrimarySearchDeleteService(PrimarySearchRestClientService primarySearchRestClientService,
-            PrimarySearchDeleteRequestService primarySearchDeleteRequestService) {
+            PrimarySearchDeleteRequestService primarySearchDeleteRequestService,
+        ConfiguredIndexNamesProvider indices) {
         this.primarySearchRestClientService = primarySearchRestClientService;
         this.primarySearchDeleteRequestService = primarySearchDeleteRequestService;
+        this.indices = indices;
     }
 
     public ResponseObject deleteOfficer(SearchType searchType) {
 
-        Map<String, Object> logMap = LoggingUtils.setUpPrimarySearchDeleteLogging(searchType.getOfficerId());
+        Map<String, Object> logMap =
+            LoggingUtils.setUpPrimarySearchDeleteLogging(searchType.getOfficerId(), indices);
         DeleteRequest deleteRequest = primarySearchDeleteRequestService.createDeleteRequest(searchType);
 
         DeleteResponse response;

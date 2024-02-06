@@ -1,28 +1,5 @@
 package uk.gov.companieshouse.search.api.service.upsert.alphabetical;
 
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
-import uk.gov.companieshouse.environment.EnvironmentReader;
-import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchUpsertRequest;
-import uk.gov.companieshouse.search.api.exception.UpsertException;
-import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
-import uk.gov.companieshouse.search.api.service.AlphaKeyService;
-import uk.gov.companieshouse.search.api.service.upsert.alphabetical.AlphabeticalUpsertRequestService;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,8 +7,27 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
+import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchUpsertRequest;
+import uk.gov.companieshouse.search.api.exception.UpsertException;
+import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
+import uk.gov.companieshouse.search.api.service.AlphaKeyService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
+
 @ExtendWith(MockitoExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AlphabeticalUpsertRequestServiceTest {
 
     @InjectMocks
@@ -41,10 +37,10 @@ class AlphabeticalUpsertRequestServiceTest {
     private AlphaKeyService mockAlphaKeyService;
 
     @Mock
-    private EnvironmentReader mockEnvironmentReader;
+    private AlphabeticalSearchUpsertRequest mockAlphabeticalSearchUpsertRequest;
 
     @Mock
-    private AlphabeticalSearchUpsertRequest mockAlphabeticalSearchUpsertRequest;
+    private ConfiguredIndexNamesProvider indices;
 
     private static final String ALPHA_SEARCH = "alpha_search";
 
@@ -67,7 +63,7 @@ class AlphabeticalUpsertRequestServiceTest {
     @BeforeEach
     void init() {
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
-        when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ALPHA_SEARCH);
+        when(indices.alphabetical()).thenReturn(ALPHA_SEARCH);
     }
 
     @Test

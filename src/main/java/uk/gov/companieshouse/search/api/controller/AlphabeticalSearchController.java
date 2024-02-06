@@ -1,13 +1,9 @@
 package uk.gov.companieshouse.search.api.controller;
 
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.INDEX_ALPHABETICAL;
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
 import java.util.Map;
-
 import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
-
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.exception.SizeException;
@@ -31,6 +25,7 @@ import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 
 @RestController
@@ -44,14 +39,22 @@ public class AlphabeticalSearchController {
     private static final String SIZE_PARAM = "size";
     private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
     private static final String ALPHABETICAL_SEARCH_RESULT_MAX = "ALPHABETICAL_SEARCH_RESULT_MAX";
-    @Autowired
-    private AlphabeticalSearchIndexService searchIndexService;
-    @Autowired
-    private UpsertCompanyService upsertCompanyService;
-    @Autowired
-    private ApiToResponseMapper apiToResponseMapper;
-    @Autowired
-    private EnvironmentReader environmentReader;
+
+    private final AlphabeticalSearchIndexService searchIndexService;
+    private final UpsertCompanyService upsertCompanyService;
+    private final ApiToResponseMapper apiToResponseMapper;
+    private final EnvironmentReader environmentReader;
+    private final ConfiguredIndexNamesProvider indices;
+
+    public AlphabeticalSearchController(AlphabeticalSearchIndexService searchIndexService,
+        UpsertCompanyService upsertCompanyService, ApiToResponseMapper apiToResponseMapper,
+        EnvironmentReader environmentReader, ConfiguredIndexNamesProvider indices) {
+        this.searchIndexService = searchIndexService;
+        this.upsertCompanyService = upsertCompanyService;
+        this.apiToResponseMapper = apiToResponseMapper;
+        this.environmentReader = environmentReader;
+        this.indices = indices;
+    }
 
     @GetMapping("/companies")
     @ResponseBody
@@ -64,7 +67,7 @@ public class AlphabeticalSearchController {
         Map<String, Object> logMap = new DataMap.Builder()
                 .requestId(requestId)
                 .companyName(companyName)
-                .indexName(INDEX_ALPHABETICAL)
+                .indexName(indices.alphabetical())
                 .searchBefore(searchBefore)
                 .searchAfter(searchAfter)
                 .size(String.valueOf(size))
