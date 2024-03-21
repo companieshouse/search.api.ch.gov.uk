@@ -4,10 +4,9 @@ weight: 902
 routes:
   1: ^/alphabetical-search/companies
   2: ^/alphabetical-search/companies/*
-  3: ^/alphabetical-search/companies/delete/*
-  4: ^/dissolved-search/companies
-  5: ^/advanced-search/companies
-  6: ^/disqualified-search/disqualified-officers
-  7: ^/disqualified-search/delete
-  8: ^/officers-search/officers
-  9: ^/search/healthcheck
+  3: ^/dissolved-search/companies
+  4: ^/advanced-search/companies
+  5: ^/disqualified-search/disqualified-officers
+  6: ^/disqualified-search/delete
+  7: ^/officers-search/officers
+  8: ^/search/healthcheck

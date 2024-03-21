@@ -3,15 +3,23 @@ package uk.gov.companieshouse.search.api.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FOUND;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
-import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.*;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SIZE_PARAMETER_ERROR;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPDATE_REQUEST_ERROR;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPSERT_ERROR;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_DELETED;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_NOT_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_UPSERTED;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DELETE_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -276,7 +284,7 @@ class AlphabeticalSearchControllerTest {
 
     @Test
     @DisplayName("Test delete returns a HTTP 404 Response if the company number is not presented")
-    void testDeleteWithEmptyCompanyNumberReturnsNotFound() {
+    void testDeleteWithMissingCompanyNumberReturnsNotFound() {
         when(mockApiToResponseMapper.map(any()))
                 .thenReturn(ResponseEntity.status(NOT_FOUND).build());
 
@@ -287,7 +295,21 @@ class AlphabeticalSearchControllerTest {
         assertNotNull(responseEntity);
         assertEquals(NOT_FOUND, responseEntity.getStatusCode());
     }
-    
+
+    @Test
+    @DisplayName("Test delete returns a HTTP 400 BAD REQUEST Response if the company number is missing")
+    void testDeleteWithEmptyCompanyNumberReturnsNotFound() {
+
+        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+                .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
+
+        ResponseEntity<?> responseEntity = alphabeticalSearchController.deleteCompany(null);
+
+        assertEquals(DELETE_NOT_FOUND, responseObjectCaptor.getValue().getStatus());
+        assertNotNull(responseEntity);
+        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
     private CompanyProfileApi createCompany() {
         CompanyProfileApi company = new CompanyProfileApi();
         company.setType("company type");
