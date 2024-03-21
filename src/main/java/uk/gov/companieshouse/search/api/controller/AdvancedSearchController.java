@@ -179,8 +179,9 @@ public class AdvancedSearchController {
     @DeleteMapping("/companies/{company_number}")
     public ResponseEntity<Object> deleteCompany(@PathVariable("company_number") String companyNumber) {
 
-        getLogger().info("Attempting to delete company number from advanced search index");
         ResponseObject responseObject;
+        getLogger().info(String.format("Attempting to delete company number [%s] from the advanced search index",
+                companyNumber));
 
         if (companyNumber == null || companyNumber.isEmpty()){
             responseObject = new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
