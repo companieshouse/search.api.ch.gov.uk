@@ -151,4 +151,12 @@ public class LoggingUtils {
                 .officerId(officerId)
                 .indexName(indices.primary()).build().getLogMap();
     }
+
+    public static Map<String, Object> setUpAlphabeticalSearchDeleteLogging(
+            String companyName,
+            ConfiguredIndexNamesProvider indices) {
+        return new DataMap.Builder()
+                .companyName(companyName)
+                .indexName(indices.alphabetical()).build().getLogMap();
+    }
 }

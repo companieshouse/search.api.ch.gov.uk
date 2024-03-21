@@ -1,5 +1,7 @@
 package uk.gov.companieshouse.search.api.service.rest.impl;
 
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
@@ -30,5 +32,9 @@ public class AlphabeticalSearchRestClientService implements RestClientService {
     @Override
     public UpdateResponse upsert(UpdateRequest updateRequest) throws IOException {
         return alphabeticalClient.update(updateRequest, RequestOptions.DEFAULT);
+    }
+
+    public DeleteResponse delete(DeleteRequest deleteRequest) throws IOException {
+        return alphabeticalClient.delete(deleteRequest, DEFAULT);
     }
 }
