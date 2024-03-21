@@ -24,6 +24,8 @@ import static uk.gov.companieshouse.search.api.constants.TestConstants.REQUEST_I
 import static uk.gov.companieshouse.search.api.constants.TestConstants.SIC_CODES_LIST;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.SIZE;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.START_INDEX;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DELETE_NOT_FOUND;
+import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_DELETED;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.DOCUMENT_UPSERTED;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SEARCH_FOUND;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.UPDATE_REQUEST_ERROR;
@@ -41,6 +43,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.environment.EnvironmentReader;
@@ -54,6 +57,7 @@ import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
+import uk.gov.companieshouse.search.api.service.delete.advanced.AdvancedSearchDeleteService;
 import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchIndexService;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
@@ -84,6 +88,9 @@ class AdvancedSearchControllerTest {
 
     @InjectMocks
     private AdvancedSearchController advancedSearchController;
+
+    @Mock
+    private AdvancedSearchDeleteService advancedSearchDeleteService;
 
     @Test
     @DisplayName("Test search found")
@@ -249,6 +256,53 @@ class AdvancedSearchControllerTest {
     void testUpsertWithEmptyStringCompanyNumberReturnsBadRequest() {
 
         testReturnsBadRequest("");
+    }
+
+    @Test
+    @DisplayName("Test delete returns HTTP 200 OK given company number exists in index")
+    void testDeleteWithCorrectCompanyNumberReturnsOkRequest() {
+        ResponseObject responseObject = new ResponseObject(DOCUMENT_DELETED);
+        String companyNumber = "12345678";
+
+        when(advancedSearchDeleteService.deleteCompanyByNumber(companyNumber))
+                .thenReturn(responseObject);
+        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+                .thenReturn(ResponseEntity.status(OK).build());
+
+        ResponseEntity<?> responseEntity = advancedSearchController.deleteCompany(companyNumber);
+
+        assertNotNull(responseEntity);
+        assertEquals(OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test delete returns HTTP 400 BAD REQUEST given company number missing")
+    void testDeleteWithMissingCompanyNumberReturnsBadRequest() {
+        String companyNumber = null;
+
+        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+                .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
+
+        ResponseEntity<?> responseEntity = advancedSearchController.deleteCompany(companyNumber);
+
+        assertEquals(DELETE_NOT_FOUND, responseObjectCaptor.getValue().getStatus());
+        assertNotNull(responseEntity);
+        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test delete returns HTTP 400 BAD REQUEST given company number empty")
+    void testDeleteWithEmptyCompanyNumberReturnsBadRequest() {
+        String companyNumber = "";
+
+        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+                .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
+
+        ResponseEntity<?> responseEntity = advancedSearchController.deleteCompany(companyNumber);
+
+        assertEquals(DELETE_NOT_FOUND, responseObjectCaptor.getValue().getStatus());
+        assertNotNull(responseEntity);
+        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     private void testReturnsBadRequest(String companyNumber) {
