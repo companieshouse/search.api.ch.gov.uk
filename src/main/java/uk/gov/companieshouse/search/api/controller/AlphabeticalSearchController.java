@@ -118,7 +118,7 @@ public class AlphabeticalSearchController {
         return apiToResponseMapper.map(responseObject);
     }
 
-    @DeleteMapping("/{company_number}")
+    @DeleteMapping("/companies/{company_number}")
     public ResponseEntity<Object> deleteCompany(@PathVariable("company_number") String companyNumber) {
         Map<String, Object> logMap = LoggingUtils.setUpAlphabeticalSearchDeleteLogging(companyNumber, indices);
         getLogger().info("Attempting to delete a company from alphabetical search index", logMap);
