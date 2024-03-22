@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,6 +31,7 @@ import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
+import uk.gov.companieshouse.search.api.service.delete.advanced.AdvancedSearchDeleteService;
 import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchIndexService;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
@@ -58,14 +60,17 @@ public class AdvancedSearchController {
     private final ApiToResponseMapper apiToResponseMapper;
     private final UpsertCompanyService upsertCompanyService;
     private final ConfiguredIndexNamesProvider indices;
+    private final AdvancedSearchDeleteService advancedSearchDeleteService;
 
     public AdvancedSearchController(AdvancedQueryParamMapper queryParamMapper,
         AdvancedSearchIndexService searchIndexService, ApiToResponseMapper apiToResponseMapper,
-        UpsertCompanyService upsertCompanyService, ConfiguredIndexNamesProvider indices) {
+        UpsertCompanyService upsertCompanyService, ConfiguredIndexNamesProvider indices,
+                                    AdvancedSearchDeleteService advancedSearchDeleteService) {
         this.queryParamMapper = queryParamMapper;
         this.searchIndexService = searchIndexService;
         this.apiToResponseMapper = apiToResponseMapper;
         this.upsertCompanyService = upsertCompanyService;
+        this.advancedSearchDeleteService = advancedSearchDeleteService;
         this.indices = indices;
     }
 
@@ -167,6 +172,22 @@ public class AdvancedSearchController {
             responseObject = new ResponseObject(ResponseStatus.UPSERT_ERROR);
         } else {
             responseObject = upsertCompanyService.upsertAdvanced(company);
+        }
+        return apiToResponseMapper.map(responseObject);
+    }
+
+    @DeleteMapping("/companies/{company_number}")
+    public ResponseEntity<Object> deleteCompany(@PathVariable("company_number") String companyNumber) {
+
+        ResponseObject responseObject;
+        getLogger().info(String.format("Attempting to delete company number [%s] from the advanced search index",
+                companyNumber));
+
+        if (companyNumber == null || companyNumber.isEmpty()){
+            responseObject = new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
+        }
+        else {
+            responseObject = advancedSearchDeleteService.deleteCompanyByNumber(companyNumber);
         }
         return apiToResponseMapper.map(responseObject);
     }
