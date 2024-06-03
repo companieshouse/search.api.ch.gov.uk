@@ -61,4 +61,35 @@ public class PrimarySearchDeleteService {
             return new ResponseObject(ResponseStatus.DOCUMENT_DELETED);
         }
     }
+
+    public ResponseObject deleteCompanyByNumber(String companyNumber) throws IOException {
+
+        Map<String, Object> logMap =
+                LoggingUtils.setUpPrimarySearchCompanyDeleteLogging(companyNumber, indices);
+
+        DeleteRequest deleteRequest = new DeleteRequest(indices.primary(), companyNumber);
+
+        DeleteResponse response;
+        try {
+            response = primarySearchRestClientService.delete(deleteRequest);
+        } catch (IOException e) {
+            getLogger().error(String
+                    .format("IOException encountered when deleting Company Number [%s]",
+                    companyNumber),logMap);
+            return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
+        } catch (ElasticsearchException e) {
+            return new ResponseObject(ResponseStatus.DELETE_REQUEST_ERROR);
+        }
+
+        if (response.getResult() == DocWriteResponse.Result.NOT_FOUND) {
+            getLogger().error(String.format("Company Number: [%s] not found",
+                    companyNumber),logMap);
+            return new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
+        } else {
+            getLogger().info(String.format("Successfully deleted Company Number [%s] ",
+                    companyNumber),logMap);
+            return new ResponseObject(ResponseStatus.DOCUMENT_DELETED);
+        }
+
+    }
 }

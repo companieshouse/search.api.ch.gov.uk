@@ -10,3 +10,4 @@ routes:
   6: ^/disqualified-search/delete
   7: ^/officers-search/officers
   8: ^/search/healthcheck
+  9: ^/primary-search/companies/*
