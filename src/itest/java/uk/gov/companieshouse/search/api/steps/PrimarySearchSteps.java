@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.company.profile.steps;
+package java.uk.gov.companieshouse.search.api.steps;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CommonApiSteps {
+public class PrimarySearchSteps {
 
     private ResponseEntity<String> lastResponse;
 
@@ -39,4 +39,27 @@ public class CommonApiSteps {
         assertThat(lastResponse.getBody()).isEqualTo(response);
     }
 
+    @Given("the company search entity resource {string} exists for {string}")
+    public void theCompanySearchEntityResourceExistsFor(String arg0, String arg1) {
+    }
+
+    @When("a DELETE request is sent to the company search endpoint for {string}")
+    public void aDELETERequestIsSentToTheCompanySearchEndpointFor(String arg0) {
+        
+    }
+
+    @And("the company search entity does not exist for {string}")
+    public void theCompanySearchEntityDoesNotExistFor(String arg0) {
+        
+    }
+
+    @Then("I should receive {int} status code")
+    public void iShouldReceiveStatusCode(int arg0) {
+        
+    }
+
+    @Then("the response code should be {int}")
+    public void theResponseCodeShouldBe(int arg0) {
+
+    }
 }

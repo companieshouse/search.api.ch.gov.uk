@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.company.profile.configuration;
+package java.uk.gov.companieshouse.search.api.configuration;
 
 import java.time.Duration;
 
@@ -8,7 +8,7 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
+import static com.github.tomakehurst.wiremock.common.DateTimeUnit.SECONDS;
 
 /**
  * Mongodb configuration runs on test container.

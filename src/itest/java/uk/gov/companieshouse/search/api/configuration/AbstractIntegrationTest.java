@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.company.profile.configuration;
+package java.uk.gov.companieshouse.search.api.configuration;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;

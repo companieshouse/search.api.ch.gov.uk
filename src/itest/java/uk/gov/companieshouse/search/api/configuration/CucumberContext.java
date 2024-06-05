@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.company.profile.configuration;
+package java.uk.gov.companieshouse.search.api.configuration;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,11 +1,12 @@
-package uk.gov.companieshouse.company.profile;
+package java.uk.gov.companieshouse.search.api;
 
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.TestPropertySource;
-import uk.gov.companieshouse.company.profile.configuration.AbstractIntegrationTest;
+import java.uk.gov.companieshouse.search.api.configuration.AbstractIntegrationTest;
+
 
 @RunWith(Cucumber.class)
 @CucumberOptions(

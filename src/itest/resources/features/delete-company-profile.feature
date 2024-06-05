@@ -1,10 +1,9 @@
-Feature: Delete company profile
+Feature: Delete company search
 
-  Scenario Outline: Delete company profile successfully
-    Given the CHS Kafka API is reachable
-    And the company profile resource "<data_file>" exists for "<company_number>"
-    When a DELETE request is sent to the company profile endpoint for "<company_number>"
-    And the company profile does not exist for "<company_number>"
+  Scenario Outline: Delete company search successfully
+    Given the company search entity resource "<data_file>" exists for "<company_number>"
+    When a DELETE request is sent to the company search endpoint for "<company_number>"
+    And the company search entity does not exist for "<company_number>"
     Then I should receive 200 status code
 
 
@@ -13,8 +12,8 @@ Feature: Delete company profile
       | with_links_resource     | 00006400       |
     
   
-  Scenario Outline: Delete company profile unsuccessfully - user not authenticated
-    When a DELETE request is sent to the company profile endpoint for "<company_number>" without valid ERIC headers
+  Scenario Outline: Delete company search unsuccessfully - user not authenticated
+    When a DELETE request is sent to the primary search endpoint for "<company_number>" without valid ERIC headers
     Then the response code should be 401
 
     Examples:
@@ -22,8 +21,8 @@ Feature: Delete company profile
       | 00006400       |
 
 
-  Scenario Outline: Delete company profile unsuccessfully - forbidden request
-    When a DELETE request is sent to the company profile endpoint for "<company_number>" with insufficient access
+  Scenario Outline: Delete company search unsuccessfully - forbidden request
+    When a DELETE request is sent to the primary search endpoint for "<company_number>" with insufficient access
     Then the response code should be 403
 
     Examples:
@@ -31,13 +30,11 @@ Feature: Delete company profile
       | 00006400       |
 
 
-  Scenario Outline: Delete company profile unsuccessfully while service is down
-    Given Company profile api service is running
-    And a company profile resource does not exist for "<company_number>"
+  Scenario Outline: Delete company search unsuccessfully while service is down
+    Given a company profile resource does not exist for "<company_number>"
     And the company profile database is down
     When a DELETE request is sent to the company profile endpoint for "<company_number>"
     Then I should receive 503 status code
-    And the CHS Kafka API is not invoked
 
     Examples:
       | company_number |
