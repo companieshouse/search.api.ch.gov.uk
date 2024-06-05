@@ -14,7 +14,7 @@ Feature: Delete company search
   
   Scenario Outline: Delete company search unsuccessfully - user not authenticated
     When a DELETE request is sent to the primary search endpoint for "<company_number>" without valid ERIC headers
-    Then the response code should be 401
+    Then I should receive 401 status code
 
     Examples:
       | company_number |
@@ -23,7 +23,7 @@ Feature: Delete company search
 
   Scenario Outline: Delete company search unsuccessfully - forbidden request
     When a DELETE request is sent to the primary search endpoint for "<company_number>" with insufficient access
-    Then the response code should be 403
+    Then I should receive 403 status code
 
     Examples:
       | company_number |
@@ -31,12 +31,12 @@ Feature: Delete company search
 
 
   Scenario Outline: Delete company search unsuccessfully while service is down
-    Given a company profile resource does not exist for "<company_number>"
+    Given the company search entity resource "<data_file>" exists for "<company_number>"
     And the company profile database is down
-    When a DELETE request is sent to the company profile endpoint for "<company_number>"
+    When a DELETE request is sent to the company search endpoint for "<company_number>"
     Then I should receive 503 status code
 
     Examples:
-      | company_number |
-      | 00006400       |
+      | data_file               | company_number |
+      | with_links_resource     | 00006400       |
 
