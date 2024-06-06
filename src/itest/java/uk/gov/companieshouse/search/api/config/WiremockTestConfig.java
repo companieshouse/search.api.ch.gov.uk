@@ -1,4 +1,4 @@
-package java.uk.gov.companieshouse.search.api.configuration;
+package java.uk.gov.companieshouse.search.api.config;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;

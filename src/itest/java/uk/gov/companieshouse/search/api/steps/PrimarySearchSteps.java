@@ -9,13 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.companieshouse.api.company.Data;
+import java.uk.gov.companieshouse.search.api.config.CucumberContext;
 import uk.gov.companieshouse.search.api.controller.PrimarySearchController;
 
-import java.uk.gov.companieshouse.search.api.*;
-import java.uk.gov.companieshouse.search.api.configuration.CucumberContext;
+
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
