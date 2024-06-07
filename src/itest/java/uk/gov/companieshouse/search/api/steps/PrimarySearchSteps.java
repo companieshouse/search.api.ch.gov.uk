@@ -4,23 +4,38 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.cucumber.spring.CucumberContextConfiguration;
 import org.assertj.core.api.Assertions;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.index.VersionType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.companieshouse.api.company.Data;
 import java.uk.gov.companieshouse.search.api.config.CucumberContext;
 import uk.gov.companieshouse.search.api.controller.PrimarySearchController;
+import uk.gov.companieshouse.search.api.service.rest.impl.PrimarySearchRestClientService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@CucumberContextConfiguration
+@SpringBootTest
+@ContextConfiguration
+@AutoConfigureMockMvc
 public class PrimarySearchSteps {
 
     private ResponseEntity<String> lastResponse;
@@ -30,10 +45,12 @@ public class PrimarySearchSteps {
     private MockMvc mockMvc;
 
     @Autowired
-    private PrimarySearchController primarySearchController;
+    private PrimarySearchRestClientService primarySearchRestClientService;
 
     @Autowired
     protected TestRestTemplate restTemplate;
+
+    private ConfiguredIndexNamesProvider indices;
 
     @Given("Company profile api service is running")
     public void theApplicationRunning() {
@@ -145,11 +162,6 @@ public class PrimarySearchSteps {
 
     @Given("the company search entity resource exists for {string}")
     public void theCompanySearchEntityResourceExistsFor(String companyNumber) throws Exception {
-        mockMvc = MockMvcBuilders.standaloneSetup(primarySearchController).build();
-
-        mockMvc.perform(post("/primary-search/companies")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"company_number\": \"" + companyNumber +"\",\"company_number\":\"Test Company\"}"))
-                .andExpect(status().isOk());
+        //when(primarySearchRestClientService.delete(any())).thenReturn(new DeleteResponse(null, VersionType.INTERNAL,-2L,0L,indices.primary(),companyNumber,true));
     }
 }

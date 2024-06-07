@@ -11,7 +11,8 @@ import java.uk.gov.companieshouse.search.api.config.AbstractIntegrationTest;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = "src/itest/resources/features",
-        plugin = {"pretty", "json:target/cucumber-report.json"})
+        plugin = {"pretty", "json:target/cucumber-report.json"},
+        glue = "uk.gov.companieshouse.search.api.steps")
 @CucumberContextConfiguration
 @TestPropertySource(properties = {"mongodb.transactional = true"})
 public class CucumberFeaturesRunnerITest extends AbstractIntegrationTest {
