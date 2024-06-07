@@ -52,7 +52,7 @@ class PrimarySearchControllerTest {
     private ArgumentCaptor<ResponseObject> responseObjectCaptor;
 
     @InjectMocks
-    private PrimarySearchController primarySearchController;
+    private PrimarySearchCompanyController primarySearchController;
 
     @Mock
     private PrimarySearchDeleteService primarySearchDeleteService;

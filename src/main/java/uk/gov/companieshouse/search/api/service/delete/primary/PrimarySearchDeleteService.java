@@ -80,7 +80,6 @@ public class PrimarySearchDeleteService {
         } catch (ElasticsearchException e) {
             return new ResponseObject(ResponseStatus.DELETE_REQUEST_ERROR);
         }
-
         if (response.getResult() == DocWriteResponse.Result.NOT_FOUND) {
             getLogger().error(String.format("Company Number: [%s] not found",
                     companyNumber),logMap);

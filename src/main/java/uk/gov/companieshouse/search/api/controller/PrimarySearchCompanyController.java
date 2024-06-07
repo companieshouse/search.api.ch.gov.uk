@@ -33,13 +33,13 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
 @RestController
 @RequestMapping(value = "/primary-search", produces = MediaType.APPLICATION_JSON_VALUE)
-public class PrimarySearchController {
+public class PrimarySearchCompanyController {
 
     private final ApiToResponseMapper apiToResponseMapper;
 
     private final PrimarySearchDeleteService primarySearchDeleteService;
 
-    public PrimarySearchController(ApiToResponseMapper apiToResponseMapper,
+    public PrimarySearchCompanyController(ApiToResponseMapper apiToResponseMapper,
                                    PrimarySearchDeleteService primarySearchDeleteService) {
         this.apiToResponseMapper = apiToResponseMapper;
         this.primarySearchDeleteService = primarySearchDeleteService;
