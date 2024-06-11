@@ -52,7 +52,7 @@ class PrimarySearchControllerTest {
     private ArgumentCaptor<ResponseObject> responseObjectCaptor;
 
     @InjectMocks
-    private PrimarySearchCompanyController primarySearchController;
+    private CompanyPrimarySearchController primarySearchController;
 
     @Mock
     private PrimarySearchDeleteService primarySearchDeleteService;
@@ -68,7 +68,7 @@ class PrimarySearchControllerTest {
         when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
                 .thenReturn(ResponseEntity.status(OK).build());
 
-        ResponseEntity<?> responseEntity = primarySearchController.deletePrimarySearch(companyNumber);
+        ResponseEntity<?> responseEntity = primarySearchController.deleteCompanyPrimarySearch(companyNumber);
 
         assertNotNull(responseEntity);
         assertEquals(OK, responseEntity.getStatusCode());
@@ -82,7 +82,7 @@ class PrimarySearchControllerTest {
         when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
                 .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
 
-        ResponseEntity<?> responseEntity = primarySearchController.deletePrimarySearch(companyNumber);
+        ResponseEntity<?> responseEntity = primarySearchController.deleteCompanyPrimarySearch(companyNumber);
 
         assertEquals(DELETE_NOT_FOUND, responseObjectCaptor.getValue().getStatus());
         assertNotNull(responseEntity);
@@ -97,7 +97,7 @@ class PrimarySearchControllerTest {
         when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
                 .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
 
-        ResponseEntity<?> responseEntity = primarySearchController.deletePrimarySearch(companyNumber);
+        ResponseEntity<?> responseEntity = primarySearchController.deleteCompanyPrimarySearch(companyNumber);
 
         assertEquals(DELETE_NOT_FOUND, responseObjectCaptor.getValue().getStatus());
         assertNotNull(responseEntity);
