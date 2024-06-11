@@ -39,26 +39,39 @@ public class PrimarySearchDeleteService {
         Map<String, Object> logMap =
             LoggingUtils.setUpPrimarySearchDeleteLogging(searchType.getOfficerId(), indices);
         DeleteRequest deleteRequest = primarySearchDeleteRequestService.createDeleteRequest(searchType);
+        return deleteObject(deleteRequest, searchType.getOfficerId(), "officer",logMap);
+    }
 
+    public ResponseObject deleteCompanyByNumber(String companyNumber) throws IOException {
+
+        Map<String, Object> logMap =
+                LoggingUtils.setUpPrimarySearchCompanyDeleteLogging(companyNumber, indices);
+
+        DeleteRequest deleteRequest = new DeleteRequest(indices.primary(), companyNumber);
+        return deleteObject(deleteRequest,companyNumber,"company",logMap);
+    }
+
+    private ResponseObject deleteObject(DeleteRequest deleteRequest, String id, String entityType, Map<String, Object> logMap){
         DeleteResponse response;
         try {
             response = primarySearchRestClientService.delete(deleteRequest);
         } catch (IOException e) {
-            getLogger().error(String.format("IOException encountered when deleting an [%s] from the primary search index",
-                    searchType.getPrimarySearchType()), logMap);
+            getLogger().error(String
+                    .format("IOException encountered when deleting %s [%s] from primary search index",
+                            entityType, id),logMap);
             return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
         } catch (ElasticsearchException e) {
             return new ResponseObject(ResponseStatus.DELETE_REQUEST_ERROR);
         }
-
         if (response.getResult() == DocWriteResponse.Result.NOT_FOUND) {
-            getLogger().error(String.format("Document with id: [%s] not found in primary search index",
-                    searchType.getOfficerId()), logMap);
+            getLogger().error(String.format("%s [%s] not found",
+                    entityType, id),logMap);
             return new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
         } else {
-            getLogger().info(String.format("Successfully deleted an [%s] with id: [%s] from primary search index",
-                    searchType.getPrimarySearchType(), searchType.getOfficerId()), logMap);
+            getLogger().info(String.format("Successfully deleted %s [%s] ",
+                    entityType, id),logMap);
             return new ResponseObject(ResponseStatus.DOCUMENT_DELETED);
         }
+
     }
 }
