@@ -23,14 +23,11 @@ public class CompanyPrimarySearchController {
 
     private final PrimarySearchDeleteService primarySearchDeleteService;
 
-    private final ConfiguredIndexNamesProvider indices;
 
     public CompanyPrimarySearchController(ApiToResponseMapper apiToResponseMapper,
-                                          PrimarySearchDeleteService primarySearchDeleteService,
-                                          ConfiguredIndexNamesProvider indices) {
+                                          PrimarySearchDeleteService primarySearchDeleteService) {
         this.apiToResponseMapper = apiToResponseMapper;
         this.primarySearchDeleteService = primarySearchDeleteService;
-        this.indices = indices;
     }
 
     @DeleteMapping("/companies/{company_number}")
@@ -38,7 +35,7 @@ public class CompanyPrimarySearchController {
                                                           String companyNumber) throws IOException {
         ResponseObject responseObject;
         getLogger().info(String
-                .format("Attempting to delete company number [%s] from the advanced search index",
+                .format("Attempting to delete company number [%s] from the primary search index",
                 companyNumber));
 
         if (companyNumber == null || companyNumber.isEmpty()){

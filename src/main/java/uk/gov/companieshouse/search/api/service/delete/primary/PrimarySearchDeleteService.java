@@ -47,7 +47,7 @@ public class PrimarySearchDeleteService {
         Map<String, Object> logMap =
                 LoggingUtils.setUpPrimarySearchCompanyDeleteLogging(companyNumber, indices);
 
-        DeleteRequest deleteRequest = new DeleteRequest(indices.primary(), companyNumber);
+        DeleteRequest deleteRequest = new DeleteRequest(indices.primary(),"primary_search",companyNumber);
         return deleteObject(deleteRequest,companyNumber,"company",logMap);
     }
 
