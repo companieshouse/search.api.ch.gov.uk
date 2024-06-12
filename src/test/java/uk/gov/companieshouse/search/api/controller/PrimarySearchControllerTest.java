@@ -27,6 +27,7 @@ import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSea
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
+import javax.annotation.meta.When;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,8 +38,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.*;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.*;
 
@@ -102,6 +105,37 @@ class PrimarySearchControllerTest {
         assertEquals(DELETE_NOT_FOUND, responseObjectCaptor.getValue().getStatus());
         assertNotNull(responseEntity);
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Test delete returns HTTP 503 when API service is down")
+    void testDeleteWhenApiIsDown() throws IOException {
+        String companyNumber = "12345678";
+
+        ResponseObject responseObject = new ResponseObject(DELETE_NOT_FOUND);
+
+        when(primarySearchDeleteService.deleteCompanyByNumber(companyNumber)).thenReturn(responseObject);
+        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+                .thenReturn(ResponseEntity.status(SERVICE_UNAVAILABLE).build());
+
+        ResponseEntity<?> responseEntity = primarySearchController.deleteCompanyPrimarySearch(companyNumber);
+
+        assertNotNull(responseEntity);
+        assertEquals(SERVICE_UNAVAILABLE, responseEntity.getStatusCode());
+    }
+
+
+    @Test
+    @DisplayName("Test delete returns HTTP 503 when API service is down")
+    void testDeleteWhenServiceIsDown() throws IOException {
+        String companyNumber = "12345678";
+
+        doThrow(new IOException()).when(primarySearchDeleteService).deleteCompanyByNumber(companyNumber);
+
+        ResponseEntity<?> responseEntity = primarySearchController.deleteCompanyPrimarySearch(companyNumber);
+
+        assertNotNull(responseEntity);
+        assertEquals(SERVICE_UNAVAILABLE, responseEntity.getStatusCode());
     }
 
 }
