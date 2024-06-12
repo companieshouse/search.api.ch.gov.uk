@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.search.api.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.delete.primary.PrimarySearchDeleteService;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
+import javax.naming.ServiceUnavailableException;
 import java.io.IOException;
 import java.util.Map;
 
@@ -44,9 +46,14 @@ public class CompanyPrimarySearchController {
                     companyNumber));
         }
         else {
-            responseObject = primarySearchDeleteService.deleteCompanyByNumber(companyNumber);
-            getLogger().info(String.format("Successfully deleted company [%s] ",
-                    companyNumber));
+            try{
+                responseObject = primarySearchDeleteService.deleteCompanyByNumber(companyNumber);
+                getLogger().info(String.format("Successfully deleted company [%s] ",
+                        companyNumber));
+            } catch (IOException ioException) {
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                        .body(ioException.getMessage());
+            }
         }
         return apiToResponseMapper.map(responseObject);
     }

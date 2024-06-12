@@ -39,6 +39,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.*;
 import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.*;
 
@@ -104,4 +105,18 @@ class PrimarySearchControllerTest {
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
     }
 
+    @Test
+    @DisplayName("Test delete returns HTTP 503 when API serice is down")
+    void testDeleteWhenApiIsDown() throws IOException {
+        String companyNumber = "12345678";
+
+        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
+                .thenReturn(ResponseEntity.status(SERVICE_UNAVAILABLE).build());
+
+        ResponseEntity<?> responseEntity = primarySearchController.deleteCompanyPrimarySearch(companyNumber);
+
+
+        assertNotNull(responseEntity);
+        assertEquals(SERVICE_UNAVAILABLE, responseEntity.getStatusCode());
+    }
 }
