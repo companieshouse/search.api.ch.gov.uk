@@ -27,6 +27,7 @@ import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSea
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
+import javax.annotation.meta.When;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,11 +111,13 @@ class PrimarySearchControllerTest {
     void testDeleteWhenApiIsDown() throws IOException {
         String companyNumber = "12345678";
 
+        ResponseObject responseObject = new ResponseObject(DELETE_NOT_FOUND);
+
+        when(primarySearchDeleteService.deleteCompanyByNumber(companyNumber)).thenReturn(responseObject);
         when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
                 .thenReturn(ResponseEntity.status(SERVICE_UNAVAILABLE).build());
 
         ResponseEntity<?> responseEntity = primarySearchController.deleteCompanyPrimarySearch(companyNumber);
-
 
         assertNotNull(responseEntity);
         assertEquals(SERVICE_UNAVAILABLE, responseEntity.getStatusCode());
