@@ -38,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
@@ -107,7 +108,7 @@ class PrimarySearchControllerTest {
     }
 
     @Test
-    @DisplayName("Test delete returns HTTP 503 when API serice is down")
+    @DisplayName("Test delete returns HTTP 503 when API service is down")
     void testDeleteWhenApiIsDown() throws IOException {
         String companyNumber = "12345678";
 
@@ -122,4 +123,19 @@ class PrimarySearchControllerTest {
         assertNotNull(responseEntity);
         assertEquals(SERVICE_UNAVAILABLE, responseEntity.getStatusCode());
     }
+
+
+    @Test
+    @DisplayName("Test delete returns HTTP 503 when API service is down")
+    void testDeleteWhenServiceIsDown() throws IOException {
+        String companyNumber = "12345678";
+
+        doThrow(new IOException()).when(primarySearchDeleteService).deleteCompanyByNumber(companyNumber);
+
+        ResponseEntity<?> responseEntity = primarySearchController.deleteCompanyPrimarySearch(companyNumber);
+
+        assertNotNull(responseEntity);
+        assertEquals(SERVICE_UNAVAILABLE, responseEntity.getStatusCode());
+    }
+
 }
