@@ -7,6 +7,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.springframework.stereotype.Service;
 
+import uk.gov.companieshouse.api.company.Data;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
@@ -130,5 +131,9 @@ public class UpsertCompanyService {
 
         getLogger().info("Upsert successful to advanced search index", logMap);
         return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
+    }
+
+    public ResponseObject upsertCompany(String companyNumber, Data profileData) {
+        return null;
     }
 }

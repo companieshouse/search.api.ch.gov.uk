@@ -32,6 +32,6 @@ public class SearchApiApplication implements WebMvcConfigurer {
                 "/officers-search/officers/{officer_id}",
                 "/disqualified-search/disqualified-officers/{officer_id}",
                 "/disqualified-search/delete/{officer_id}",
-                "/primary-search/companies/{company_number}");
+                "/company-search/companies/{company_number}");
     }
 }
