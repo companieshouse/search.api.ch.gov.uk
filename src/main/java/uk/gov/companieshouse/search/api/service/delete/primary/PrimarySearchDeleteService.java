@@ -45,7 +45,7 @@ public class PrimarySearchDeleteService {
     public ResponseObject deleteCompanyByNumber(String companyNumber) throws IOException {
 
         Map<String, Object> logMap =
-                LoggingUtils.setUpPrimarySearchCompanyDeleteLogging(companyNumber, indices);
+                LoggingUtils.setUpCompanySearchCompanyDeleteLogging(companyNumber, indices);
 
         DeleteRequest deleteRequest = new DeleteRequest(indices.primary(),"primary_search",companyNumber);
         return deleteObject(deleteRequest,companyNumber,"company",logMap);
