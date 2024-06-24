@@ -9,7 +9,7 @@ public class CompanySearchDocument {
     public static final String RESOURCE_KIND = "searchresults#company";
 
     @JsonProperty("items")
-    private List<CompanySearchData> items;
+    private final List<CompanySearchItemFullData> items;
 
     @JsonProperty("company_type")
     private final String companyType;
@@ -31,7 +31,7 @@ public class CompanySearchDocument {
         sortKey = builder.sortKey;
     }
 
-    public List<CompanySearchData> getItems() {
+    public List<CompanySearchItemFullData> getItems() {
         return items;
     }
 
@@ -52,7 +52,7 @@ public class CompanySearchDocument {
     }
     public static final class Builder {
 
-        private List<CompanySearchData> items;
+        private List<CompanySearchItemFullData> items;
 
         private String companyType;
 
@@ -69,7 +69,7 @@ public class CompanySearchDocument {
             this.kind = RESOURCE_KIND;
         }
 
-        public Builder items(List<CompanySearchData> items) {
+        public Builder items(List<CompanySearchItemFullData> items) {
             this.items = items;
             return this;
         }
@@ -107,10 +107,10 @@ public class CompanySearchDocument {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CompanySearchDocument that = (CompanySearchDocument) o;
-        return Objects.equals(items, that.items) && Objects.equals(companyType, that.companyType)
-                && Objects.equals(kind, that.kind) && Objects.equals(links, that.links)
-                && Objects.equals(sortKey, that.sortKey);
+        CompanySearchDocument document = (CompanySearchDocument) o;
+        return Objects.equals(items, document.items) && Objects.equals(companyType,
+                document.companyType) && Objects.equals(kind, document.kind) && Objects.equals(links,
+                document.links) && Objects.equals(sortKey, document.sortKey);
     }
 
     @Override

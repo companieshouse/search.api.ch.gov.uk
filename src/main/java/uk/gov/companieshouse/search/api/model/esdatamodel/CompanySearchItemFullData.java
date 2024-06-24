@@ -5,9 +5,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-public class CompanySearchData {
+public class CompanySearchItemFullData {
 
-    private final CompanySearchPreviousNameData previousNameData;
+    private final CompanySearchItemData companySearchItemData;
 
     @JsonProperty("address")
     private final CompanySearchAddress address;
@@ -21,9 +21,6 @@ public class CompanySearchData {
     @JsonProperty("date_of_cessation")
     private final LocalDate dateOfCessation;
 
-    @JsonProperty("date_of_creation")
-    private final LocalDate dateOfCreation;
-
     @JsonProperty("sic_codes")
     private final List<String> sicCodes;
 
@@ -36,21 +33,20 @@ public class CompanySearchData {
     @JsonProperty("wildcard_key")
     private final String wildcardKey;
 
-    private CompanySearchData(Builder builder) {
-        previousNameData = builder.previousNameData;
+    private CompanySearchItemFullData(Builder builder) {
+        companySearchItemData = builder.companySearchItemData;
         address = builder.address;
         companyNumber = builder.companyNumber;
         externalRegistrationNumber = builder.externalRegistrationNumber;
         dateOfCessation = builder.dateOfCessation;
-        dateOfCreation = builder.dateOfCreation;
         sicCodes = builder.sicCodes;
         companyStatus = builder.companyStatus;
         sameAsKey = builder.sameAsKey;
         wildcardKey = builder.wildcardKey;
     }
 
-    public CompanySearchPreviousNameData getPreviousNameData() {
-        return previousNameData;
+    public CompanySearchItemData getCompanySearchItemData() {
+        return companySearchItemData;
     }
 
     public CompanySearchAddress getAddress() {
@@ -67,10 +63,6 @@ public class CompanySearchData {
 
     public LocalDate getDateOfCessation() {
         return dateOfCessation;
-    }
-
-    public LocalDate getDateOfCreation() {
-        return dateOfCreation;
     }
 
     public List<String> getSicCodes() {
@@ -91,7 +83,7 @@ public class CompanySearchData {
 
     public static final class Builder {
 
-        private CompanySearchPreviousNameData previousNameData;
+        private CompanySearchItemData companySearchItemData;
 
         private CompanySearchAddress address;
 
@@ -100,8 +92,6 @@ public class CompanySearchData {
         private String externalRegistrationNumber;
 
         private LocalDate dateOfCessation;
-
-        private LocalDate dateOfCreation;
 
         private List<String> sicCodes;
 
@@ -117,8 +107,8 @@ public class CompanySearchData {
 
         private Builder() { }
 
-        public Builder previousNameData(CompanySearchPreviousNameData previousNameData) {
-            this.previousNameData = previousNameData;
+        public Builder companySearchData(CompanySearchItemData companySearchItemData) {
+            this.companySearchItemData = companySearchItemData;
             return this;
         }
 
@@ -142,11 +132,6 @@ public class CompanySearchData {
             return this;
         }
 
-        public Builder dateOfCreation(LocalDate dateOfCreation) {
-            this.dateOfCreation = dateOfCreation;
-            return this;
-        }
-
         public Builder sicCodes(List<String> sicCodes) {
             this.sicCodes = sicCodes;
             return this;
@@ -167,8 +152,8 @@ public class CompanySearchData {
             return this;
         }
 
-        public CompanySearchData build() {
-            return new CompanySearchData(this);
+        public CompanySearchItemFullData build() {
+            return new CompanySearchItemFullData(this);
         }
     }
 
@@ -180,19 +165,18 @@ public class CompanySearchData {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CompanySearchData that = (CompanySearchData) o;
-        return Objects.equals(previousNameData, that.previousNameData) && Objects.equals(address,
-                that.address) && Objects.equals(companyNumber, that.companyNumber) && Objects.equals(
-                externalRegistrationNumber, that.externalRegistrationNumber) && Objects.equals(dateOfCessation,
-                that.dateOfCessation) && Objects.equals(dateOfCreation, that.dateOfCreation)
-                && Objects.equals(sicCodes, that.sicCodes) && Objects.equals(companyStatus,
-                that.companyStatus) && Objects.equals(sameAsKey, that.sameAsKey) && Objects.equals(
-                wildcardKey, that.wildcardKey);
+        CompanySearchItemFullData that = (CompanySearchItemFullData) o;
+        return Objects.equals(companySearchItemData, that.companySearchItemData) && Objects.equals(
+                address, that.address) && Objects.equals(companyNumber, that.companyNumber)
+                && Objects.equals(externalRegistrationNumber, that.externalRegistrationNumber)
+                && Objects.equals(dateOfCessation, that.dateOfCessation) && Objects.equals(sicCodes,
+                that.sicCodes) && Objects.equals(companyStatus, that.companyStatus) && Objects.equals(
+                sameAsKey, that.sameAsKey) && Objects.equals(wildcardKey, that.wildcardKey);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(previousNameData, address, companyNumber, externalRegistrationNumber, dateOfCessation,
-                dateOfCreation, sicCodes, companyStatus, sameAsKey, wildcardKey);
+        return Objects.hash(companySearchItemData, address, companyNumber, externalRegistrationNumber, dateOfCessation,
+                sicCodes, companyStatus, sameAsKey, wildcardKey);
     }
 }
