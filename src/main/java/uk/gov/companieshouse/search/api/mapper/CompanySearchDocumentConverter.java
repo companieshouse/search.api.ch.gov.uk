@@ -6,13 +6,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.naming.ServiceUnavailableException;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.company.Data;
-import uk.gov.companieshouse.search.api.exception.AlphaKeyServiceException;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanyItemDataConverterModel;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanyItemFullDataConverterModel;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItemData;
@@ -40,12 +38,8 @@ public class CompanySearchDocumentConverter implements Converter<Data, CompanySe
 
     @Override
     public CompanySearchDocument convert(Data data) {
-        String alphaKey;
-        try {
-             alphaKey = getAlphaKey(data.getCompanyName());
-        } catch (RuntimeException e) {
-            throw new AlphaKeyServiceException(e.getMessage(), e);
-        }
+        AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(data.getCompanyName());
+        String alphaKey = alphaKeyResponse.getOrderedAlphaKey();
 
         String renderedFullAddress = getROAFullAddressString(data.getRegisteredOfficeAddress());
         LocalDate dateOfCreation = data.getDateOfCreation();
@@ -84,14 +78,5 @@ public class CompanySearchDocumentConverter implements Converter<Data, CompanySe
                 .sortKey(alphaKey + "0")
                 .links(new CompanySearchLinks(data.getLinks().getSelf()))
                 .build();
-    }
-
-    private String getAlphaKey(String companyName) throws RuntimeException {
-        AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(companyName);
-        if (alphaKeyResponse != null) {
-            return alphaKeyResponse.getOrderedAlphaKey();
-        } else {
-            throw new RuntimeException("Unable to create ordered alpha key");
-        }
     }
 }

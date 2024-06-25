@@ -25,7 +25,6 @@ import uk.gov.companieshouse.api.company.Data;
 import uk.gov.companieshouse.api.company.Links;
 import uk.gov.companieshouse.api.company.PreviousCompanyNames;
 import uk.gov.companieshouse.api.company.RegisteredOfficeAddress;;
-import uk.gov.companieshouse.search.api.exception.AlphaKeyServiceException;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchDocument;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItemData;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItemFullData;
@@ -117,29 +116,7 @@ class CompanySearchDocumentConverterTest {
         // then
         assertEquals(expected, actual);
     }
-
-    @Test
-    void convertThrowsAlphaKeyException() {
-        // given
-        Data source = new Data()
-                .registeredOfficeAddress(getROASource())
-                .companyName("TEST COMPANY PLC")
-                .links(new Links().self("links"));
-
-        when(alphaKeyService.getAlphaKeyForCorporateName(anyString()))
-                .thenThrow(new RuntimeException("Unable to create ordered alpha key"));
-
-        // when
-        Executable executable = () -> converter.convert(source);
-
-        // then
-        AlphaKeyServiceException exception = assertThrows(AlphaKeyServiceException.class, executable);
-        assertEquals("Unable to create ordered alpha key", exception.getMessage());
-        verifyNoInteractions(companySearchItemDataConverter);
-        verifyNoInteractions(companySearchItemFullDataConverter);
-    }
-
-
+    
     private Data getProfileData() {
         return new Data()
                 .registeredOfficeAddress(getROASource())
