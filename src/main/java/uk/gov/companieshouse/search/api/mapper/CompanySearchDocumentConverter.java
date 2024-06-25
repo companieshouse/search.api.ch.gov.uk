@@ -12,6 +12,7 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.company.Data;
+import uk.gov.companieshouse.search.api.exception.AlphaKeyServiceException;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanyItemDataConverterModel;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanyItemFullDataConverterModel;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItemData;
@@ -43,7 +44,7 @@ public class CompanySearchDocumentConverter implements Converter<Data, CompanySe
         try {
              alphaKey = getAlphaKey(data.getCompanyName());
         } catch (ServiceUnavailableException e) {
-            throw new RuntimeException(e);
+            throw new AlphaKeyServiceException(e.getMessage(), e);
         }
 
         String renderedFullAddress = getROAFullAddressString(data.getRegisteredOfficeAddress());

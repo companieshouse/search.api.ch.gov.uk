@@ -22,7 +22,7 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItemData;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItemFullData;
 
 @ExtendWith(MockitoExtension.class)
-public class CompanySearchItemFullDataConverterTest {
+class CompanySearchItemFullDataConverterTest {
 
     private CompanySearchItemFullDataConverter converter;
 

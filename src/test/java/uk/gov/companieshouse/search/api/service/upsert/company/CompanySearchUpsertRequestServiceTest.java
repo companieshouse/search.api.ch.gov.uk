@@ -23,7 +23,7 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchDocument;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
-public class CompanySearchUpsertRequestServiceTest {
+class CompanySearchUpsertRequestServiceTest {
 
     private static final String COMPANY_NUMBER = "12345678";
 

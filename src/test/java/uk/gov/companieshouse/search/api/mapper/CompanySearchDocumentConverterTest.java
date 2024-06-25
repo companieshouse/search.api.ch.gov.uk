@@ -30,7 +30,7 @@ import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 
 @ExtendWith(MockitoExtension.class)
-public class CompanySearchDocumentConverterTest {
+class CompanySearchDocumentConverterTest {
 
     private CompanySearchDocumentConverter converter;
 

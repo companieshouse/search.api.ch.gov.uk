@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanyItemDataConverterModel;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItemData;
 
-public class CompanySearchItemDataConverterTest {
+ class CompanySearchItemDataConverterTest {
 
     private CompanySearchItemDataConverter converter;
 
