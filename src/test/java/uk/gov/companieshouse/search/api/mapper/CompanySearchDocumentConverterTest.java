@@ -1,11 +1,13 @@
 package uk.gov.companieshouse.search.api.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -15,6 +17,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.convert.ConversionService;
@@ -22,6 +25,7 @@ import uk.gov.companieshouse.api.company.Data;
 import uk.gov.companieshouse.api.company.Links;
 import uk.gov.companieshouse.api.company.PreviousCompanyNames;
 import uk.gov.companieshouse.api.company.RegisteredOfficeAddress;;
+import uk.gov.companieshouse.search.api.exception.AlphaKeyServiceException;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchDocument;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItemData;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItemFullData;
@@ -113,6 +117,28 @@ class CompanySearchDocumentConverterTest {
         // then
         assertEquals(expected, actual);
     }
+
+    @Test
+    void convertThrowsAlphaKeyException() {
+        // given
+        Data source = new Data()
+                .registeredOfficeAddress(getROASource())
+                .companyName("TEST COMPANY PLC")
+                .links(new Links().self("links"));
+
+        when(alphaKeyService.getAlphaKeyForCorporateName(anyString()))
+                .thenThrow(new RuntimeException("Unable to create ordered alpha key"));
+
+        // when
+        Executable executable = () -> converter.convert(source);
+
+        // then
+        AlphaKeyServiceException exception = assertThrows(AlphaKeyServiceException.class, executable);
+        assertEquals("Unable to create ordered alpha key", exception.getMessage());
+        verifyNoInteractions(companySearchItemDataConverter);
+        verifyNoInteractions(companySearchItemFullDataConverter);
+    }
+
 
     private Data getProfileData() {
         return new Data()

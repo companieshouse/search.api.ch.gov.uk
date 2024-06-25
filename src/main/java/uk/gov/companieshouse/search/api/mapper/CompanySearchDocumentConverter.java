@@ -43,7 +43,7 @@ public class CompanySearchDocumentConverter implements Converter<Data, CompanySe
         String alphaKey;
         try {
              alphaKey = getAlphaKey(data.getCompanyName());
-        } catch (ServiceUnavailableException e) {
+        } catch (RuntimeException e) {
             throw new AlphaKeyServiceException(e.getMessage(), e);
         }
 
@@ -86,12 +86,12 @@ public class CompanySearchDocumentConverter implements Converter<Data, CompanySe
                 .build();
     }
 
-    private String getAlphaKey(String companyName) throws ServiceUnavailableException {
+    private String getAlphaKey(String companyName) throws RuntimeException {
         AlphaKeyResponse alphaKeyResponse = alphaKeyService.getAlphaKeyForCorporateName(companyName);
         if (alphaKeyResponse != null) {
             return alphaKeyResponse.getOrderedAlphaKey();
         } else {
-            throw new ServiceUnavailableException("Unable to create ordered alpha key");
+            throw new RuntimeException("Unable to create ordered alpha key");
         }
     }
 }
