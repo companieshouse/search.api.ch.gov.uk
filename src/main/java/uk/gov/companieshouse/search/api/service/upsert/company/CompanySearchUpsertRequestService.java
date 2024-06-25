@@ -8,12 +8,14 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.api.company.Data;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchDocument;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
+@Service
 public class CompanySearchUpsertRequestService {
 
     private static final String TYPE = "primary_search";

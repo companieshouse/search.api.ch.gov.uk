@@ -1,13 +1,11 @@
 package uk.gov.companieshouse.search.api.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
@@ -17,7 +15,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.convert.ConversionService;
@@ -105,7 +102,6 @@ class CompanySearchDocumentConverterTest {
                 .sortKey("TESTCOMPANYPLC0")
                 .links(new CompanySearchLinks("links"))
                 .build();
-
 
         when(alphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(alphaKeyResponse);
         when(alphaKeyResponse.getOrderedAlphaKey()).thenReturn("TESTCOMPANYPLC");
