@@ -24,7 +24,7 @@ import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItemFullD
 @ExtendWith(MockitoExtension.class)
 public class CompanySearchItemFullDataConverterTest {
 
-    CompanySearchItemFullDataConverter converter;
+    private CompanySearchItemFullDataConverter converter;
 
     @Mock
     private ConversionService companySearchAddressConverter;

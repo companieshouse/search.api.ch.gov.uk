@@ -57,22 +57,25 @@ public class CompanySearchDocumentConverter implements Converter<Data, CompanySe
                                         .dateOfCreation(dateOfCreation)
                                         .fullAddress(renderedFullAddress), CompanySearchItemData.class))
                         .companyData(data)
-                        .alphaKey(alphaKey), CompanySearchItemFullData.class);
+                        .alphaKey(alphaKey),
+                CompanySearchItemFullData.class);
 
         List<CompanySearchItemFullData> items = new ArrayList<>();
         items.add(firstItem);
 
-        items.addAll(data.getPreviousCompanyNames().stream().map(
-                previousName -> companySearchItemFullDataConverter.convert(
-                        new CompanyItemFullDataConverterModel()
-                                .companySearchData(companySearchItemDataConverter.convert(
-                                        new CompanyItemDataConverterModel()
-                                                .fullAddress(renderedFullAddress)
-                                                .ceasedOn(previousName.getCeasedOn())
-                                                .dateOfCreation(dateOfCreation)
-                                                .companyName(previousName.getName()), CompanySearchItemData.class)),
-                        CompanySearchItemFullData.class)
-                ).collect(Collectors.toList()));
+        if (data.getPreviousCompanyNames() != null) {
+            items.addAll(data.getPreviousCompanyNames().stream().map(
+                    previousName -> companySearchItemFullDataConverter.convert(
+                            new CompanyItemFullDataConverterModel()
+                                    .companySearchData(companySearchItemDataConverter.convert(
+                                            new CompanyItemDataConverterModel()
+                                                    .fullAddress(renderedFullAddress)
+                                                    .ceasedOn(previousName.getCeasedOn())
+                                                    .dateOfCreation(dateOfCreation)
+                                                    .companyName(previousName.getName()), CompanySearchItemData.class)),
+                            CompanySearchItemFullData.class)
+            ).collect(Collectors.toList()));
+        }
 
         return CompanySearchDocument.Builder.builder()
                 .items(items)
