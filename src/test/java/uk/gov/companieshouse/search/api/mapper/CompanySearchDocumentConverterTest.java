@@ -21,10 +21,9 @@ import org.springframework.core.convert.ConversionService;
 import uk.gov.companieshouse.api.company.Data;
 import uk.gov.companieshouse.api.company.Links;
 import uk.gov.companieshouse.api.company.PreviousCompanyNames;
-import uk.gov.companieshouse.api.company.RegisteredOfficeAddress;;
+import uk.gov.companieshouse.api.company.RegisteredOfficeAddress;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchDocument;
-import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItemData;
-import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItemFullData;
+import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItem;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchLinks;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
@@ -35,10 +34,7 @@ class CompanySearchDocumentConverterTest {
     private CompanySearchDocumentConverter converter;
 
     @Mock
-    private ConversionService companySearchItemDataConverter;
-
-    @Mock
-    private ConversionService companySearchItemFullDataConverter;
+    private ConversionService companySearchItemConverter;
 
     @Mock
     private AlphaKeyService alphaKeyService;
@@ -48,8 +44,7 @@ class CompanySearchDocumentConverterTest {
 
     @BeforeEach
     void setUp() {
-        converter = new CompanySearchDocumentConverter(companySearchItemDataConverter,
-                companySearchItemFullDataConverter, alphaKeyService);
+        converter = new CompanySearchDocumentConverter(companySearchItemConverter, alphaKeyService);
     }
 
     @Test
@@ -58,10 +53,10 @@ class CompanySearchDocumentConverterTest {
         Data source = getProfileData();
         CompanySearchDocument expected = CompanySearchDocument.Builder.builder()
                 .items(Arrays.asList(
-                        CompanySearchItemFullData.Builder.builder().build(),
-                        CompanySearchItemFullData.Builder.builder().build(),
-                        CompanySearchItemFullData.Builder.builder().build(),
-                        CompanySearchItemFullData.Builder.builder().build()
+                        CompanySearchItem.Builder.builder().build(),
+                        CompanySearchItem.Builder.builder().build(),
+                        CompanySearchItem.Builder.builder().build(),
+                        CompanySearchItem.Builder.builder().build()
                 ))
                 .companyType("plc")
                 .sortKey("TESTCOMPANYPLC0")
@@ -70,10 +65,8 @@ class CompanySearchDocumentConverterTest {
 
         when(alphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(alphaKeyResponse);
         when(alphaKeyResponse.getOrderedAlphaKey()).thenReturn("TESTCOMPANYPLC");
-        when(companySearchItemFullDataConverter.convert(any(), eq(CompanySearchItemFullData.class)))
-                .thenReturn(CompanySearchItemFullData.Builder.builder().build());
-        when(companySearchItemDataConverter.convert(any(), eq(CompanySearchItemData.class)))
-                .thenReturn(CompanySearchItemData.Builder.builder().build());
+        when(companySearchItemConverter.convert(any(), eq(CompanySearchItem.class)))
+                .thenReturn(CompanySearchItem.Builder.builder().build());
 
         // when
         CompanySearchDocument actual = converter.convert(source);
@@ -81,20 +74,17 @@ class CompanySearchDocumentConverterTest {
         // then
         assertEquals(expected, actual);
         verify(alphaKeyService).getAlphaKeyForCorporateName("TEST COMPANY PLC");
-        verify(companySearchItemFullDataConverter, times(4)).convert(any(),
-                eq(CompanySearchItemFullData.class));
-        verify(companySearchItemDataConverter, times(4)).convert(any(),
-                eq(CompanySearchItemData.class));
+        verify(companySearchItemConverter, times(4)).convert(any(),
+                eq(CompanySearchItem.class));
     }
 
     @Test
     void convertWithNullValues() {
         // given
-        List<CompanySearchItemFullData> items = new ArrayList<>();
+        List<CompanySearchItem> items = new ArrayList<>();
         items.add(null);
 
         Data source = new Data()
-                .registeredOfficeAddress(getROASource())
                 .companyName("TEST COMPANY PLC")
                 .links(new Links().self("links"));
         CompanySearchDocument expected = CompanySearchDocument.Builder.builder()
@@ -115,7 +105,16 @@ class CompanySearchDocumentConverterTest {
     
     private Data getProfileData() {
         return new Data()
-                .registeredOfficeAddress(getROASource())
+                .registeredOfficeAddress(new RegisteredOfficeAddress()
+                        .addressLine1("address line 1")
+                        .addressLine2("address line 2")
+                        .country("country")
+                        .poBox("po box")
+                        .locality("locality")
+                        .postalCode("postal code")
+                        .premises("premises")
+                        .region("region")
+                        .careOfName("care of name"))
                 .companyName("TEST COMPANY PLC")
                 .companyNumber("ABCD1234")
                 .externalRegistrationNumber("CDEF3456")
@@ -135,18 +134,5 @@ class CompanySearchDocumentConverterTest {
                                 .ceasedOn(LocalDate.of(2015, 6, 24))))
                 .type("plc")
                 .links(new Links().self("/company/ABCD1234"));
-    }
-
-    private RegisteredOfficeAddress getROASource() {
-        return new RegisteredOfficeAddress()
-                .addressLine1("address line 1")
-                .addressLine2("address line 2")
-                .country("country")
-                .poBox("po box")
-                .locality("locality")
-                .postalCode("postal code")
-                .premises("premises")
-                .region("region")
-                .careOfName("care of name");
     }
 }

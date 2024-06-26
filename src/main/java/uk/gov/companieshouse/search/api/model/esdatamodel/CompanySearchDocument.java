@@ -9,7 +9,7 @@ public class CompanySearchDocument {
     public static final String RESOURCE_KIND = "searchresults#company";
 
     @JsonProperty("items")
-    private final List<CompanySearchItemFullData> items;
+    private final List<CompanySearchItem> items;
 
     @JsonProperty("company_type")
     private final String companyType;
@@ -31,7 +31,7 @@ public class CompanySearchDocument {
         sortKey = builder.sortKey;
     }
 
-    public List<CompanySearchItemFullData> getItems() {
+    public List<CompanySearchItem> getItems() {
         return items;
     }
 
@@ -52,7 +52,7 @@ public class CompanySearchDocument {
     }
     public static final class Builder {
 
-        private List<CompanySearchItemFullData> items;
+        private List<CompanySearchItem> items;
 
         private String companyType;
 
@@ -69,7 +69,7 @@ public class CompanySearchDocument {
             this.kind = RESOURCE_KIND;
         }
 
-        public Builder items(List<CompanySearchItemFullData> items) {
+        public Builder items(List<CompanySearchItem> items) {
             this.items = items;
             return this;
         }

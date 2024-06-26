@@ -39,12 +39,10 @@ public class CompanySearchUpsertRequestService {
                 LoggingUtils.setUpCompanySearchCompanyUpsertLogging(companyNumber, indices);
 
         CompanySearchDocument documentToBeUpserted = Optional.ofNullable(
-                companySearchDocumentConverter.convert(profileData, CompanySearchDocument.class))
-                .orElseThrow();
+                companySearchDocumentConverter.convert(profileData, CompanySearchDocument.class)).orElseThrow();
 
         try {
             String jsonString = mapper.writeValueAsString(documentToBeUpserted);
-
             return new UpdateRequest(indices.primary(), TYPE, companyNumber)
                     .docAsUpsert(true).doc(jsonString, XContentType.JSON);
         } catch (IOException e) {

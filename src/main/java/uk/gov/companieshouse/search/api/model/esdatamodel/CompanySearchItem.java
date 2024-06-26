@@ -5,9 +5,27 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-public class CompanySearchItemFullData {
+public class CompanySearchItem {
 
-    private final CompanySearchItemData companySearchItemData;
+    private static final String RECORD_TYPE = "companies";
+
+    @JsonProperty("corporate_name_start")
+    private final String corporateNameStart;
+
+    @JsonProperty("corporate_name_ending")
+    private final String corporateNameEnding;
+
+    @JsonProperty("ceased_on")
+    private final LocalDate ceasedOn;
+
+    @JsonProperty("date_of_creation")
+    private final LocalDate dateOfCreation;
+
+    @JsonProperty("full_address")
+    private final String fullAddress;
+
+    @JsonProperty("record_type")
+    private final String recordType;
 
     @JsonProperty("address")
     private final CompanySearchAddress address;
@@ -33,8 +51,13 @@ public class CompanySearchItemFullData {
     @JsonProperty("wildcard_key")
     private final String wildcardKey;
 
-    private CompanySearchItemFullData(Builder builder) {
-        companySearchItemData = builder.companySearchItemData;
+    private CompanySearchItem(Builder builder) {
+        corporateNameStart = builder.corporateNameStart;
+        corporateNameEnding = builder.corporateNameEnding;
+        ceasedOn = builder.ceasedOn;
+        dateOfCreation = builder.dateOfCreation;
+        fullAddress = builder.fullAddress;
+        recordType = builder.recordType;
         address = builder.address;
         companyNumber = builder.companyNumber;
         externalRegistrationNumber = builder.externalRegistrationNumber;
@@ -45,8 +68,28 @@ public class CompanySearchItemFullData {
         wildcardKey = builder.wildcardKey;
     }
 
-    public CompanySearchItemData getCompanySearchItemData() {
-        return companySearchItemData;
+    public String getCorporateNameStart() {
+        return corporateNameStart;
+    }
+
+    public String getCorporateNameEnding() {
+        return corporateNameEnding;
+    }
+
+    public LocalDate getCeasedOn() {
+        return ceasedOn;
+    }
+
+    public LocalDate getDateOfCreation() {
+        return dateOfCreation;
+    }
+
+    public String getFullAddress() {
+        return fullAddress;
+    }
+
+    public String getRecordType() {
+        return recordType;
     }
 
     public CompanySearchAddress getAddress() {
@@ -83,8 +126,17 @@ public class CompanySearchItemFullData {
 
     public static final class Builder {
 
-        private CompanySearchItemData companySearchItemData;
+        private String corporateNameStart;
 
+        private String corporateNameEnding;
+
+        private LocalDate ceasedOn;
+
+        private LocalDate dateOfCreation;
+
+        private String fullAddress;
+
+        private String recordType;
         private CompanySearchAddress address;
 
         private String companyNumber;
@@ -105,10 +157,37 @@ public class CompanySearchItemFullData {
             return new Builder();
         }
 
-        private Builder() { }
+        private Builder() {
+            this.recordType = RECORD_TYPE;
+        }
 
-        public Builder companySearchData(CompanySearchItemData companySearchItemData) {
-            this.companySearchItemData = companySearchItemData;
+        public Builder corporateNameStart(String corporateNameStart) {
+            this.corporateNameStart = corporateNameStart;
+            return this;
+        }
+
+        public Builder corporateNameEnding(String corporateNameEnding) {
+            this.corporateNameEnding = corporateNameEnding;
+            return this;
+        }
+
+        public Builder ceasedOn(LocalDate ceasedOn) {
+            this.ceasedOn = ceasedOn;
+            return this;
+        }
+
+        public Builder dateOfCreation(LocalDate dateOfCreation) {
+            this.dateOfCreation = dateOfCreation;
+            return this;
+        }
+
+        public Builder fullAddress(String fullAddress) {
+            this.fullAddress = fullAddress;
+            return this;
+        }
+
+        public Builder recordType(String recordType) {
+            this.recordType = recordType;
             return this;
         }
 
@@ -152,8 +231,8 @@ public class CompanySearchItemFullData {
             return this;
         }
 
-        public CompanySearchItemFullData build() {
-            return new CompanySearchItemFullData(this);
+        public CompanySearchItem build() {
+            return new CompanySearchItem(this);
         }
     }
 
@@ -165,8 +244,11 @@ public class CompanySearchItemFullData {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CompanySearchItemFullData that = (CompanySearchItemFullData) o;
-        return Objects.equals(companySearchItemData, that.companySearchItemData) && Objects.equals(
+        CompanySearchItem that = (CompanySearchItem) o;
+        return Objects.equals(corporateNameStart, that.corporateNameStart) && Objects.equals(
+                corporateNameEnding, that.corporateNameEnding) && Objects.equals(ceasedOn, that.ceasedOn)
+                && Objects.equals(dateOfCreation, that.dateOfCreation) && Objects.equals(fullAddress,
+                that.fullAddress) && Objects.equals(recordType, that.recordType) && Objects.equals(
                 address, that.address) && Objects.equals(companyNumber, that.companyNumber)
                 && Objects.equals(externalRegistrationNumber, that.externalRegistrationNumber)
                 && Objects.equals(dateOfCessation, that.dateOfCessation) && Objects.equals(sicCodes,
@@ -176,7 +258,8 @@ public class CompanySearchItemFullData {
 
     @Override
     public int hashCode() {
-        return Objects.hash(companySearchItemData, address, companyNumber, externalRegistrationNumber, dateOfCessation,
-                sicCodes, companyStatus, sameAsKey, wildcardKey);
+        return Objects.hash(corporateNameStart, corporateNameEnding, ceasedOn, dateOfCreation, fullAddress, recordType,
+                address, companyNumber, externalRegistrationNumber, dateOfCessation, sicCodes, companyStatus, sameAsKey,
+                wildcardKey);
     }
 }
