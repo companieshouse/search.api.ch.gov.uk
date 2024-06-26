@@ -76,6 +76,32 @@ class CompanySearchItemConverterTest {
     }
 
     @Test
+    void convertPartialDataFalseAndCeasedOn() {
+        // given
+        CompanySearchItemConverterModel model = new CompanySearchItemConverterModel()
+                .partialData(false)
+                .companyName("PAST COMPANY PLC")
+                .ceasedOn(LocalDate.of(2022, 6, 24))
+                .dateOfCreation(LocalDate.of(2000, 6, 24))
+                .registeredOfficeAddress(getROAProperites());
+
+        CompanySearchItem expected = CompanySearchItem.Builder.builder()
+                .corporateNameStart("PAST COMPANY")
+                .corporateNameEnding("PLC")
+                .dateOfCreation(LocalDate.of(2000, 6, 24))
+                .fullAddress("care of name, po box, premises, address line 1, address line 2, "
+                        + "locality, region, country, postal code")
+                .ceasedOn(LocalDate.of(2022, 6, 24))
+                .build();
+
+        // when
+        CompanySearchItem actual = converter.convert(model);
+
+        //then
+        assertEquals(expected, actual);
+    }
+
+    @Test
     void convertPartialData() {
         // given
         CompanySearchItemConverterModel model = new CompanySearchItemConverterModel()
