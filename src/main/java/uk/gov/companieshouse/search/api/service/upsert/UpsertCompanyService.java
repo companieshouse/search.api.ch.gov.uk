@@ -3,10 +3,12 @@ package uk.gov.companieshouse.search.api.service.upsert;
 import java.io.IOException;
 import java.util.Map;
 
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.springframework.stereotype.Service;
 
+import uk.gov.companieshouse.api.company.Data;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
@@ -17,8 +19,10 @@ import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.AlphaKeyService;
 import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
+import uk.gov.companieshouse.search.api.service.rest.impl.PrimarySearchRestClientService;
 import uk.gov.companieshouse.search.api.service.upsert.advanced.AdvancedUpsertRequestService;
 import uk.gov.companieshouse.search.api.service.upsert.alphabetical.AlphabeticalUpsertRequestService;
+import uk.gov.companieshouse.search.api.service.upsert.company.CompanySearchUpsertRequestService;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.*;
@@ -30,6 +34,9 @@ public class UpsertCompanyService {
     private final AdvancedSearchRestClientService advancedSearchRestClientService;
     private final AlphabeticalUpsertRequestService alphabeticalUpsertRequestService;
     private final AdvancedUpsertRequestService advancedUpsertRequestService;
+
+    private final PrimarySearchRestClientService primarySearchRestClientService;
+    private final CompanySearchUpsertRequestService companySearchUpsertRequestService;
     private final AlphaKeyService alphaKeyService;
     private final ConfiguredIndexNamesProvider indices;
 
@@ -37,12 +44,16 @@ public class UpsertCompanyService {
         AlphabeticalSearchRestClientService alphabeticalSearchRestClientService,
         AdvancedSearchRestClientService advancedSearchRestClientService,
         AlphabeticalUpsertRequestService alphabeticalUpsertRequestService,
-        AdvancedUpsertRequestService advancedUpsertRequestService, AlphaKeyService alphaKeyService,
+        AdvancedUpsertRequestService advancedUpsertRequestService,
+        PrimarySearchRestClientService primarySearchRestClientService,
+        CompanySearchUpsertRequestService companySearchUpsertRequestService, AlphaKeyService alphaKeyService,
         ConfiguredIndexNamesProvider indices) {
         this.alphabeticalSearchRestClientService = alphabeticalSearchRestClientService;
         this.advancedSearchRestClientService = advancedSearchRestClientService;
         this.alphabeticalUpsertRequestService = alphabeticalUpsertRequestService;
         this.advancedUpsertRequestService = advancedUpsertRequestService;
+        this.primarySearchRestClientService = primarySearchRestClientService;
+        this.companySearchUpsertRequestService = companySearchUpsertRequestService;
         this.alphaKeyService = alphaKeyService;
         this.indices = indices;
     }
@@ -129,6 +140,34 @@ public class UpsertCompanyService {
         }
 
         getLogger().info("Upsert successful to advanced search index", logMap);
+        return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
+    }
+
+    public ResponseObject upsertCompany(String companyNumber, Data profileData) {
+        Map<String, Object> logMap =
+                LoggingUtils.setUpCompanySearchCompanyUpsertLogging(companyNumber, indices);
+        getLogger().info("Upserting company profile to primary index", logMap);
+
+        UpdateRequest updateRequest;
+        try {
+            updateRequest = companySearchUpsertRequestService.createUpdateRequest(companyNumber, profileData);
+        } catch (UpsertException e) {
+            getLogger().error("An error occurred attempting upsert the document to primary search "
+                    + "index", logMap);
+            return new ResponseObject(ResponseStatus.UPSERT_ERROR);
+        }
+
+        try {
+            primarySearchRestClientService.upsert(updateRequest);
+        } catch (IOException e) {
+            getLogger().error("IOException when upserting an company profile to primary search "
+                    + "index", logMap);
+            return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
+        } catch (ElasticsearchException e) {
+            return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
+        }
+
+        getLogger().info("Company profile Upsert successful to primary search index", logMap);
         return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
     }
 }

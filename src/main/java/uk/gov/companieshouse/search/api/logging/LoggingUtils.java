@@ -160,7 +160,16 @@ public class LoggingUtils {
                 .indexName(indices.alphabetical()).build().getLogMap();
     }
 
-    public static Map<String, Object> setUpPrimarySearchCompanyDeleteLogging(
+    public static Map<String, Object> setUpCompanySearchCompanyUpsertLogging(
+            String companyNumber,
+            ConfiguredIndexNamesProvider indices) {
+        return new DataMap.Builder()
+                .companyNumber(companyNumber)
+                .indexName(indices.primary())
+                .build().getLogMap();
+    }
+
+    public static Map<String, Object> setUpCompanySearchCompanyDeleteLogging(
             String companyNumber,
             ConfiguredIndexNamesProvider indices) {
         return new DataMap.Builder()
