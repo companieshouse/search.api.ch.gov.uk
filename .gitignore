@@ -16,3 +16,7 @@ bin/
 # Finder files (Mac)
 .DS_Store
 ._*
+
+# Vim files
+*.vim
+.*.sw?
