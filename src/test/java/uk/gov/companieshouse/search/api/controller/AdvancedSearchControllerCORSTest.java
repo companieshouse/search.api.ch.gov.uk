@@ -135,7 +135,7 @@ class AdvancedSearchControllerCORSTest {
     }
 
     @Test
-    void putCompanyFilingHistoryListCORSForbidden() throws Exception {
+    void putAdvancedSearchCORSForbidden() throws Exception {
 
         mockMvc.perform(put(PUT_ADVANCED_SEARCH)
                         .header("Origin", "")
