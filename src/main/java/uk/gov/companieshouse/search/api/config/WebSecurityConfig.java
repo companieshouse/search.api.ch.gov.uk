@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.search.api.config.config;
+package uk.gov.companieshouse.search.api.config;
 
 import java.util.Arrays;
 import java.util.List;
