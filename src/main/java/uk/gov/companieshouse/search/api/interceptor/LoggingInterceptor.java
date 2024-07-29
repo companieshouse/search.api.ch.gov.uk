@@ -1,17 +1,17 @@
 package uk.gov.companieshouse.search.api.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import uk.gov.companieshouse.logging.util.RequestLogger;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 
 @Component
-public class LoggingInterceptor extends HandlerInterceptorAdapter implements RequestLogger {
+public class LoggingInterceptor implements HandlerInterceptor, RequestLogger {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,

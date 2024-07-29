@@ -7,16 +7,16 @@ import static uk.gov.companieshouse.search.api.logging.LoggingUtils.REQUEST_ID_H
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 import uk.gov.companieshouse.api.util.security.AuthorisationUtil;
 import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.util.EricHeaderHelper;
 
 @Component
-public class UserAuthorisationInterceptor extends HandlerInterceptorAdapter {
+public class UserAuthorisationInterceptor implements HandlerInterceptor{
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
