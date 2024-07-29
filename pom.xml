@@ -29,7 +29,7 @@
 
         <!-- Elastic Search -->
         <elasticsearch.version>7.4.0</elasticsearch.version>
-        <spring-data-elasticsearch.version>4.2.6</spring-data-elasticsearch.version>
+        <spring-data-elasticsearch.version>5.3.2</spring-data-elasticsearch.version>
 
         <!-- Docker -->
         <jib-maven-plugin.version>3.4.3</jib-maven-plugin.version>
