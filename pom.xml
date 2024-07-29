@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>21</java.version>
-        <api-sdk-java.version>4.3.40</api-sdk-java.version>
+        <api-sdk-java.version>6.0.19</api-sdk-java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <start-class>uk.gov.companieshouse.search.api.SearchApiApplication</start-class>
