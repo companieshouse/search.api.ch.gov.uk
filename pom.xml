@@ -41,7 +41,7 @@
         <!-- Maven and Surefire plugins -->
         <maven-surefire-plugin.version>3.3.1</maven-surefire-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
-        <junit-platform-surefire-provider.version>1.2.0</junit-platform-surefire-provider.version>
+        <junit-platform-surefire-provider.version>1.3.2</junit-platform-surefire-provider.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 
         <!-- Sonar -->
@@ -54,7 +54,7 @@
         <artifactoryResolveSnapshotRepo>libs-snapshot-local</artifactoryResolveSnapshotRepo>
         <artifactoryResolveReleaseRepo>virtual-release</artifactoryResolveReleaseRepo>
 
-        <environment-reader-library.version>1.3.8</environment-reader-library.version>
+        <environment-reader-library.version>3.0.1</environment-reader-library.version>
 
         <spring-boot-dependencies.version>3.3.2</spring-boot-dependencies.version>
         <spring-boot-maven-plugin.version>3.3.2</spring-boot-maven-plugin.version>
