@@ -32,7 +32,7 @@
         <spring-data-elasticsearch.version>4.2.6</spring-data-elasticsearch.version>
 
         <!-- Docker -->
-        <jib-maven-plugin.version>3.3.2</jib-maven-plugin.version>
+        <jib-maven-plugin.version>3.4.3</jib-maven-plugin.version>
 
         <!-- Structured logging -->
         <structured-logging.version>3.0.9</structured-logging.version>
