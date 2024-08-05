@@ -6,7 +6,7 @@ locals {
   service_name              = "search-api"
   container_port            = "8080"
   eric_port                 = "10000"
-  docker_repo               = "search.api.ch.gov.uk"
+  docker_repo               = "search-api-ch-gov-uk"
   kms_alias                 = "alias/${var.aws_profile}/environment-services-kms"
   api_kms_alias             = "alias/search-${var.environment}" # This is the API KMS Key used by PSC Discrepancies API
   lb_listener_rule_priority = 31
@@ -14,9 +14,10 @@ locals {
     "/alphabetical-search/companies/*",
     "/dissolved-search/companies",
     "/advanced-search/companies",
-    "/disqualified-search/disqualified-officers",
-    "/disqualified-search/delete",
-    "/officers-search/officers",
+    "/advanced-search/companies/*",
+    "/disqualified-search/disqualified-officers/*",
+    "/disqualified-search/delete/*",
+    "/officers-search/officers/*",
     "/company-search/companies/*"
   ]
   healthcheck_path          = "/search/healthcheck" #healthcheck path for search-api
