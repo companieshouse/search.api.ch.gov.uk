@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.search.api.util;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 
 public class EricHeaderHelper {

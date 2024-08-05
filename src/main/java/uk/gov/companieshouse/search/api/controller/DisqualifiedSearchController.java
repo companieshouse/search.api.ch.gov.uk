@@ -19,7 +19,7 @@ import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.delete.primary.PrimarySearchDeleteService;
 import uk.gov.companieshouse.search.api.service.upsert.disqualified.UpsertDisqualificationService;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.Map;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 

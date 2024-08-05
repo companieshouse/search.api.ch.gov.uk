@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.search.api.controller;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
