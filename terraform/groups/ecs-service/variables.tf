@@ -131,7 +131,7 @@ variable "log_level" {
   type        = string
   description = "The log level for services to use: trace, debug, info or error"
 }
-variable "search_api_version" {
+variable "search_api_ch_gov_uk_version" {
   type        = string
   description = "The version of the search.api.ch.gov.uk container to run."
 }
