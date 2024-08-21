@@ -31,9 +31,7 @@ locals {
   stack_secrets              = jsondecode(data.vault_generic_secret.stack_secrets.data_json)
   application_subnet_pattern = local.stack_secrets["application_subnet_pattern"]
 
-  service_secrets = merge(jsondecode(data.vault_generic_secret.service_secrets.data_json),
-    { aws_kms_key_encrypt = data.aws_kms_key.api_kms_key.arn },
-  { aws_kms_key_decrypt = data.aws_kms_key.api_kms_key.arn })
+  service_secrets = jsondecode(data.vault_generic_secret.service_secrets.data_json)
 
   # create a map of secret name => secret arn to pass into ecs service module
   # using the trimprefix function to remove the prefixed path from the secret name

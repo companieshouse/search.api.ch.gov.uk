@@ -11,10 +11,6 @@ data "aws_kms_key" "kms_key" {
   key_id = local.kms_alias
 }
 
-data "aws_kms_key" "api_kms_key" {
-  key_id = local.api_kms_alias
-}
-
 data "aws_vpc" "vpc" {
   filter {
     name   = "tag:Name"
