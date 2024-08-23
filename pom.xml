@@ -28,7 +28,7 @@
         <private-api-sdk-java.version>4.0.188</private-api-sdk-java.version>
 
         <!-- Elastic Search -->
-        <elasticsearch.version>7.4.2</elasticsearch.version>
+        <elasticsearch.version>7.6.2</elasticsearch.version>
         <spring-data-elasticsearch.version>5.3.3</spring-data-elasticsearch.version>
 
         <!-- Docker -->
@@ -45,7 +45,7 @@
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 
         <!-- Sonar -->
-        <sonar-maven-plugin.version>3.9.1.2184</sonar-maven-plugin.version>
+        <sonar-maven-plugin.version>3.11.0.3922</sonar-maven-plugin.version>
         <sonar.host.url>${CODE_ANALYSIS_HOST_URL}</sonar.host.url>
         <sonar.login>${CODE_ANALYSIS_LOGIN}</sonar.login>
         <sonar.password>${CODE_ANALYSIS_PASSWORD}</sonar.password>
