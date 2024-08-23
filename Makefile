@@ -25,6 +25,10 @@ test: test-unit
 test-unit: clean
 	mvn test
 
+.PHONY: test-integration
+test-integration:
+	mvn integration-test -Dskip.unit.tests=true
+
 .PHONY: package
 package:
 ifndef version
@@ -34,8 +38,6 @@ endif
 	mvn versions:set -DnewVersion=$(version) -DgenerateBackupPoms=false
 	mvn package -DskipTests=true
 	$(eval tmpdir:=$(shell mktemp -d build-XXXXXXXXXX))
-	cp ./start.sh $(tmpdir)
-	cp ./routes.yaml $(tmpdir)
 	cp ./target/$(artifact_name)-$(version).jar $(tmpdir)/$(artifact_name).jar
 	cd $(tmpdir); zip -r ../$(artifact_name)-$(version).zip *
 	rm -rf $(tmpdir)
@@ -50,3 +52,22 @@ sonar:
 .PHONY: sonar-pr-analysis
 sonar-pr-analysis:
 	mvn sonar:sonar -P sonar-pr-analysis
+
+.PHONY: security-check
+security-check:
+	mvn org.owasp:dependency-check-maven:update-only
+	mvn org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=4 -DassemblyAnalyzerEnabled=false
+
+.PHONY: build-image
+build-image:
+	@echo "Running build-image"
+	docker build --build-arg JAR_FILE=$(artifact_jar) -t $(artifact_name) .
+	@echo "Finished build-image"
+
+.PHONY: all
+all: clean build build-image
+	@echo "Running all"
+
+.PHONY: run
+run:
+	docker run -it --rm $(artifact_name)
