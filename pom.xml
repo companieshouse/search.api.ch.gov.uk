@@ -28,7 +28,7 @@
         <private-api-sdk-java.version>4.0.178</private-api-sdk-java.version>
 
         <!-- Elastic Search -->
-        <elasticsearch.version>7.4.0</elasticsearch.version>
+        <elasticsearch.version>7.17.23</elasticsearch.version>
         <spring-data-elasticsearch.version>5.3.2</spring-data-elasticsearch.version>
 
         <!-- Docker -->
@@ -61,6 +61,9 @@
         <skip.unit.tests>false</skip.unit.tests>
         <skip.integration.tests>false</skip.integration.tests>
 
+        <spring-security-config.version>6.3.3</spring-security-config.version>
+        <spring-web.version>6.1.12</spring-web.version>
+
     </properties>
 
     <dependencyManagement>
@@ -77,6 +80,11 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring-web.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -188,6 +196,11 @@
             <version>${log4j.version}</version>
         </dependency>
 
+        <dependency>
+            <artifactId>spring-security-config</artifactId>
+            <groupId>org.springframework.security</groupId>
+            <version>${spring-security-config.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
