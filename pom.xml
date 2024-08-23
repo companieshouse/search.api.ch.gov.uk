@@ -28,7 +28,7 @@
         <private-api-sdk-java.version>4.0.188</private-api-sdk-java.version>
 
         <!-- Elastic Search -->
-        <elasticsearch.version>7.17.23</elasticsearch.version>
+        <elasticsearch.version>7.4.2</elasticsearch.version>
         <spring-data-elasticsearch.version>5.3.3</spring-data-elasticsearch.version>
 
         <!-- Docker -->
