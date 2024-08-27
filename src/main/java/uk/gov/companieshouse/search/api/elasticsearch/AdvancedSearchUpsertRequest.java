@@ -1,8 +1,7 @@
 package uk.gov.companieshouse.search.api.elasticsearch;
 
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
-
-import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.xcontent.XContentBuilder;
+import org.elasticsearch.xcontent.json.JsonXContent;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.api.model.company.RegisteredOfficeAddressApi;
@@ -50,7 +49,7 @@ public class AdvancedSearchUpsertRequest {
         RegisteredOfficeAddressApi registeredOfficeAddress = company.getRegisteredOfficeAddress();
         Map<String, String> links = company.getLinks();
 
-        XContentBuilder jsonBuilder = jsonBuilder().startObject();
+        XContentBuilder jsonBuilder = JsonXContent.contentBuilder().startObject();
         jsonBuilder.field(COMPANY_TYPE_KEY, company.getType());
         jsonBuilder.field(COMPANY_SUBTYPE_KEY, company.getSubtype());
             jsonBuilder.startObject(CURRENT_COMPANY_KEY);
