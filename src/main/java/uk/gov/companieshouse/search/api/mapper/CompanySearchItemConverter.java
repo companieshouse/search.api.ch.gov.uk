@@ -3,6 +3,7 @@ package uk.gov.companieshouse.search.api.mapper;
 import static uk.gov.companieshouse.search.api.util.AddressUtils.getROAFullAddressString;
 import static uk.gov.companieshouse.search.api.util.OfficerNameUtils.getCorporateNameEndings;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.ConversionService;
@@ -39,7 +40,7 @@ public class CompanySearchItemConverter implements Converter<CompanySearchItemCo
                     .dateOfCessation(model.getDateOfCessation())
                     .sicCodes(model.getSicCodes())
                     .companyStatus(model.getCompanyStatus())
-                    .sameAsKey(model.getAlphaKey())
+                    .sameAsKey(StringUtils.removeEndIgnoreCase(model.getAlphaKey(), "s"))
                     .wildcardKey(getWildcardKey(model.getAlphaKey()))
                     .build();
         } else {

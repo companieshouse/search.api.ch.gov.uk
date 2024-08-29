@@ -45,7 +45,7 @@ class CompanySearchItemConverterTest {
                 .dateOfCessation(LocalDate.of(2024, 6, 24))
                 .sicCodes(Arrays.asList("12345", "23456", "34567"))
                 .companyStatus("active")
-                .alphaKey("TESTCOMPANY");
+                .alphaKey("STESTCOMPANYS");
 
         CompanySearchItem expected = CompanySearchItem.Builder.builder()
                 .corporateNameStart("TEST COMPANY")
@@ -60,7 +60,7 @@ class CompanySearchItemConverterTest {
                 .sicCodes(Arrays.asList("12345", "23456", "34567"))
                 .companyStatus("active")
                 .sameAsKey("TESTCOMPANY")
-                .wildcardKey("TESTCOMPANY0")
+                .wildcardKey("TESTCOMPANYS0")
                 .build();
 
         when(companySearchAddressConverter.convert(any(), eq(CompanySearchAddress.class))).thenReturn(
