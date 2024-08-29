@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.search.api.service.upsert.alphabetical;
 
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -11,8 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.xcontent.XContentBuilder;
-import org.elasticsearch.xcontent.json.JsonXContent;
+import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -136,7 +136,7 @@ class AlphabeticalUpsertRequestServiceTest {
 
     private XContentBuilder createRequest(CompanyProfileApi company, String orderedAlphaKey,
                                           String orderedAlphaKeyWithID) throws Exception{
-        return JsonXContent.contentBuilder()
+        return jsonBuilder()
             .startObject()
             .field(ID, company.getCompanyNumber())
             .field(ORDERED_ALPHA_KEY_WITH_ID, orderedAlphaKeyWithID)
