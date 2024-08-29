@@ -45,7 +45,7 @@ class CompanySearchItemConverterTest {
                 .dateOfCessation(LocalDate.of(2024, 6, 24))
                 .sicCodes(Arrays.asList("12345", "23456", "34567"))
                 .companyStatus("active")
-                .alphaKey("STESTCOMPANYS");
+                .alphaKey("TESTCOMPANYS");
 
         CompanySearchItem expected = CompanySearchItem.Builder.builder()
                 .corporateNameStart("TEST COMPANY")
