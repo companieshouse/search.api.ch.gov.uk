@@ -58,4 +58,3 @@ DISSOLVED\_ALPHABETICAL\_FALLBACK\_QUERY\_LIMIT | fallback query limit for disso
 | PUT    | `/company-search/companies/{company_number}`              |                                                       |
 | DELETE | `/company-search/companies/{company_number}`              | Delete the company details                            |
 
-
