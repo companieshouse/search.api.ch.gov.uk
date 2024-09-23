@@ -47,6 +47,7 @@
         <cve>CVE-2023-31419</cve>
         <cve>CVE-2023-46673</cve>
         <cve>CVE-2023-46674</cve>
+        <cve>CVE-2023-49921</cve>
         <cve>CVE-2024-23446</cve>
         <cvssBelow>7.0</cvssBelow>
     </suppress>
@@ -74,6 +75,7 @@
         <cve>CVE-2023-31419</cve>
         <cve>CVE-2023-46673</cve>
         <cve>CVE-2023-46674</cve>
+        <cve>CVE-2023-49921</cve>
     </suppress>
     <suppress>
         <packageUrl>pkg:maven/org.apache.httpcomponents/httpclient@4.5.10</packageUrl>
@@ -90,6 +92,7 @@
         <cve>CVE-2023-31419</cve>
         <cve>CVE-2023-46673</cve>
         <cve>CVE-2023-46674</cve>
+        <cve>CVE-2023-49921</cve>
     </suppress>
     <suppress>
         <packageUrl>pkg:maven/org.elasticsearch.plugin/mapper-extras-client@7.9.3</packageUrl>
@@ -102,6 +105,7 @@
         <cve>CVE-2023-31419</cve>
         <cve>CVE-2023-46673</cve>
         <cve>CVE-2023-46674</cve>
+        <cve>CVE-2023-49921</cve>
     </suppress>
     <suppress>
         <packageUrl>pkg:maven/org.elasticsearch.plugin/parent-join-client@7.9.3</packageUrl>
@@ -114,6 +118,7 @@
         <cve>CVE-2023-31419</cve>
         <cve>CVE-2023-46673</cve>
         <cve>CVE-2023-46674</cve>
+        <cve>CVE-2023-49921</cve>
     </suppress>
     <suppress>
         <packageUrl>pkg:maven/org.elasticsearch.plugin/rank-eval-client@7.9.3</packageUrl>
@@ -126,6 +131,7 @@
         <cve>CVE-2023-31419</cve>
         <cve>CVE-2023-46673</cve>
         <cve>CVE-2023-46674</cve>
+        <cve>CVE-2023-49921</cve>
     </suppress>
     <suppress>
         <packageUrl>pkg:maven/org.elasticsearch.client/elasticsearch-rest-client@7.9.3</packageUrl>
@@ -138,6 +144,7 @@
         <cve>CVE-2023-31419</cve>
         <cve>CVE-2023-46673</cve>
         <cve>CVE-2023-46674</cve>
+        <cve>CVE-2023-49921</cve>
     </suppress>
     <suppress>
         <packageUrl>pkg:maven/org.elasticsearch.client/elasticsearch-rest-high-level-client@7.9.3</packageUrl>
@@ -150,6 +157,7 @@
         <cve>CVE-2023-31419</cve>
         <cve>CVE-2023-46673</cve>
         <cve>CVE-2023-46674</cve>
+        <cve>CVE-2023-49921</cve>
     </suppress>
     <suppress>
         <packageUrl>pkg:maven/org.elasticsearch/elasticsearch-cli@7.9.3</packageUrl>
