@@ -42,6 +42,14 @@ public class PrimarySearchDeleteService {
         return deleteObject(deleteRequest, searchType.getOfficerId(), "officer",logMap);
     }
 
+    public ResponseObject deleteOfficer(SearchType searchType, String requestId) {
+
+        Map<String, Object> logMap =
+                LoggingUtils.setUpPrimaryOfficerSearchLogging(searchType.getOfficerId(), requestId, indices);
+        DeleteRequest deleteRequest = primarySearchDeleteRequestService.createDeleteRequest(searchType);
+        return deleteObject(deleteRequest, searchType.getOfficerId(), "officer",logMap);
+    }
+
     public ResponseObject deleteCompanyByNumber(String companyNumber) throws IOException {
 
         Map<String, Object> logMap =

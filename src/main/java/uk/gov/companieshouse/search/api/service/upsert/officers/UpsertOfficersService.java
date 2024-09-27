@@ -32,9 +32,9 @@ public class UpsertOfficersService {
         this.indices = indices;
     }
 
-    public ResponseObject upsertOfficers(AppointmentList appointmentList, String officerId) {
+    public ResponseObject upsertOfficers(AppointmentList appointmentList, String officerId, String requestId) {
         Map<String, Object> logMap =
-            LoggingUtils.setUpOfficersAppointmentsUpsertLogging(officerId, indices);
+            LoggingUtils.setUpPrimaryOfficerSearchLogging(officerId, requestId, indices);
         getLogger().info("Upserting officer's appointments to primary index", logMap);
 
         UpdateRequest updateRequest;

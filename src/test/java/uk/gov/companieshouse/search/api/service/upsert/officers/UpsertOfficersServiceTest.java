@@ -25,7 +25,7 @@ import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 class UpsertOfficersServiceTest {
 
     private static final String OFFICER_ID = "officerId";
-
+    private static final String REQUEST_ID = "ABCD1234";
     @Mock
     private PrimarySearchRestClientService primarySearchRestClientService;
     @Mock
@@ -43,7 +43,7 @@ class UpsertOfficersServiceTest {
     void officerIsUpsertedCorrectly() throws Exception {
         when(officersUpsertRequestService.createUpdateRequest(any(), anyString())).thenReturn(request);
 
-        ResponseObject response = service.upsertOfficers(appointmentList, OFFICER_ID);
+        ResponseObject response = service.upsertOfficers(appointmentList, OFFICER_ID, REQUEST_ID);
 
         assertEquals(ResponseStatus.DOCUMENT_UPSERTED, response.getStatus());
         verify(primarySearchRestClientService).upsert(request);
@@ -53,7 +53,7 @@ class UpsertOfficersServiceTest {
     void officerReturnsUpsertErrorIfUpsertException() throws Exception {
         when(officersUpsertRequestService.createUpdateRequest(appointmentList, OFFICER_ID)).thenThrow(new UpsertException(""));
 
-        ResponseObject response = service.upsertOfficers(appointmentList, OFFICER_ID);
+        ResponseObject response = service.upsertOfficers(appointmentList, OFFICER_ID, REQUEST_ID);
 
         assertEquals(ResponseStatus.UPSERT_ERROR, response.getStatus());
     }
@@ -63,7 +63,7 @@ class UpsertOfficersServiceTest {
         when(officersUpsertRequestService.createUpdateRequest(appointmentList, OFFICER_ID)).thenReturn(request);
         when(primarySearchRestClientService.upsert(request)).thenThrow(new IOException(""));
 
-        ResponseObject response = service.upsertOfficers(appointmentList, OFFICER_ID);
+        ResponseObject response = service.upsertOfficers(appointmentList, OFFICER_ID, REQUEST_ID);
 
         assertEquals(ResponseStatus.SERVICE_UNAVAILABLE, response.getStatus());
     }
@@ -73,7 +73,7 @@ class UpsertOfficersServiceTest {
         when(officersUpsertRequestService.createUpdateRequest(appointmentList, OFFICER_ID)).thenReturn(request);
         when(primarySearchRestClientService.upsert(request)).thenThrow(new ElasticsearchException(""));
 
-        ResponseObject response = service.upsertOfficers(appointmentList, OFFICER_ID);
+        ResponseObject response = service.upsertOfficers(appointmentList, OFFICER_ID, REQUEST_ID);
 
         assertEquals(ResponseStatus.UPDATE_REQUEST_ERROR, response.getStatus());
     }

@@ -136,8 +136,7 @@ public class LoggingUtils {
     }
 
     public static Map<String, Object> setUpOfficersAppointmentsUpsertLogging(
-        String officerId,
-        ConfiguredIndexNamesProvider indices) {
+        String officerId, ConfiguredIndexNamesProvider indices) {
         return new DataMap.Builder()
                 .officerId(officerId)
                 .indexName(indices.primary())
@@ -145,12 +144,20 @@ public class LoggingUtils {
     }
 
     public static Map<String, Object> setUpPrimarySearchDeleteLogging(
-        String officerId,
-        ConfiguredIndexNamesProvider indices) {
+        String officerId, ConfiguredIndexNamesProvider indices) {
         return new DataMap.Builder()
                 .officerId(officerId)
                 .indexName(indices.primary()).build().getLogMap();
     }
+
+    public static Map<String, Object> setUpPrimaryOfficerSearchLogging(
+            String officerId, String requestId, ConfiguredIndexNamesProvider indices) {
+        return new DataMap.Builder()
+                .officerId(officerId)
+                .requestId(requestId)
+                .indexName(indices.primary()).build().getLogMap();
+    }
+
 
     public static Map<String, Object> setUpAlphabeticalSearchDeleteLogging(
             String companyName,

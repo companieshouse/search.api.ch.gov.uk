@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.api.officer.AppointmentList;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
@@ -24,6 +25,7 @@ import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 public class OfficersSearchController {
 
     private static final String OFFICER_SEARCH_TYPE = "officer";
+    private static final String REQUEST_ID_HEADER_NAME = "X-Request-ID";
     private final ApiToResponseMapper apiToResponseMapper;
     private final UpsertOfficersService upsertOfficersService;
     private final PrimarySearchDeleteService primarySearchDeleteService;
@@ -40,15 +42,16 @@ public class OfficersSearchController {
 
     @PutMapping(value = "/officers-search/officers/{officer_id}")
     public ResponseEntity<Object> upsertOfficer(@PathVariable("officer_id") String officerId,
-            @Valid @RequestBody AppointmentList appointmentList) {
+            @Valid @RequestBody AppointmentList appointmentList, @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
-        ResponseObject responseObject = upsertOfficersService.upsertOfficers(appointmentList, officerId);
+        ResponseObject responseObject = upsertOfficersService.upsertOfficers(appointmentList, officerId, requestId);
         return apiToResponseMapper.map(responseObject);
     }
 
     @DeleteMapping("/officers-search/officers/{officer_id}")
-    public ResponseEntity<Object> deleteOfficer(@PathVariable("officer_id") String officerId) {
-        Map<String, Object> logMap = LoggingUtils.setUpPrimarySearchDeleteLogging(officerId, indices);
+    public ResponseEntity<Object> deleteOfficer(@PathVariable("officer_id") String officerId,
+            @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
+        Map<String, Object> logMap = LoggingUtils.setUpPrimaryOfficerSearchLogging(officerId, requestId, indices);
         getLogger().info("Attempting to delete an officer from the primary search index", logMap);
 
         ResponseObject responseObject;
@@ -57,7 +60,8 @@ public class OfficersSearchController {
             responseObject = new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
             getLogger().error("Path variable: officer_id missing from URL", logMap);
         } else {
-            responseObject = primarySearchDeleteService.deleteOfficer(new SearchType(officerId, OFFICER_SEARCH_TYPE));
+            responseObject = primarySearchDeleteService.deleteOfficer(new SearchType(officerId,
+                    OFFICER_SEARCH_TYPE), requestId);
         }
 
         return apiToResponseMapper.map(responseObject);
