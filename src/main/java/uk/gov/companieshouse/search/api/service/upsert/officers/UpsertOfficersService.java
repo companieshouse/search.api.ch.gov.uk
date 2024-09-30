@@ -35,28 +35,26 @@ public class UpsertOfficersService {
     public ResponseObject upsertOfficers(AppointmentList appointmentList, String officerId, String requestId) {
         Map<String, Object> logMap =
             LoggingUtils.setUpPrimaryOfficerSearchLogging(officerId, requestId, indices);
-        getLogger().info("Upserting officer's appointments to primary index", logMap);
+        getLogger().info("Processing officers search upsert.", logMap);
 
         UpdateRequest updateRequest;
         try {
             updateRequest = officersUpsertRequestService.createUpdateRequest(appointmentList, officerId);
         } catch (UpsertException e) {
-            getLogger().error("An error occurred attempting upsert the document to primary search "
-                    + "index", logMap);
+            getLogger().error("Error: could not process officers search upsert.", logMap);
             return new ResponseObject(ResponseStatus.UPSERT_ERROR);
         }
 
         try {
             primarySearchRestClientService.upsert(updateRequest);
         } catch (IOException e) {
-            getLogger().error("IOException when upserting an officer to primary search "
-                    + "index", logMap);
+            getLogger().error(String.format("Error: IOException when upserting officer: %s.", officerId), logMap);
             return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
         } catch (ElasticsearchException e) {
             return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
         }
 
-        getLogger().info("Upsert successful to officers search index", logMap);
+        getLogger().info("Processed officers search upsert.", logMap);
         return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
     }
 }

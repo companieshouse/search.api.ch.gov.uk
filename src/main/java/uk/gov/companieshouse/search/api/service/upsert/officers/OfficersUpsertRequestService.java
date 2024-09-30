@@ -45,9 +45,9 @@ public class OfficersUpsertRequestService {
             return new UpdateRequest(indices.primary(), TYPE, officerId)
                     .docAsUpsert(true).doc(jsonString, XContentType.JSON);
 
-        } catch (IOException e) {
-            LoggingUtils.getLogger().error("Failed to update a document for appointmentList" + e.getMessage(), logMap);
-            throw new UpsertException("Unable to create update request");
+        } catch (IOException ex) {
+            LoggingUtils.getLogger().error(String.format("Error: failed to create update request for officer: %s.", officerId), ex, logMap);
+            throw new UpsertException(String.format("Error: failed to create update request for officer: %s.", officerId));
         }
     }
 

@@ -26,7 +26,7 @@ public class PrimarySearchDeleteRequestService {
 
         DeleteRequest request = new DeleteRequest(indices.primary(), TYPE, searchType.getOfficerId());
 
-        LoggingUtils.getLogger().info(String.format("Attempting to delete an [%s] with given id: [%s] from primary search index",
+        LoggingUtils.getLogger().info(String.format("Attempting delete for [%s] with id: [%s] from primary search.",
                 searchType.getPrimarySearchType(), searchType.getOfficerId()), logMap);
 
         return request;

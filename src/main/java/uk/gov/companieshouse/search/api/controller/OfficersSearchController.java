@@ -52,13 +52,13 @@ public class OfficersSearchController {
     public ResponseEntity<Object> deleteOfficer(@PathVariable("officer_id") String officerId,
             @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
         Map<String, Object> logMap = LoggingUtils.setUpPrimaryOfficerSearchLogging(officerId, requestId, indices);
-        getLogger().info("Attempting to delete an officer from the primary search index", logMap);
+        getLogger().info("Processing officers search delete.", logMap);
 
         ResponseObject responseObject;
 
         if (officerId == null || officerId.isEmpty()) {
             responseObject = new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
-            getLogger().error("Path variable: officer_id missing from URL", logMap);
+            getLogger().error("Error: officer_id missing from URL", logMap);
         } else {
             responseObject = primarySearchDeleteService.deleteOfficer(new SearchType(officerId,
                     OFFICER_SEARCH_TYPE), requestId);

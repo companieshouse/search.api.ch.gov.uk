@@ -65,14 +65,14 @@ public class PrimarySearchDeleteService {
             response = primarySearchRestClientService.delete(deleteRequest);
         } catch (IOException e) {
             getLogger().error(String
-                    .format("IOException encountered when deleting %s [%s] from primary search index",
+                    .format("Error: IOException when deleting %s [%s] from primary search.",
                             entityType, id),logMap);
             return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
         } catch (ElasticsearchException e) {
             return new ResponseObject(ResponseStatus.DELETE_REQUEST_ERROR);
         }
         if (response.getResult() == DocWriteResponse.Result.NOT_FOUND) {
-            getLogger().error(String.format("%s [%s] not found",
+            getLogger().error(String.format("Error %s [%s] not found in primary search.",
                     entityType, id),logMap);
             return new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
         } else {
