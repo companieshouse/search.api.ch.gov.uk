@@ -35,7 +35,6 @@ public class PrimarySearchDeleteService {
     }
 
     public ResponseObject deleteOfficer(SearchType searchType) {
-
         Map<String, Object> logMap =
             LoggingUtils.setUpPrimarySearchDeleteLogging(searchType.getOfficerId(), indices);
         DeleteRequest deleteRequest = primarySearchDeleteRequestService.createDeleteRequest(searchType);
@@ -76,7 +75,7 @@ public class PrimarySearchDeleteService {
                     entityType, id),logMap);
             return new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
         } else {
-            getLogger().info(String.format("Successfully deleted %s [%s] ",
+            getLogger().info(String.format("Processed [%s] delete for %s",
                     entityType, id),logMap);
             return new ResponseObject(ResponseStatus.DOCUMENT_DELETED);
         }

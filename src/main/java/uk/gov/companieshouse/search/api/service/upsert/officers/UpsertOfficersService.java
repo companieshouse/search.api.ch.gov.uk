@@ -35,13 +35,13 @@ public class UpsertOfficersService {
     public ResponseObject upsertOfficers(AppointmentList appointmentList, String officerId, String requestId) {
         Map<String, Object> logMap =
             LoggingUtils.setUpPrimaryOfficerSearchLogging(officerId, requestId, indices);
-        getLogger().info("Processing officers search upsert.", logMap);
+        getLogger().info(String.format("Attempting upsert for officer: %s into primary search.", officerId), logMap);
 
         UpdateRequest updateRequest;
         try {
             updateRequest = officersUpsertRequestService.createUpdateRequest(appointmentList, officerId);
         } catch (UpsertException e) {
-            getLogger().error("Error: could not process officers search upsert.", logMap);
+            getLogger().error(String.format("Error: could not process upsert for officers: %s.", officerId), logMap);
             return new ResponseObject(ResponseStatus.UPSERT_ERROR);
         }
 

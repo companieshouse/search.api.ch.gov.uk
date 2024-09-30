@@ -43,7 +43,8 @@ public class OfficersSearchController {
     @PutMapping(value = "/officers-search/officers/{officer_id}")
     public ResponseEntity<Object> upsertOfficer(@PathVariable("officer_id") String officerId,
             @Valid @RequestBody AppointmentList appointmentList, @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
-
+        Map<String, Object> logMap = LoggingUtils.setUpPrimaryOfficerSearchLogging(officerId, requestId, indices);
+        getLogger().info("Processing officers search upsert.", logMap);
         ResponseObject responseObject = upsertOfficersService.upsertOfficers(appointmentList, officerId, requestId);
         return apiToResponseMapper.map(responseObject);
     }
