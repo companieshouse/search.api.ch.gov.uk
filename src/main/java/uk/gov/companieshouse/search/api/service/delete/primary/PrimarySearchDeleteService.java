@@ -35,9 +35,16 @@ public class PrimarySearchDeleteService {
     }
 
     public ResponseObject deleteOfficer(SearchType searchType) {
-
         Map<String, Object> logMap =
             LoggingUtils.setUpPrimarySearchDeleteLogging(searchType.getOfficerId(), indices);
+        DeleteRequest deleteRequest = primarySearchDeleteRequestService.createDeleteRequest(searchType);
+        return deleteObject(deleteRequest, searchType.getOfficerId(), "officer",logMap);
+    }
+
+    public ResponseObject deleteOfficer(SearchType searchType, String requestId) {
+
+        Map<String, Object> logMap =
+                LoggingUtils.setUpPrimaryOfficerSearchLogging(searchType.getOfficerId(), requestId, indices);
         DeleteRequest deleteRequest = primarySearchDeleteRequestService.createDeleteRequest(searchType);
         return deleteObject(deleteRequest, searchType.getOfficerId(), "officer",logMap);
     }
@@ -57,18 +64,18 @@ public class PrimarySearchDeleteService {
             response = primarySearchRestClientService.delete(deleteRequest);
         } catch (IOException e) {
             getLogger().error(String
-                    .format("IOException encountered when deleting %s [%s] from primary search index",
+                    .format("Error: IOException when deleting %s [%s] from primary search.",
                             entityType, id),logMap);
             return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
         } catch (ElasticsearchException e) {
             return new ResponseObject(ResponseStatus.DELETE_REQUEST_ERROR);
         }
         if (response.getResult() == DocWriteResponse.Result.NOT_FOUND) {
-            getLogger().error(String.format("%s [%s] not found",
+            getLogger().error(String.format("Error %s [%s] not found in primary search.",
                     entityType, id),logMap);
             return new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
         } else {
-            getLogger().info(String.format("Successfully deleted %s [%s] ",
+            getLogger().info(String.format("Processed [%s] delete for %s",
                     entityType, id),logMap);
             return new ResponseObject(ResponseStatus.DOCUMENT_DELETED);
         }

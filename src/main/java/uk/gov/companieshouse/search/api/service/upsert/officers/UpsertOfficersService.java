@@ -32,31 +32,29 @@ public class UpsertOfficersService {
         this.indices = indices;
     }
 
-    public ResponseObject upsertOfficers(AppointmentList appointmentList, String officerId) {
+    public ResponseObject upsertOfficers(AppointmentList appointmentList, String officerId, String requestId) {
         Map<String, Object> logMap =
-            LoggingUtils.setUpOfficersAppointmentsUpsertLogging(officerId, indices);
-        getLogger().info("Upserting officer's appointments to primary index", logMap);
+            LoggingUtils.setUpPrimaryOfficerSearchLogging(officerId, requestId, indices);
+        getLogger().info(String.format("Attempting upsert for officer: %s into primary search.", officerId), logMap);
 
         UpdateRequest updateRequest;
         try {
             updateRequest = officersUpsertRequestService.createUpdateRequest(appointmentList, officerId);
         } catch (UpsertException e) {
-            getLogger().error("An error occurred attempting upsert the document to primary search "
-                    + "index", logMap);
+            getLogger().error(String.format("Error: could not process upsert for officers: %s.", officerId), logMap);
             return new ResponseObject(ResponseStatus.UPSERT_ERROR);
         }
 
         try {
             primarySearchRestClientService.upsert(updateRequest);
         } catch (IOException e) {
-            getLogger().error("IOException when upserting an officer to primary search "
-                    + "index", logMap);
+            getLogger().error(String.format("Error: IOException when upserting officer: %s.", officerId), logMap);
             return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
         } catch (ElasticsearchException e) {
             return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
         }
 
-        getLogger().info("Upsert successful to officers search index", logMap);
+        getLogger().info("Processed officers search upsert.", logMap);
         return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
     }
 }

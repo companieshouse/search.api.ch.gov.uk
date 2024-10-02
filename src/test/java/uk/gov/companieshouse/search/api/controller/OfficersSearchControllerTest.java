@@ -31,6 +31,7 @@ import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 class OfficersSearchControllerTest {
 
     private final String OFFICER_ID = "ABCD1234";
+    private final String REQUEST_ID = "DEFG5678";
     @Mock
     private ApiToResponseMapper apiToResponseMapper;
     @Captor
@@ -49,12 +50,12 @@ class OfficersSearchControllerTest {
     @Test
     @DisplayName("Test upsert returns HTTP 200 OK given officer exist in index")
     void testUpsertWithCorrectOfficerIdReturnsOkRequest() {
-        when(upsertOfficersService.upsertOfficers(any(), anyString()))
+        when(upsertOfficersService.upsertOfficers(any(), anyString(), anyString()))
                 .thenReturn(new ResponseObject(DOCUMENT_UPSERTED));
         when(apiToResponseMapper.map(responseObjectCaptor.capture()))
                 .thenReturn(ResponseEntity.status(OK).build());
 
-        ResponseEntity<?> responseEntity = officersSearchController.upsertOfficer(OFFICER_ID, appointmentList);
+        ResponseEntity<?> responseEntity = officersSearchController.upsertOfficer(OFFICER_ID, appointmentList, REQUEST_ID);
 
         assertEquals(DOCUMENT_UPSERTED, responseObjectCaptor.getValue().getStatus());
         assertNotNull(responseEntity);
@@ -64,12 +65,12 @@ class OfficersSearchControllerTest {
     @Test
     @DisplayName("Test delete returns HTTP 200 OK given officer exist in index")
     void testDeleteWithCorrectOfficerIdReturnsOkRequest() {
-        when(primarySearchDeleteService.deleteOfficer(any()))
+        when(primarySearchDeleteService.deleteOfficer(any(), anyString()))
                 .thenReturn(new ResponseObject(DOCUMENT_DELETED));
         when(apiToResponseMapper.map(responseObjectCaptor.capture()))
                 .thenReturn(ResponseEntity.status(OK).build());
 
-        ResponseEntity<?> responseEntity = officersSearchController.deleteOfficer(OFFICER_ID);
+        ResponseEntity<?> responseEntity = officersSearchController.deleteOfficer(OFFICER_ID, REQUEST_ID);
 
         assertEquals(DOCUMENT_DELETED, responseObjectCaptor.getValue().getStatus());
         assertNotNull(responseEntity);
@@ -82,7 +83,7 @@ class OfficersSearchControllerTest {
         when(apiToResponseMapper.map(responseObjectCaptor.capture()))
                 .thenReturn(ResponseEntity.status(NOT_FOUND).build());
 
-        ResponseEntity<?> responseEntity = officersSearchController.deleteOfficer("");
+        ResponseEntity<?> responseEntity = officersSearchController.deleteOfficer("", REQUEST_ID);
 
         assertEquals(DELETE_NOT_FOUND, responseObjectCaptor.getValue().getStatus());
         assertNotNull(responseEntity);
