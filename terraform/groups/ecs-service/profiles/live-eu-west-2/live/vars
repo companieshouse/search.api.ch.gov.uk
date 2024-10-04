@@ -3,3 +3,10 @@ aws_profile = "live-eu-west-2"
 
 # service configs
 use_set_environment_files = true
+
+desired_task_count = 2
+max_task_count = 5
+min_task_count = 2
+
+required_cpus = 768
+required_memory = 1536
