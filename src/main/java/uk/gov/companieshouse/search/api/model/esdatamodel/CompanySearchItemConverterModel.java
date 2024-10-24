@@ -30,6 +30,8 @@ public class CompanySearchItemConverterModel {
 
     private String alphaKey;
 
+    private String sameAsKey;
+
     public boolean isPartialData() {
         return partialData;
     }
@@ -72,6 +74,10 @@ public class CompanySearchItemConverterModel {
 
     public String getAlphaKey() {
         return alphaKey;
+    }
+
+    public String getSameAsKey() {
+        return sameAsKey;
     }
 
     public CompanySearchItemConverterModel partialData(boolean partialData) {
@@ -129,6 +135,11 @@ public class CompanySearchItemConverterModel {
         return this;
     }
 
+    public CompanySearchItemConverterModel sameAsKey(String sameAsKey) {
+        this.sameAsKey = sameAsKey;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -144,13 +155,14 @@ public class CompanySearchItemConverterModel {
                 && Objects.equals(sicCodes, that.sicCodes) && Objects.equals(registeredOfficeAddress,
                 that.registeredOfficeAddress) && Objects.equals(ceasedOn, that.ceasedOn)
                 && Objects.equals(dateOfCessation, that.dateOfCessation) && Objects.equals(
-                dateOfCreation, that.dateOfCreation) && Objects.equals(alphaKey, that.alphaKey);
+                dateOfCreation, that.dateOfCreation) && Objects.equals(alphaKey, that.alphaKey)
+                && Objects.equals(sameAsKey, that.sameAsKey);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(partialData, companyName, companyNumber, companyStatus, externalRegistrationNumber,
                 sicCodes,
-                registeredOfficeAddress, ceasedOn, dateOfCessation, dateOfCreation, alphaKey);
+                registeredOfficeAddress, ceasedOn, dateOfCessation, dateOfCreation, alphaKey, sameAsKey);
     }
 }

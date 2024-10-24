@@ -40,7 +40,7 @@ public class CompanySearchItemConverter implements Converter<CompanySearchItemCo
                     .dateOfCessation(model.getDateOfCessation())
                     .sicCodes(model.getSicCodes())
                     .companyStatus(model.getCompanyStatus())
-                    .sameAsKey(StringUtils.removeEndIgnoreCase(model.getAlphaKey(), "s"))
+                    .sameAsKey(model.getSameAsKey())
                     .wildcardKey(getWildcardKey(model.getAlphaKey()))
                     .build();
         } else {

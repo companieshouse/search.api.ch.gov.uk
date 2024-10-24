@@ -61,7 +61,7 @@ class CompanySearchDocumentConverterTest {
                 .companyType("plc")
                 .sortKey("TESTCOMPANYPLC0")
                 .links(new CompanySearchLinks("/company/ABCD1234"))
-                .build();;
+                .build();
 
         when(alphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(alphaKeyResponse);
         when(alphaKeyResponse.getOrderedAlphaKey()).thenReturn("TESTCOMPANYPLC");
