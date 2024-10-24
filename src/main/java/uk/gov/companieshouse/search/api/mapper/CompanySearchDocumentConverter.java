@@ -44,7 +44,9 @@ public class CompanySearchDocumentConverter implements Converter<Data, CompanySe
                         .dateOfCessation(data.getDateOfCessation())
                         .sicCodes(data.getSicCodes())
                         .companyStatus(data.getCompanyStatus())
-                        .alphaKey(alphaKey), CompanySearchItem.class);
+                        .alphaKey(alphaKey)
+                        .sameAsKey(alphaKeyResponse.getSameAsAlphaKey()),
+                CompanySearchItem.class);
 
         List<CompanySearchItem> items = new ArrayList<>();
         items.add(firstItem);
