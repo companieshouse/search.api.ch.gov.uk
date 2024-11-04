@@ -48,6 +48,11 @@ public class AdvancedSearchUpsertRequest {
         String sameAsKey) throws IOException {
 
         RegisteredOfficeAddressApi registeredOfficeAddress = company.getRegisteredOfficeAddress();
+
+        if(registeredOfficeAddress == null){
+            registeredOfficeAddress = new RegisteredOfficeAddressApi();
+        }
+
         Map<String, String> links = company.getLinks();
 
         XContentBuilder jsonBuilder = jsonBuilder().startObject();
