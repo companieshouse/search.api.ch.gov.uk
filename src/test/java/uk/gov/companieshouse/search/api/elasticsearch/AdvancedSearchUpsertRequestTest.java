@@ -51,6 +51,21 @@ class AdvancedSearchUpsertRequestTest {
         assertNotNull(xContentBuilder);
     }
 
+    @Test
+    @DisplayName("Test build request is successful even when registered office address is null")
+    void testBuildRequestReturnsXContentBuilderWithNullRegisteredOfficeAddress() throws Exception{
+        AdvancedSearchUpsertRequest advancedSearchUpsertRequest = new AdvancedSearchUpsertRequest();
+        CompanyProfileApi companyProfile = createCompany(false);
+        //simulate if registeredOfficeAddress was missing from the payload
+        companyProfile.setRegisteredOfficeAddress(null);
+
+        XContentBuilder xContentBuilder =
+                advancedSearchUpsertRequest.buildRequest(companyProfile, ALPHA_KEY, ALPHA_KEY);
+
+        assertNotNull(xContentBuilder);
+    }
+
+
     private CompanyProfileApi createCompany(final boolean populateRegisteredAddressFields) {
         CompanyProfileApi company = new CompanyProfileApi();
         company.setType(COMPANY_TYPE);
