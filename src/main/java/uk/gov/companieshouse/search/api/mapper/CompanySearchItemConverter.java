@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
+import uk.gov.companieshouse.api.company.RegisteredOfficeAddress;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItemConverterModel;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchAddress;
 import uk.gov.companieshouse.search.api.model.esdatamodel.CompanySearchItem;
@@ -24,7 +25,11 @@ public class CompanySearchItemConverter implements Converter<CompanySearchItemCo
 
     @Override
     public CompanySearchItem convert(CompanySearchItemConverterModel model) {
-        String renderedFullAddress = getROAFullAddressString(model.getRegisteredOfficeAddress());
+        RegisteredOfficeAddress roa = model.getRegisteredOfficeAddress();
+        //if ROA is empty, use an empty object to avoid NullPointerException
+        if (roa == null) roa = new RegisteredOfficeAddress();
+
+        String renderedFullAddress = getROAFullAddressString(roa);
         Pair<String, String> corporateNameEndings = getCorporateNameEndings(model.getCompanyName());
 
         if (!model.isPartialData() && model.getCeasedOn() == null) {
@@ -33,7 +38,7 @@ public class CompanySearchItemConverter implements Converter<CompanySearchItemCo
                     .corporateNameEnding(corporateNameEndings.getRight())
                     .dateOfCreation(model.getDateOfCreation())
                     .fullAddress(renderedFullAddress)
-                    .address(companySearchAddressConverter.convert(model.getRegisteredOfficeAddress(),
+                    .address(companySearchAddressConverter.convert(roa,
                             CompanySearchAddress.class))
                     .companyNumber(model.getCompanyNumber())
                     .externalRegistrationNumber(model.getExternalRegistrationNumber())
