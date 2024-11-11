@@ -183,7 +183,6 @@ class CompanySearchItemConverterTest {
         CompanySearchItem actual = converter.convert(model);
 
         //then
-//        assertEquals(expected, actual);
         assertThat(actual)
                 .usingRecursiveComparison()
                 .isEqualTo(expected);
