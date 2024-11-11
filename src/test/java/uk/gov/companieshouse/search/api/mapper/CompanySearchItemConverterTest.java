@@ -184,7 +184,10 @@ class CompanySearchItemConverterTest {
         CompanySearchItem actual = converter.convert(model);
 
         //then
-        assertEquals(expected, actual);
+//        assertEquals(expected, actual);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
         verify(companySearchAddressConverter).convert(
                 new RegisteredOfficeAddress(), CompanySearchAddress.class);
     }
