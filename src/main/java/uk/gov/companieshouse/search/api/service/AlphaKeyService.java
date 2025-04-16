@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.search.api.service;
 
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,7 @@ import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
-import java.util.Map;
+import uk.gov.companieshouse.search.api.util.UrlFormatter;
 
 @Service
 public class AlphaKeyService {
@@ -22,10 +23,13 @@ public class AlphaKeyService {
 
     private static final String ALPHAKEY_SERVICE_URL = "ALPHAKEY_SERVICE_URL";
 
-    public AlphaKeyResponse getAlphaKeyForCorporateName(String corporateName){
-        String alphaKeyUrl = environmentReader.getMandatoryString(ALPHAKEY_SERVICE_URL) + corporateName.replace("&", "AND");
+    public AlphaKeyResponse getAlphaKeyForCorporateName(String corporateName) {
+        corporateName = corporateName.replace("&", "AND");
+        corporateName = UrlFormatter.urlEscape(corporateName);
 
-        Map<String, Object> logMap =  new DataMap.Builder()
+        String alphaKeyUrl = environmentReader.getMandatoryString(ALPHAKEY_SERVICE_URL) + corporateName;
+
+        Map<String, Object> logMap = new DataMap.Builder()
                 .companyName(corporateName)
                 .build().getLogMap();
 
@@ -33,7 +37,7 @@ public class AlphaKeyService {
 
         try {
             ResponseEntity<AlphaKeyResponse> response =
-                restTemplate.getForEntity(alphaKeyUrl, AlphaKeyResponse.class);
+                    restTemplate.getForEntity(alphaKeyUrl, AlphaKeyResponse.class);
 
             return response.getBody();
         } catch (RestClientException e) {
