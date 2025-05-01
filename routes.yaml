@@ -11,3 +11,4 @@ routes:
   7: ^/officers-search/officers
   8: ^/search/healthcheck
   9: ^/company-search/companies/*
+  10: ^/test-pr*
