@@ -4,6 +4,10 @@ version             := "unversioned"
 .PHONY: all
 all: build
 
+.PHONY: docker-image
+docker-image: clean
+	mvn compile jib:dockerBuild
+
 .PHONY: clean
 clean:
 	mvn clean
