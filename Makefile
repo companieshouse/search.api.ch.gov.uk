@@ -71,3 +71,35 @@ all: clean build build-image
 .PHONY: run
 run:
 	docker run -it --rm $(artifact_name)
+
+.PHONY: dependency-check
+dependency-check:
+	@ if [ -n "$(DEPENDENCY_CHECK_SUPPRESSIONS_HOME)" ]; then \
+		if [ -d "$(DEPENDENCY_CHECK_SUPPRESSIONS_HOME)" ]; then \
+			suppressions_home="$${DEPENDENCY_CHECK_SUPPRESSIONS_HOME}"; \
+		else \
+			printf -- 'DEPENDENCY_CHECK_SUPPRESSIONS_HOME is set, but its value "%s" does not point to a directory\n' "$(DEPENDENCY_CHECK_SUPPRESSIONS_HOME)"; \
+			exit 1; \
+		fi; \
+	fi; \
+	if [ ! -d "$${suppressions_home}" ]; then \
+		suppressions_home_target_dir="./target/dependency-check-suppressions"; \
+		if [ -d "$${suppressions_home_target_dir}" ]; then \
+			suppressions_home="$${suppressions_home_target_dir}"; \
+		else \
+			mkdir -p "./target"; \
+			git clone $(dependency_check_suppressions_repo_url) "$${suppressions_home_target_dir}" && \
+				suppressions_home="$${suppressions_home_target_dir}"; \
+			if [ -d "$${suppressions_home_target_dir}" ] && [ -n "$(dependency_check_suppressions_repo_branch)" ]; then \
+				cd "$${suppressions_home}"; \
+				git checkout $(dependency_check_suppressions_repo_branch); \
+				cd -; \
+			fi; \
+		fi; \
+	fi; \
+	printf -- 'suppressions_home="%s"\n' "$${suppressions_home}"; \
+	DEPENDENCY_CHECK_SUPPRESSIONS_HOME="$${suppressions_home}" "$${suppressions_home}/scripts/depcheck" --repopwd
+
+.PHONY: security-check
+security-check: dependency-check
+
