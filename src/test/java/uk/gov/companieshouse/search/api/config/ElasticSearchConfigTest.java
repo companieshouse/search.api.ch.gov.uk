@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.environment.EnvironmentReader;
@@ -22,8 +21,6 @@ import static org.mockito.Mockito.when;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ElasticSearchConfigTest {
 
-    @InjectMocks
-    private ElasticSearchConfig elasticSearchConfig;
 
     @Mock
     private EnvironmentReader mockEnvironmentReader;
@@ -36,7 +33,7 @@ class ElasticSearchConfigTest {
     @Test
     @DisplayName("Test calling create client returns a rest high level client for alphabetical search")
     void testAlphabeticalRestClient() throws Exception {
-
+        ElasticSearchConfig elasticSearchConfig = new ElasticSearchConfig(mockEnvironmentReader);
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT_ALPHABETICAL);
 
         RestHighLevelClient restHighLevelClient = elasticSearchConfig.alphabeticalRestClient();
@@ -51,7 +48,7 @@ class ElasticSearchConfigTest {
     @Test
     @DisplayName("Test calling create client returns a rest high level client for dissolved search")
     void testDissolvedRestClient() throws Exception {
-
+        ElasticSearchConfig elasticSearchConfig = new ElasticSearchConfig(mockEnvironmentReader);
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT_DISSOLVED);
 
         RestHighLevelClient restHighLevelClient = elasticSearchConfig.dissolvedRestClient();
@@ -65,7 +62,7 @@ class ElasticSearchConfigTest {
     @Test
     @DisplayName("Test calling create client returns a rest high level client for advanced search")
     void testAdvancedRestClient() throws Exception {
-
+        ElasticSearchConfig elasticSearchConfig = new ElasticSearchConfig(mockEnvironmentReader);
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT_ADVANCED);
 
         RestHighLevelClient restHighLevelClient = elasticSearchConfig.advancedRestClient();
@@ -79,10 +76,10 @@ class ElasticSearchConfigTest {
     @Test
     @DisplayName("Test calling create client returns a rest high level client for disqualified search")
     void testDisqualifiedRestClient() throws Exception {
-
+        ElasticSearchConfig elasticSearchConfig = new ElasticSearchConfig(mockEnvironmentReader);
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT_DISQUALIFIED);
 
-        RestHighLevelClient restHighLevelClient = elasticSearchConfig.primaryClient();
+        RestHighLevelClient restHighLevelClient = elasticSearchConfig.primaryRestClient();
         assertNotNull(restHighLevelClient);
 
         List<Node> nodes = restHighLevelClient.getLowLevelClient().getNodes();
@@ -93,7 +90,7 @@ class ElasticSearchConfigTest {
     @Test
     @DisplayName("Test create rest high level client returns object successfully")
     void createRestHighLevelClient() throws Exception {
-
+        ElasticSearchConfig elasticSearchConfig = new ElasticSearchConfig(mockEnvironmentReader);
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(ENV_READER_RESULT_ALPHABETICAL);
 
         RestHighLevelClient restHighLevelClient = elasticSearchConfig.createClient(ENV_READER_RESULT_ALPHABETICAL);
@@ -108,6 +105,8 @@ class ElasticSearchConfigTest {
     @Test
     @DisplayName("Test create rest high level client throws endpoint exception when not passed valid url")
     void createRestHighLevelClientThrowsEndpointException() throws Exception {
+        ElasticSearchConfig elasticSearchConfig = new ElasticSearchConfig(mockEnvironmentReader);
+        when(mockEnvironmentReader.getMandatoryString("test")).thenReturn("http://invalid^url");
 
         assertThrows(EndpointException.class, () ->
                 elasticSearchConfig.createClient("test"));

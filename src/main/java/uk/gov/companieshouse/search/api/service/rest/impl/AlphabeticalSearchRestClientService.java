@@ -21,7 +21,7 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 public class AlphabeticalSearchRestClientService implements RestClientService {
 
     @Autowired
-    @Qualifier("alphabeticalClient")
+    @Qualifier("alphabeticalRestClient")
     private RestHighLevelClient alphabeticalClient;
 
     @Override

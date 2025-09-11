@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Service;
@@ -249,7 +250,11 @@ public class DissolvedSearchRequestService {
 
         for (int i = 0; i < orderedAlphaKey.length(); i++) {
 
-            if (hits.getTotalHits().value > 0 || i == fallbackQueryLimit) {
+            long totalHits = Optional.ofNullable(hits.getTotalHits())
+                                    .map(th -> th.value)
+                                    .orElse(0L);
+
+            if (totalHits > 0 || i == fallbackQueryLimit) {
                 return hits;
             }
 

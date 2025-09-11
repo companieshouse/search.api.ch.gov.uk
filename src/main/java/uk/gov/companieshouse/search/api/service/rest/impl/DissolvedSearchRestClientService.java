@@ -20,7 +20,7 @@ import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 public class DissolvedSearchRestClientService implements RestClientService {
 
     @Autowired
-    @Qualifier("dissolvedClient")
+    @Qualifier("dissolvedRestClient")
     private RestHighLevelClient dissolvedClient;
 
     @Override

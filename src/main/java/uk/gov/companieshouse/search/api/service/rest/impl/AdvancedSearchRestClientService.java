@@ -21,7 +21,7 @@ import java.io.IOException;
 public class AdvancedSearchRestClientService implements RestClientService {
 
     @Autowired
-    @Qualifier("advancedClient")
+    @Qualifier("advancedRestClient")
     private RestHighLevelClient advancedClient;
 
     @Override
