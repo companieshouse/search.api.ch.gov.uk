@@ -19,13 +19,13 @@
 
     <properties>
         <java.version>21</java.version>
-        <api-sdk-java.version>6.2.9</api-sdk-java.version>
+        <api-sdk-java.version>6.4.2</api-sdk-java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <start-class>uk.gov.companieshouse.search.api.SearchApiApplication</start-class>
         <api-helper-java.version>3.0.1</api-helper-java.version>
-        <api-security-java.version>2.0.8</api-security-java.version>
-        <private-api-sdk-java.version>4.0.291</private-api-sdk-java.version>
+        <api-security-java.version>2.0.11</api-security-java.version>
+        <private-api-sdk-java.version>4.0.337</private-api-sdk-java.version>
 
         <!-- Elastic Search -->
         <elasticsearch.version>7.9.3</elasticsearch.version>
@@ -34,7 +34,7 @@
         <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
 
         <!-- Structured logging -->
-        <structured-logging.version>3.0.31</structured-logging.version>
+        <structured-logging.version>3.0.37</structured-logging.version>
         <log4j.version>2.23.1</log4j.version>
 
         <!-- Maven and Surefire plugins -->
@@ -60,7 +60,7 @@
         <artifactoryResolveSnapshotRepo>libs-snapshot-local</artifactoryResolveSnapshotRepo>
         <artifactoryResolveReleaseRepo>virtual-release</artifactoryResolveReleaseRepo>
 
-        <environment-reader-library.version>3.0.1</environment-reader-library.version>
+        <environment-reader-library.version>3.0.3</environment-reader-library.version>
 
         <spring-boot-dependencies.version>3.5.3</spring-boot-dependencies.version>
         <spring-boot-maven-plugin.version>3.5.3</spring-boot-maven-plugin.version>
