@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.logging.util.DataMap;
@@ -75,7 +74,6 @@ public class AdvancedSearchController {
     }
 
     @GetMapping("/companies")
-    @ResponseBody
     public ResponseEntity<Object> search(@RequestParam(name = START_INDEX_QUERY_PARAM, required = false) Integer startIndex,
                                          @RequestParam(name = COMPANY_NAME_QUERY_PARAM, required = false) String companyName,
                                          @RequestParam(name = LOCATION_QUERY_PARAM, required = false) String location,

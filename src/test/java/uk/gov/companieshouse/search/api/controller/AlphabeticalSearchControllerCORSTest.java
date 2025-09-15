@@ -20,6 +20,8 @@ import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.service.delete.alphabetical.AlphabeticalSearchDeleteService;
+import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClientService;
+import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
@@ -54,6 +56,12 @@ class AlphabeticalSearchControllerCORSTest {
 
     @MockitoBean
     private RestHighLevelClient primaryRestClient;
+
+    @MockitoBean
+    private AdvancedSearchRestClientService advancedRestClientS;
+
+    @MockitoBean
+    private AlphabeticalSearchRestClientService alphabeticalSearchRestClientService;
 
     // Injected services
 

@@ -2,11 +2,9 @@ package uk.gov.companieshouse.search.api.logging;
 
 import static uk.gov.companieshouse.search.api.SearchApiApplication.APPLICATION_NAME_SPACE;
 
-import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import uk.gov.companieshouse.api.disqualification.Item;
@@ -80,7 +78,6 @@ public class LoggingUtils {
         String requestId,
         ConfiguredIndexNamesProvider indices) {
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         Date incorporatedFromDate = null;
         Date incorporatedToDate = null;
         Date dissolvedFromDate = null;

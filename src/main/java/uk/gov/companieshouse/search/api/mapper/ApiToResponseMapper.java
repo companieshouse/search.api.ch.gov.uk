@@ -26,16 +26,11 @@ public class ApiToResponseMapper {
     public ResponseEntity<Object> map(ResponseObject responseObject) {
 
         switch(responseObject.getStatus()) {
-            case SEARCH_FOUND:
-            case DOCUMENT_UPSERTED:
-            case DOCUMENT_DELETED:
+            case SEARCH_FOUND, DOCUMENT_UPSERTED, DOCUMENT_DELETED:
                 return ResponseEntity.status(OK).body(responseObject.getData());
-            case SEARCH_NOT_FOUND:
-            case DELETE_NOT_FOUND:
+            case SEARCH_NOT_FOUND, DELETE_NOT_FOUND:
                 return ResponseEntity.status(NOT_FOUND).build();
-            case UPDATE_REQUEST_ERROR:
-            case UPSERT_ERROR:
-            case DELETE_REQUEST_ERROR:
+            case UPDATE_REQUEST_ERROR, UPSERT_ERROR, DELETE_REQUEST_ERROR:
                 return ResponseEntity.status(BAD_REQUEST).build();
             case DATE_FORMAT_ERROR:
                 return ResponseEntity.status(BAD_REQUEST)

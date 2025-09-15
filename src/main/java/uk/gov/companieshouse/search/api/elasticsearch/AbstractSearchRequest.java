@@ -9,7 +9,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.logging.util.DataMap;
@@ -17,7 +16,6 @@ import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 
 public abstract class AbstractSearchRequest {
-    
     abstract String getIndex();
     
     abstract String getResultsSize();
@@ -25,12 +23,14 @@ public abstract class AbstractSearchRequest {
     abstract RestClientService getRestClientService();
     
     abstract AbstractSearchQuery getSearchQuery();
-    
-    @Autowired
+
     private EnvironmentReader environmentReader;
     
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
-    
+
+    protected AbstractSearchRequest(EnvironmentReader environmentReader) {
+        this.environmentReader = environmentReader;
+    }
 
     public SearchHits getBestMatchResponse(String orderedAlphakey, String requestId) throws IOException {
         Map<String, Object> logMap = new DataMap.Builder()

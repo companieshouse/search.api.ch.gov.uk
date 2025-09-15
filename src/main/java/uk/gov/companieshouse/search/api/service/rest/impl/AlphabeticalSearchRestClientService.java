@@ -20,9 +20,12 @@ import static org.elasticsearch.client.RequestOptions.DEFAULT;
 @Service
 public class AlphabeticalSearchRestClientService implements RestClientService {
 
-    @Autowired
     @Qualifier("alphabeticalRestClient")
     private RestHighLevelClient alphabeticalClient;
+
+    public AlphabeticalSearchRestClientService(RestHighLevelClient alphabeticalClient) {
+        this.alphabeticalClient = alphabeticalClient;
+    }
 
     @Override
     public SearchResponse search(SearchRequest searchRequest) throws IOException {

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.logging.util.DataMap;
@@ -59,7 +58,6 @@ public class DissolvedSearchController {
     }
 
     @GetMapping("/companies")
-    @ResponseBody
     public ResponseEntity<Object> searchCompanies(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
             @RequestParam(name = SEARCH_TYPE_QUERY_PARAM) String searchType,
             @RequestParam(name = SEARCH_BEFORE_PARAM, required = false) String searchBefore,
