@@ -117,8 +117,6 @@ class AlphabeticalSearchRequestServiceTest {
             searchRequestService.getAlphabeticalSearchResults(CORPORATE_NAME, null, null, 1, REQUEST_ID);
 
         assertNotNull(searchResults);
-//        System.out.println("search results " + searchResults;
-        System.out.println("search results with top hit " + searchResults.getTopHit().getCompanyNumber());
         assertEquals( TOP_HIT, searchResults.getTopHit().getCompanyName());
         assertEquals(1, searchResults.getItems().size());
     }
