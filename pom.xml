@@ -27,6 +27,8 @@
         <api-security-java.version>2.0.14</api-security-java.version>
         <private-api-sdk-java.version>4.0.337</private-api-sdk-java.version>
 
+
+        <commons-lang3.version>3.18.0</commons-lang3.version>
         <!-- Elastic Search -->
         <elasticsearch.version>7.9.3</elasticsearch.version>
 
@@ -97,6 +99,13 @@
             </exclusions>
         </dependency>
 
+        <!-- added to resolve CVE-2025-48924(5.3) -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
@@ -148,6 +157,19 @@
             <groupId>org.sonarsource.scanner.maven</groupId>
             <artifactId>sonar-maven-plugin</artifactId>
             <version>${sonar-maven-plugin.version}</version>
+            <exclusions>
+                <exclusion>
+                    <!-- To resolve CVE-2025-48924, excluding commons lang which has no version later than 2.6 -->
+                    <groupId>commons-lang</groupId>
+                    <artifactId>commons-lang</artifactId>
+                </exclusion>
+                <exclusion>
+                    <!--To resolve CVE-2023-0833, excluding sonarsource.scanner.api
+                    which has no version later than 2.16.3.1081 -->
+                    <groupId>org.sonarsource.scanner.api</groupId>
+                    <artifactId>sonar-scanner-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

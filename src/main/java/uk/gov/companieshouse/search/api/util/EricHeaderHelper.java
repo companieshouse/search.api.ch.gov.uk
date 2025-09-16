@@ -1,7 +1,7 @@
 package uk.gov.companieshouse.search.api.util;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class EricHeaderHelper {
     public static final String API_KEY_IDENTITY_TYPE        = "key";
