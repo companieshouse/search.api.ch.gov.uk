@@ -36,7 +36,7 @@ import static uk.gov.companieshouse.search.api.model.response.ResponseStatus.SER
 
 @ExtendWith(MockitoExtension.class)
 class CompanySearchControllerTest {
-    private final String COMPANY_NUMBER = "12345678";
+    private static final String COMPANY_NUMBER = "12345678";
     @Mock
     private ApiToResponseMapper mockApiToResponseMapper;
 

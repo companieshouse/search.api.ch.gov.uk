@@ -104,7 +104,7 @@ class ElasticSearchConfigTest {
 
     @Test
     @DisplayName("Test create rest high level client throws endpoint exception when not passed valid url")
-    void createRestHighLevelClientThrowsEndpointException() throws Exception {
+    void createRestHighLevelClientThrowsEndpointException() {
         ElasticSearchConfig elasticSearchConfig = new ElasticSearchConfig(mockEnvironmentReader);
         when(mockEnvironmentReader.getMandatoryString("test")).thenReturn("http://invalid^url");
 

@@ -19,11 +19,11 @@ import java.io.IOException;
 @Service
 public class AdvancedSearchRestClientService implements RestClientService {
 
-
-    @Qualifier("advancedRestClient")
     private RestHighLevelClient advancedRestClient;
 
-    public AdvancedSearchRestClientService(RestHighLevelClient advancedRestClient) {
+    public AdvancedSearchRestClientService(
+            @Qualifier("advancedRestClient") RestHighLevelClient advancedRestClient
+    ) {
         this.advancedRestClient = advancedRestClient;
     }
 

@@ -16,10 +16,9 @@ import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 @ExtendWith(MockitoExtension.class)
 class PrimarySearchDeleteRequestServiceTest {
 
-    private final String INDEX = "primary_search2";
-    private final String TYPE = "primary_search";
-    private final String OFFICER_ID = "officerId";
-    private final String PRIMARY_SEARCH_TYPE = "disqualified-officer";
+    private static final String INDEX = "primary_search2";
+    private static final String OFFICER_ID = "officerId";
+    private static final String PRIMARY_SEARCH_TYPE = "disqualified-officer";
 
     @Mock
     private ConfiguredIndexNamesProvider indices;
@@ -38,6 +37,5 @@ class PrimarySearchDeleteRequestServiceTest {
 
         assertEquals(OFFICER_ID, request.id());
         assertEquals(INDEX, request.index());
-        assertEquals(TYPE, request.type());
     }
 }

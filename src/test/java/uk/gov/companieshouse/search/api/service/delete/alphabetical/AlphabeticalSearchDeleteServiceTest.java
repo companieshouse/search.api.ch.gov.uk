@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AlphabeticalSearchDeleteServiceTest {
+ class AlphabeticalSearchDeleteServiceTest {
 
     private static final String INDEX = "alphabetical_search";
 

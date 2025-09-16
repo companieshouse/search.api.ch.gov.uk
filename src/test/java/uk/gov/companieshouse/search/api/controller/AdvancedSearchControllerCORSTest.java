@@ -24,6 +24,7 @@ import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.service.delete.advanced.AdvancedSearchDeleteService;
 import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
+import uk.gov.companieshouse.search.api.service.rest.impl.DissolvedSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchIndexService;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
@@ -38,8 +39,6 @@ class AdvancedSearchControllerCORSTest {
     private static final String X_REQUEST_ID = "123456";
     private static final String ERIC_IDENTITY = "Test-Identity";
     private static final String ERIC_IDENTITY_TYPE = "key";
-    private static final String ERIC_PRIVILEGES = "*";
-    private static final String ERIC_AUTH = "internal-app";
 
     @MockitoBean
     private EnvironmentReader mockEnvironmentReader;
@@ -91,6 +90,9 @@ class AdvancedSearchControllerCORSTest {
 
     @Autowired
     private AdvancedSearchController advancedSearchController;
+
+    @MockitoBean
+    private DissolvedSearchRestClientService dissolvedSearchRestClientService;
 
     @Test
     void optionsAdvancedSearchCORS() throws Exception {

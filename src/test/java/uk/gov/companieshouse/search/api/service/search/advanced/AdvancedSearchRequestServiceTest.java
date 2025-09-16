@@ -83,8 +83,6 @@ class AdvancedSearchRequestServiceTest {
     @DisplayName("Test advanced search returns no results")
     void testAdvancedSearchNoResults() throws Exception{
 
-        Company company = createCompany();
-
         AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
 
         when(mockAdvancedSearchRequests.getCompanies(advancedSearchQueryParams, REQUEST_ID)).thenReturn(createEmptySearchHits());
