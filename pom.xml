@@ -66,6 +66,11 @@
 
         <spring-boot-dependencies.version>3.5.5</spring-boot-dependencies.version>
         <spring-boot-maven-plugin.version>3.5.5</spring-boot-maven-plugin.version>
+        <!-- version added to resolve CVE-2025-41249 caused by spring-core which is a transitive dependency-->
+        <spring-web.version>6.2.11</spring-web.version>
+        <!-- version added to resolve CVE-2025-41248 caused by spring-security-core which is a transitive dependency-->
+        <spring-security-config.version>6.5.4</spring-security-config.version>
+
         <skip.unit.tests>false</skip.unit.tests>
         <skip.integration.tests>false</skip.integration.tests>
     </properties>
@@ -87,6 +92,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
+            <version>${spring-web.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -222,6 +228,7 @@
         <dependency>
             <artifactId>spring-security-config</artifactId>
             <groupId>org.springframework.security</groupId>
+            <version>${spring-security-config.version}</version>
         </dependency>
     </dependencies>
 
