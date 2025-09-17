@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Service;
@@ -141,17 +140,12 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     }
 
     public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphakey, String requestId)
-        throws IOException {
+            throws IOException {
 
         Integer fallbackQueryLimit = environmentReader.getMandatoryInteger(ALPHABETICAL_FALLBACK_QUERY_LIMIT);
 
         for (int i = 0; i < orderedAlphakey.length(); i++) {
-
-            long totalHits = Optional.ofNullable(hits.getTotalHits())
-                    .map(th -> th.value)
-                    .orElse(0L);
-
-            if (totalHits > 0 || i == fallbackQueryLimit) {
+            if (hits.getTotalHits() != null && hits.getTotalHits().value > 0 || i == fallbackQueryLimit) {
                 return hits;
             }
 

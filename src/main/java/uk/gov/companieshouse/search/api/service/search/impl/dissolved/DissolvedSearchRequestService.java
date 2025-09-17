@@ -244,17 +244,13 @@ public class DissolvedSearchRequestService {
     }
 
     public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphaKey, String requestId)
-        throws IOException {
+            throws IOException {
 
         Integer fallbackQueryLimit = environmentReader.getMandatoryInteger(DISSOLVED_ALPHABETICAL_FALLBACK_QUERY_LIMIT);
 
         for (int i = 0; i < orderedAlphaKey.length(); i++) {
 
-            long totalHits = Optional.ofNullable(hits.getTotalHits())
-                                    .map(th -> th.value)
-                                    .orElse(0L);
-
-            if (totalHits > 0 || i == fallbackQueryLimit) {
+            if (hits.getTotalHits() != null && hits.getTotalHits().value > 0 || i == fallbackQueryLimit) {
                 return hits;
             }
 
