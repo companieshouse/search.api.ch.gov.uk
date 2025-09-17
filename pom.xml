@@ -99,7 +99,7 @@
             </exclusions>
         </dependency>
 
-        <!-- added to resolve CVE-2025-48924(5.3) -->
+        <!-- added to resolve CVE-2025-48924(5.3) transitive dependency of api-security-java needing latest version  -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -159,7 +159,7 @@
             <version>${sonar-maven-plugin.version}</version>
             <exclusions>
                 <exclusion>
-                    <!-- To resolve CVE-2025-48924, excluding commons lang which has no version later than 2.6 -->
+                    <!-- To resolve CVE-2025-48924, excluding commonslang which has no version later than 2.6 -->
                     <groupId>commons-lang</groupId>
                     <artifactId>commons-lang</artifactId>
                 </exclusion>

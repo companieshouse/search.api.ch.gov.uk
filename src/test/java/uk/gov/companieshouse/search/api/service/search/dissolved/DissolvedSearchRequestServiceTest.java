@@ -210,21 +210,22 @@ class DissolvedSearchRequestServiceTest {
 
 
 
-    @ParameterizedTest(name = "Search with locality={0}, postcode={1}, address={2}, corporateName={3}")
+    @ParameterizedTest(name = "Test search request returns results successfully with " +
+            "locality={0}, postcode={1}, address={2}, corporateName={3}")
     @CsvSource({
             "true,  true,  true,  true",
             "true,  false, true,  true",
             "true,  true,  false, true",
             "false, true,  false, true"
     })
-    void testCategoryNameStartsWithSuccessful(
+    void testSearchRequestSuccessfulWhenCorporateNameStartsWith(
             boolean locality,
             boolean postcode,
             boolean address,
-            boolean categoryName
+            boolean corporateName
     ) throws Exception {
 
-        SearchHits searchHits = createSearchHits(locality, postcode, address, categoryName);
+        SearchHits searchHits = createSearchHits(locality, postcode, address, corporateName);
         Company topHitCompany = createCompany();
         TopHit topHit = createTopHit();
 
@@ -248,11 +249,9 @@ class DissolvedSearchRequestServiceTest {
         when(mockDissolvedSearchRequests.getDescendingResultsResponse(REQUEST_ID, ORDERED_ALPHA_KEY_WITH_ID, COMPANY_NAME, 9))
                 .thenReturn(searchHits);
 
-        // Act
         SearchResults<Company> results = dissolvedSearchRequestService
                 .getSearchResults(COMPANY_NAME, null, null, SIZE, REQUEST_ID);
-
-        // Assert
+        
         assertNotNull(results);
         assertEquals(COMPANY_NAME, results.getTopHit().getCompanyName());
         assertEquals(3, results.getItems().size());

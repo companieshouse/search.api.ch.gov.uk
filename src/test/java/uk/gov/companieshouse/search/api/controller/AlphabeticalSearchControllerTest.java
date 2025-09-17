@@ -191,13 +191,13 @@ class AlphabeticalSearchControllerTest {
     @ParameterizedTest(name = "Upsert with companyNumber={0} should return HTTP 400 Bad Request")
     @NullSource
     @ValueSource(strings = {"", "1234567890"})
-    void testUpsertWithInvalidProductNumberReturnsBadRequest(String productNumber) {
-        CompanyProfileApi product = createCompany();
+    void testUpsertWithInvalidCompanyNumberReturnsBadRequest(String companyNumber) {
+        CompanyProfileApi company = createCompany();
 
         when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
                 .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
 
-        ResponseEntity<?> responseEntity = alphabeticalSearchController.upsertCompany(productNumber, product);
+        ResponseEntity<?> responseEntity = alphabeticalSearchController.upsertCompany(companyNumber, company);
 
         assertEquals(UPSERT_ERROR, responseObjectCaptor.getValue().getStatus());
         assertNotNull(responseEntity);

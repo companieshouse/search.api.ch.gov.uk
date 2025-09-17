@@ -18,8 +18,6 @@ import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 @Service
 public class CompanySearchUpsertRequestService {
 
-    private static final String TYPE = "primary_search";
-
     private final ConversionService companySearchDocumentConverter;
 
     private final ObjectMapper mapper;
