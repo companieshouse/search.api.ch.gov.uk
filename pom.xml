@@ -19,14 +19,16 @@
 
     <properties>
         <java.version>21</java.version>
-        <api-sdk-java.version>6.2.9</api-sdk-java.version>
+        <api-sdk-java.version>6.4.4</api-sdk-java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <start-class>uk.gov.companieshouse.search.api.SearchApiApplication</start-class>
         <api-helper-java.version>3.0.1</api-helper-java.version>
-        <api-security-java.version>2.0.8</api-security-java.version>
-        <private-api-sdk-java.version>4.0.291</private-api-sdk-java.version>
+        <api-security-java.version>2.0.14</api-security-java.version>
+        <private-api-sdk-java.version>4.0.337</private-api-sdk-java.version>
 
+
+        <commons-lang3.version>3.18.0</commons-lang3.version>
         <!-- Elastic Search -->
         <elasticsearch.version>7.9.3</elasticsearch.version>
 
@@ -34,7 +36,7 @@
         <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
 
         <!-- Structured logging -->
-        <structured-logging.version>3.0.31</structured-logging.version>
+        <structured-logging.version>3.0.38</structured-logging.version>
         <log4j.version>2.23.1</log4j.version>
 
         <!-- Maven and Surefire plugins -->
@@ -60,10 +62,15 @@
         <artifactoryResolveSnapshotRepo>libs-snapshot-local</artifactoryResolveSnapshotRepo>
         <artifactoryResolveReleaseRepo>virtual-release</artifactoryResolveReleaseRepo>
 
-        <environment-reader-library.version>3.0.1</environment-reader-library.version>
+        <environment-reader-library.version>3.0.3</environment-reader-library.version>
 
-        <spring-boot-dependencies.version>3.4.5</spring-boot-dependencies.version>
-        <spring-boot-maven-plugin.version>3.4.5</spring-boot-maven-plugin.version>
+        <spring-boot-dependencies.version>3.5.5</spring-boot-dependencies.version>
+        <spring-boot-maven-plugin.version>3.5.5</spring-boot-maven-plugin.version>
+        <!-- version added to resolve CVE-2025-41249-->
+        <spring-core.version>6.2.11</spring-core.version>
+        <!-- version added to resolve CVE-2025-41248 -->
+        <spring-security-core.version>6.5.4</spring-security-core.version>
+
         <skip.unit.tests>false</skip.unit.tests>
         <skip.integration.tests>false</skip.integration.tests>
     </properties>
@@ -86,6 +93,18 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
+        <!-- version added to resolve CVE-2025-41249-->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring-security-core.version}</version>
+        </dependency>
+        <!--Added to resolve CVE-2025-41248-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring-core.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -95,6 +114,13 @@
                     <artifactId>log4j-to-slf4j</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <!-- added to resolve CVE-2025-48924(5.3) transitive dependency of api-security-java needing latest version  -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
         </dependency>
 
         <dependency>
@@ -148,6 +174,19 @@
             <groupId>org.sonarsource.scanner.maven</groupId>
             <artifactId>sonar-maven-plugin</artifactId>
             <version>${sonar-maven-plugin.version}</version>
+            <exclusions>
+                <exclusion>
+                    <!-- To resolve CVE-2025-48924, excluding commonslang which has no version later than 2.6 -->
+                    <groupId>commons-lang</groupId>
+                    <artifactId>commons-lang</artifactId>
+                </exclusion>
+                <exclusion>
+                    <!--To resolve CVE-2023-0833, excluding sonarsource.scanner.api
+                    which has no version later than 2.16.3.1081 -->
+                    <groupId>org.sonarsource.scanner.api</groupId>
+                    <artifactId>sonar-scanner-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

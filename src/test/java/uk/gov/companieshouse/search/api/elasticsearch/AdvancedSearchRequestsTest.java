@@ -66,8 +66,7 @@ class AdvancedSearchRequestsTest {
         SearchHits hits = new SearchHits(new SearchHit[]{hit}, totalHits, 10);
         SearchResponseSections searchResponseSections = new SearchResponseSections(hits, null, null, false, null, null, 5);
         SearchResponse.Clusters clusters = new SearchResponse.Clusters(1, 1, 0);
-        SearchResponse searchResponse = new SearchResponse(searchResponseSections, "", 1, 1, 0, 8, new ShardSearchFailure[]{}, clusters);
-        return searchResponse;
+        return new SearchResponse(searchResponseSections, "", 1, 1, 0, 8, new ShardSearchFailure[]{}, clusters);
     }
 
     private AdvancedSearchQueryParams createAdvancedSearchQueryParams() {

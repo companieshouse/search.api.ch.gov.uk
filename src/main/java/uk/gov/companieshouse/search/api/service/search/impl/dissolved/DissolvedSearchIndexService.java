@@ -20,7 +20,6 @@ public class DissolvedSearchIndexService {
     private final DissolvedSearchRequestService dissolvedSearchRequestService;
     private final ConfiguredIndexNamesProvider indices;
 
-    private static final String SEARCHING_FOR_COMPANY_INFO = "searching for company";
     private static final String STANDARD_ERROR_MESSAGE = "An error occurred while trying to search for ";
     private static final String NO_RESULTS_FOUND = "No results were returned while searching for ";
     private static final String BEST_MATCH_SEARCH_TYPE = "best-match";

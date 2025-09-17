@@ -20,7 +20,9 @@ public class PrimarySearchRestClientService implements RestClientService {
 
     private final RestHighLevelClient primaryClient;
 
-    public PrimarySearchRestClientService(@Qualifier("primaryClient") RestHighLevelClient primaryClient) {
+    public PrimarySearchRestClientService(
+            @Qualifier("primaryRestClient") RestHighLevelClient primaryClient
+    ) {
         this.primaryClient = primaryClient;
     }
 

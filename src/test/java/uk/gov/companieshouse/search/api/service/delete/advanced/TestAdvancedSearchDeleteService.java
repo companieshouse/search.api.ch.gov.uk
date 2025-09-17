@@ -1,12 +1,9 @@
 package uk.gov.companieshouse.search.api.service.delete.advanced;
 
 import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.index.shard.ShardId;
-import org.elasticsearch.rest.RestStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TestAdvancedSearchDeleteService {
+ class TestAdvancedSearchDeleteService {
     @Mock
     private ConfiguredIndexNamesProvider indices;
 

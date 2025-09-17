@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,7 +62,6 @@ public class AlphabeticalSearchController {
     }
 
     @GetMapping("/companies")
-    @ResponseBody
     public ResponseEntity<Object> searchByCorporateName(@RequestParam(name = COMPANY_NAME_QUERY_PARAM) String companyName,
                                                    @RequestParam(name = SEARCH_BEFORE_PARAM, required = false) String searchBefore,
                                                    @RequestParam(name = SEARCH_AFTER_PARAM, required = false) String searchAfter,

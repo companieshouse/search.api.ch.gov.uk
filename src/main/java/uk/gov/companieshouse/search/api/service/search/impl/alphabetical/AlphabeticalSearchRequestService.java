@@ -85,15 +85,13 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
 
         try {
             SearchHits hits = getSearchHits(orderedAlphakey, requestId);
-
-            if (hits.getTotalHits().value == 0) {
+            if (hits.getTotalHits() != null && hits.getTotalHits().value == 0){
                 getLogger().info("A result was not found, reducing search term to find result", logMap);
                 logMap.remove(MESSAGE);
 
                 hits = peelbackSearchRequest(hits, orderedAlphakey, requestId);
             }
-
-            if (hits.getTotalHits().value > 0) {
+            if (hits.getTotalHits() != null && hits.getTotalHits().value > 0) {
                 getLogger().info("A result has been found", logMap);
                 logMap.remove(MESSAGE);
 
@@ -142,13 +140,12 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     }
 
     public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphakey, String requestId)
-        throws IOException {
+            throws IOException {
 
         Integer fallbackQueryLimit = environmentReader.getMandatoryInteger(ALPHABETICAL_FALLBACK_QUERY_LIMIT);
 
         for (int i = 0; i < orderedAlphakey.length(); i++) {
-
-            if (hits.getTotalHits().value > 0 || i == fallbackQueryLimit) {
+            if (hits.getTotalHits() != null && hits.getTotalHits().value > 0 || i == fallbackQueryLimit) {
                 return hits;
             }
 
@@ -163,11 +160,11 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
     private SearchHits getSearchHits(String orderedAlphakey, String requestId) throws IOException {
         SearchHits hits = alphabeticalSearchRequests.getBestMatchResponse(orderedAlphakey, requestId);
 
-        if (hits.getTotalHits().value == 0) {
+        if (hits.getTotalHits() != null && hits.getTotalHits().value == 0) {
             hits = alphabeticalSearchRequests.getStartsWithResponse(orderedAlphakey, requestId);
         }
 
-        if (hits.getTotalHits().value == 0) {
+        if (hits.getTotalHits() != null && hits.getTotalHits().value == 0) {
             hits = alphabeticalSearchRequests.getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
         }
         return hits;

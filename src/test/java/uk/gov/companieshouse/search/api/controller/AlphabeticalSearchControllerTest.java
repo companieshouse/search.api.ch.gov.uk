@@ -28,6 +28,9 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -185,45 +188,16 @@ class AlphabeticalSearchControllerTest {
         assertEquals(INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
     }
 
-    @Test
-    @DisplayName("Test upsert returns a HTTP 400 Bad Request if the company number is null")
-    void testUpsertWithNullCompanyNumberReturnsBadRequest() {
+    @ParameterizedTest(name = "Upsert with companyNumber={0} should return HTTP 400 Bad Request")
+    @NullSource
+    @ValueSource(strings = {"", "1234567890"})
+    void testUpsertWithInvalidCompanyNumberReturnsBadRequest(String companyNumber) {
         CompanyProfileApi company = createCompany();
 
         when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
                 .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
 
-        ResponseEntity<?> responseEntity = alphabeticalSearchController.upsertCompany(null, company);
-
-        assertEquals(UPSERT_ERROR, responseObjectCaptor.getValue().getStatus());
-        assertNotNull(responseEntity);
-        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
-    }
-
-    @Test
-    @DisplayName("Test upsert returns a HTTP 400 Bad Request if the company number does not match the request body")
-    void testUpsertWithDifferentCompanyNumberReturnsBadRequest() {
-        CompanyProfileApi company = createCompany();
-
-        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
-                .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
-
-        ResponseEntity<?> responseEntity = alphabeticalSearchController.upsertCompany("1234567890", company);
-
-        assertEquals(UPSERT_ERROR, responseObjectCaptor.getValue().getStatus());
-        assertNotNull(responseEntity);
-        assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
-    }
-
-    @Test
-    @DisplayName("Test upsert returns a HTTP 400 Bad Request if the company number is an empty string")
-    void testUpsertWithEmptyStringCompanyNumberReturnsBadRequest() {
-        CompanyProfileApi company = createCompany();
-
-        when(mockApiToResponseMapper.map(responseObjectCaptor.capture()))
-                .thenReturn(ResponseEntity.status(BAD_REQUEST).build());
-
-        ResponseEntity<?> responseEntity = alphabeticalSearchController.upsertCompany("", company);
+        ResponseEntity<?> responseEntity = alphabeticalSearchController.upsertCompany(companyNumber, company);
 
         assertEquals(UPSERT_ERROR, responseObjectCaptor.getValue().getStatus());
         assertNotNull(responseEntity);

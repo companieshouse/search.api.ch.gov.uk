@@ -3,17 +3,16 @@ package uk.gov.companieshouse.search.api.model.response;
 import com.google.gson.Gson;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 
-public class ResponseObject {
+public class ResponseObject<T> {
 
     private ResponseStatus status;
-
-    private SearchResults searchResults;
+    private SearchResults<T> searchResults;
 
     public ResponseObject(ResponseStatus status) {
         this.status = status;
     }
 
-    public ResponseObject(ResponseStatus status, SearchResults searchResults) {
+    public ResponseObject(ResponseStatus status, SearchResults<T> searchResults) {
         this.status = status;
         this.searchResults = searchResults;
     }
@@ -26,11 +25,11 @@ public class ResponseObject {
         this.status = status;
     }
 
-    public SearchResults getData() {
+    public SearchResults<T> getData() {
         return searchResults;
     }
 
-    public void setData(SearchResults searchResults) {
+    public void setData(SearchResults<T> searchResults) {
         this.searchResults = searchResults;
     }
 

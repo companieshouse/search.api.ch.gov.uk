@@ -3,17 +3,13 @@ package uk.gov.companieshouse.search.api.controller;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
@@ -24,6 +20,9 @@ import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.service.delete.alphabetical.AlphabeticalSearchDeleteService;
+import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClientService;
+import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
+import uk.gov.companieshouse.search.api.service.rest.impl.DissolvedSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
@@ -38,47 +37,50 @@ class AlphabeticalSearchControllerCORSTest {
     private static final String X_REQUEST_ID = "123456";
     private static final String ERIC_IDENTITY = "Test-Identity";
     private static final String ERIC_IDENTITY_TYPE = "key";
-    private static final String ERIC_PRIVILEGES = "*";
-    private static final String ERIC_AUTH = "internal-app";
 
-    @MockBean
+    @MockitoBean
     private EnvironmentReader mockEnvironmentReader;
 
-    @MockBean
+    @MockitoBean
     AlphabeticalSearchRequests alphabeticalSearchRequests;
 
-    @MockBean
-    @Qualifier("advancedClient")
-    private RestHighLevelClient advancedClient;
+    @MockitoBean
+    private RestHighLevelClient advancedRestClient;
 
-    @MockBean
-    @Qualifier("alphabeticalClient")
-    private RestHighLevelClient alphabeticalClient;
+    @MockitoBean
+    private RestHighLevelClient alphabeticalRestClient;
 
-    @MockBean
-    @Qualifier("dissolvedClient")
-    private RestHighLevelClient dissolvedClient;
+    @MockitoBean
+    private RestHighLevelClient dissolvedRestClient;
 
-    @MockBean
-    @Qualifier("primaryClient")
-    private RestHighLevelClient primaryClient;
+    @MockitoBean
+    private RestHighLevelClient primaryRestClient;
+
+    @MockitoBean
+    private AdvancedSearchRestClientService advancedRestClientS;
+
+    @MockitoBean
+    private AlphabeticalSearchRestClientService alphabeticalSearchRestClientService;
 
     // Injected services
 
-    @MockBean
+    @MockitoBean
     private AlphabeticalSearchIndexService searchIndexService;
 
-    @MockBean
+    @MockitoBean
     private ApiToResponseMapper apiToResponseMapper;
 
-    @MockBean
+    @MockitoBean
     private UpsertCompanyService upsertCompanyService;
 
-    @MockBean
+    @MockitoBean
     private ConfiguredIndexNamesProvider indices;
 
-    @MockBean
+    @MockitoBean
     private AlphabeticalSearchDeleteService alphabeticalSearchDeleteService;
+
+    @MockitoBean
+    private DissolvedSearchRestClientService dissolvedSearchRestClientService;
 
     @Autowired
     private MockMvc mockMvc;

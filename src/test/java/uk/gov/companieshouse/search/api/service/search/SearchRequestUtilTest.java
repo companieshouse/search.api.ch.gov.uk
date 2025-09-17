@@ -28,7 +28,7 @@ class SearchRequestUtilTest {
     @Test
     @DisplayName("Checks that the size is set to the default if size is null")
     void checkSizeSetToDefaultIfSizeIsNull() throws SizeException {
-        assertEquals(new Integer(20), SearchRequestUtils.checkResultsSize(null, 20, 50));
+        assertEquals(Integer.valueOf(20), SearchRequestUtils.checkResultsSize(null, 20, 50));
     }
 
     @Test
@@ -42,6 +42,6 @@ class SearchRequestUtilTest {
     @Test
     @DisplayName("Checks that the requested value is returned if the size param is valid")
     void checkValueIsReturnedIfSizeIsValid() throws SizeException {
-        assertEquals(new Integer(30), SearchRequestUtils.checkResultsSize(30, 20, 50));
+        assertEquals(Integer.valueOf(30), SearchRequestUtils.checkResultsSize(30, 20, 50));
     }
 }

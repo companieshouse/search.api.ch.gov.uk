@@ -30,8 +30,8 @@ import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 @ExtendWith(MockitoExtension.class)
 class OfficersSearchControllerTest {
 
-    private final String OFFICER_ID = "ABCD1234";
-    private final String REQUEST_ID = "DEFG5678";
+    private static final String OFFICER_ID = "ABCD1234";
+    private static final String REQUEST_ID = "DEFG5678";
     @Mock
     private ApiToResponseMapper apiToResponseMapper;
     @Captor

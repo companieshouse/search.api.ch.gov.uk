@@ -24,7 +24,7 @@ import javax.naming.ServiceUnavailableException;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @ExtendWith(MockitoExtension.class)
-public class UpsertDisqualificationServiceTest {
+class UpsertDisqualificationServiceTest {
 
     private static final String OFFICER_ID = "officerId";
     private static final UpdateRequest request = new UpdateRequest();

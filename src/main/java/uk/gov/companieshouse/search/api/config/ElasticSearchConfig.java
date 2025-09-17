@@ -1,12 +1,12 @@
 package uk.gov.companieshouse.search.api.config;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import uk.gov.companieshouse.environment.EnvironmentReader;
@@ -15,8 +15,11 @@ import uk.gov.companieshouse.search.api.exception.EndpointException;
 @Configuration
 public class ElasticSearchConfig {
 
-    @Autowired
-    private EnvironmentReader environmentReader;
+    private final EnvironmentReader environmentReader;
+
+    public ElasticSearchConfig(EnvironmentReader environmentReader) {
+        this.environmentReader = environmentReader;
+    }
 
     // These are currently pointing at the existing ES instance, will need to be updated in the configs for both
     private static final String ALPHABETICAL_SEARCH_URL = "ELASTIC_SEARCH_URL";
@@ -24,41 +27,41 @@ public class ElasticSearchConfig {
     private static final String ADVANCED_SEARCH_URL = "ADVANCED_SEARCH_URL";
     private static final String PRIMARY_SEARCH_URL = "PRIMARY_SEARCH_URL";
 
-    @Qualifier("alphabeticalClient")
     @Bean(destroyMethod = "close")
     public RestHighLevelClient alphabeticalRestClient() {
         return createClient(ALPHABETICAL_SEARCH_URL);
     }
 
-    @Qualifier("advancedClient")
     @Bean(destroyMethod = "close")
     public RestHighLevelClient advancedRestClient() {
         return createClient(ADVANCED_SEARCH_URL);
     }
 
-    @Qualifier("dissolvedClient")
+
     @Bean(destroyMethod = "close")
     public RestHighLevelClient dissolvedRestClient() {
         return createClient(DISSOLVED_SEARCH_URL);
     }
 
-    @Qualifier("primaryClient")
     @Bean(destroyMethod = "close")
-    public RestHighLevelClient primaryClient() {
+    public RestHighLevelClient primaryRestClient() {
         return createClient(PRIMARY_SEARCH_URL);
     }
 
     public RestHighLevelClient createClient(String url) {
-
         URL endpoint;
         try {
-            endpoint = new URL(environmentReader.getMandatoryString(url));
-        } catch (MalformedURLException e) {
-            throw new EndpointException(url + " environment variable is malformed; expected format is <protocol>://<host>[:port]");
+            String rawUrl = environmentReader.getMandatoryString(url);
+            URI uri = new URI(rawUrl);
+            endpoint = uri.toURL();
+        } catch (URISyntaxException | MalformedURLException e) {
+            throw new EndpointException(url + "environment variable is malformed; expected format is <protocol>://<host>[:port]");
         }
 
         return new RestHighLevelClient(
                 RestClient.builder(
-                        new HttpHost(endpoint.getHost(), endpoint.getPort(), endpoint.getProtocol())));
+                        new HttpHost(endpoint.getHost(), endpoint.getPort(), endpoint.getProtocol())
+                )
+        );
     }
 }

@@ -18,8 +18,6 @@ import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 @Service
 public class CompanySearchUpsertRequestService {
 
-    private static final String TYPE = "primary_search";
-
     private final ConversionService companySearchDocumentConverter;
 
     private final ObjectMapper mapper;
@@ -43,7 +41,7 @@ public class CompanySearchUpsertRequestService {
 
         try {
             String jsonString = mapper.writeValueAsString(documentToBeUpserted);
-            return new UpdateRequest(indices.primary(), TYPE, companyNumber)
+            return new UpdateRequest(indices.primary(), companyNumber)
                     .docAsUpsert(true).doc(jsonString, XContentType.JSON);
         } catch (IOException e) {
             LoggingUtils.getLogger().error("Failed to update a document for company profile" + e.getMessage(), logMap);

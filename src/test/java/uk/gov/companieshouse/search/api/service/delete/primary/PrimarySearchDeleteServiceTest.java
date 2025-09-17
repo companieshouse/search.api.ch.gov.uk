@@ -8,7 +8,6 @@ import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.index.shard.ShardId;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -88,7 +87,6 @@ class PrimarySearchDeleteServiceTest {
 
     @Test
     void testDeleteCompanyByNumber_Success() throws IOException {
-        String companyNumber = "12345678";
         when(indices.primary()).thenReturn("primary_search");
 
         // Stubbing the delete method to return a mock DeleteResponse
@@ -103,7 +101,6 @@ class PrimarySearchDeleteServiceTest {
     }
     @Test
     void testDeleteCompanyByNumber_IOException() throws IOException {
-        String companyNumber = "12345678";
         when(primarySearchRestClientService.delete(any(DeleteRequest.class))).thenThrow(IOException.class);
 
         ResponseObject response = service.deleteCompanyByNumber(companyNumber);
@@ -113,7 +110,6 @@ class PrimarySearchDeleteServiceTest {
 
     @Test
     void testDeleteCompanyByNumber_ElasticsearchException() throws IOException {
-        String companyNumber = "12345678";
         when(primarySearchRestClientService.delete(any(DeleteRequest.class))).thenThrow(ElasticsearchException.class);
 
         ResponseObject response = service.deleteCompanyByNumber(companyNumber);
@@ -123,7 +119,6 @@ class PrimarySearchDeleteServiceTest {
 
     @Test
     void testDeleteCompanyByNumber_NotFound() throws IOException {
-        String companyNumber = "12345678";
 
         // Stubbing the delete method to return a mock DeleteResponse
         DeleteResponse deleteResponse = new DeleteResponse(

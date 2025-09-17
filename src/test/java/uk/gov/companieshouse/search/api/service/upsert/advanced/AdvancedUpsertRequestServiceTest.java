@@ -96,8 +96,8 @@ class AdvancedUpsertRequestServiceTest {
 
         when(mockAdvancedSearchUpsertRequest.buildRequest(company, ORDERED_ALPHA_KEY_FIELD,
             SAME_AS_ALPHA_KEY_FIELD))
-            .thenReturn(createRequest(company, ORDERED_ALPHA_KEY_FIELD,
-                SAME_AS_ALPHA_KEY_FIELD));
+            .thenReturn(createRequest(company, ORDERED_ALPHA_KEY_FIELD
+            ));
 
         UpdateRequest updateRequest = advancedUpsertRequestService
             .createUpdateRequest(company, ORDERED_ALPHA_KEY_FIELD, SAME_AS_ALPHA_KEY_FIELD);
@@ -145,8 +145,7 @@ class AdvancedUpsertRequestServiceTest {
         return company;
     }
 
-    private XContentBuilder createRequest(CompanyProfileApi company, String orderedAlphaKey,
-                                          String orderedAlphaKeyWithID) throws Exception {
+    private XContentBuilder createRequest(CompanyProfileApi company, String orderedAlphaKey) throws Exception {
         RegisteredOfficeAddressApi registeredOfficeAddress = company.getRegisteredOfficeAddress();
         Map<String, String> links = company.getLinks();
 

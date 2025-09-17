@@ -10,7 +10,6 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import org.springframework.stereotype.Service;
@@ -18,10 +17,14 @@ import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 
 @Service
 public class DissolvedSearchRestClientService implements RestClientService {
-
-    @Autowired
-    @Qualifier("dissolvedClient")
+    
     private RestHighLevelClient dissolvedClient;
+
+    public DissolvedSearchRestClientService(
+            @Qualifier("dissolvedRestClient") RestHighLevelClient dissolvedClient
+    ) {
+        this.dissolvedClient = dissolvedClient;
+    }
 
     @Override
     public SearchResponse search(SearchRequest searchRequest) throws IOException {

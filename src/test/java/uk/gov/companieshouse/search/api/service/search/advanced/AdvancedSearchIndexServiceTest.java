@@ -52,7 +52,7 @@ class AdvancedSearchIndexServiceTest {
         advancedSearchQueryParams.setSicCodes(SIC_CODES_LIST);
 
         when(mockAdvancedSearchRequestService.getSearchResults(advancedSearchQueryParams, "request id"))
-                .thenReturn(createSearchResults(true, false));;
+                .thenReturn(createSearchResults(true, false));
         ResponseObject responseObject = searchIndexService.searchAdvanced(advancedSearchQueryParams, "request id");
 
         assertNotNull(responseObject);

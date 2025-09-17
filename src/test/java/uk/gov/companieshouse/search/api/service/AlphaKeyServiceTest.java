@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import java.net.URI;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,7 +23,6 @@ import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 
 @ExtendWith(MockitoExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AlphaKeyServiceTest {
 
     @InjectMocks
@@ -66,7 +64,9 @@ class AlphaKeyServiceTest {
     @DisplayName("Test alpha key response not returned due to rest client exception")
     void testNoResponseReturnedDueToException() {
         when(mockEnvironmentReader.getMandatoryString(anyString())).thenReturn(URL);
-        when(mockRestTemplate.getForObject(any(), eq(AlphaKeyResponse.class))).thenThrow(RestClientException.class);
+        when(mockRestTemplate.getForObject(any(), eq(AlphaKeyResponse.class)))
+                .thenThrow(new RestClientException("error"));
+
         URI uri = UriComponentsBuilder.fromUriString(URL)
                 .queryParam("name", CORPORATE_NAME)
                 .build()

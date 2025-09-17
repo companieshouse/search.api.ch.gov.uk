@@ -2,7 +2,6 @@ package uk.gov.companieshouse.search.api.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
@@ -61,7 +60,7 @@ public class CompanySearchDocumentConverter implements Converter<Data, CompanySe
                                     .dateOfCreation(data.getDateOfCreation())
                                     .registeredOfficeAddress(data.getRegisteredOfficeAddress()),
                             CompanySearchItem.class))
-                    .collect(Collectors.toList()));
+                    .toList());
         }
 
         return CompanySearchDocument.Builder.builder()

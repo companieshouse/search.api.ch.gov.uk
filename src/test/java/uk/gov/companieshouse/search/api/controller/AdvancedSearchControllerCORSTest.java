@@ -6,14 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
@@ -25,6 +22,9 @@ import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests
 import uk.gov.companieshouse.search.api.mapper.AdvancedQueryParamMapper;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.service.delete.advanced.AdvancedSearchDeleteService;
+import uk.gov.companieshouse.search.api.service.rest.impl.AdvancedSearchRestClientService;
+import uk.gov.companieshouse.search.api.service.rest.impl.AlphabeticalSearchRestClientService;
+import uk.gov.companieshouse.search.api.service.rest.impl.DissolvedSearchRestClientService;
 import uk.gov.companieshouse.search.api.service.search.impl.advanced.AdvancedSearchIndexService;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
@@ -39,49 +39,50 @@ class AdvancedSearchControllerCORSTest {
     private static final String X_REQUEST_ID = "123456";
     private static final String ERIC_IDENTITY = "Test-Identity";
     private static final String ERIC_IDENTITY_TYPE = "key";
-    private static final String ERIC_PRIVILEGES = "*";
-    private static final String ERIC_AUTH = "internal-app";
 
-    @MockBean
+    @MockitoBean
     private EnvironmentReader mockEnvironmentReader;
 
-    @MockBean
+    @MockitoBean
     AlphabeticalSearchRequests alphabeticalSearchRequests;
 
-    @MockBean
-    @Qualifier("advancedClient")
-    private RestHighLevelClient advancedClient;
+    @MockitoBean
+    @Qualifier("advancedRestClient")
+    private RestHighLevelClient advancedRestClient;
 
-    @MockBean
-    @Qualifier("alphabeticalClient")
-    private RestHighLevelClient alphabeticalClient;
+    @MockitoBean
+    private AdvancedSearchRestClientService advancedRestClientS;
 
-    @MockBean
-    @Qualifier("dissolvedClient")
-    private RestHighLevelClient dissolvedClient;
+    @MockitoBean
+    private AlphabeticalSearchRestClientService alphabeticalSearchRestClientService;
 
-    @MockBean
-    @Qualifier("primaryClient")
-    private RestHighLevelClient primaryClient;
+    @MockitoBean
+    private RestHighLevelClient alphabeticalRestClient;
+
+    @MockitoBean
+    private RestHighLevelClient dissolvedRestClient;
+
+    @MockitoBean
+    private RestHighLevelClient primaryRestClient;
 
     // Injected services
 
-    @MockBean
+    @MockitoBean
     private AdvancedQueryParamMapper queryParamMapper;
 
-    @MockBean
+    @MockitoBean
     private AdvancedSearchIndexService searchIndexService;
 
-    @MockBean
+    @MockitoBean
     private ApiToResponseMapper apiToResponseMapper;
 
-    @MockBean
+    @MockitoBean
     private UpsertCompanyService upsertCompanyService;
 
-    @MockBean
+    @MockitoBean
     private ConfiguredIndexNamesProvider indices;
 
-    @MockBean
+    @MockitoBean
     private AdvancedSearchDeleteService advancedSearchDeleteService;
 
     @Autowired
@@ -89,6 +90,9 @@ class AdvancedSearchControllerCORSTest {
 
     @Autowired
     private AdvancedSearchController advancedSearchController;
+
+    @MockitoBean
+    private DissolvedSearchRestClientService dissolvedSearchRestClientService;
 
     @Test
     void optionsAdvancedSearchCORS() throws Exception {

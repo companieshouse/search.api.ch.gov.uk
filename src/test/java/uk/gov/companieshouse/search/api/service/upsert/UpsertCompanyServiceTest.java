@@ -97,7 +97,6 @@ class UpsertCompanyServiceTest {
     void testAdvancedSearchUpsertIsSuccessful() throws Exception {
 
         CompanyProfileApi company = createCompany();
-        IndexRequest indexRequest = new IndexRequest("advanced_search");
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
         when(mockAdvancedUpsertRequestService.createUpdateRequest(
@@ -114,7 +113,6 @@ class UpsertCompanyServiceTest {
     void testAdvancedSearchUpsertIsSuccessfulNullAlphaKeyResponse() throws Exception {
 
         CompanyProfileApi company = createCompany();
-        IndexRequest indexRequest = new IndexRequest("advanced_search");
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(null);
         when(mockAdvancedUpsertRequestService.createUpdateRequest(
@@ -162,7 +160,6 @@ class UpsertCompanyServiceTest {
     void testExceptionThrownDuringAdvancedSearchUpdateRequest() throws Exception {
 
         CompanyProfileApi company = createCompany();
-        IndexRequest indexRequest = new IndexRequest("advanced_search");
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
         when(mockAdvancedUpsertRequestService.createUpdateRequest(
@@ -181,7 +178,6 @@ class UpsertCompanyServiceTest {
 
         CompanyProfileApi company = createCompany();
         IndexRequest indexRequest = new IndexRequest("alpha_search");
-        UpdateRequest updateRequest = new UpdateRequest("alpha_search", company.getCompanyNumber());
 
         when(mockAlphabeticalUpsertRequestService.createIndexRequest(company)).thenReturn(indexRequest);
         when(mockAlphabeticalUpsertRequestService.createUpdateRequest(
@@ -200,8 +196,6 @@ class UpsertCompanyServiceTest {
     void testExceptionThrownDuringAdvancedSearchUpsert() throws Exception {
 
         CompanyProfileApi company = createCompany();
-        IndexRequest indexRequest = new IndexRequest("advanced_search");
-        UpdateRequest updateRequest = new UpdateRequest("advanced_search", company.getCompanyNumber());
 
         when(mockAlphaKeyService.getAlphaKeyForCorporateName(anyString())).thenReturn(createResponse());
         when(mockAdvancedUpsertRequestService.createUpdateRequest(

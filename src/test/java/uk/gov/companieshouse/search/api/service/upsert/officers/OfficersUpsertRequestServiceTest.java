@@ -27,7 +27,6 @@ class OfficersUpsertRequestServiceTest {
 
     private static final String UPDATE_JSON = "{\"active_count\":0,\"inactive_count\":0,\"kind\":\"searchresults#officer\",\"resigned_count\":0,\"sort_key\":\"sort key\"}";
     private static final String OFFICER_ID = "testid";
-    private static final String INDEX = "PRIMARY_SEARCH_INDEX";
     private static final String PRIMARY = "primary_search2";
 
     @Mock
@@ -58,7 +57,7 @@ class OfficersUpsertRequestServiceTest {
         UpdateRequest request = service.createUpdateRequest(appointmentList, OFFICER_ID);
 
         assertEquals(OFFICER_ID, request.id());
-        String expected = "update {[primary_search2][primary_search][" + OFFICER_ID
+        String expected = "update {[primary_search2][_doc][" + OFFICER_ID
                 + "], doc_as_upsert[true], doc[index {[null][_doc][null], source[" + UPDATE_JSON
                 + "]}], scripted_upsert[false], detect_noop[true]}";
         assertEquals(expected, request.toString());

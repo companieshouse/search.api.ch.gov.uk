@@ -9,7 +9,6 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.search.api.exception.DateFormatException;
@@ -78,11 +77,14 @@ public class AdvancedQueryParamMapper {
         "private-fund-limited-partnership"
     );
 
-    @Autowired
     private EnvironmentReader environmentReader;
 
     private static final String ADVANCED_SEARCH_DEFAULT_SIZE = "ADVANCED_SEARCH_DEFAULT_SIZE";
     private static final String ADVANCED_SEARCH_MAX_SIZE = "ADVANCED_SEARCH_MAX_SIZE";
+
+    public AdvancedQueryParamMapper(EnvironmentReader environmentReader) {
+        this.environmentReader = environmentReader;
+    }
 
     public AdvancedSearchQueryParams mapAdvancedQueryParameters(Integer startIndex,
                                                                 String companyNameIncludes,

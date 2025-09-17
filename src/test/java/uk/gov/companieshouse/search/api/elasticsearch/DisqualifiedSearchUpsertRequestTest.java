@@ -14,7 +14,7 @@ import uk.gov.companieshouse.api.disqualification.Item;
 import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 
-public class DisqualifiedSearchUpsertRequestTest {
+class DisqualifiedSearchUpsertRequestTest {
 
     private static final String FORENAME = "forename";
     private static final String SURNAME = "surname";
@@ -39,19 +39,19 @@ public class DisqualifiedSearchUpsertRequestTest {
     }
 
     @Test
-    void missingKindOfficerIsNotTransformedToJSONString() throws Exception {
+    void missingKindOfficerIsNotTransformedToJSONString() {
         assertThrows(UpsertException.class,
             () -> request.buildRequest(createOfficer(false, true, true)));
     }
 
     @Test
-    void missingSelfOfficerIsNotTransformedToJSONString() throws Exception {
+    void missingSelfOfficerIsNotTransformedToJSONString() {
         assertThrows(UpsertException.class,
             () -> request.buildRequest(createOfficer(true, false, true)));
     }
 
     @Test
-    void missingAddressOfficerIsNotTransformedToJSONString() throws Exception {
+    void missingAddressOfficerIsNotTransformedToJSONString() {
         assertThrows(UpsertException.class,
             () -> request.buildRequest(createOfficer(true, true, false)));
     }
@@ -124,9 +124,8 @@ public class DisqualifiedSearchUpsertRequestTest {
     }
 
     private JSONObject createAddress() throws Exception {
-        JSONObject address = new JSONObject()
+        return new JSONObject()
         .put("postcode", "postcode")
         .put("address_line_1", "addressLine1");
-        return address;
     }
 }

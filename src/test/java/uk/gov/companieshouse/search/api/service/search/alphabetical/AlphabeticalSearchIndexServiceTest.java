@@ -36,7 +36,7 @@ class AlphabeticalSearchIndexServiceTest {
     @Mock
     private ConfiguredIndexNamesProvider indices;
 
-    private TopHit TOP_HIT;
+    private static TopHit TOP_HIT;
     private static final String REQUEST_ID = "requestId";
     private static final String CORPORATE_NAME = "corporateName";
 
@@ -120,7 +120,6 @@ class AlphabeticalSearchIndexServiceTest {
 
         links.setCompanyProfile("self");
 
-        //company.setId("id");
         company.setCompanyType("companyType");
         company.setLinks(links);
         results.add(company);

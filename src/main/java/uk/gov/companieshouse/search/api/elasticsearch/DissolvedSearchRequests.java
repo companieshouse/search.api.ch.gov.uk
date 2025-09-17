@@ -19,19 +19,26 @@ import java.util.Map;
 @Component
 public class DissolvedSearchRequests extends AbstractSearchRequest {
 
-    @Autowired
     private DissolvedSearchRestClientService searchRestClient;
 
-    @Autowired
     private DissolvedSearchQueries searchQueries;
 
-    @Autowired
     private EnvironmentReader environmentReader;
 
     private static final String INDEX = "DISSOLVED_SEARCH_INDEX";
     private static final String RESULTS_SIZE = "DISSOLVED_SEARCH_RESULT_MAX";
     private static final String BEST_MATCH_SEARCH_TYPE = "best-match";
 
+    @Autowired
+    public DissolvedSearchRequests(
+            EnvironmentReader environmentReader,
+            DissolvedSearchRestClientService searchRestClient,
+            DissolvedSearchQueries searchQueries
+    ) {
+        super(environmentReader);
+        this.searchRestClient = searchRestClient;
+        this.searchQueries = searchQueries;
+    }
     @Override
     String getIndex() {
         return INDEX;
