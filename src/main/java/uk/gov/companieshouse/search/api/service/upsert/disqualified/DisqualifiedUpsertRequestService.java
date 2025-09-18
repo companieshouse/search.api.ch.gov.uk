@@ -52,7 +52,7 @@ public class DisqualifiedUpsertRequestService {
         }
 
         try {
-            UpdateRequest request = new UpdateRequest(indices.primary(), officerId)
+            UpdateRequest request = new UpdateRequest(indices.primary(), TYPE, officerId)
                     .docAsUpsert(true).doc(disqualifiedSearchUpsertRequest.buildRequest(officer), XContentType.JSON);
 
             LoggingUtils.getLogger().info("Attempt to upsert document if it does not exist", logMap);
