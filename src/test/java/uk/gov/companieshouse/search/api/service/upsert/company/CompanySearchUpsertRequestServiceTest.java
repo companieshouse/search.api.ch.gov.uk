@@ -67,7 +67,7 @@ class CompanySearchUpsertRequestServiceTest {
 
         // then
         assertEquals(COMPANY_NUMBER, request.id());
-        String expected = "update {[primary_search2][_doc][" + COMPANY_NUMBER
+        String expected = "update {[primary_search2][primary_search][" + COMPANY_NUMBER
                 + "], doc_as_upsert[true], doc[index {[null][_doc][null], source[" + UPDATE_JSON
                 + "]}], scripted_upsert[false], detect_noop[true]}";
         assertEquals(expected, request.toString());

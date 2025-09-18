@@ -42,7 +42,7 @@ public class OfficersUpsertRequestService {
         try {
             String jsonString = mapper.writeValueAsString(documentToBeUpserted);
 
-            return new UpdateRequest(indices.primary(), officerId)
+            return new UpdateRequest(indices.primary(), TYPE, officerId)
                     .docAsUpsert(true).doc(jsonString, XContentType.JSON);
 
         } catch (IOException ex) {

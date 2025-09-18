@@ -24,6 +24,8 @@ public class CompanySearchUpsertRequestService {
 
     private final ConfiguredIndexNamesProvider indices;
 
+    private static final String TYPE = "primary_search";
+
     public CompanySearchUpsertRequestService(@Lazy ConversionService companySearchDocumentConverter,
             ObjectMapper mapper, ConfiguredIndexNamesProvider indices) {
         this.companySearchDocumentConverter = companySearchDocumentConverter;
@@ -41,7 +43,7 @@ public class CompanySearchUpsertRequestService {
 
         try {
             String jsonString = mapper.writeValueAsString(documentToBeUpserted);
-            return new UpdateRequest(indices.primary(), companyNumber)
+            return new UpdateRequest(indices.primary(), TYPE, companyNumber)
                     .docAsUpsert(true).doc(jsonString, XContentType.JSON);
         } catch (IOException e) {
             LoggingUtils.getLogger().error("Failed to update a document for company profile" + e.getMessage(), logMap);

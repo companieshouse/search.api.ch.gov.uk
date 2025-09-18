@@ -57,7 +57,7 @@ class OfficersUpsertRequestServiceTest {
         UpdateRequest request = service.createUpdateRequest(appointmentList, OFFICER_ID);
 
         assertEquals(OFFICER_ID, request.id());
-        String expected = "update {[primary_search2][_doc][" + OFFICER_ID
+        String expected = "update {[primary_search2][primary_search][" + OFFICER_ID
                 + "], doc_as_upsert[true], doc[index {[null][_doc][null], source[" + UPDATE_JSON
                 + "]}], scripted_upsert[false], detect_noop[true]}";
         assertEquals(expected, request.toString());
