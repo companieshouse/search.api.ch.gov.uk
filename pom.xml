@@ -27,7 +27,6 @@
         <api-security-java.version>2.0.14</api-security-java.version>
         <private-api-sdk-java.version>4.0.337</private-api-sdk-java.version>
 
-
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <!-- Elastic Search -->
         <elasticsearch.version>7.9.3</elasticsearch.version>
@@ -44,19 +43,20 @@
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
 
         <!-- sonar config -->
-		<sonar.java.binaries>${project.basedir}/target</sonar.java.binaries>
-		<sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
-		<sonar.login></sonar.login>
-		<sonar.password></sonar.password>
-		<sonar.projectKey>uk.gov.companieshouse:search.api.ch.gov.uk</sonar.projectKey>
-		<sonar.projectName>search.api.ch.gov.uk</sonar.projectName>
-		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml,
-			${project.basedir}/target/site/jacoco-it/jacoco.xml
-		</sonar.coverage.jacoco.xmlReportPaths>
-		<sonar.jacoco.reports>${project.basedir}/target/site</sonar.jacoco.reports>
-		<sonar.java.binaries>
-			${project.basedir}/target
-		</sonar.java.binaries>
+        <sonar-maven-plugin.version>4.0.0.4121</sonar-maven-plugin.version>
+        <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
+        <sonar.login></sonar.login>
+        <sonar.password></sonar.password>
+        <sonar.projectKey>uk.gov.companieshouse:search.api.ch.gov.uk</sonar.projectKey>
+        <sonar.projectName>search.api.ch.gov.uk</sonar.projectName>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml,
+            ${project.basedir}/target/site/jacoco-it/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.jacoco.reports>${project.basedir}/target/site</sonar.jacoco.reports>
+        <sonar.dependencyCheck.htmlReportPath>
+            ${project.basedir}/target/dependency-check-report.html
+        </sonar.dependencyCheck.htmlReportPath>
+        <sonar.java.binaries>${project.basedir}/target</sonar.java.binaries>
 
         <!-- Repositories -->
         <artifactoryResolveSnapshotRepo>libs-snapshot-local</artifactoryResolveSnapshotRepo>
