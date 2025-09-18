@@ -9,6 +9,7 @@ import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.bytes.BytesReference;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -43,6 +44,15 @@ class AlphabeticalSearchRequestsTest {
 
     private static final String ENV_READER_RESULT = "1";
     private static final Integer SIZE = 10;
+
+    @BeforeEach
+    void setUp() {
+        alphabeticalSearchRequests = new AlphabeticalSearchRequests(
+                mockEnvironmentReader,
+                mockSearchRestClient,
+                mockAlphabeticalSearchQueries
+        );
+    }
 
     @Test
     @DisplayName("Get best match response")
