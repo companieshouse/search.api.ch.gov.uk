@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.api.company.Data;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.delete.primary.PrimarySearchDeleteService;
@@ -41,20 +42,20 @@ public class CompanySearchController {
     @PutMapping("/companies/{company_number}")
     public ResponseEntity<Object> upsertCompanyPrimarySearch(@PathVariable("company_number") String companyNumber,
             @Valid @RequestBody Data profileData) {
-        ResponseObject responseObject = upsertCompanyService.upsertCompany(companyNumber, profileData);
+        ResponseObject<Company> responseObject = upsertCompanyService.upsertCompany(companyNumber, profileData);
         return apiToResponseMapper.map(responseObject);
     }
 
     @DeleteMapping("/companies/{company_number}")
     public ResponseEntity<Object> deleteCompanyPrimarySearch(@PathVariable("company_number")
                                                           String companyNumber) throws IOException {
-        ResponseObject responseObject;
+        ResponseObject<?> responseObject;
         getLogger().info(String
                 .format("Attempting to delete company number [%s] from the primary search index",
                 companyNumber));
 
         if (companyNumber == null || companyNumber.isEmpty()){
-            responseObject = new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
+            responseObject = new ResponseObject<>(ResponseStatus.DELETE_NOT_FOUND);
             getLogger().error(String.format("company [%s] not found",
                     companyNumber));
         }

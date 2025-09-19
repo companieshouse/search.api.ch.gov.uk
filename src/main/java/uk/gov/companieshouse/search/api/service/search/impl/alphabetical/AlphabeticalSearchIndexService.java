@@ -30,7 +30,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
      * {@inheritDoc}
      */
     @Override
-    public ResponseObject search(String corporateName, String searchBefore, String searchAfter, Integer size,
+    public ResponseObject<Company> search(String corporateName, String searchBefore, String searchAfter, Integer size,
             String requestId) {
 
 
@@ -51,15 +51,15 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
                     size, requestId);
         } catch (SearchException e) {
             getLogger().error("SearchException when searching for company", logMap);
-            return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
+            return new ResponseObject<>(ResponseStatus.SEARCH_ERROR, null);
         }
 
         if(searchResults.getItems() != null && !searchResults.getItems().isEmpty()) {
             getLogger().info("Search successful", logMap);
-            return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+            return new ResponseObject<>(ResponseStatus.SEARCH_FOUND, searchResults);
         }
 
         getLogger().info("No results found", logMap);
-        return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
+        return new ResponseObject<>(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 }

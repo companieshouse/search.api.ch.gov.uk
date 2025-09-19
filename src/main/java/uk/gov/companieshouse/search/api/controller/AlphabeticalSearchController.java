@@ -85,10 +85,10 @@ public class AlphabeticalSearchController {
         } catch (SizeException e) {
             getLogger().info(e.getMessage(), logMap);
             return apiToResponseMapper
-                .map(new ResponseObject(ResponseStatus.SIZE_PARAMETER_ERROR, null));
+                .map(new ResponseObject<String>(ResponseStatus.SIZE_PARAMETER_ERROR, null));
         }
 
-        ResponseObject responseObject = searchIndexService
+        ResponseObject<?> responseObject = searchIndexService
             .search(companyName, searchBefore, searchAfter, size, requestId);
 
         return apiToResponseMapper.map(responseObject);
@@ -105,11 +105,11 @@ public class AlphabeticalSearchController {
 
         getLogger().info("Upserting company", logMap);
 
-        ResponseObject responseObject;
+        ResponseObject<?> responseObject;
 
         if (companyNumber == null || companyNumber.isEmpty()
                 || !companyNumber.equalsIgnoreCase(company.getCompanyNumber())) {
-            responseObject = new ResponseObject(ResponseStatus.UPSERT_ERROR);
+            responseObject = new ResponseObject<>(ResponseStatus.UPSERT_ERROR);
         } else {
             responseObject = upsertCompanyService.upsert(company);
         }
@@ -121,10 +121,10 @@ public class AlphabeticalSearchController {
         Map<String, Object> logMap = LoggingUtils.setUpAlphabeticalSearchDeleteLogging(companyNumber, indices);
         getLogger().info("Attempting to delete a company from alphabetical search index", logMap);
 
-        ResponseObject responseObject;
+        ResponseObject<?> responseObject;
 
         if (companyNumber == null || companyNumber.isEmpty()) {
-            responseObject = new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
+            responseObject = new ResponseObject<>(ResponseStatus.DELETE_NOT_FOUND);
         } else {
             responseObject = alphabeticalSearchDeleteService.deleteCompany(companyNumber);
         }

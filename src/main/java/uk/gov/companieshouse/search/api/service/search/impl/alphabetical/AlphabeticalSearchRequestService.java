@@ -145,7 +145,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         Integer fallbackQueryLimit = environmentReader.getMandatoryInteger(ALPHABETICAL_FALLBACK_QUERY_LIMIT);
 
         for (int i = 0; i < orderedAlphakey.length(); i++) {
-            if (hits.getTotalHits() != null && hits.getTotalHits().value > 0 || i == fallbackQueryLimit) {
+            if ((hits.getTotalHits() != null && hits.getTotalHits().value > 0) || i == fallbackQueryLimit) {
                 return hits;
             }
 

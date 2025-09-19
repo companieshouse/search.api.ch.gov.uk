@@ -30,7 +30,7 @@ public class AdvancedSearchIndexService {
         this.indices = indices;
     }
 
-    public ResponseObject searchAdvanced(AdvancedSearchQueryParams queryParams, String requestId) {
+    public ResponseObject<Company> searchAdvanced(AdvancedSearchQueryParams queryParams, String requestId) {
 
         Map<String, Object> logMap = getAdvancedSearchLogMap(queryParams, requestId, indices);
         logMap.remove(MESSAGE);
@@ -41,15 +41,15 @@ public class AdvancedSearchIndexService {
         } catch (SearchException se) {
             getLogger()
                     .error(STANDARD_ERROR_MESSAGE, logMap);
-            return new ResponseObject(ResponseStatus.SEARCH_ERROR, null);
+            return new ResponseObject<>(ResponseStatus.SEARCH_ERROR, null);
         }
 
         if (searchResults.getItems() != null && !searchResults.getItems().isEmpty()) {
             getLogger().info(SUCCESSFUL_SEARCH, logMap);
-            return new ResponseObject(ResponseStatus.SEARCH_FOUND, searchResults);
+            return new ResponseObject<>(ResponseStatus.SEARCH_FOUND, searchResults);
         }
 
         getLogger().info(NO_RESULTS_FOUND, logMap);
-        return new ResponseObject(ResponseStatus.SEARCH_NOT_FOUND, null);
+        return new ResponseObject<>(ResponseStatus.SEARCH_NOT_FOUND, null);
     }
 }

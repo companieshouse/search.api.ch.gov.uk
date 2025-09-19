@@ -29,7 +29,7 @@ public class AlphabeticalSearchDeleteService {
         this.indices = indices;
     }
 
-    public ResponseObject deleteCompany(String companyNumber) {
+    public ResponseObject<String> deleteCompany(String companyNumber) {
 
         Map<String, Object> logMap =
                 LoggingUtils.setUpAlphabeticalSearchDeleteLogging(companyNumber, indices);
@@ -42,19 +42,19 @@ public class AlphabeticalSearchDeleteService {
         } catch (IOException e) {
             getLogger().error(String.format("IOException encountered when deleting [%s] from the alphabetical search index",
                     companyNumber), logMap);
-            return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
+            return new ResponseObject<>(ResponseStatus.SERVICE_UNAVAILABLE);
         } catch (ElasticsearchException e) {
-            return new ResponseObject(ResponseStatus.DELETE_REQUEST_ERROR);
+            return new ResponseObject<>(ResponseStatus.DELETE_REQUEST_ERROR);
         }
 
         if (response.getResult() == DocWriteResponse.Result.NOT_FOUND) {
             getLogger().error(String.format("Document with id: [%s] not found in alphabetical search index",
                     companyNumber), logMap);
-            return new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
+            return new ResponseObject<>(ResponseStatus.DELETE_NOT_FOUND);
         } else {
             getLogger().info(String.format("Successfully deleted [%s] from alphabetical search index",
                     companyNumber), logMap);
-            return new ResponseObject(ResponseStatus.DOCUMENT_DELETED);
+            return new ResponseObject<>(ResponseStatus.DOCUMENT_DELETED);
         }
     }
 

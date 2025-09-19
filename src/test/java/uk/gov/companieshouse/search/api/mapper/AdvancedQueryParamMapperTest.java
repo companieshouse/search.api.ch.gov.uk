@@ -148,7 +148,7 @@ class AdvancedQueryParamMapperTest {
 
     @Test
     @DisplayName("Test size exception thrown when size is greater than max allowed")
-    void testSizeExceptionThrownSizeGreaterThanMax() throws SizeException {
+    void testSizeExceptionThrownSizeGreaterThanMax() {
 
         doReturn(500).when(mockEnvironmentReader).getMandatoryInteger(ADVANCED_SEARCH_MAX_SIZE);
         doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(ADVANCED_SEARCH_DEFAULT_SIZE);
@@ -162,7 +162,7 @@ class AdvancedQueryParamMapperTest {
 
     @Test
     @DisplayName("Test size exception thrown when size is 0")
-    void testSizeExceptionThrownSizeIsZero() throws SizeException {
+    void testSizeExceptionThrownSizeIsZero() {
 
         doReturn(500).when(mockEnvironmentReader).getMandatoryInteger(ADVANCED_SEARCH_MAX_SIZE);
         doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(ADVANCED_SEARCH_DEFAULT_SIZE);
@@ -175,7 +175,7 @@ class AdvancedQueryParamMapperTest {
 
     @Test
     @DisplayName("Test size exception thrown when size is less than 0")
-    void testSizeExceptionThrownSizeIsLessThanZero() throws SizeException {
+    void testSizeExceptionThrownSizeIsLessThanZero() {
 
         doReturn(500).when(mockEnvironmentReader).getMandatoryInteger(ADVANCED_SEARCH_MAX_SIZE);
         doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(ADVANCED_SEARCH_DEFAULT_SIZE);
