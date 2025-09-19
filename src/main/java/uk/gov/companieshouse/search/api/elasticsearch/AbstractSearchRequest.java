@@ -24,7 +24,7 @@ public abstract class AbstractSearchRequest {
     
     abstract AbstractSearchQuery getSearchQuery();
 
-    private EnvironmentReader environmentReader;
+    protected final EnvironmentReader environmentReader;
     
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
 

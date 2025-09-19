@@ -16,6 +16,7 @@ import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.bytes.BytesReference;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -45,6 +46,16 @@ class DissolvedSearchRequestsTest {
     private static final String ENV_READER_RESULT = "1";
     private static final Integer SIZE = 10;
     private static final Integer START_INDEX = 0;
+
+    @BeforeEach
+    void setUp() {
+        dissolvedSearchRequests = new DissolvedSearchRequests(
+                mockEnvironmentReader,
+                mockSearchRestClient,
+                mockDissolvedSearchQueries
+        );
+    }
+
 
     @Test
     @DisplayName("Get best match response")

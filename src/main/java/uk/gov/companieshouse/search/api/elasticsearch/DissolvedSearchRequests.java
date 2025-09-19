@@ -5,7 +5,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.logging.util.DataMap;
@@ -23,13 +22,10 @@ public class DissolvedSearchRequests extends AbstractSearchRequest {
 
     private DissolvedSearchQueries searchQueries;
 
-    private EnvironmentReader environmentReader;
-
     private static final String INDEX = "DISSOLVED_SEARCH_INDEX";
     private static final String RESULTS_SIZE = "DISSOLVED_SEARCH_RESULT_MAX";
     private static final String BEST_MATCH_SEARCH_TYPE = "best-match";
 
-    @Autowired
     public DissolvedSearchRequests(
             EnvironmentReader environmentReader,
             DissolvedSearchRestClientService searchRestClient,
