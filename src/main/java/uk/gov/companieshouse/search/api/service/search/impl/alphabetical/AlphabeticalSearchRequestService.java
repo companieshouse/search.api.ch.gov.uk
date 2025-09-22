@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 @Service
-public class AlphabeticalSearchRequestService implements SearchRequestService {
+public class AlphabeticalSearchRequestService implements SearchRequestService<Company> {
 
     private final AlphaKeyService alphaKeyService;
     private final AlphabeticalSearchRequests alphabeticalSearchRequests;
@@ -145,9 +147,10 @@ public class AlphabeticalSearchRequestService implements SearchRequestService {
         Integer fallbackQueryLimit = environmentReader.getMandatoryInteger(ALPHABETICAL_FALLBACK_QUERY_LIMIT);
 
         for (int i = 0; i < orderedAlphakey.length(); i++) {
-            if ((hits.getTotalHits() != null && hits.getTotalHits().value > 0) || i == fallbackQueryLimit) {
-                return hits;
-            }
+            TotalHits totalHits = hits.getTotalHits();
+                if ((totalHits != null && totalHits.value > 0) || i == fallbackQueryLimit) {
+                    return hits;
+                }
 
             if (i != orderedAlphakey.length() - 1) {
                 String resultString = orderedAlphakey.substring(0, orderedAlphakey.length() - i);

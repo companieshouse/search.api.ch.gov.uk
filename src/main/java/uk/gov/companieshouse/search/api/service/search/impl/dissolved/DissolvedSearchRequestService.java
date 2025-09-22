@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Service;
@@ -250,7 +251,8 @@ public class DissolvedSearchRequestService {
 
         for (int i = 0; i < orderedAlphaKey.length(); i++) {
 
-            if ((hits.getTotalHits() != null && hits.getTotalHits().value > 0) || i == fallbackQueryLimit) {
+            TotalHits totalHits = hits.getTotalHits();
+            if ((totalHits != null && totalHits.value > 0) || i == fallbackQueryLimit) {
                 return hits;
             }
 

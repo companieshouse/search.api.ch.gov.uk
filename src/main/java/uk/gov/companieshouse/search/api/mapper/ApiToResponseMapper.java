@@ -10,7 +10,6 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.environment.EnvironmentReader;
-import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 
 @Component
