@@ -34,14 +34,14 @@ public class PrimarySearchDeleteService {
         this.indices = indices;
     }
 
-    public ResponseObject deleteOfficer(SearchType searchType) {
+    public ResponseObject<String> deleteOfficer(SearchType searchType) {
         Map<String, Object> logMap =
             LoggingUtils.setUpPrimarySearchDeleteLogging(searchType.getOfficerId(), indices);
         DeleteRequest deleteRequest = primarySearchDeleteRequestService.createDeleteRequest(searchType);
         return deleteObject(deleteRequest, searchType.getOfficerId(), "officer",logMap);
     }
 
-    public ResponseObject deleteOfficer(SearchType searchType, String requestId) {
+    public ResponseObject<String> deleteOfficer(SearchType searchType, String requestId) {
 
         Map<String, Object> logMap =
                 LoggingUtils.setUpPrimaryOfficerSearchLogging(searchType.getOfficerId(), requestId, indices);
@@ -49,7 +49,7 @@ public class PrimarySearchDeleteService {
         return deleteObject(deleteRequest, searchType.getOfficerId(), "officer",logMap);
     }
 
-    public ResponseObject deleteCompanyByNumber(String companyNumber) throws IOException {
+    public ResponseObject<String> deleteCompanyByNumber(String companyNumber) throws IOException {
 
         Map<String, Object> logMap =
                 LoggingUtils.setUpCompanySearchCompanyDeleteLogging(companyNumber, indices);
@@ -58,7 +58,7 @@ public class PrimarySearchDeleteService {
         return deleteObject(deleteRequest,companyNumber,"company",logMap);
     }
 
-    private ResponseObject deleteObject(DeleteRequest deleteRequest, String id, String entityType, Map<String, Object> logMap){
+    private ResponseObject<String> deleteObject(DeleteRequest deleteRequest, String id, String entityType, Map<String, Object> logMap){
         DeleteResponse response;
         try {
             response = primarySearchRestClientService.delete(deleteRequest);
@@ -66,18 +66,18 @@ public class PrimarySearchDeleteService {
             getLogger().error(String
                     .format("Error: IOException when deleting %s [%s] from primary search.",
                             entityType, id),logMap);
-            return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
+            return new ResponseObject<>(ResponseStatus.SERVICE_UNAVAILABLE);
         } catch (ElasticsearchException e) {
-            return new ResponseObject(ResponseStatus.DELETE_REQUEST_ERROR);
+            return new ResponseObject<>(ResponseStatus.DELETE_REQUEST_ERROR);
         }
         if (response.getResult() == DocWriteResponse.Result.NOT_FOUND) {
             getLogger().error(String.format("Error %s [%s] not found in primary search.",
                     entityType, id),logMap);
-            return new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
+            return new ResponseObject<>(ResponseStatus.DELETE_NOT_FOUND);
         } else {
             getLogger().info(String.format("Processed [%s] delete for %s",
                     entityType, id),logMap);
-            return new ResponseObject(ResponseStatus.DOCUMENT_DELETED);
+            return new ResponseObject<>(ResponseStatus.DOCUMENT_DELETED);
         }
 
     }

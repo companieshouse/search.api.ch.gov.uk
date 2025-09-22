@@ -8,13 +8,9 @@ import java.util.Map;
 
 public class SearchRequestUtils {
 
-    private EnvironmentReader environmentReader;
 
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
 
-    public SearchRequestUtils(EnvironmentReader environmentReader) {
-        this.environmentReader = environmentReader;
-    }
 
     public static String getOrderedAlphaKeyWithId(SearchHit hit) {
         Map<String, Object> sourceAsMap = hit.getSourceAsMap();

@@ -28,6 +28,7 @@ import uk.gov.companieshouse.search.api.exception.SizeException;
 import uk.gov.companieshouse.search.api.mapper.AdvancedQueryParamMapper;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
 import uk.gov.companieshouse.search.api.service.delete.advanced.AdvancedSearchDeleteService;
@@ -139,14 +140,14 @@ public class AdvancedSearchController {
                 .mapAdvancedQueryParameters(startIndex, companyName, location, incorporatedFrom,
                     incorporatedTo, companyStatusList, sicCodes, companyTypeList, companySubtypeList, dissolvedFrom, dissolvedTo, companyNameExcludes, size);
         } catch (DateFormatException dfe) {
-           return apiToResponseMapper.map(new ResponseObject(ResponseStatus.DATE_FORMAT_ERROR, null));
+           return apiToResponseMapper.map(new ResponseObject<>(ResponseStatus.DATE_FORMAT_ERROR, null));
         } catch (MappingException me) {
-            return apiToResponseMapper.map(new ResponseObject(ResponseStatus.MAPPING_ERROR, null));
+            return apiToResponseMapper.map(new ResponseObject<>(ResponseStatus.MAPPING_ERROR, null));
         } catch (SizeException se) {
-            return apiToResponseMapper.map(new ResponseObject(ResponseStatus.ADVANCED_SIZE_PARAMETER_ERROR, null));
+            return apiToResponseMapper.map(new ResponseObject<>(ResponseStatus.ADVANCED_SIZE_PARAMETER_ERROR, null));
         }
 
-        ResponseObject responseObject = searchIndexService.searchAdvanced(advancedSearchQueryParams, requestId);
+        ResponseObject<Company> responseObject = searchIndexService.searchAdvanced(advancedSearchQueryParams, requestId);
 
         return apiToResponseMapper.map(responseObject);
     }
@@ -163,11 +164,11 @@ public class AdvancedSearchController {
 
         getLogger().info("Attempting to upsert a company to advanced search index", logMap);
 
-        ResponseObject responseObject;
+        ResponseObject<?> responseObject;
 
         if (companyNumber == null || companyNumber.isEmpty()
             || !companyNumber.equalsIgnoreCase(company.getCompanyNumber())) {
-            responseObject = new ResponseObject(ResponseStatus.UPSERT_ERROR);
+            responseObject = new ResponseObject<>(ResponseStatus.UPSERT_ERROR);
         } else {
             responseObject = upsertCompanyService.upsertAdvanced(company);
         }
@@ -177,7 +178,7 @@ public class AdvancedSearchController {
     @DeleteMapping("/companies/{company_number}")
     public ResponseEntity<Object> deleteCompany(@PathVariable("company_number") String companyNumber) {
 
-        ResponseObject responseObject;
+        ResponseObject<?> responseObject;
         getLogger().info(String.format("Attempting to delete company number [%s] from the advanced search index",
                 companyNumber));
 

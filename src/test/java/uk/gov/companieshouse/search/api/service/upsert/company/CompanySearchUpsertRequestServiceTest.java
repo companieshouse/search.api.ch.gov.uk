@@ -74,7 +74,7 @@ class CompanySearchUpsertRequestServiceTest {
     }
 
     @Test
-    void serviceThrowsNoSuchElementException() throws JsonProcessingException {
+    void serviceThrowsNoSuchElementException() {
         // given
 
         // when

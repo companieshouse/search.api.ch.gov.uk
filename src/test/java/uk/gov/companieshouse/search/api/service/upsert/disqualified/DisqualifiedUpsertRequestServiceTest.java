@@ -70,7 +70,7 @@ import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
         when(disqualifiedSearchUpsertRequest.buildRequest(officer)).thenReturn(UPDATE_JSON);
         AlphaKeyResponse response = new AlphaKeyResponse();
         response.setOrderedAlphaKey("abc");
-        when(alphaKeyService.getAlphaKeyForCorporateName(officer.getItems().get(0).getCorporateName())).thenReturn(response);
+        when(alphaKeyService.getAlphaKeyForCorporateName(officer.getItems().getFirst().getCorporateName())).thenReturn(response);
 
         UpdateRequest request = service.createUpdateRequest(officer, OFFICER_ID);
 
@@ -79,11 +79,11 @@ import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
                 "], doc_as_upsert[true], doc[index {[null][_doc][null], source[" + UPDATE_JSON +
                 "]}], scripted_upsert[false], detect_noop[true]}";
         assertEquals(expected, request.toString());
-        verify(alphaKeyService).getAlphaKeyForCorporateName(officer.getItems().get(0).getCorporateName());
+        verify(alphaKeyService).getAlphaKeyForCorporateName(officer.getItems().getFirst().getCorporateName());
     }
 
     @Test
-    void alphaKeyFailThrowsServiceUnavailableException() throws Exception {
+    void alphaKeyFailThrowsServiceUnavailableException() {
         OfficerDisqualification officer = createOfficer(false);
         when(indices.primary()).thenReturn(PRIMARY);
 

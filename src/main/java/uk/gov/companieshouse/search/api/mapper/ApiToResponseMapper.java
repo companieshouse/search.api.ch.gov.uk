@@ -23,7 +23,7 @@ public class ApiToResponseMapper {
         this.environmentReader = environmentReader;
     }
 
-    public ResponseEntity<Object> map(ResponseObject responseObject) {
+    public <T> ResponseEntity<Object> map(ResponseObject<T> responseObject) {
 
         switch(responseObject.getStatus()) {
             case SEARCH_FOUND, DOCUMENT_UPSERTED, DOCUMENT_DELETED:

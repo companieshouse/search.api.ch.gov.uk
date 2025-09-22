@@ -29,7 +29,7 @@ public class AdvancedSearchDeleteService {
         this.advancedSearchRestClientService = advancedSearchRestClientService;
     }
 
-    public ResponseObject deleteCompanyByNumber(String companyNumber){
+    public ResponseObject<String> deleteCompanyByNumber(String companyNumber){
 
         DeleteRequest deleteRequest = new DeleteRequest(indices.advanced(), companyNumber);
 
@@ -39,19 +39,19 @@ public class AdvancedSearchDeleteService {
         }catch (IOException e) {
             getLogger().error(String.format("IOException encountered when deleting Company Number [%s] from the advanced search index",
                     companyNumber));
-            return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
+            return new ResponseObject<>(ResponseStatus.SERVICE_UNAVAILABLE);
         } catch (ElasticsearchException e) {
-            return new ResponseObject(ResponseStatus.DELETE_REQUEST_ERROR);
+            return new ResponseObject<>(ResponseStatus.DELETE_REQUEST_ERROR);
         }
 
         if (response.getResult() == DocWriteResponse.Result.NOT_FOUND) {
             getLogger().error(String.format("Company Number: [%s] not found in advanced search index",
                     companyNumber));
-            return new ResponseObject(ResponseStatus.DELETE_NOT_FOUND);
+            return new ResponseObject<>(ResponseStatus.DELETE_NOT_FOUND);
         } else {
             getLogger().info(String.format("Successfully deleted Company Number [%s] from the advanced search index",
                     companyNumber));
-            return new ResponseObject(ResponseStatus.DOCUMENT_DELETED);
+            return new ResponseObject<>(ResponseStatus.DOCUMENT_DELETED);
         }
 
     }

@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
+import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Service;
@@ -82,13 +83,13 @@ public class DissolvedSearchRequestService {
         try {
             SearchHits hits = getSearchHits(orderedAlphaKey, requestId);
 
-            if (hits.getTotalHits().value == 0) {
+            if (hits.getTotalHits() != null && hits.getTotalHits().value == 0) {
                 getLogger().info("A result was not found, reducing search term to find result", logMap);
 
                 hits = peelbackSearchRequest(hits, orderedAlphaKey, requestId);
             }
 
-            if (hits.getTotalHits().value > 0) {
+            if (hits.getTotalHits() != null && hits.getTotalHits().value > 0) {
                 getLogger().info(RESULT_FOUND, logMap);
 
                 String orderedAlphaKeyWithId;
@@ -233,11 +234,11 @@ public class DissolvedSearchRequestService {
     private SearchHits getSearchHits(String orderedAlphakey, String requestId) throws IOException {
         SearchHits hits = dissolvedSearchRequests.getBestMatchResponse(orderedAlphakey, requestId);
 
-        if (hits.getTotalHits().value == 0) {
+        if (hits.getTotalHits() != null &&  hits.getTotalHits().value == 0) {
             hits = dissolvedSearchRequests.getStartsWithResponse(orderedAlphakey, requestId);
         }
 
-        if (hits.getTotalHits().value == 0) {
+        if ( hits.getTotalHits() != null && hits.getTotalHits().value == 0) {
             hits = dissolvedSearchRequests.getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
         }
         return hits;
@@ -250,7 +251,8 @@ public class DissolvedSearchRequestService {
 
         for (int i = 0; i < orderedAlphaKey.length(); i++) {
 
-            if (hits.getTotalHits() != null && hits.getTotalHits().value > 0 || i == fallbackQueryLimit) {
+            TotalHits totalHits = hits.getTotalHits();
+            if ((totalHits != null && totalHits.value > 0) || i == fallbackQueryLimit) {
                 return hits;
             }
 

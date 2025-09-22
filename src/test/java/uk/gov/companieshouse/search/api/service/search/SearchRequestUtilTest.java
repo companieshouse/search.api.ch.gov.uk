@@ -11,7 +11,7 @@ class SearchRequestUtilTest {
 
     @Test
     @DisplayName("Checks that the size exception is thrown if the size param is 0")
-    void checkSizeExceptionIsThrownSizeIsZero() throws SizeException {
+    void checkSizeExceptionIsThrownSizeIsZero() {
         assertThrows(SizeException.class, () -> {
             SearchRequestUtils.checkResultsSize(0, 20, 50);
         });
@@ -19,7 +19,7 @@ class SearchRequestUtilTest {
 
     @Test
     @DisplayName("Checks that the size exception is thrown if the size param is negative")
-    void checkSizeExceptionIsThrownSizeIsNegative() throws SizeException {
+    void checkSizeExceptionIsThrownSizeIsNegative() {
         assertThrows(SizeException.class, () -> {
             SearchRequestUtils.checkResultsSize(-5, 20,50);
         });
@@ -33,7 +33,7 @@ class SearchRequestUtilTest {
 
     @Test
     @DisplayName("Checks that the size exception is thrown if the size param is greater than maximum")
-    void checkSizeExceptionIsThrownSizeIsGreaterThanMax() throws SizeException {
+    void checkSizeExceptionIsThrownSizeIsGreaterThanMax() {
         assertThrows(SizeException.class, () -> {
             SearchRequestUtils.checkResultsSize(101, 20, 50);
         });

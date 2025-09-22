@@ -13,6 +13,7 @@ import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.logging.util.DataMap;
 import uk.gov.companieshouse.search.api.exception.UpsertException;
 import uk.gov.companieshouse.search.api.logging.LoggingUtils;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
@@ -66,7 +67,7 @@ public class UpsertCompanyService {
      * @param company - Company sent over in REST call to be added/updated
      * @return {@link ResponseObject}
      */
-    public ResponseObject upsert(CompanyProfileApi company) {
+    public ResponseObject<String> upsert(CompanyProfileApi company) {
         Map<String, Object> logMap = new DataMap.Builder()
                 .companyName(company.getCompanyName())
                 .companyNumber(company.getCompanyNumber())
@@ -82,18 +83,18 @@ public class UpsertCompanyService {
             updateRequest = alphabeticalUpsertRequestService.createUpdateRequest(company, indexRequest);
         } catch (UpsertException e) {
             getLogger().error("An error occured attempting upsert the document", logMap);
-            return new ResponseObject(ResponseStatus.UPSERT_ERROR);
+            return new ResponseObject<>(ResponseStatus.UPSERT_ERROR);
         }
 
         try {
             alphabeticalSearchRestClientService.upsert(updateRequest);
         } catch (IOException e) {
             getLogger().error("IOException when upserting company", logMap);
-            return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
+            return new ResponseObject<>(ResponseStatus.UPDATE_REQUEST_ERROR);
         }
 
         getLogger().info("Upsert successful for ", logMap);
-        return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
+        return new ResponseObject<>(ResponseStatus.DOCUMENT_UPSERTED);
     }
 
     /**
@@ -104,7 +105,7 @@ public class UpsertCompanyService {
      * @param company - Company sent over in REST call to be added/updated
      * @return {@link ResponseObject}
      */
-    public ResponseObject upsertAdvanced(CompanyProfileApi company) {
+    public ResponseObject<String> upsertAdvanced(CompanyProfileApi company) {
         Map<String, Object> logMap = new DataMap.Builder()
                 .companyName(company.getCompanyName())
                 .companyNumber(company.getCompanyNumber())
@@ -129,21 +130,21 @@ public class UpsertCompanyService {
             updateRequest = advancedUpsertRequestService.createUpdateRequest(company, orderedAlphaKey, sameAsKey);
         } catch (UpsertException e) {
             getLogger().error("An error occured attempting upsert the document to advanced search index", logMap);
-            return new ResponseObject(ResponseStatus.UPSERT_ERROR);
+            return new ResponseObject<>(ResponseStatus.UPSERT_ERROR);
         }
 
         try {
             advancedSearchRestClientService.upsert(updateRequest);
         } catch (IOException e) {
             getLogger().error("IOException when upserting a company to the advanced search index", logMap);
-            return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
+            return new ResponseObject<>(ResponseStatus.UPDATE_REQUEST_ERROR);
         }
 
         getLogger().info("Upsert successful to advanced search index", logMap);
-        return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
+        return new ResponseObject<>(ResponseStatus.DOCUMENT_UPSERTED);
     }
 
-    public ResponseObject upsertCompany(String companyNumber, Data profileData) {
+    public ResponseObject<Company> upsertCompany(String companyNumber, Data profileData) {
         Map<String, Object> logMap =
                 LoggingUtils.setUpCompanySearchCompanyUpsertLogging(companyNumber, indices);
         getLogger().info("Upserting company profile to primary index", logMap);
@@ -154,7 +155,7 @@ public class UpsertCompanyService {
         } catch (UpsertException e) {
             getLogger().error("An error occurred attempting upsert the document to primary search "
                     + "index", logMap);
-            return new ResponseObject(ResponseStatus.UPSERT_ERROR);
+            return new ResponseObject<>(ResponseStatus.UPSERT_ERROR);
         }
 
         try {
@@ -162,12 +163,12 @@ public class UpsertCompanyService {
         } catch (IOException e) {
             getLogger().error("IOException when upserting an company profile to primary search "
                     + "index", logMap);
-            return new ResponseObject(ResponseStatus.SERVICE_UNAVAILABLE);
+            return new ResponseObject<>(ResponseStatus.SERVICE_UNAVAILABLE);
         } catch (ElasticsearchException e) {
-            return new ResponseObject(ResponseStatus.UPDATE_REQUEST_ERROR);
+            return new ResponseObject<>(ResponseStatus.UPDATE_REQUEST_ERROR);
         }
 
         getLogger().info("Company profile Upsert successful to primary search index", logMap);
-        return new ResponseObject(ResponseStatus.DOCUMENT_UPSERTED);
+        return new ResponseObject<>(ResponseStatus.DOCUMENT_UPSERTED);
     }
 }
