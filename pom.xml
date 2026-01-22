@@ -156,6 +156,10 @@
                 <groupId>org.elasticsearch.plugin</groupId>
                 <artifactId>aggs-matrix-stats-client</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.elasticsearch.plugin</groupId>
+                <artifactId>lang-mustache-client</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
