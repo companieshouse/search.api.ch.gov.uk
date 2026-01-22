@@ -2,7 +2,7 @@ package uk.gov.companieshouse.search.api.service.upsert.disqualified;
 
 import uk.gov.companieshouse.api.disqualification.Item;
 import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.xcontent.XContentType;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.api.disqualification.OfficerDisqualification;
 import uk.gov.companieshouse.search.api.elasticsearch.DisqualifiedSearchUpsertRequest;

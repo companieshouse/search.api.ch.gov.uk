@@ -29,7 +29,7 @@
 
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <!-- Elastic Search -->
-        <elasticsearch.version>7.17.29</elasticsearch.version>
+        <elasticsearch.version>7.10.2</elasticsearch.version>
 
         <!-- Docker -->
         <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
