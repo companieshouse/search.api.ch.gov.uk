@@ -2,7 +2,7 @@ package uk.gov.companieshouse.search.api.elasticsearch;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.xcontent.XContentBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;

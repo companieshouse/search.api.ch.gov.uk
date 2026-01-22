@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.xcontent.XContentType;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
