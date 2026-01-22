@@ -29,7 +29,7 @@
 
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <!-- Elastic Search -->
-        <elasticsearch.version>7.9.3</elasticsearch.version>
+        <elasticsearch.version>7.17.29</elasticsearch.version>
 
         <!-- Docker -->
         <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
@@ -70,6 +70,8 @@
         <spring-core.version>6.2.11</spring-core.version>
         <!-- version added to resolve CVE-2025-41248 -->
         <spring-security-core.version>6.5.4</spring-security-core.version>
+        <!-- version added to resolve CVE-2025-55752 -->
+        <tomcat-embed-core.version>10.1.47</tomcat-embed-core.version>
 
         <skip.unit.tests>false</skip.unit.tests>
         <skip.integration.tests>false</skip.integration.tests>
