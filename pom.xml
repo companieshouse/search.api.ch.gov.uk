@@ -159,12 +159,6 @@
             </exclusions>
         </dependency>
         <dependency>
-                <groupId>org.elasticsearch.plugin</groupId>
-                <artifactId>lang-mustache-client</artifactId>
-                <version>${elasticsearch.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-client</artifactId>
             <version>${elasticsearch.version}</version>
@@ -200,6 +194,16 @@
                     <artifactId>sonar-scanner-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat-embed-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.25.3</version>
         </dependency>
 
         <dependency>
