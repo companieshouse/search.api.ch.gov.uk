@@ -23,6 +23,7 @@ import static uk.gov.companieshouse.search.api.constants.TestConstants.INCORPORA
 import static uk.gov.companieshouse.search.api.constants.TestConstants.INCORPORATED_TO;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.INCORPORATED_TO_MAPPED;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.LOCATION;
+import static uk.gov.companieshouse.search.api.constants.TestConstants.REMOVED_COMPANY_STATUS_LIST;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.SIC_CODES_LIST;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.SIZE;
 import static uk.gov.companieshouse.search.api.constants.TestConstants.START_INDEX;
@@ -199,5 +200,20 @@ class AdvancedQueryParamMapperTest {
                     DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, null);
 
         assertEquals(SIZE, advancedSearchQueryParams.getSize());
+    }
+
+    @Test
+    @DisplayName("Test mapper accepts 'removed' company status")
+    void testMapperAcceptsRemovedStatus() throws Exception {
+
+        doReturn(500).when(mockEnvironmentReader).getMandatoryInteger(ADVANCED_SEARCH_MAX_SIZE);
+        doReturn(20).when(mockEnvironmentReader).getMandatoryInteger(ADVANCED_SEARCH_DEFAULT_SIZE);
+
+        AdvancedSearchQueryParams advancedSearchQueryParams =
+            advancedQueryParamMapper.mapAdvancedQueryParameters(START_INDEX, COMPANY_NAME, LOCATION,
+                INCORPORATED_FROM, INCORPORATED_TO, REMOVED_COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST,
+                COMPANY_SUBTYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE);
+
+        assertEquals(REMOVED_COMPANY_STATUS_LIST.get(0), advancedSearchQueryParams.getCompanyStatusList().get(0));
     }
 }
