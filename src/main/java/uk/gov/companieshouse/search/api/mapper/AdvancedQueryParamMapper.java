@@ -25,6 +25,7 @@ public class AdvancedQueryParamMapper {
         "dissolved",
         "open",
         "closed",
+        "removed",
         "converted-closed",
         "receivership",
         "administration",

@@ -7,6 +7,7 @@ import java.util.List;
 public class TestConstants {
 
     public static final String ACTIVE_COMPANY_STATUS = "active";
+    public static final String REMOVED_COMPANY_STATUS = "removed";
     public static final String ADVANCED_SEARCH_DEFAULT_SIZE = "ADVANCED_SEARCH_DEFAULT_SIZE";
     public static final String ADVANCED_SEARCH_MAX_SIZE = "ADVANCED_SEARCH_MAX_SIZE";
     public static final String BAD_COMPANY_STATUS = "aaa";
@@ -34,6 +35,7 @@ public class TestConstants {
 
     public static final List<String> BAD_COMPANY_STATUS_LIST = Arrays.asList(BAD_COMPANY_STATUS);
     public static final List<String> COMPANY_STATUS_LIST = Arrays.asList(ACTIVE_COMPANY_STATUS);
+    public static final List<String> REMOVED_COMPANY_STATUS_LIST = Arrays.asList(REMOVED_COMPANY_STATUS);
     public static final List<String> SIC_CODES_LIST = Arrays.asList(SIC_CODES);
     public static final List<String> COMPANY_TYPES_LIST = Arrays.asList(LTD_COMPANY_TYPE, PLC_COMPANY_TYPE);
     public static final List<String> COMPANY_SUBTYPES_LIST = Arrays.asList(CIC_COMPANY_SUBTYPE, PFLP_COMPANY_SUBTYPE);
