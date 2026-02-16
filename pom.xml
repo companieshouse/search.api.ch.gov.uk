@@ -29,14 +29,14 @@
 
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <!-- Elastic Search -->
-        <elasticsearch.version>7.9.3</elasticsearch.version>
+        <elasticsearch.version>7.10.2</elasticsearch.version>
 
         <!-- Docker -->
         <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
 
         <!-- Structured logging -->
         <structured-logging.version>3.0.38</structured-logging.version>
-        <log4j.version>2.23.1</log4j.version>
+        <log4j.version>2.25.3</log4j.version>
 
         <!-- Maven and Surefire plugins -->
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
@@ -70,6 +70,9 @@
         <spring-core.version>6.2.11</spring-core.version>
         <!-- version added to resolve CVE-2025-41248 -->
         <spring-security-core.version>6.5.4</spring-security-core.version>
+        <!-- version added to resolve CVE-2025-55752 -->
+        <tomcat-embed-core.version>10.1.47</tomcat-embed-core.version>
+        <tomcat-embed-websocket.version>11.0.15</tomcat-embed-websocket.version>
 
         <skip.unit.tests>false</skip.unit.tests>
         <skip.integration.tests>false</skip.integration.tests>
@@ -149,8 +152,13 @@
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-high-level-client</artifactId>
             <version>${elasticsearch.version}</version>
+            <exclusions>
+                <exclusion>
+                <groupId>org.elasticsearch.plugin</groupId>
+                <artifactId>aggs-matrix-stats-client</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-client</artifactId>
@@ -187,6 +195,21 @@
                     <artifactId>sonar-scanner-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat-embed-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
+            <version>${tomcat-embed-websocket.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.25.3</version>
         </dependency>
 
         <dependency>
