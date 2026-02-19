@@ -2,7 +2,8 @@ package uk.gov.companieshouse.search.api.elasticsearch;
 
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.search.builder.PointInTimeBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.logging.util.DataMap;
@@ -28,7 +29,7 @@ public class AdvancedSearchRequests {
         this.indices = indices;
     }
 
-    public SearchHits getCompanies(AdvancedSearchQueryParams queryParams, String requestId) throws IOException {
+    public SearchResponse getCompanies(AdvancedSearchQueryParams queryParams, String requestId, String pitId) throws IOException {
         Map<String, Object> logMap = new DataMap.Builder()
                 .requestId(requestId)
                 .build().getLogMap();
@@ -42,11 +43,20 @@ public class AdvancedSearchRequests {
         sourceBuilder.size(queryParams.getSize());
         sourceBuilder.from(queryParams.getStartIndex());
         sourceBuilder.trackTotalHits(true);
+        if (pitId != null) {
+            sourceBuilder.pointInTimeBuilder(setPointInTime(pitId));
+        }
 
         searchRequest.source(sourceBuilder.query(advancedSearchQueries.buildAdvancedSearchQuery(queryParams)));
 
         SearchResponse searchResponse = restClientService.search(searchRequest);
 
-        return searchResponse.getHits();
+        return searchResponse;
+    }
+
+    private PointInTimeBuilder setPointInTime(String pitId) {
+        final PointInTimeBuilder pointInTimeBuilder = new PointInTimeBuilder(pitId);
+        pointInTimeBuilder.setKeepAlive(new TimeValue(15000000L));
+        return pointInTimeBuilder;
     }
 }
