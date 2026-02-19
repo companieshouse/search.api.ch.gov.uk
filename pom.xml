@@ -29,7 +29,7 @@
 
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <!-- Elastic Search -->
-        <elasticsearch.version>7.10.2</elasticsearch.version>
+        <elasticsearch.version>7.9.3</elasticsearch.version>
 
         <!-- Docker -->
         <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
@@ -152,12 +152,6 @@
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-high-level-client</artifactId>
             <version>${elasticsearch.version}</version>
-            <exclusions>
-                <exclusion>
-                <groupId>org.elasticsearch.plugin</groupId>
-                <artifactId>aggs-matrix-stats-client</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
