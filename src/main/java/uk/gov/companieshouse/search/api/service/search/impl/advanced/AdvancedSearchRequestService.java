@@ -68,7 +68,7 @@ public class AdvancedSearchRequestService {
             SearchHits hits = new SearchHits(totalHitsArray, null, 0); //getCompanies(queryParams, requestId, null);
             numberOfHits = hits.getTotalHits().value;
 
-            if (numberOfHits > 0) {
+            if (hits.getTotalHits().value > 0) {
                 getLogger().info(RESULT_FOUND, logMap);
 
                 Company topHitCompany = elasticSearchResponseMapper
