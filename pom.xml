@@ -28,6 +28,8 @@
         <private-api-sdk-java.version>4.0.388</private-api-sdk-java.version>
 
         <commons-lang3.version>3.18.0</commons-lang3.version>
+        <assertj-core.version>3.27.7</assertj-core.version>
+        <tomcat-embed-core.version>11.0.15</tomcat-embed-core.version>
         <!-- Elastic Search -->
         <elasticsearch.version>7.9.3</elasticsearch.version>
 
@@ -122,6 +124,19 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
         </dependency>
+
+        <dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>${assertj-core.version}</version>
+			<scope>test</scope>
+		</dependency> 
+                         
+        <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>${tomcat-embed-core.version}</version>
+            </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
