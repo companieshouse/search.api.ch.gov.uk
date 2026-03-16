@@ -29,7 +29,10 @@
 
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <assertj-core.version>3.27.7</assertj-core.version>
-        <tomcat-embed-core.version>11.0.15</tomcat-embed-core.version>
+        <tomcat-embed-core.version>11.0.18</tomcat-embed-core.version>
+        <tomcat-embed-websocket.version>11.0.15</tomcat-embed-websocket.version>
+        <kotlin-stdlib.version>2.2.21</kotlin-stdlib.version>
+        <log4j-api.version>2.25.3</log4j-api.version>
         <!-- Elastic Search -->
         <elasticsearch.version>7.9.3</elasticsearch.version>
 
@@ -136,7 +139,13 @@
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
                 <version>${tomcat-embed-core.version}</version>
-            </dependency>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
+            <version>${tomcat-embed-websocket.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
