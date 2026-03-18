@@ -29,8 +29,8 @@
 
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <assertj-core.version>3.27.7</assertj-core.version>
-        <tomcat-embed-core.version>10.1.18</tomcat-embed-core.version>
-        <tomcat-embed-websocket.version>10.1.18</tomcat-embed-websocket.version>
+        <tomcat-embed-core.version>10.1.52</tomcat-embed-core.version>
+        <tomcat-embed-websocket.version>10.1.52</tomcat-embed-websocket.version>
         <kotlin-stdlib.version>2.2.21</kotlin-stdlib.version>
         <log4j-api.version>2.25.3</log4j-api.version>
         <!-- Elastic Search -->
@@ -215,16 +215,6 @@
                     <artifactId>kotlin-stdlib-common</artifactId>
                 </exclusion>               
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-            <version>${tomcat-embed-core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-websocket</artifactId>
-            <version>${tomcat-embed-websocket.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
