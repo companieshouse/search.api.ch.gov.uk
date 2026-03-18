@@ -29,8 +29,8 @@
 
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <assertj-core.version>3.27.7</assertj-core.version>
-        <tomcat-embed-core.version>11.0.18</tomcat-embed-core.version>
-        <tomcat-embed-websocket.version>11.0.18</tomcat-embed-websocket.version>
+        <tomcat-embed-core.version>10.1.18</tomcat-embed-core.version>
+        <tomcat-embed-websocket.version>10.1.18</tomcat-embed-websocket.version>
         <kotlin-stdlib.version>2.2.21</kotlin-stdlib.version>
         <log4j-api.version>2.25.3</log4j-api.version>
         <!-- Elastic Search -->
@@ -75,9 +75,6 @@
         <spring-core.version>6.2.11</spring-core.version>
         <!-- version added to resolve CVE-2025-41248 -->
         <spring-security-core.version>6.5.4</spring-security-core.version>
-        <!-- version added to resolve CVE-2025-55752 -->
-        <tomcat-embed-core.version>10.1.47</tomcat-embed-core.version>
-        <tomcat-embed-websocket.version>11.0.15</tomcat-embed-websocket.version>
 
         <skip.unit.tests>false</skip.unit.tests>
         <skip.integration.tests>false</skip.integration.tests>
