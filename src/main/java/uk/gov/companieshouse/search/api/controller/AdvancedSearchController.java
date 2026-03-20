@@ -91,65 +91,11 @@ public class AdvancedSearchController {
                                          @RequestParam(name = SIZE_PARAM, required = false) Integer size,
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        Date incorporatedFromDate = null;
-        Date incorporatedToDate = null;
-        Date dissolvedFromDate = null;
-        Date dissolvedToDate = null;
-        try {
-            if(incorporatedFrom != null){
-                incorporatedFromDate = formatter.parse(incorporatedFrom);
-            }
-            if(incorporatedTo != null){
-                incorporatedToDate = formatter.parse(incorporatedTo);
-            }
-            if(dissolvedFrom != null){
-                dissolvedFromDate = formatter.parse(dissolvedFrom);
-            }
-            if(dissolvedTo != null){
-                dissolvedToDate = formatter.parse(dissolvedTo);
-            }
-        } catch (ParseException e) {
-            getLogger().error("Date passed in wrong format to advanced search controller", e);
-        }
-
-
-        Map<String, Object> logMap = new DataMap.Builder()
-                .companyName(companyName)
-                .startIndex(String.valueOf(startIndex))
-                .location(location)
-                .incorporatedFrom(incorporatedFromDate)
-                .incorporatedTo(incorporatedToDate)
-                .companyStatus(companyStatusList)
-                .sicCodes(sicCodes)
-                .companyType(companyTypeList)
-                .companySubtype(companySubtypeList)
-                .dissolvedFrom(dissolvedFromDate)
-                .dissolvedTo(dissolvedToDate)
-                .companyNameExcludes(companyNameExcludes)
-                .size(String.valueOf(size))
-                .indexName(indices.advanced())
-                .build().getLogMap();
-
-        getLogger().info("Search request received", logMap);
-        logMap.remove(MESSAGE);
-
-        AdvancedSearchQueryParams advancedSearchQueryParams;
-
-        try {
-            advancedSearchQueryParams = queryParamMapper
-                .mapAdvancedQueryParameters(startIndex, companyName, location, incorporatedFrom,
-                    incorporatedTo, companyStatusList, sicCodes, companyTypeList, companySubtypeList, dissolvedFrom, dissolvedTo, companyNameExcludes, size);
-        } catch (DateFormatException dfe) {
-           return apiToResponseMapper.map(new ResponseObject<>(ResponseStatus.DATE_FORMAT_ERROR, null));
-        } catch (MappingException me) {
-            return apiToResponseMapper.map(new ResponseObject<>(ResponseStatus.MAPPING_ERROR, null));
-        } catch (SizeException se) {
-            return apiToResponseMapper.map(new ResponseObject<>(ResponseStatus.ADVANCED_SIZE_PARAMETER_ERROR, null));
-        }
-
-        ResponseObject<Company> responseObject = searchIndexService.searchAdvanced(advancedSearchQueryParams, requestId);
-
+        ResponseObject<Company> responseObject = searchCompanies(startIndex, companyName, location,
+                incorporatedFrom, incorporatedTo, companyStatusList,
+                sicCodes, companyTypeList, companySubtypeList,
+                dissolvedFrom, dissolvedTo,
+                companyNameExcludes, size, requestId);
         return apiToResponseMapper.map(responseObject);
     }
 
@@ -169,6 +115,20 @@ public class AdvancedSearchController {
                                          @RequestParam(name = SIZE_PARAM, required = false) Integer size,
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
+        ResponseObject<Company> responseObject = searchCompanies(startIndex, companyName, location,
+                incorporatedFrom, incorporatedTo, companyStatusList,
+                sicCodes, companyTypeList, companySubtypeList,
+                dissolvedFrom, dissolvedTo,
+                companyNameExcludes, size, requestId);
+        String csv = getCsvFromResponse(responseObject);
+        return ResponseEntity.status(HttpStatus.OK).body(csv);
+    }
+
+    private ResponseObject<Company> searchCompanies(Integer startIndex, String companyName, String location,
+                                                    String incorporatedFrom, String incorporatedTo, List<String> companyStatusList,
+                                                    List<String> sicCodes, List<String> companyTypeList, List<String> companySubtypeList,
+                                                    String dissolvedFrom, String dissolvedTo, String companyNameExcludes,
+                                                    Integer size, String requestId) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         Date incorporatedFromDate = null;
         Date incorporatedToDate = null;
@@ -219,16 +179,15 @@ public class AdvancedSearchController {
                     .mapAdvancedQueryParameters(startIndex, companyName, location, incorporatedFrom,
                             incorporatedTo, companyStatusList, sicCodes, companyTypeList, companySubtypeList, dissolvedFrom, dissolvedTo, companyNameExcludes, size);
         } catch (DateFormatException dfe) {
-            return apiToResponseMapper.map(new ResponseObject<>(ResponseStatus.DATE_FORMAT_ERROR, null));
+            return new ResponseObject<>(ResponseStatus.DATE_FORMAT_ERROR, null);
         } catch (MappingException me) {
-            return apiToResponseMapper.map(new ResponseObject<>(ResponseStatus.MAPPING_ERROR, null));
+            return new ResponseObject<>(ResponseStatus.MAPPING_ERROR, null);
         } catch (SizeException se) {
-            return apiToResponseMapper.map(new ResponseObject<>(ResponseStatus.ADVANCED_SIZE_PARAMETER_ERROR, null));
+            return new ResponseObject<>(ResponseStatus.ADVANCED_SIZE_PARAMETER_ERROR, null);
         }
 
-        ResponseObject<Company> responseObject = searchIndexService.searchAdvanced(advancedSearchQueryParams, requestId);
-        String csv = getCsvFromResponse(responseObject);
-        return ResponseEntity.status(HttpStatus.OK).body(csv);
+        return searchIndexService.searchAdvanced(advancedSearchQueryParams, requestId);
+
     }
 
     private String getCsvFromResponse(ResponseObject<Company> responseObject) {
