@@ -29,7 +29,8 @@ public class SearchApiApplication implements WebMvcConfigurer {
     public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(loggingInterceptor).excludePathPatterns("/search/healthcheck");
         registry.addInterceptor(authorisationInterceptor).addPathPatterns(
-                "/advanced-search/companies/{company_number}", 
+                "/advanced-search/companies/{company_number}",
+                "/advanced-search/companies/csv/{company_number}",
                 "/alphabetical-search/companies/{company_number}",
                 "/officers-search/officers/{officer_id}",
                 "/disqualified-search/disqualified-officers/{officer_id}",
