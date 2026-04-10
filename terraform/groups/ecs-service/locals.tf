@@ -14,7 +14,7 @@ locals {
     "/alphabetical-search/companies/*",
     "/dissolved-search/companies",
     "/advanced-search/companies",
-    "/advanced-search/companies/csv",
+    "/advanced-search/csv",
     "/advanced-search/companies/*",
     "/disqualified-search/disqualified-officers/*",
     "/disqualified-search/delete/*",

@@ -99,7 +99,7 @@ public class AdvancedSearchController {
         return apiToResponseMapper.map(responseObject);
     }
 
-    @GetMapping("/companies/csv")
+    @GetMapping("/csv")
     public ResponseEntity<Object> searchToCsv(@RequestParam(name = START_INDEX_QUERY_PARAM, required = false) Integer startIndex,
                                          @RequestParam(name = COMPANY_NAME_QUERY_PARAM, required = false) String companyName,
                                          @RequestParam(name = LOCATION_QUERY_PARAM, required = false) String location,
