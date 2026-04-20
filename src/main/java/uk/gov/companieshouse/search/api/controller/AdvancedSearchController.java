@@ -255,11 +255,11 @@ public class AdvancedSearchController {
     private String getAddressAsString(Address address) {
         StringBuilder builder = new StringBuilder();
         builder.append(address.getAddressLine1());
-        builder.append(address.getAddressLine2());
-        builder.append(address.getPremises());
+        builder.append("\s");
         builder.append(address.getLocality());
-        builder.append(address.getRegion());
+        builder.append("\s");
         builder.append(address.getCountry());
+        builder.append("\s");
         builder.append(address.getPostalCode());
         return builder.toString();
     }
