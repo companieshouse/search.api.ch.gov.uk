@@ -29,6 +29,7 @@ import uk.gov.companieshouse.search.api.exception.SizeException;
 import uk.gov.companieshouse.search.api.mapper.AdvancedQueryParamMapper;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
@@ -190,28 +191,6 @@ public class AdvancedSearchController {
 
     }
 
-    private String getCsvFromResponse(ResponseObject<Company> responseObject) {
-        List<Company> companies = responseObject.getData().getItems();
-        StringBuilder csvBody = new StringBuilder("company_name,company_number,company_status,company_type,company_subtype,dissolution_date,incorporation_date,removed_date,registered_date,nature_of_business,registered_office_address\n");
-
-        for (Company company : companies) {
-            String line = company.getCompanyName() + "," +
-                    company.getCompanyNumber() + "," +
-                    company.getCompanyStatus() + "," +
-                    company.getCompanyType() + "," +
-                    company.getCompanySubtype() + "," +
-                    company.getDateOfCessation() + "," +
-                    company.getDateOfCreation() + "," +
-                    company.getDateOfCessation() + "," +
-                    company.getDateOfCreation() + "," +
-                    company.getSicCodes() + "," +
-                    company.getRegisteredOfficeAddress() + "\n";
-            csvBody.append(line);
-        }
-
-        return csvBody.toString();
-    }
-
     @PutMapping("/companies/{company_number}")
     public ResponseEntity<Object> upsert(@PathVariable("company_number") String companyNumber,
                                          @Valid @RequestBody CompanyProfileApi company) {
@@ -249,5 +228,39 @@ public class AdvancedSearchController {
             responseObject = advancedSearchDeleteService.deleteCompanyByNumber(companyNumber);
         }
         return apiToResponseMapper.map(responseObject);
+    }
+
+    private String getCsvFromResponse(ResponseObject<Company> responseObject) {
+        List<Company> companies = responseObject.getData().getItems();
+        StringBuilder csvBody = new StringBuilder("company_name,company_number,company_status,company_type,company_subtype,dissolution_date,incorporation_date,removed_date,registered_date,nature_of_business,registered_office_address\n");
+
+        for (Company company : companies) {
+            String line = company.getCompanyName() + "," +
+                    company.getCompanyNumber() + "," +
+                    company.getCompanyStatus() + "," +
+                    company.getCompanyType() + "," +
+                    company.getCompanySubtype() + "," +
+                    company.getDateOfCessation() + "," +
+                    company.getDateOfCreation() + "," +
+                    company.getDateOfCessation() + "," +
+                    company.getDateOfCreation() + "," +
+                    company.getSicCodes() + "," +
+                    getAddressAsString(company.getRegisteredOfficeAddress()) + "\n";
+            csvBody.append(line);
+        }
+
+        return csvBody.toString();
+    }
+
+    private String getAddressAsString(Address address) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(address.getAddressLine1());
+        builder.append(address.getAddressLine2());
+        builder.append(address.getPremises());
+        builder.append(address.getLocality());
+        builder.append(address.getRegion());
+        builder.append(address.getCountry());
+        builder.append(address.getPostalCode());
+        return builder.toString();
     }
 }
