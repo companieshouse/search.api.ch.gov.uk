@@ -236,20 +236,27 @@ public class AdvancedSearchController {
 
         for (Company company : companies) {
             String line = company.getCompanyName() + "," +
-                    company.getCompanyNumber() + "," +
-                    company.getCompanyStatus() + "," +
-                    company.getCompanyType() + "," +
-                    company.getCompanySubtype() + "," +
-                    company.getDateOfCessation() + "," +
-                    company.getDateOfCreation() + "," +
-                    company.getDateOfCessation() + "," +
-                    company.getDateOfCreation() + "," +
-                    company.getSicCodes() + "," +
+                    checkNull(company.getCompanyNumber()) + "," +
+                    checkNull(company.getCompanyStatus()) + "," +
+                    checkNull(company.getCompanyType()) + "," +
+                    checkNull(company.getCompanySubtype()) + "," +
+                    checkNull(company.getDateOfCessation()) + "," +
+                    checkNull(company.getDateOfCreation()) + "," +
+                    checkNull(company.getDateOfCessation()) + "," +
+                    checkNull(company.getDateOfCreation()) + "," +
+                    checkNull(company.getSicCodes()) + "," +
                     getAddressAsString(company.getRegisteredOfficeAddress()) + "\n";
             csvBody.append(line);
         }
 
         return csvBody.toString();
+    }
+
+    private String checkNull(Object str) {
+        if (str == null) {
+            return "";
+        }
+        return str.toString();
     }
 
     private String getAddressAsString(Address address) {
@@ -258,8 +265,10 @@ public class AdvancedSearchController {
         builder.append("\s");
         builder.append(address.getLocality());
         builder.append("\s");
-        builder.append(address.getCountry());
-        builder.append("\s");
+        if (address.getCountry() != null) {
+            builder.append(address.getCountry());
+            builder.append("\s");
+        }
         builder.append(address.getPostalCode());
         return builder.toString();
     }
