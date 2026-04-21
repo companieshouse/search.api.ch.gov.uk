@@ -325,7 +325,7 @@ class AdvancedSearchControllerTest {
                 DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE, REQUEST_ID);
 
         String body = (String) response.getBody();
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(body.startsWith("company_name,company_number,company_status,company_type,company_subtype,dissolution_date,incorporation_date,removed_date,registered_date,nature_of_business,registered_office_address"));
         assertTrue(body.contains("123 Fake Street Cambeford England ER8 8IU"));
     }
@@ -356,7 +356,7 @@ class AdvancedSearchControllerTest {
                 DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE, REQUEST_ID);
 
         String body = (String) response.getBody();
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(body.startsWith("company_name,company_number,company_status,company_type,company_subtype,dissolution_date,incorporation_date,removed_date,registered_date,nature_of_business,registered_office_address"));
         assertTrue(body.contains("123 Fake Street Cambeford ER8 8IU"));
     }
