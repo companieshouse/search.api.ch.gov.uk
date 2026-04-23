@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +29,7 @@ import uk.gov.companieshouse.search.api.exception.SizeException;
 import uk.gov.companieshouse.search.api.mapper.AdvancedQueryParamMapper;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
@@ -90,6 +92,49 @@ public class AdvancedSearchController {
                                          @RequestParam(name = SIZE_PARAM, required = false) Integer size,
                                          @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
 
+        ResponseObject<Company> responseObject = searchCompanies(startIndex, companyName, location,
+                incorporatedFrom, incorporatedTo, companyStatusList,
+                sicCodes, companyTypeList, companySubtypeList,
+                dissolvedFrom, dissolvedTo,
+                companyNameExcludes, size, requestId);
+        return apiToResponseMapper.map(responseObject);
+    }
+
+    @GetMapping("/csv")
+    public ResponseEntity<Object> searchToCsv(@RequestParam(name = START_INDEX_QUERY_PARAM, required = false) Integer startIndex,
+                                         @RequestParam(name = COMPANY_NAME_QUERY_PARAM, required = false) String companyName,
+                                         @RequestParam(name = LOCATION_QUERY_PARAM, required = false) String location,
+                                         @RequestParam(name = INCORPORATED_FROM_QUERY_PARAMETER, required = false) String incorporatedFrom,
+                                         @RequestParam(name = INCORPORATED_TO_QUERY_PARAMETER, required = false) String incorporatedTo,
+                                         @RequestParam(name = COMPANY_STATUS_QUERY_PARAMETER, required = false) List<String> companyStatusList,
+                                         @RequestParam(name = SIC_CODE_QUERY_PARAMETER, required = false) List<String> sicCodes,
+                                         @RequestParam(name = COMPANY_TYPE_QUERY_PARAMETER, required = false) List<String> companyTypeList,
+                                         @RequestParam(name = COMPANY_SUBTYPE_QUERY_PARAMETER, required = false) List<String> companySubtypeList,
+                                         @RequestParam(name = DISSOLVED_FROM_QUERY_PARAMETER, required = false) String dissolvedFrom,
+                                         @RequestParam(name = DISSOLVED_TO_QUERY_PARAMETER, required = false) String dissolvedTo,
+                                         @RequestParam(name = COMPANY_NAME_EXCLUDES, required = false) String companyNameExcludes,
+                                         @RequestParam(name = SIZE_PARAM, required = false) Integer size,
+                                         @RequestHeader(REQUEST_ID_HEADER_NAME) String requestId) {
+
+        ResponseObject<Company> responseObject = searchCompanies(startIndex, companyName, location,
+                incorporatedFrom, incorporatedTo, companyStatusList,
+                sicCodes, companyTypeList, companySubtypeList,
+                dissolvedFrom, dissolvedTo,
+                companyNameExcludes, size, requestId);
+        String csv = getCsvFromResponse(responseObject);
+
+        ResponseEntity<Object> mapped = apiToResponseMapper.map(responseObject);
+        if (mapped.getStatusCode() == HttpStatus.OK) {
+            return ResponseEntity.status(HttpStatus.OK).body(csv);
+        }
+        return mapped;
+    }
+
+    private ResponseObject<Company> searchCompanies(Integer startIndex, String companyName, String location,
+                                                    String incorporatedFrom, String incorporatedTo, List<String> companyStatusList,
+                                                    List<String> sicCodes, List<String> companyTypeList, List<String> companySubtypeList,
+                                                    String dissolvedFrom, String dissolvedTo, String companyNameExcludes,
+                                                    Integer size, String requestId) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         Date incorporatedFromDate = null;
         Date incorporatedToDate = null;
@@ -137,19 +182,18 @@ public class AdvancedSearchController {
 
         try {
             advancedSearchQueryParams = queryParamMapper
-                .mapAdvancedQueryParameters(startIndex, companyName, location, incorporatedFrom,
-                    incorporatedTo, companyStatusList, sicCodes, companyTypeList, companySubtypeList, dissolvedFrom, dissolvedTo, companyNameExcludes, size);
+                    .mapAdvancedQueryParameters(startIndex, companyName, location, incorporatedFrom,
+                            incorporatedTo, companyStatusList, sicCodes, companyTypeList, companySubtypeList, dissolvedFrom, dissolvedTo, companyNameExcludes, size);
         } catch (DateFormatException dfe) {
-           return apiToResponseMapper.map(new ResponseObject<>(ResponseStatus.DATE_FORMAT_ERROR, null));
+            return new ResponseObject<>(ResponseStatus.DATE_FORMAT_ERROR, null);
         } catch (MappingException me) {
-            return apiToResponseMapper.map(new ResponseObject<>(ResponseStatus.MAPPING_ERROR, null));
+            return new ResponseObject<>(ResponseStatus.MAPPING_ERROR, null);
         } catch (SizeException se) {
-            return apiToResponseMapper.map(new ResponseObject<>(ResponseStatus.ADVANCED_SIZE_PARAMETER_ERROR, null));
+            return new ResponseObject<>(ResponseStatus.ADVANCED_SIZE_PARAMETER_ERROR, null);
         }
 
-        ResponseObject<Company> responseObject = searchIndexService.searchAdvanced(advancedSearchQueryParams, requestId);
+        return searchIndexService.searchAdvanced(advancedSearchQueryParams, requestId);
 
-        return apiToResponseMapper.map(responseObject);
     }
 
     @PutMapping("/companies/{company_number}")
@@ -189,5 +233,48 @@ public class AdvancedSearchController {
             responseObject = advancedSearchDeleteService.deleteCompanyByNumber(companyNumber);
         }
         return apiToResponseMapper.map(responseObject);
+    }
+
+    private String getCsvFromResponse(ResponseObject<Company> responseObject) {
+        List<Company> companies = responseObject.getData().getItems();
+        StringBuilder csvBody = new StringBuilder("company_name,company_number,company_status,company_type,company_subtype,dissolution_date,incorporation_date,removed_date,registered_date,nature_of_business,registered_office_address\n");
+
+        for (Company company : companies) {
+            String line = company.getCompanyName() + "," +
+                    checkNull(company.getCompanyNumber()) + "," +
+                    checkNull(company.getCompanyStatus()) + "," +
+                    checkNull(company.getCompanyType()) + "," +
+                    checkNull(company.getCompanySubtype()) + "," +
+                    checkNull(company.getDateOfCessation()) + "," +
+                    checkNull(company.getDateOfCreation()) + "," +
+                    checkNull(company.getDateOfCessation()) + "," +
+                    checkNull(company.getDateOfCreation()) + "," +
+                    checkNull(company.getSicCodes()) + "," +
+                    getAddressAsString(company.getRegisteredOfficeAddress()) + "\n";
+            csvBody.append(line);
+        }
+
+        return csvBody.toString();
+    }
+
+    private String checkNull(Object str) {
+        if (str == null) {
+            return "";
+        }
+        return str.toString();
+    }
+
+    private String getAddressAsString(Address address) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(address.getAddressLine1());
+        builder.append("\s");
+        builder.append(address.getLocality());
+        builder.append("\s");
+        if (address.getCountry() != null) {
+            builder.append(address.getCountry());
+            builder.append("\s");
+        }
+        builder.append(address.getPostalCode());
+        return builder.toString();
     }
 }

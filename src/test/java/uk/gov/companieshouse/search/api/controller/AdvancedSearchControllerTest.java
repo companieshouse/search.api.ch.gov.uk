@@ -1,7 +1,6 @@
 package uk.gov.companieshouse.search.api.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -43,6 +42,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.environment.EnvironmentReader;
@@ -54,6 +54,7 @@ import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.AdvancedSearchQueryParams;
 import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.TopHit;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Address;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.delete.advanced.AdvancedSearchDeleteService;
@@ -304,6 +305,66 @@ class AdvancedSearchControllerTest {
         assertEquals(BAD_REQUEST, responseEntity.getStatusCode());
     }
 
+    @Test
+    void testCsv() throws Exception{
+        ResponseObject responseObject =
+                new ResponseObject(SEARCH_FOUND, createSearchResults());
+
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME_INCLUDES);
+        advancedSearchQueryParams.setSicCodes(SIC_CODES_LIST);
+
+        when(mockQueryParamMapper.mapAdvancedQueryParameters(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION,
+                INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST,
+                COMPANY_SUBTYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE))
+                .thenReturn(advancedSearchQueryParams);
+        when(mockSearchIndexService.searchAdvanced(any(), anyString())).thenReturn(responseObject);
+        when(mockApiToResponseMapper.map(responseObject))
+                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseObject.getData()));
+
+        ResponseEntity<Object> response = advancedSearchController.searchToCsv(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM,
+                INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, COMPANY_SUBTYPES_LIST,
+                DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE, REQUEST_ID);
+
+        String body = (String) response.getBody();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(body.startsWith("company_name,company_number,company_status,company_type,company_subtype,dissolution_date,incorporation_date,removed_date,registered_date,nature_of_business,registered_office_address"));
+        assertTrue(body.contains("123 Fake Street Cambeford England ER8 8IU"));
+    }
+
+    @Test
+    void testCsv_noCountry() throws Exception {
+
+        Address address = new Address();
+        address.setAddressLine1("123 Fake Street");
+        address.setLocality("Cambeford");
+        address.setPostalCode("ER8 8IU");
+
+        ResponseObject responseObject =
+                new ResponseObject(SEARCH_FOUND, createSearchResults(address));
+
+        AdvancedSearchQueryParams advancedSearchQueryParams = new AdvancedSearchQueryParams();
+        advancedSearchQueryParams.setCompanyNameIncludes(COMPANY_NAME_INCLUDES);
+        advancedSearchQueryParams.setSicCodes(SIC_CODES_LIST);
+
+        when(mockQueryParamMapper.mapAdvancedQueryParameters(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION,
+                INCORPORATED_FROM, INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST,
+                COMPANY_SUBTYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE))
+                .thenReturn(advancedSearchQueryParams);
+        when(mockSearchIndexService.searchAdvanced(any(), anyString())).thenReturn(responseObject);
+        when(mockApiToResponseMapper.map(responseObject))
+                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseObject.getData()));
+
+        ResponseEntity<Object> response = advancedSearchController.searchToCsv(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM,
+                INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, COMPANY_SUBTYPES_LIST,
+                DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE, REQUEST_ID);
+
+        String body = (String) response.getBody();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(body.startsWith("company_name,company_number,company_status,company_type,company_subtype,dissolution_date,incorporation_date,removed_date,registered_date,nature_of_business,registered_office_address"));
+        assertTrue(body.contains("123 Fake Street Cambeford ER8 8IU"));
+    }
+
     private void testReturnsBadRequest(String companyNumber) {
         CompanyProfileApi company = createCompany();
 
@@ -318,6 +379,10 @@ class AdvancedSearchControllerTest {
     }
 
     private SearchResults<?> createSearchResults() {
+        return createSearchResults(createAddress());
+    }
+
+    private SearchResults<?> createSearchResults(Address address) {
         SearchResults<Company> searchResults = new SearchResults<>();
         List<Company> companies = new ArrayList<>();
         Company company = new Company();
@@ -326,6 +391,7 @@ class AdvancedSearchControllerTest {
         company.setCompanyName(COMPANY_NAME_INCLUDES);
         company.setCompanyStatus(COMPANY_NUMBER);
         company.setSicCodes(SIC_CODES_LIST);
+        company.setRegisteredOfficeAddress(address);
         companies.add(company);
 
         TopHit topHit = new TopHit();
@@ -352,5 +418,14 @@ class AdvancedSearchControllerTest {
         company.setLinks(links);
 
         return company;
+    }
+
+    private Address createAddress() {
+        Address address = new Address();
+        address.setAddressLine1("123 Fake Street");
+        address.setLocality("Cambeford");
+        address.setCountry("England");
+        address.setPostalCode("ER8 8IU");
+        return address;
     }
 }
