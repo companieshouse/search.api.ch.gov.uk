@@ -319,6 +319,8 @@ class AdvancedSearchControllerTest {
                 COMPANY_SUBTYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE))
                 .thenReturn(advancedSearchQueryParams);
         when(mockSearchIndexService.searchAdvanced(any(), anyString())).thenReturn(responseObject);
+        when(mockApiToResponseMapper.map(responseObject))
+                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseObject.getData()));
 
         ResponseEntity<Object> response = advancedSearchController.searchToCsv(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM,
                 INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, COMPANY_SUBTYPES_LIST,
@@ -350,6 +352,8 @@ class AdvancedSearchControllerTest {
                 COMPANY_SUBTYPES_LIST, DISSOLVED_FROM, DISSOLVED_TO, COMPANY_NAME_EXCLUDES, SIZE))
                 .thenReturn(advancedSearchQueryParams);
         when(mockSearchIndexService.searchAdvanced(any(), anyString())).thenReturn(responseObject);
+        when(mockApiToResponseMapper.map(responseObject))
+                .thenReturn(ResponseEntity.status(HttpStatus.OK).body(responseObject.getData()));
 
         ResponseEntity<Object> response = advancedSearchController.searchToCsv(START_INDEX, COMPANY_NAME_INCLUDES, LOCATION, INCORPORATED_FROM,
                 INCORPORATED_TO, COMPANY_STATUS_LIST, SIC_CODES_LIST, COMPANY_TYPES_LIST, COMPANY_SUBTYPES_LIST,

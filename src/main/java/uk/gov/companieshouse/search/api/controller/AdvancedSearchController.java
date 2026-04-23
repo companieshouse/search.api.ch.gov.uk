@@ -122,7 +122,12 @@ public class AdvancedSearchController {
                 dissolvedFrom, dissolvedTo,
                 companyNameExcludes, size, requestId);
         String csv = getCsvFromResponse(responseObject);
-        return ResponseEntity.status(HttpStatus.OK).body(csv);
+
+        ResponseEntity<Object> mapped = apiToResponseMapper.map(responseObject);
+        if (mapped.getStatusCode() == HttpStatus.OK) {
+            return ResponseEntity.status(HttpStatus.OK).body(csv);
+        }
+        return mapped;
     }
 
     private ResponseObject<Company> searchCompanies(Integer startIndex, String companyName, String location,
