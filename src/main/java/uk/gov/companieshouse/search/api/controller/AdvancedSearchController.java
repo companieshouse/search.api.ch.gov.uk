@@ -2,6 +2,8 @@ package uk.gov.companieshouse.search.api.controller;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.*;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,6 +11,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import jakarta.validation.Valid;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -235,26 +239,34 @@ public class AdvancedSearchController {
         return apiToResponseMapper.map(responseObject);
     }
 
+
     private String getCsvFromResponse(ResponseObject<Company> responseObject) {
         List<Company> companies = responseObject.getData().getItems();
-        StringBuilder csvBody = new StringBuilder("company_name,company_number,company_status,company_type,company_subtype,dissolution_date,incorporation_date,removed_date,registered_date,nature_of_business,registered_office_address\n");
-
-        for (Company company : companies) {
-            String line = company.getCompanyName() + "," +
-                    checkNull(company.getCompanyNumber()) + "," +
-                    checkNull(company.getCompanyStatus()) + "," +
-                    checkNull(company.getCompanyType()) + "," +
-                    checkNull(company.getCompanySubtype()) + "," +
-                    checkNull(company.getDateOfCessation()) + "," +
-                    checkNull(company.getDateOfCreation()) + "," +
-                    checkNull(company.getDateOfCessation()) + "," +
-                    checkNull(company.getDateOfCreation()) + "," +
-                    checkNull(company.getSicCodes()) + "," +
-                    getAddressAsString(company.getRegisteredOfficeAddress()) + "\n";
-            csvBody.append(line);
+        StringWriter out = new StringWriter();
+        try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT
+                .withHeader("company_name", "company_number", "company_status", "company_type", "company_subtype",
+                        "dissolution_date", "incorporation_date", "removed_date", "registered_date",
+                        "nature_of_business", "registered_office_address"))) {
+            for (Company company : companies) {
+                printer.printRecord(
+                        checkNull(company.getCompanyName()),
+                        checkNull(company.getCompanyNumber()),
+                        checkNull(company.getCompanyStatus()),
+                        checkNull(company.getCompanyType()),
+                        checkNull(company.getCompanySubtype()),
+                        checkNull(company.getDateOfCessation()),
+                        checkNull(company.getDateOfCreation()),
+                        checkNull(company.getDateOfCessation()), // Confirm if this is correct
+                        checkNull(company.getDateOfCreation()),  // Confirm if this is correct
+                        checkNull(company.getSicCodes()),
+                        getAddressAsString(company.getRegisteredOfficeAddress())
+                );
+            }
+        } catch (IOException e) {
+            // Handle exception (log or rethrow as runtime)
+            throw new RuntimeException("Error generating CSV", e);
         }
-
-        return csvBody.toString();
+        return out.toString();
     }
 
     private String checkNull(Object str) {
