@@ -44,7 +44,7 @@ import uk.gov.companieshouse.search.api.model.SearchResults;
 import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.service.delete.alphabetical.AlphabeticalSearchDeleteService;
-import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
+import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalOpenSearchIndexService;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
@@ -52,14 +52,14 @@ import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 class AlphabeticalSearchControllerTest {
 
     @Mock
-    private AlphabeticalSearchIndexService mockSearchIndexService;
-    
+    private AlphabeticalOpenSearchIndexService mockSearchIndexService;
+
     @Mock
     private UpsertCompanyService mockUpsertCompanyService;
 
     @Mock
     private ApiToResponseMapper mockApiToResponseMapper;
-    
+
     @Captor
     private ArgumentCaptor<ResponseObject> responseObjectCaptor;
 
@@ -140,7 +140,7 @@ class AlphabeticalSearchControllerTest {
         assertNotNull(responseEntity);
         assertEquals(FOUND, responseEntity.getStatusCode());
     }
-    
+
     @Test
     @DisplayName("Test upsert company is successful")
     void testUpsertSuccessful() {
@@ -301,9 +301,9 @@ class AlphabeticalSearchControllerTest {
     private SearchResults<Company> createSearchResults() {
         SearchResults<Company> searchResults = new SearchResults<>();
         List<Company> companies = new ArrayList<>();
-        
+
         Company company = new Company();
-        
+
         company.setCompanyNumber("00004444");
         company.setCompanyName("test name");
         company.setCompanyStatus("test status");

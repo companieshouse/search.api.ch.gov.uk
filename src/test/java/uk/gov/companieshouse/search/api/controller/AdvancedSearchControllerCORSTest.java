@@ -2,6 +2,7 @@ package uk.gov.companieshouse.search.api.controller;
 
 import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.jupiter.api.Test;
+import org.opensearch.client.opensearch.OpenSearchClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -64,6 +65,9 @@ class AdvancedSearchControllerCORSTest {
 
     @MockitoBean
     private RestHighLevelClient primaryRestClient;
+
+    @MockitoBean
+    private OpenSearchClient alphabeticalOpenSearchRestClient;
 
     // Injected services
 

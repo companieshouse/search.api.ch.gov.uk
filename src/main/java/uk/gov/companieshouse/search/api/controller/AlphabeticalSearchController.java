@@ -23,7 +23,9 @@ import uk.gov.companieshouse.search.api.logging.LoggingUtils;
 import uk.gov.companieshouse.search.api.mapper.ApiToResponseMapper;
 import uk.gov.companieshouse.search.api.model.response.ResponseObject;
 import uk.gov.companieshouse.search.api.model.response.ResponseStatus;
+import uk.gov.companieshouse.search.api.service.search.SearchIndexService;
 import uk.gov.companieshouse.search.api.service.search.SearchRequestUtils;
+import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalOpenSearchIndexService;
 import uk.gov.companieshouse.search.api.service.search.impl.alphabetical.AlphabeticalSearchIndexService;
 import uk.gov.companieshouse.search.api.service.upsert.UpsertCompanyService;
 import uk.gov.companieshouse.search.api.service.delete.alphabetical.AlphabeticalSearchDeleteService;
@@ -42,7 +44,8 @@ public class AlphabeticalSearchController {
     private static final String MAX_SIZE_PARAM = "MAX_SIZE_PARAM";
     private static final String ALPHABETICAL_SEARCH_RESULT_MAX = "ALPHABETICAL_SEARCH_RESULT_MAX";
 
-    private final AlphabeticalSearchIndexService searchIndexService;
+    private final SearchIndexService searchIndexService;
+
     private final UpsertCompanyService upsertCompanyService;
 
     private final AlphabeticalSearchDeleteService alphabeticalSearchDeleteService;
@@ -50,8 +53,9 @@ public class AlphabeticalSearchController {
     private final EnvironmentReader environmentReader;
     private final ConfiguredIndexNamesProvider indices;
 
-    public AlphabeticalSearchController(AlphabeticalSearchIndexService searchIndexService,
-        UpsertCompanyService upsertCompanyService, AlphabeticalSearchDeleteService alphabeticalSearchDeleteService, ApiToResponseMapper apiToResponseMapper,
+    public AlphabeticalSearchController(SearchIndexService searchIndexService,
+        UpsertCompanyService upsertCompanyService, AlphabeticalSearchDeleteService alphabeticalSearchDeleteService,
+                                        ApiToResponseMapper apiToResponseMapper,
         EnvironmentReader environmentReader, ConfiguredIndexNamesProvider indices) {
         this.searchIndexService = searchIndexService;
         this.upsertCompanyService = upsertCompanyService;
@@ -93,7 +97,7 @@ public class AlphabeticalSearchController {
 
         return apiToResponseMapper.map(responseObject);
     }
-    
+
     @PutMapping("/companies/{company_number}")
     public ResponseEntity<Object> upsertCompany(@PathVariable("company_number") String companyNumber,
             @Valid @RequestBody CompanyProfileApi company) {

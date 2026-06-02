@@ -1,9 +1,21 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.MESSAGE;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.ORDERED_ALPHAKEY_WITH_ID;
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
+import org.opensearch.client.opensearch.core.search.Hit;
+import org.opensearch.client.opensearch.core.search.TotalHits;
+import org.opensearch.client.opensearch.core.search.HitsMetadata;
+import org.springframework.stereotype.Service;
+import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.logging.util.DataMap;
+import uk.gov.companieshouse.search.api.exception.SearchException;
+import uk.gov.companieshouse.search.api.mapper.OpenSearchResponseMapper;
+import uk.gov.companieshouse.search.api.model.SearchResults;
+import uk.gov.companieshouse.search.api.model.TopHit;
+import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
+import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
+import uk.gov.companieshouse.search.api.opensearch.AlphabeticalOpenSearchRequests;
+import uk.gov.companieshouse.search.api.service.AlphaKeyService;
+import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
+import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,29 +23,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.lucene.search.TotalHits;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.springframework.stereotype.Service;
-import uk.gov.companieshouse.environment.EnvironmentReader;
-import uk.gov.companieshouse.logging.util.DataMap;
-import uk.gov.companieshouse.search.api.elasticsearch.AlphabeticalSearchRequests;
-import uk.gov.companieshouse.search.api.exception.SearchException;
-import uk.gov.companieshouse.search.api.mapper.ElasticSearchResponseMapper;
-import uk.gov.companieshouse.search.api.model.SearchResults;
-import uk.gov.companieshouse.search.api.model.TopHit;
-import uk.gov.companieshouse.search.api.model.esdatamodel.Company;
-import uk.gov.companieshouse.search.api.model.response.AlphaKeyResponse;
-import uk.gov.companieshouse.search.api.service.AlphaKeyService;
-import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
-import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.*;
 
-@Service("alphabeticalSearchRequestService")
-public class AlphabeticalSearchRequestService implements SearchRequestService<Company> {
+@Service("alphabeticalOpenSearchRequestService")
+public class AlphabeticalOpenSearchRequestService implements SearchRequestService<Company> {
 
     private final AlphaKeyService alphaKeyService;
-    private final AlphabeticalSearchRequests alphabeticalSearchRequests;
-    private final ElasticSearchResponseMapper elasticSearchResponseMapper;
+    private final AlphabeticalOpenSearchRequests alphabeticalSearchRequests;
+    private final OpenSearchResponseMapper openSearchResponseMapper;
     private final EnvironmentReader environmentReader;
     private final ConfiguredIndexNamesProvider indices;
 
@@ -44,13 +41,13 @@ public class AlphabeticalSearchRequestService implements SearchRequestService<Co
     private Integer sizeAbove;
     private Integer sizeBelow;
 
-    public AlphabeticalSearchRequestService(AlphaKeyService alphaKeyService,
-        AlphabeticalSearchRequests alphabeticalSearchRequests,
-        ElasticSearchResponseMapper elasticSearchResponseMapper,
-        EnvironmentReader environmentReader, ConfiguredIndexNamesProvider indices) {
+    public AlphabeticalOpenSearchRequestService(AlphaKeyService alphaKeyService,
+                                                AlphabeticalOpenSearchRequests alphabeticalSearchRequests,
+                                                OpenSearchResponseMapper openSearchResponseMapper,
+                                                EnvironmentReader environmentReader, ConfiguredIndexNamesProvider indices) {
         this.alphaKeyService = alphaKeyService;
         this.alphabeticalSearchRequests = alphabeticalSearchRequests;
-        this.elasticSearchResponseMapper = elasticSearchResponseMapper;
+        this.openSearchResponseMapper = openSearchResponseMapper;
         this.environmentReader = environmentReader;
         this.indices = indices;
     }
@@ -70,7 +67,7 @@ public class AlphabeticalSearchRequestService implements SearchRequestService<Co
                 .size(String.valueOf(size))
                 .build().getLogMap();
 
-        getLogger().info("Performing Elastic search request", logMap);
+        getLogger().info("Performing Open search request", logMap);
         logMap.remove(MESSAGE);
 
         String orderedAlphakey = "";
@@ -86,24 +83,24 @@ public class AlphabeticalSearchRequestService implements SearchRequestService<Co
         }
 
         try {
-            SearchHits hits = getSearchHits(orderedAlphakey, requestId);
-            if (hits.getTotalHits() != null && hits.getTotalHits().value == 0){
+            HitsMetadata<Object> hits = getSearchHits(orderedAlphakey, requestId);
+            if (hits.total() != null && hits.total().value() == 0){
                 getLogger().info("A result was not found, reducing search term to find result", logMap);
                 logMap.remove(MESSAGE);
 
                 hits = peelbackSearchRequest(hits, orderedAlphakey, requestId);
             }
-            if (hits.getTotalHits() != null && hits.getTotalHits().value > 0) {
+            if (hits.total() != null && hits.total().value() > 0) {
                 getLogger().info("A result has been found", logMap);
                 logMap.remove(MESSAGE);
 
                 String orderedAlphakeyWithId;
-                SearchHit topHit;
-                orderedAlphakeyWithId = getOrderedAlphaKeyWithId(hits.getHits()[0]);
-                topHit = hits.getHits()[0];
+                Hit<Object> topHit;
+                orderedAlphakeyWithId = getOrderedAlphaKeyWithId(hits.hits().getFirst());
+                topHit = hits.hits().getFirst();
 
-                Company company = elasticSearchResponseMapper.mapAlphabeticalResponse(topHit);
-                topHitCompany = elasticSearchResponseMapper.mapAlphabeticalTopHit(company);
+                Company company = openSearchResponseMapper.mapAlphabeticalResponse(topHit);
+                topHitCompany = openSearchResponseMapper.mapAlphabeticalTopHit(company);
 
                 if ((searchBefore == null && searchAfter == null) || (searchBefore != null && searchAfter != null)) {
                     results = prepareSearchResultsWithTopHit(size, requestId, logMap, topHitCompany, results,
@@ -141,14 +138,14 @@ public class AlphabeticalSearchRequestService implements SearchRequestService<Co
         return results;
     }
 
-    public SearchHits peelbackSearchRequest(SearchHits hits, String orderedAlphakey, String requestId)
+    public HitsMetadata<Object> peelbackSearchRequest(HitsMetadata<Object> hits, String orderedAlphakey, String requestId)
             throws IOException {
 
         Integer fallbackQueryLimit = environmentReader.getMandatoryInteger(ALPHABETICAL_FALLBACK_QUERY_LIMIT);
 
         for (int i = 0; i < orderedAlphakey.length(); i++) {
-            TotalHits totalHits = hits.getTotalHits();
-                if ((totalHits != null && totalHits.value > 0) || i == fallbackQueryLimit) {
+            TotalHits totalHits = hits.total();
+                if ((totalHits != null && totalHits.value() > 0) || i == fallbackQueryLimit) {
                     return hits;
                 }
 
@@ -160,14 +157,14 @@ public class AlphabeticalSearchRequestService implements SearchRequestService<Co
         return hits;
     }
 
-    private SearchHits getSearchHits(String orderedAlphakey, String requestId) throws IOException {
-        SearchHits hits = alphabeticalSearchRequests.getBestMatchResponse(orderedAlphakey, requestId);
+    private HitsMetadata<Object> getSearchHits(String orderedAlphakey, String requestId) throws IOException {
+        HitsMetadata<Object> hits = alphabeticalSearchRequests.getBestMatchResponse(orderedAlphakey, requestId);
 
-        if (hits.getTotalHits() != null && hits.getTotalHits().value == 0) {
+        if (hits.total() != null && hits.total().value() == 0) {
             hits = alphabeticalSearchRequests.getStartsWithResponse(orderedAlphakey, requestId);
         }
 
-        if (hits.getTotalHits() != null && hits.getTotalHits().value == 0) {
+        if (hits.total() != null && hits.total().value() == 0) {
             hits = alphabeticalSearchRequests.getCorporateNameStartsWithResponse(orderedAlphakey, requestId);
         }
         return hits;
@@ -186,10 +183,10 @@ public class AlphabeticalSearchRequestService implements SearchRequestService<Co
     private List<Company> populateBelowResults(String requestId, String topHitCompanyName, String orderedAlphakeyWithId,
             Integer size) throws IOException {
         List<Company> results = new ArrayList<>();
-        SearchHits hits;
+        HitsMetadata<Object> hits;
         hits = alphabeticalSearchRequests.getDescendingResultsResponse(requestId, orderedAlphakeyWithId,
                 topHitCompanyName, size);
-        hits.forEach(h -> results.add(elasticSearchResponseMapper.mapAlphabeticalResponse(h)));
+        hits.hits().forEach(h -> results.add(openSearchResponseMapper.mapAlphabeticalResponse(h)));
         return results;
     }
 
@@ -206,17 +203,18 @@ public class AlphabeticalSearchRequestService implements SearchRequestService<Co
     private List<Company> populateAboveResults(String requestId, String topHitCompanyName, String orderedAlphakeyWithId,
             Integer size) throws IOException {
         List<Company> results = new ArrayList<>();
-        SearchHits hits;
+        HitsMetadata<Object> hits;
         hits = alphabeticalSearchRequests.getAboveResultsResponse(requestId, orderedAlphakeyWithId, topHitCompanyName,
                 size);
-        hits.forEach(h -> results.add(elasticSearchResponseMapper.mapAlphabeticalResponse(h)));
+        hits.hits().forEach(h -> results.add(openSearchResponseMapper.mapAlphabeticalResponse(h)));
 
         Collections.reverse(results);
         return results;
     }
 
-    private String getOrderedAlphaKeyWithId(SearchHit hit) {
-        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+    private String getOrderedAlphaKeyWithId(Hit<Object> hit) {
+        // TODO
+        Map<String, Object> sourceAsMap = (Map<String, Object>) hit.source();
         return (String) sourceAsMap.get(ORDERED_ALPHA_KEY_WITH_ID);
     }
 

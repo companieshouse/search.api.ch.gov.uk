@@ -17,15 +17,15 @@ import uk.gov.companieshouse.search.api.service.rest.RestClientService;
 
 public abstract class AbstractSearchRequest {
     abstract String getIndex();
-    
+
     abstract String getResultsSize();
-    
+
     abstract RestClientService getRestClientService();
-    
+
     abstract AbstractSearchQuery getSearchQuery();
 
     protected final EnvironmentReader environmentReader;
-    
+
     private static final String ORDERED_ALPHA_KEY_WITH_ID = "ordered_alpha_key_with_id";
 
     protected AbstractSearchRequest(EnvironmentReader environmentReader) {
@@ -37,7 +37,7 @@ public abstract class AbstractSearchRequest {
                 .requestId(requestId)
                 .orderedAlphakey(orderedAlphakey)
                 .build().getLogMap();
-        LoggingUtils.getLogger().info("Searching for best company match", logMap);
+        LoggingUtils.getLogger().info("Searching ElasticSearch for best company match", logMap);
         SearchRequest searchRequestBestMatch = createBaseSearchRequest(requestId);
         searchRequestBestMatch.source(bestMatchSourceBuilder(
                 getSearchQuery().createOrderedAlphaKeySearchQuery(orderedAlphakey),
@@ -52,8 +52,8 @@ public abstract class AbstractSearchRequest {
                 .requestId(requestId)
                 .orderedAlphakey(orderedAlphakey)
                 .build().getLogMap();
-        LoggingUtils.getLogger().info("Searching using alphakey prefix", logMap);
-        
+        LoggingUtils.getLogger().info("Searching ElasticSearch using alphakey prefix", logMap);
+
         SearchRequest searchRequestStartsWith = createBaseSearchRequest(requestId);
 
         searchRequestStartsWith.source(bestMatchSourceBuilder(
@@ -71,7 +71,7 @@ public abstract class AbstractSearchRequest {
                 .requestId(requestId)
                 .orderedAlphakey(orderedAlphakey)
                 .build().getLogMap();
-        LoggingUtils.getLogger().info("Searching using orderedAlphaKey", logMap);
+        LoggingUtils.getLogger().info("Searching ElasticSearch using orderedAlphaKey", logMap);
 
         SearchRequest searchRequestCorporateName = createBaseSearchRequest(requestId);
 
@@ -95,7 +95,7 @@ public abstract class AbstractSearchRequest {
                 .companyName(topHitCompanyName)
                 .size(String.valueOf(size))
                 .build().getLogMap();
-        LoggingUtils.getLogger().info("Retrieving the alphabetically descending results", logMap);
+        LoggingUtils.getLogger().info("Retrieving the alphabetically descending results from ElasticSearch", logMap);
 
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,
@@ -115,7 +115,7 @@ public abstract class AbstractSearchRequest {
                 .companyName(topHitCompanyName)
                 .size(String.valueOf(size))
                 .build().getLogMap();
-        LoggingUtils.getLogger().info("Retrieving the alphabetically ascending results", logMap);
+        LoggingUtils.getLogger().info("Retrieving the alphabetically ascending results from ElasticSearch", logMap);
 
         SearchRequest searchAlphabetic = createBaseSearchRequest(requestId);
         searchAlphabetic.source(alphabeticalSourceBuilder(orderedAlphakeyWithId,

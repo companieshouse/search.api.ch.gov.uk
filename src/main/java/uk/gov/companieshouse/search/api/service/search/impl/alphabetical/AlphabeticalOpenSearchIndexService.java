@@ -1,9 +1,5 @@
 package uk.gov.companieshouse.search.api.service.search.impl.alphabetical;
 
-import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
-
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
@@ -18,16 +14,19 @@ import uk.gov.companieshouse.search.api.service.search.SearchRequestService;
 import uk.gov.companieshouse.search.api.util.ConfiguredIndexNamesProvider;
 
 import javax.annotation.PostConstruct;
+import java.util.Map;
+
+import static uk.gov.companieshouse.search.api.logging.LoggingUtils.getLogger;
 
 @Service
-@ConditionalOnProperty(name = "search.backend", havingValue = "elasticsearch", matchIfMissing = true)
-public class AlphabeticalSearchIndexService implements SearchIndexService {
+@ConditionalOnProperty(name = "search.backend", havingValue = "opensearch")
+public class AlphabeticalOpenSearchIndexService implements SearchIndexService {
 
     private final SearchRequestService<Company> searchRequestService;
     private final ConfiguredIndexNamesProvider indices;
 
-    public AlphabeticalSearchIndexService(@Qualifier("alphabeticalSearchRequestService")  SearchRequestService<Company> searchRequestService,
-        ConfiguredIndexNamesProvider indices) {
+    public AlphabeticalOpenSearchIndexService(@Qualifier("alphabeticalOpenSearchRequestService") SearchRequestService<Company> searchRequestService,
+                                              ConfiguredIndexNamesProvider indices) {
         this.searchRequestService = searchRequestService;
         this.indices = indices;
     }
@@ -35,8 +34,10 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
     @PostConstruct
     public void logBean() {
         System.err.println("Loaded: " + this.getClass().getName());
-        getLogger().info("Loading Alphabetical Search for ElasticSearch");
+        getLogger().info("Loading Alphabetical Search for OpenSearch");
     }
+
+
     /**
      * {@inheritDoc}
      */
@@ -57,7 +58,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         SearchResults<Company> searchResults;
 
         try {
-            getLogger().info("Elastic Search started ", logMap);
+            getLogger().info("Open Search started ", logMap);
             searchResults = searchRequestService.getAlphabeticalSearchResults(corporateName, searchBefore, searchAfter,
                     size, requestId);
         } catch (SearchException e) {
@@ -66,7 +67,7 @@ public class AlphabeticalSearchIndexService implements SearchIndexService {
         }
 
         if(searchResults.getItems() != null && !searchResults.getItems().isEmpty()) {
-            getLogger().info("Elastic Search successful", logMap);
+            getLogger().info("Open Search successful", logMap);
             return new ResponseObject<>(ResponseStatus.SEARCH_FOUND, searchResults);
         }
 
