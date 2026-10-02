@@ -22,7 +22,6 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <start-class>uk.gov.companieshouse.search.api.SearchApiApplication</start-class>
-        <api-helper-java.version>3.0.1</api-helper-java.version>
         <api-security-java.version>2.0.14</api-security-java.version>
         <private-api-sdk-java.version>6.0.6</private-api-sdk-java.version>
 
@@ -183,7 +182,6 @@
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>api-helper-java</artifactId>
-            <version>${api-helper-java.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
