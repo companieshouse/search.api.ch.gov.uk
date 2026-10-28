@@ -75,7 +75,10 @@ public class AdvancedQueryParamMapper {
 
     private static final List<String> ACCEPTED_COMPANY_SUBTYPES = Arrays.asList(
         "community-interest-company",
-        "private-fund-limited-partnership"
+        "lp",
+        "pflp",
+        "slp",
+        "spflp"
     );
 
     private EnvironmentReader environmentReader;
