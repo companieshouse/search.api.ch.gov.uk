@@ -12,7 +12,6 @@ public class TestConstants {
     public static final String ADVANCED_SEARCH_MAX_SIZE = "ADVANCED_SEARCH_MAX_SIZE";
     public static final String BAD_COMPANY_STATUS = "aaa";
     public static final String BAD_DATE_FORMAT = "20010101";
-    public static final String CIC_COMPANY_SUBTYPE = "community-interest-company";
     public static final String COMPANY_NAME = "test company";
     public static final String COMPANY_NAME_EXCLUDES = "test name excludes";
     public static final String COMPANY_NAME_INCLUDES = "test company";
@@ -23,7 +22,12 @@ public class TestConstants {
     public static final String INCORPORATED_TO = "2002-02-02";
     public static final String LOCATION = "location";
     public static final String LTD_COMPANY_TYPE = "ltd";
-    public static final String PFLP_COMPANY_SUBTYPE = "private-fund-limited-partnership";
+    public static final String CIC_COMPANY_SUBTYPE = "community-interest-company";
+    public static final String PFLP_PAPER_COMPANY_SUBTYPE = "private-fund-limited-partnership";
+    public static final String LP_COMPANY_SUBTYPE = "lp";
+    public static final String PFLP_COMPANY_SUBTYPE = "pflp";
+    public static final String SLP_COMPANY_SUBTYPE = "slp";
+    public static final String SPFLP_COMPANY_SUBTYPE = "spflp";
     public static final String PLC_COMPANY_TYPE = "plc";
     public static final String REQUEST_ID = "requestID";
     public static final String SIC_CODES = "99960";
@@ -38,7 +42,7 @@ public class TestConstants {
     public static final List<String> REMOVED_COMPANY_STATUS_LIST = Arrays.asList(REMOVED_COMPANY_STATUS);
     public static final List<String> SIC_CODES_LIST = Arrays.asList(SIC_CODES);
     public static final List<String> COMPANY_TYPES_LIST = Arrays.asList(LTD_COMPANY_TYPE, PLC_COMPANY_TYPE);
-    public static final List<String> COMPANY_SUBTYPES_LIST = Arrays.asList(CIC_COMPANY_SUBTYPE, PFLP_COMPANY_SUBTYPE);
+    public static final List<String> COMPANY_SUBTYPES_LIST = Arrays.asList(CIC_COMPANY_SUBTYPE, PFLP_PAPER_COMPANY_SUBTYPE, LP_COMPANY_SUBTYPE, PFLP_COMPANY_SUBTYPE, SLP_COMPANY_SUBTYPE, SPFLP_COMPANY_SUBTYPE);
 
     public static final Integer SIZE = 20;
     public static final Integer START_INDEX = 0;
