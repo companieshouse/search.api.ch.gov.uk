@@ -251,7 +251,7 @@ public class AdvancedSearchController {
                     checkNull(company.getDateOfCessation()) + "," +
                     checkNull(company.getDateOfCreation()) + "," +
                     escapeReservedCsvCharacters(checkNull(company.getSicCodes())) + "," +
-                    getAddressAsString(company.getRegisteredOfficeAddress()) + "\n";
+                    escapeReservedCsvCharacters(getAddressAsString(company.getRegisteredOfficeAddress())) + "\n";
             csvBody.append(line);
         }
 
