@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.search.api.controller;
 
 import static uk.gov.companieshouse.search.api.logging.LoggingUtils.*;
+import static uk.gov.companieshouse.search.api.util.CsvUtils.escapeReservedCsvCharacters;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -240,7 +241,7 @@ public class AdvancedSearchController {
         StringBuilder csvBody = new StringBuilder("company_name,company_number,company_status,company_type,company_subtype,dissolution_date,incorporation_date,removed_date,registered_date,nature_of_business,registered_office_address\n");
 
         for (Company company : companies) {
-            String line = company.getCompanyName() + "," +
+            String line = escapeReservedCsvCharacters(company.getCompanyName()) + "," +
                     checkNull(company.getCompanyNumber()) + "," +
                     checkNull(company.getCompanyStatus()) + "," +
                     checkNull(company.getCompanyType()) + "," +
@@ -249,7 +250,7 @@ public class AdvancedSearchController {
                     checkNull(company.getDateOfCreation()) + "," +
                     checkNull(company.getDateOfCessation()) + "," +
                     checkNull(company.getDateOfCreation()) + "," +
-                    checkNull(company.getSicCodes()) + "," +
+                    escapeReservedCsvCharacters(checkNull(company.getSicCodes())) + "," +
                     getAddressAsString(company.getRegisteredOfficeAddress()) + "\n";
             csvBody.append(line);
         }
